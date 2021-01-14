@@ -1,0 +1,11 @@
+{
+    "buttons":{
+        "validateOrder":"valider lorder",
+        "validateRemove":"valider lorder"
+    },
+    "RouteTitles":{
+        "cart":"panier",
+        "client":"client",
+        "distributors":"vendeurs"
+    }
+}
