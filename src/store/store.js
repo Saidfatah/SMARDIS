@@ -1,8 +1,10 @@
 import {init} from '@rematch/core'
 import cart from './models/Cart/cart'
+import auth from './models/Auth/Auth'
 
 const models={
-    cart:cart
+    cart:cart,
+    auth:auth,
 }
 
 const store=init({
