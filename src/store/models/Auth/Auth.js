@@ -2,7 +2,7 @@
 // handle Authorzation (show diffrent interface for admins and Vendors)
 // handle account configuration (passwords , phone numbers)
 // authenticated:state.auth.authenticated,
-//         userType:state.auth.userType,
+// userType:state.auth.userType,
 
 
 const userTypes= ['ADMIN','DISTRIBUTOR']

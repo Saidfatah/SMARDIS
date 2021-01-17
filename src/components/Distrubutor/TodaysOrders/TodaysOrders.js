@@ -4,11 +4,10 @@ import { connect } from 'react-redux'
 import SectorItem from './SectorItem'
 
 
-const  TodaysOrders=({fetchTodaysSectors,todaysSectors})=> {
+const  TodaysOrders=({fetchTodaysSectors,todaysSectors,navigation})=> {
   const [sectorsToGoTo, setsectorsToGoTo] = useState([])
  
   useEffect(() => {
-    console.log(todaysSectors)
   setsectorsToGoTo(todaysSectors.map((ts,i)=>({...ts,index:i,opened:false})))
   }, [todaysSectors])
   
@@ -41,7 +40,7 @@ const  TodaysOrders=({fetchTodaysSectors,todaysSectors})=> {
          style  = {{...styles.list}}
          contentContainerStyle = {props =>(styles.flatList)}
          showsVerticalScrollIndicator={false}
-         renderItem   = {({ item }) =><SectorItem toggleSector={toggleSector} sector={item.sector} index={item.index} opened={item.opened} clients={item.clients}  />}
+         renderItem   = {({ item }) =><SectorItem toggleSector={toggleSector} sector={item.sector} navigation={navigation} index={item.index} opened={item.opened} clients={item.clients}  />}
          keyExtractor = {(item, index) => index.toString()}
         />
     </View>

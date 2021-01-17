@@ -7,7 +7,8 @@ import {View,Text,FlatList,StyleSheet , TouchableOpacity} from 'react-native'
 // const {interpolate,not}=Animated
 
 
-const SectorItem=({sector,clients,index,opened,toggleSector})=> {
+const SectorItem=({sector,clients,index,opened,toggleSector,navigation})=> {
+        const navigateToRoute=(clientId,client)=>navigation.navigate('DISTRIBUTORclientDelivery', { clientId ,client });
         const {name}=sector
         const ITEM_HEIGHT = 100
         // const transition = useTiming(opened)
@@ -30,7 +31,7 @@ const SectorItem=({sector,clients,index,opened,toggleSector})=> {
                        contentContainerStyle = {props =>(styles.flatList)}
                        showsVerticalScrollIndicator={false}
                        renderItem   = {({ item }) =><Item xStyle={{marginBottom:8}}> 
-                         <TouchableOpacity>
+                         <TouchableOpacity onPress={e=>navigateToRoute(item.id,item)}>
                            {/* redirect to client  */}
                               <Text>{item.name} </Text>
                          </TouchableOpacity>

@@ -101,8 +101,8 @@ productsList.push(WhiteLily )
 const userTypes= ['ADMIN','DISTRIBUTOR']
 const model ={
     state:{
-        products         : productsList,
-        categories       : categoriesList,
+        products         : [...productsList],
+        categories       : [...categoriesList],
         selectedCategory : 1 , 
     },
     reducers:{
@@ -124,6 +124,10 @@ const model ={
         }),
 
 
+        selectedCategory : (state,category)=>({
+            ...state,
+            selectedCategory :category
+        }),
         fetchedCategories : (state,categories)=>({
             ...state,
             categories :categories
@@ -143,6 +147,9 @@ const model ={
     },
     effects: (dispatch)=>({
 
+        selectCategory(selectedCategory,state){
+             dispatch.client.selectedCategory(selectedCategory)
+        },
         fetchCategories(somthing,state){
              
         },
@@ -157,7 +164,7 @@ const model ={
              //set their category field to 0 
         },
 
-        
+     
 
         fetchProducts(somthing,state){
              //do we fetch all products at app start 
