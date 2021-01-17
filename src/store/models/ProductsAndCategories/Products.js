@@ -1,3 +1,5 @@
+import Products from "../../../components/Distrubutor/ClientProductsSelection/Products"
+
 let productsList   = []
 let categoriesList = []
 const productModel = (name,category,image,price) =>({
@@ -103,12 +105,17 @@ const model ={
     state:{
         products         : [...productsList],
         categories       : [...categoriesList],
+        selectedCategoryProducts :[productsList.filter(p=>p.category == 1)] ,
         selectedCategory : 1 , 
     },
     reducers:{
         fetchedProducts : (state,products)=>({
             ...state,
             products :products
+        }),
+        setedSelectedCategoryProducts : (state,products)=>({
+            ...state,
+            selectedCategoryProducts :products
         }),
         addedProduct : (state,products)=>({
             ...state,
@@ -148,7 +155,11 @@ const model ={
     effects: (dispatch)=>({
 
         selectCategory(selectedCategory,state){
-             dispatch.client.selectedCategory(selectedCategory)
+            //get the selcted category products 
+             const products = state.products.products
+             const filterdProducts = [...products].filter(p=>p.category == selectedCategory)
+             dispatch.products.selectedCategory(selectedCategory)
+             dispatch.products.setedSelectedCategoryProducts(filterdProducts)
         },
         fetchCategories(somthing,state){
              
