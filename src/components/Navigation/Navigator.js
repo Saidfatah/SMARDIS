@@ -9,7 +9,7 @@ const RouteStack     = createStackNavigator()
  
 const Navigator =({authenticated,userType})=>{
     return <NavigationContainer >
-       <RouteStack.Navigator screenOptions={{headerShown:false}} initialRouteName={authenticated?userType:'LOGIN'}>
+       <RouteStack.Navigator screenOptions={{headerShown:false}} initialRouteName={authenticated?userType+'DashBoard':'LOGIN'}>
              <RouteStack.Screen name="ADMINDashBoard"  component={AdminStackNavigator} />
              <RouteStack.Screen name="DISTRIBUTORDashBoard" component={DistributorStackNavigator} />
              <RouteStack.Screen name="LOGIN" component={Login} />

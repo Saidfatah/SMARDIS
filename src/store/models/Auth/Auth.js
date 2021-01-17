@@ -9,7 +9,7 @@ const userTypes= ['ADMIN','DISTRIBUTOR']
 const model ={
     state:{
         authenticated  :true,
-        userType       :userTypes[0],
+        userType       :userTypes[1],
     },
     reducers:{
         checkedAuthentication : (state,cartGuests)=>({
