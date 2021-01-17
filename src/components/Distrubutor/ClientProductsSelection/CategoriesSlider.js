@@ -10,7 +10,8 @@ const CategoriesSlider=({categories,selectedCategory,selectCategory})=> {
     return (
         <View>
             <FlatList 
-            horizontal={true}
+            decelerationRate={'fast'}
+             horizontal={true}
              data   = {categories}
              style  = {{...styles.list}}
              contentContainerStyle = {props =>(styles.flatList)}
