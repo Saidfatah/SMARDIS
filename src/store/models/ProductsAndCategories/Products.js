@@ -101,8 +101,9 @@ productsList.push(WhiteLily )
 const userTypes= ['ADMIN','DISTRIBUTOR']
 const model ={
     state:{
-        products    :productsList,
-        categories  :categoriesList,
+        products         : productsList,
+        categories       : categoriesList,
+        selectedCategory : 1 , 
     },
     reducers:{
         fetchedProducts : (state,products)=>({
