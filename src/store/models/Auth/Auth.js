@@ -10,6 +10,8 @@ const model ={
     state:{
         authenticated  :true,
         userType       :userTypes[1],
+        distrubutorId  : 1,
+        adminId        : 1,
     },
     reducers:{
         checkedAuthentication : (state,cartGuests)=>({
