@@ -1,5 +1,6 @@
 import React from 'react'
 import {View,Text,Image,StyleSheet,Dimensions,TouchableOpacity} from 'react-native'
+import FastImage from 'react-native-fast-image'
 const width= Dimensions.get('screen').width
 const IMAGE_HEIGHT= (width- (16*4))/4
 
@@ -12,9 +13,9 @@ const CategoryItem=({category,selectedCategory,selectCategory})=> {
     return (
         <TouchableOpacity onPress={e=> selectCategory(id)}>
             <View style={{...styles.category }}>
-                <Image style={{
+                <FastImage style={{
                     ...styles.image,
-                    borderColor:isSelected ?'#00bbee':'#333',
+                    borderColor:isSelected ?'#00bbee':'#fff',
                     height:isSelected?IMAGE_HEIGHT+5:IMAGE_HEIGHT,
                     width:isSelected?IMAGE_HEIGHT +5:IMAGE_HEIGHT, 
                     borderWidth:isSelected?3:2

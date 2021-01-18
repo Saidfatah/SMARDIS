@@ -1,8 +1,23 @@
 import React from 'react'
 import  {View,StyleSheet,TouchableOpacity} from 'react-native'
+import {colors} from './Colors'
 
-const Button=({children,xStyle,clickHandler})=> {
-    return  <TouchableOpacity style={{...styles.button,...xStyle}} onPress={e=>clickHandler()}>
+const Button=({children,xStyle,clickHandler,color})=> {
+    let  COLOR= '#fff'
+  
+    if(color)
+    {
+       COLOR= colors[color]
+    }
+
+    return  <TouchableOpacity 
+         style={{
+             ...styles.button,
+             ...xStyle,
+             backgroundColor:COLOR
+         }} 
+         onPress={e=>clickHandler()}
+         >
          {children}  
     </TouchableOpacity>  
 }

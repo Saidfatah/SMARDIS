@@ -1,4 +1,3 @@
-import Products from "../../../components/Distrubutor/ClientProductsSelection/Products"
 
 let productsList   = []
 let categoriesList = []

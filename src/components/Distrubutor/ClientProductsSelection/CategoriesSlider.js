@@ -1,16 +1,18 @@
 import React from 'react'
-import {View,Text,FlatList,StyleSheet} from 'react-native'
-import { connect } from 'react-redux'
+import {View,Text,FlatList,StyleSheet,Dimensions} from 'react-native'
 import CategoryItem from './CategoryItem'
 
 
+const width= Dimensions.get('screen').width
+const IMAGE_HEIGHT= (width- (16*4))/4
+
 const CategoriesSlider=({categories,selectedCategory,selectCategory})=> {
-     
-  console.log(categories)
     return (
-        <View>
+        <View  >
             <FlatList 
-            decelerationRate={'fast'}
+             decelerationRate={'fast'}
+             snapToInterval={IMAGE_HEIGHT}
+             showsHorizontalScrollIndicator={false}
              horizontal={true}
              data   = {categories}
              style  = {{...styles.list}}
