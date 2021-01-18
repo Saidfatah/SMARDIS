@@ -2,7 +2,7 @@ import React , {useEffect,useState} from 'react'
 import {View,Text,FlatList,StyleSheet , TouchableOpacity} from 'react-native'
 import { connect } from 'react-redux'
 import SectorItem from './SectorItem'
-
+import BackgroundImage from '../../Common/BackgroundImage'
 
 const  TodaysOrders=({fetchTodaysSectors,todaysSectors,navigation})=> {
   const [sectorsToGoTo, setsectorsToGoTo] = useState([])
@@ -33,8 +33,8 @@ const  TodaysOrders=({fetchTodaysSectors,todaysSectors,navigation})=> {
   
 
   return (
-    <View>
-        <Text> Les mission d'ajourdhui</Text>
+    <BackgroundImage>
+        <Text style={styles.title}> Les mission d'ajourdhui</Text>
         <FlatList 
          data   = {sectorsToGoTo}
          style  = {{...styles.list}}
@@ -43,7 +43,7 @@ const  TodaysOrders=({fetchTodaysSectors,todaysSectors,navigation})=> {
          renderItem   = {({ item }) =><SectorItem toggleSector={toggleSector} sector={item.sector} navigation={navigation} index={item.index} opened={item.opened} clients={item.clients}  />}
          keyExtractor = {(item, index) => index.toString()}
         />
-    </View>
+    </BackgroundImage>
     
   )
 }
@@ -74,8 +74,10 @@ var styles = StyleSheet.create({
        height:200,
        flex:1
   },
-  item:{
-      marginBottom:8
+  title:{
+     fontSize:20,
+     marginTop:16,
+     color:'#fff'
   }
 });
 
