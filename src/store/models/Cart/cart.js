@@ -30,7 +30,7 @@ const cartModel=(id,name,guestId,items,distrubutor)=>({
 
 const model ={
     state:{
-        cartGuests  :[...cartGuests],
+        cartGuests  :[],
     },
     reducers:{
         updatedQuantity : (state,cartGuests)=>({
@@ -49,22 +49,31 @@ const model ={
             ...state,
             cartGuests :cartGuests
         }),
+        removedItem : (state,cartGuests)=>({
+            ...state,
+            cartGuests :cartGuests
+        }),
     },
     effects: (dispatch)=>({
-        updateQuantity({guestId,itemId,increment},state){
-            let currCartGuests= [...state.cart.cartGuests]
-            currCartGuests = currCartGuests.map(guest=>{
-                if(guest.id == guestId){
-                    //get targeted item
-                    const updatedItems = [...guest.items].map(item=>item.id == itemId ?{...item,quantity:item.quantity + increment} :item) 
-                    const newGuest    = {...guest,items:updatedItems}
-                    return newGuest 
-                }
-                return guest
-            } )
-
-            dispatch.cart.updatedQuantity(currCartGuests)
-            console.log(guestId,itemId)
+        updateQuantity({guestId,itemId,quantity},state){
+             const cartGuests= [...state.cart.cartGuests]
+             const targetGuest = cartGuests.filter(g=>g.guestId == guestId)[0]
+            
+             if( targetGuest ){
+                  const targetProduct = targetGuest.items.filter(i=> i.id == itemId)[0]
+                  const tergetGuestIndex =  cartGuests.indexOf(targetGuest)
+                  if(targetProduct) 
+                  {
+                      const targetProductIndex =  targetGuest.items.indexOf(targetProduct)
+                     
+                      if(cartGuests[tergetGuestIndex].items[targetProductIndex])
+                      {
+                          cartGuests[tergetGuestIndex].items[targetProductIndex].quantity = quantity
+                          dispatch.cart.updatedQuantity(cartGuests)
+                      }
+                  }
+             }
+     
         },
         addCartItem({guest,product},state){
              const cartGuests= [...state.cart.cartGuests]
@@ -76,10 +85,14 @@ const model ={
                  {
                      const tergetProductIndex =  targetGuest.items.indexOf(targetProduct)
                      const tergetProductQuantity=  targetProduct.quantity
-                     cartGuests[tergetGuestIndex].targetGuest.items[tergetProductIndex].quantity = tergetProductQuantity + product.quantity
-                     dispatch.cart.updatedProductQuantity(cartGuests)
+                    
+                     if(cartGuests[tergetGuestIndex].items[tergetProductIndex])
+                     {
+                         cartGuests[tergetGuestIndex].items[tergetProductIndex].quantity = tergetProductQuantity + product.quantity
+                         dispatch.cart.updatedProductQuantity(cartGuests)
+                     }
                  }else{
-                     cartGuests[tergetGuestIndex].items.push(product)
+                     cartGuests[tergetGuestIndex].items.push({...product})
                      dispatch.cart.addedProductQuantity(cartGuests)
                     }
             }else{
@@ -90,13 +103,35 @@ const model ={
         removeGuestItem({guestId,itemId},state){
              //if guestItems are equal or less than 0 then removez the guest
              //we need guest ID and items Id
+             const cartGuests= [...state.cart.cartGuests]
+             const targetGuest = cartGuests.filter(g=>g.guestId == guestId)[0]
+            
+             if( targetGuest ){
+                  const targetProduct = targetGuest.items.filter(i=> i.id == itemId)[0]
+                  const tergetGuestIndex =  cartGuests.indexOf(targetGuest)
+                  if(targetProduct) 
+                  {
+                      const targetProductIndex =  targetGuest.items.indexOf(targetProduct)
+                     
+                      if(cartGuests[tergetGuestIndex].items[targetProductIndex])
+                      {
+                          cartGuests[tergetGuestIndex].items.splice(targetProductIndex,1)
+                          if(cartGuests[tergetGuestIndex].items[0] == undefined)
+                          {
+                            // cart guest item has noe items left then remove it too from the cart
+                            cartGuests.splice(tergetGuestIndex,1)
+                          }
+                          dispatch.cart.removedItem(cartGuests)
+                      }
+                  }
+             }
              
         },
         validateGuestOrder({guestId},state){
              //guest id 
              //update order status
              //if guestItems are equal or less than 0 then removez the guest
-             
+             console.log('validate guest'+ guestId + 'order')
         }
 
     })

@@ -131,7 +131,7 @@ const model ={
             const sectors =state.client.sectors.filter(s => ordersSectors.includes(s.id) )
             const ordersClients = orders.map(o=>o.distination.clients).map(cls=>cls.map(cl=>allClients.filter(c=>c.id == cl )[0]))
            
-            console.log(ordersClients[0])
+
             let todaysSectors=[]
             sectors.forEach((s,i)=>{
                 todaysSectors.push({sector:s,clients:ordersClients[i]})

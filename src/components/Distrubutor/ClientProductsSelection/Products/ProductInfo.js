@@ -9,12 +9,12 @@ const ProductInfo=({product,opened})=> {
     let Second = null
     let Third  = null
     if(!opened){
-        First  =  <Text style={styles.productText}>{price}.00 DH</Text> 
-        Second =  <Text style={styles.productText}>{name}</Text> 
-        Third  =  <FastImage style={styles.image} source={{uri:image}} /> 
+        First  =  <Text style={[styles.productText,styles.flexItem]}>{price}.00 DH</Text> 
+        Second =  <Text style={[styles.productText,styles.flexItem]}>{name}</Text> 
+        Third  =  <FastImage style={[styles.image]} source={{uri:image}} /> 
     }else{
-        Third  =  <Text style={styles.productText}>{price}.00 DH</Text> 
-        Second =  <Text style={styles.productText}>{name}</Text> 
+        Third  =  <Text style={[styles.productText]}>{price}.00 DH</Text> 
+        Second =  <Text style={[styles.productText]}>{name}</Text> 
         First  =  <FastImage style={{...styles.image,height:100, width:100}} source={{uri:image}} /> 
     }
 
@@ -30,9 +30,13 @@ export default ProductInfo
 var styles = StyleSheet.create({
     productInfo:{
         display:'flex',
-        justifyContent:"space-around",
         alignItems:'center',
-        width:'100%'
+        width:'100%',
+        paddingLeft:16,
+        paddingRight:16,
+    },
+    flexItem:{
+        flex:1
     },
     image:{
         height:40,

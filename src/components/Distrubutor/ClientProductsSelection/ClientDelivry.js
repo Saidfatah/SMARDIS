@@ -9,8 +9,10 @@ const ClientDelivry=({ route, navigation  ,categories,addCartItem,selectedCatego
     const [clientNameHeight, setclientNameHeight] = useState(0)
     const { clientId ,client  } = route.params;
     const {name}=client
-
- 
+    useEffect(() => {
+        navigation.setParams({ clientName: name });
+    }, [])
+  
     const handleHeight= (field,value)=>setheights({...heights,[field]:value})
     
     return <BackgroundImage  >
@@ -19,7 +21,7 @@ const ClientDelivry=({ route, navigation  ,categories,addCartItem,selectedCatego
                  <Text style={styles.clientName}>{name}</Text>
              </View>
         </View>
-        <View style={styles.productsPanel}>
+        <View style={styles.productsPanel} onLayout={e=>{  setclientNameHeight(e.nativeEvent.layout.y) }}>
              <CategoriesSlider  {...{navigation,handleHeight,categories,selectedCategory,selectCategory}} />
              <Products clientNameHeight={clientNameHeight}  guest={client} addCartItem={addCartItem} selectedCategoryProducts={selectedCategoryProducts} />
         </View>
@@ -60,6 +62,9 @@ export default connect(
     productsPanel:{
         backgroundColor:'#fff',
         width:'100%',
-        padding:0
+        padding:0,
+        borderTopLeftRadius:25,
+        borderTopRightRadius:25,
+        overflow:'hidden'
     }
 });

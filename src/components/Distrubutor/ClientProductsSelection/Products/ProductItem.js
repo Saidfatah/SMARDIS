@@ -19,7 +19,6 @@ export default ProductItem
 
 var styles = StyleSheet.create({
     product:{
-        marginBottom:16,
         width:'100%',
         display:'flex',
         flexDirection:'column',

@@ -2,10 +2,12 @@ import React from 'react'
 import {View,Text,StyleSheet} from 'react-native'
 import Item from '../Common/Item'
 import Quantity from './Quantity'
+import IconButton from '../Common/Buttons/IconButtons'
 
-const  GuestItem = ({item,guestId,updateQuantity})=> {
+const  GuestItem = ({item,guestId,removeGuestItem,updateQuantity})=> {
     return (
         <Item xStyle={styles.item}>
+            <IconButton clickHandler={e=>removeGuestItem({guestId,itemId:item.id})} />
             <Text>{item.name}</Text>
             <Text>{item.price}</Text>
             <Quantity  

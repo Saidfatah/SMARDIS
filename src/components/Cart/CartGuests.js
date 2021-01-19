@@ -2,27 +2,30 @@ import React from 'react'
 import {View,Text,FlatList,StyleSheet} from 'react-native'
 import GuesItems from './GuesItems'
 import Item from '../Common/Item'
+import { List } from 'react-native-paper';
 
-const CartGuests=({cartGuests,updateQuantity})=> {
-   
+
+const CartGuests=({cartGuests,updateQuantity,validateGuestOrder,removeGuestItem})=> {
+    const TITLE = cartGuests.length >0 ? "les paneirs active" :"Le panier est vide"
     const RenderItem=({guest})=>{
         const {items,name}=guest
-
+       console.log({guest})
         return <Item xStyle={styles.item}>
-             <Text>name</Text>
-             <GuesItems items={items} guestId={guest.id} updateQuantity={updateQuantity} />
+             <GuesItems 
+                 items={items} 
+                 name={name} 
+                 validateGuestOrder={validateGuestOrder} 
+                 removeGuestItem={removeGuestItem} 
+                 updateQuantity={updateQuantity} 
+                 guestId={guest.guestId} 
+             />
         </Item>
     }
 
     return (
-        <FlatList 
-         data   = {cartGuests}
-         style  = {{...styles.list}}
-         contentContainerStyle = {props =>(styles.flatList)}
-         showsVerticalScrollIndicator={false}
-         renderItem   = {({ item }) =><RenderItem guest={item} updateQuantity={updateQuantity} />}
-         keyExtractor = {(item, index) => index.toString()}
-        />
+        <List.Section title={TITLE}>
+           {cartGuests.map((item,i)=> <RenderItem key={i} guest={item}  />)}
+         </List.Section>
     )
 }
 

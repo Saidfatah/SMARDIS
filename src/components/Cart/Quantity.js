@@ -1,20 +1,30 @@
-import  React from 'react'
+import  React,{useState,useEffect} from 'react'
 import {View , Text ,StyleSheet} from 'react-native'
 import Button from '../Common/Button'
+import NumericInput from 'react-native-numeric-input'
+import {colors} from '../Common/Colors'
+
 
 const Quantity=({quantity,guestId,itemId,updateQuantity})=> {
-    console.log({guestId})
-    return (
-        <View style={styles.flex}>
-            <Button clickHandler={()=>updateQuantity({guestId,itemId,increment:-1})} >
-                <Text>-</Text>
-            </Button>
-            <Text>{quantity}</Text>
-            <Button clickHandler={()=>updateQuantity({guestId,itemId,increment:-1})}  >
-                <Text>+</Text>
-            </Button>
-        </View>
-    )
+
+    return <NumericInput 
+    iconStyle={{
+        color:"#fff",
+        borderRadius:25
+    }}
+    iconSize={20}
+    textColor={colors.BLACK}
+    containerStyle={{backgroundColor:colors.RED,borderRadius:12}}
+    borderColor={colors.RED}
+    leftButtonBackgroundColor={"transparent"}
+    rightButtonBackgroundColor={"transparent"}
+    minValue={1}
+    step={1}
+    value={quantity} 
+    onChange={value => {
+        updateQuantity({guestId,itemId,quantity:value  })
+    }} 
+/>
 }
 
 export default Quantity

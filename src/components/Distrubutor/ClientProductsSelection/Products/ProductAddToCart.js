@@ -17,8 +17,7 @@ const ProductAddToCart =({selectedProduct,guest,addCartItem})=> {
                  <Text style={styles.label}>Quantité</Text>
                  <NumericInput 
                   iconStyle={{color:colors.BLUE}}
-                  iconSize={25}
-                  containerStyle={{width:'100%'}}
+                  iconSize={30}
                   value={quantity} 
                   onChange={value => setquantity(value)} 
                   />
@@ -32,7 +31,7 @@ const ProductAddToCart =({selectedProduct,guest,addCartItem})=> {
                    onChangeText={onChangeHandler} 
                   />
              </View>
-             <Button color={"BLUE"} clickHandler={e=>addCartItem({guest,product:{selectedProduct}})} color='BLUE' >
+             <Button color={"BLUE"} clickHandler={e=>addCartItem({guest,product:{...selectedProduct,quantity}})} color='BLUE' >
                  <Text style={{color:'#fff' ,textAlign:'center'}}>Ajouter</Text>
              </Button>
         </View>
