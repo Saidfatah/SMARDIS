@@ -4,7 +4,8 @@ import ProductItem from './ProductItem'
 import  SwipeAbleProductDetails from './SwipeAbleProductDetails'
 
 
-const Products=({selectedCategoryProducts,addCartItem,guest})=> {
+const Products=({selectedCategoryProducts,addCartItem,clientNameHeight,guest})=> {
+    const [categoriesHeight, setcategoriesHeight] = useState(0)
     const [productsList, setproductsList] = useState([])
     const [isPanelActive, setIsPanelActive] = useState(false);
     const [selectedProduct, setselectedProduct] = useState(selectedCategoryProducts[0]);
@@ -15,7 +16,7 @@ const Products=({selectedCategoryProducts,addCartItem,guest})=> {
   
 
     return (
-    <View > 
+    <View  onLayout={e=>{setcategoriesHeight(e.nativeEvent.layout.y)}}   style={{height:"100%"}}> 
         <FlatList 
          decelerationRate={'fast'}
          data   = {productsList}

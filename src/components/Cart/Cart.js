@@ -1,5 +1,5 @@
 import React from 'react'
-import {View,Text} from 'react-native'
+import {View,ScrollView} from 'react-native'
 import { connect } from 'react-redux'
 import CartGuests from './CartGuests'
 
@@ -8,9 +8,10 @@ import CartGuests from './CartGuests'
 export const Cart=({cartGuests,updateQuantity,removeGuestItem,validateGuestOrder})=> {
    
     return ( 
-        <View>
-            <Text>cart</Text>
-            <CartGuests {...{cartGuests,updateQuantity,removeGuestItem,validateGuestOrder}} /> 
+        <View style={{padding:16}}>
+            <ScrollView>
+                 <CartGuests {...{cartGuests,updateQuantity,removeGuestItem,validateGuestOrder,validateGuestOrder}} /> 
+            </ScrollView>
         </View>
     )
 }
