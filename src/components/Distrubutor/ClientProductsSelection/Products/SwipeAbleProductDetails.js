@@ -20,7 +20,7 @@ const SwipeAbleProductDetails=({selectedProduct,isPanelActive,setIsPanelActive,a
            style={{padding:16}}
          >
         <ProductInfo product={selectedProduct} opened={true} />
-        <ProductAddToCart selectedProduct={selectedProduct} guest={guest}  addCartItem={addCartItem} />
+        <ProductAddToCart {...{selectedProduct, guest, addCartItem}} />
     </SwipeablePanel>
     
 }

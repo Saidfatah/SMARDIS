@@ -4,9 +4,14 @@ import CategoriesSlider from './CategoriesSlider'
 import {connect} from 'react-redux'
 import Products from './Products/Products'
 import BackgroundImage from '../../Common/BackgroundImage'
+import  SwipeAbleProductDetails from './Products/SwipeAbleProductDetails'
 
 const ClientDelivry=({ route, navigation  ,categories,addCartItem,selectedCategory,selectCategory,selectedCategoryProducts})=> {
     const [clientNameHeight, setclientNameHeight] = useState(0)
+    const [isPanelActive, setIsPanelActive] = useState(false);
+    const [selectedProduct, setselectedProduct] = useState(selectedCategoryProducts[0]);
+
+
     const { clientId ,client  } = route.params;
     const {name}=client
     useEffect(() => {
@@ -16,15 +21,16 @@ const ClientDelivry=({ route, navigation  ,categories,addCartItem,selectedCatego
     const handleHeight= (field,value)=>setheights({...heights,[field]:value})
     
     return <BackgroundImage  >
-        <View style={styles.tagParent}  onLayout={e=>{ setclientNameHeight( e.nativeEvent.layout.height)}} >
+        <View style={styles.tagParent} >
              <View style={styles.tag} >
                  <Text style={styles.clientName}>{name}</Text>
              </View>
         </View>
-        <View style={styles.productsPanel} onLayout={e=>{  setclientNameHeight(e.nativeEvent.layout.y) }}>
+        <View style={styles.productsPanel} >
              <CategoriesSlider  {...{navigation,handleHeight,categories,selectedCategory,selectCategory}} />
-             <Products clientNameHeight={clientNameHeight}  guest={client} addCartItem={addCartItem} selectedCategoryProducts={selectedCategoryProducts} />
+             <Products {...{setIsPanelActive,setselectedProduct,selectedCategoryProducts}} />
         </View>
+             <SwipeAbleProductDetails {...{selectedProduct,isPanelActive,setIsPanelActive,guest:client,addCartItem}}  />
     </BackgroundImage> 
 }
 
@@ -38,7 +44,7 @@ export default connect(
         selectCategory : dispatch.products.selectCategory,
         addCartItem : dispatch.cart.addCartItem,
     })
-  )(ClientDelivry)
+)(ClientDelivry)
 
 
   var styles = StyleSheet.create({
@@ -62,9 +68,11 @@ export default connect(
     productsPanel:{
         backgroundColor:'#fff',
         width:'100%',
+        flex:1,
         padding:0,
         borderTopLeftRadius:25,
         borderTopRightRadius:25,
         overflow:'hidden'
+
     }
 });

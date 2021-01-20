@@ -1,14 +1,11 @@
 import React,{useState,useEffect} from 'react'
 import {View,StyleSheet,FlatList} from 'react-native'
 import ProductItem from './ProductItem'
-import  SwipeAbleProductDetails from './SwipeAbleProductDetails'
 
 
-const Products=({selectedCategoryProducts,addCartItem,clientNameHeight,guest})=> {
-    const [categoriesHeight, setcategoriesHeight] = useState(0)
+const Products=({selectedCategoryProducts,setIsPanelActive,setselectedProduct})=> {
     const [productsList, setproductsList] = useState([])
-    const [isPanelActive, setIsPanelActive] = useState(false);
-    const [selectedProduct, setselectedProduct] = useState(selectedCategoryProducts[0]);
+   
     useEffect(() => {
         setproductsList(selectedCategoryProducts.map((ts,i)=>({...ts,index:i})))
     }, [selectedCategoryProducts])
@@ -16,7 +13,7 @@ const Products=({selectedCategoryProducts,addCartItem,clientNameHeight,guest})=>
   
 
     return (
-    <View  onLayout={e=>{setcategoriesHeight(e.nativeEvent.layout.y)}}   style={{height:"100%"}}> 
+    <View  style={{flex:1}}> 
         <FlatList 
          decelerationRate={'fast'}
          data   = {productsList}
@@ -30,7 +27,7 @@ const Products=({selectedCategoryProducts,addCartItem,clientNameHeight,guest})=>
           />}
          keyExtractor = {(item, index) => index.toString()}
         />
-        <SwipeAbleProductDetails {...{selectedProduct,isPanelActive,setIsPanelActive,guest,addCartItem}}  />
+       
     </View>
     )
 }
@@ -38,7 +35,7 @@ const Products=({selectedCategoryProducts,addCartItem,clientNameHeight,guest})=>
 export default Products
 var styles = StyleSheet.create({
     list:{
-        
+        flex:1
     },
     flatList:{ 
         justifyContent: "center",

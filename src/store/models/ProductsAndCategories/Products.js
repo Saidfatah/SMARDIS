@@ -30,6 +30,12 @@ const KidneyBeans =productModel('KidneyBeans  ',1,'https://www.jessicagavin.com/
 productsList.push(KidneyBeans)
 const Chickpeas   =productModel('Chickpeas   ',1,'https://www.jessicagavin.com/wp-content/uploads/2020/05/types-of-beans-chickpea-garbanzo-600x400.jpg',70)
 productsList.push(Chickpeas )
+const Chickpeas1   =productModel('Chickpeas1   ',1,'https://www.jessicagavin.com/wp-content/uploads/2020/05/types-of-beans-chickpea-garbanzo-600x400.jpg',70)
+productsList.push(Chickpeas1 )
+const Chickpeas2   =productModel('Chickpeas2   ',1,'https://www.jessicagavin.com/wp-content/uploads/2020/05/types-of-beans-chickpea-garbanzo-600x400.jpg',70)
+productsList.push(Chickpeas2 )
+const Chickpeas3   =productModel('Chickpeas3   ',1,'https://www.jessicagavin.com/wp-content/uploads/2020/05/types-of-beans-chickpea-garbanzo-600x400.jpg',70)
+productsList.push(Chickpeas3 )
 
 const oils = categoryModel('oils','https://www.excelvite.com/wp-content/uploads/2018/11/Healthy-oil.jpg')
 categoriesList.push(oils)
