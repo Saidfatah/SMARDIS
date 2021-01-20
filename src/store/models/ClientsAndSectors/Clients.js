@@ -3,9 +3,7 @@
 //set clients localization 
 const clientsList = []
 const sectorsList = []
-const missions    = []
-const orders      = []
-const billsList = []
+
 
 const clientModel=(name,sectorId,email,phone,whatsapp,coardinations)=>({
     id:clientsList.length +1 ,
@@ -16,10 +14,10 @@ const clientModel=(name,sectorId,email,phone,whatsapp,coardinations)=>({
     email:email || '',
     coardinations: coardinations || {x:0,y:0}
 })
-const sectorModel=(name,area,province)=>({
+const sectorModel=(name,city,province)=>({
     id:sectorsList.length +1 ,
     name,
-    area,
+    city,
     province : province || '',
 })
 const billModel=(clientId,products,date)=>({
@@ -29,8 +27,8 @@ const billModel=(clientId,products,date)=>({
 })
 
 
-const tinghir = sectorModel('tinghir','sous')
-sectorsList.push(tinghir)
+const shikh = sectorModel('shikh','tinghir')
+sectorsList.push(shikh)
 const tajda = sectorModel('tajda','ouarzazate')
 sectorsList.push(tajda)
 const tkhisa = sectorModel('tkhisa','ouarzazate')

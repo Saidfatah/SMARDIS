@@ -6,7 +6,9 @@ import {
     DistrubutorClientDelivry,
     DistrubutorSectors,
     DistrubutorTodaysOrders,
-    DistrubutorDashBoard
+    DistrubutorDashBoard,
+    DistrubutorBillTable,
+    DistrubutorValidatedCommands
 } from './Screens'
 import {View,Text} from 'react-native'
 import {  Badge, Icon,Avatar } from 'react-native-elements'
@@ -58,15 +60,18 @@ const DistributorStackNavigator =({cartGuests})=>{
              <DistributorStack.Screen 
                 name="DISTRIBUTORDashBoard" 
                 options={{headerTitle:'DashBoard'}} 
-                component={DistrubutorDashBoard} />
+                component={DistrubutorDashBoard} 
+            />
              <DistributorStack.Screen 
                 name="DISTRIBUTORtodaysOrders" 
                 options={{headerTitle:"Les misson d'aujourdhui"}}
-                component={DistrubutorTodaysOrders} />
+                component={DistrubutorTodaysOrders} 
+            />
              <DistributorStack.Screen 
                 name="DISTRIBUTORsectors" 
                 options={{headerTitle:"Les secteurs"}}
-                component={DistrubutorSectors} />
+                component={DistrubutorSectors} 
+            />
              <DistributorStack.Screen 
                 name="DISTRIBUTORclientDelivery" 
                 options={({route, navigation}) => ({
@@ -78,15 +83,28 @@ const DistributorStackNavigator =({cartGuests})=>{
                   ),
         
                  })}
-                component={DistrubutorClientDelivry} />
+                component={DistrubutorClientDelivry} 
+             />
              <DistributorStack.Screen 
                 name="DISTRIBUTORcatalogue" 
                 options={{headerTitle:"Le catalogue"}}
-                component={DistrubutorCatalogue} />
+                component={DistrubutorCatalogue} 
+             />
              <DistributorStack.Screen 
                 name="DISTRIBUTORcart" 
                 options={{headerTitle:"Le panier"}}
-                component={DistrubutorCart} />
+                component={DistrubutorCart} 
+             />
+             <DistributorStack.Screen 
+                name="DISTRIBUTORvalidtedCommands" 
+                options={{headerTitle:"Les commands valider"}}
+                component={DistrubutorValidatedCommands} 
+             />
+             <DistributorStack.Screen 
+                name="DISTRIBUTOOrderBill" 
+                options={{headerTitle:"Bon de command"}}
+                component={DistrubutorBillTable} 
+             />
     </DistributorStack.Navigator>
 }
 

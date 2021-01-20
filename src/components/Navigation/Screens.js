@@ -19,6 +19,8 @@ import DistrubutorTodays   from '../Distrubutor/TodaysOrders/TodaysOrders'
 import DistrubutorCat  from '../Distrubutor/Catalogue/Catalogue'
 import DistrubutorClient     from '../Distrubutor/ClientProductsSelection/ClientDelivry'
 import DistrubutorCrt   from '../Cart/Cart'
+import DistrubutorVc   from '../Distrubutor/validatedCommands/ValidatedCommands'
+import Distrubutorbt   from '../Distrubutor/validatedCommands/BillTable'
 
 //common 
 import Log    from '../Auth/Login/Login'
@@ -45,6 +47,8 @@ export const DistrubutorDashBoard= DistrubutorDash  ;
 export const DistrubutorCart= DistrubutorCrt ;
 export const DistrubutorClientDelivry= DistrubutorClient  ;
 export const DistrubutorTodaysOrders= DistrubutorTodays  ;
+export const DistrubutorValidatedCommands= DistrubutorVc  ;
+export const DistrubutorBillTable= Distrubutorbt ;
 
 export const Login= Log ;
 
