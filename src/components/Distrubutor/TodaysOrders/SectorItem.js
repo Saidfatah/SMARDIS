@@ -8,7 +8,7 @@ import {View,Text,FlatList,StyleSheet , TouchableOpacity} from 'react-native'
 
 
 const SectorItem=({sector,clients,index,opened,toggleSector,navigation})=> {
-        const navigateToRoute=(clientId,client)=>navigation.navigate('DISTRIBUTORclientDelivery', { clientId ,client });
+        const navigateToRoute=(clientId,client)=>navigation.navigate('DISTRIBUTORclientDelivery', { clientId ,client ,sector });
         const {name}=sector
         const ITEM_HEIGHT = 100
         // const transition = useTiming(opened)

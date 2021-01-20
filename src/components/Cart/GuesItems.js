@@ -6,22 +6,27 @@ import {colors} from '../Common/Colors'
 import Button from '../Common/Button'
 
 
-const  GuesItems = ({items,guestId,removeGuestItem,validateGuestOrder,updateQuantity,name})=> {
+const  GuesItems = ({navigation,items,guestId,removeGuestItem,validateGuestOrder,updateQuantity,name,sector})=> {
      const [expanded, setExpanded] = useState(true);
      const handlePress = () => setExpanded(!expanded);
-    return (  <List.Accordion
-                title={name}
-                titleStyle={{color:colors.BLACK,fontWeight:'bold'}}
-                expanded={expanded}
-                onPress={handlePress}>
-                {
-                items.map((item,i)=><GuestItem  key={i} {...{guestId,updateQuantity,removeGuestItem,item}} />)
-                }
-                <Button color={"BLUE"} clickHandler={e=>validateGuestOrder({guestId})}>
-                    <Text style={{color:"#fff",textAlign:'center'}}>Valider</Text>
-                </Button>
-    </List.Accordion>
-    )
+
+
+     return (  <List.Accordion
+                 title={name}
+                 titleStyle={{color:colors.BLACK,fontWeight:'bold'}}
+                 expanded={expanded}
+                 onPress={handlePress}>
+                 {
+                 items.map((item,i)=><GuestItem  key={i} {...{guestId,updateQuantity,removeGuestItem,item}} />)
+                 }
+                 <Button color={"BLUE"} clickHandler={e=>{
+                     validateGuestOrder({guestId,sector,status:"PAID",navigation})
+                     navigation.navigate('DISTRIBUTORvalidtedCommands')
+                 }}>
+                     <Text style={{color:"#fff",textAlign:'center'}}>Valider</Text>
+                 </Button>
+     </List.Accordion>
+     )
 }
 
 export default GuesItems

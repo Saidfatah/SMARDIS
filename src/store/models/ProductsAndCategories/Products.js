@@ -1,19 +1,22 @@
-
 let productsList   = []
 let categoriesList = []
-const productModel = (name,category,image,price) =>({
+const productModel = (name,category,image,price1,ref,price2,price3,price4) =>({
     name ,
+    ref:ref || 'P'+name+(new Date().getTime()),
     id:productsList.length,
     category :category || 0,
-    image ,
-    price, 
+    image : image || 'NO_IMAGE' ,
+    price1, 
+    price2:price2 || 'NOT_DEFINED',
+    price3:price3 || 'NOT_DEFINED',
+    price4:price4 || 'NOT_DEFINED',
 })
 const categoryModel= (name,image) =>({
     id:categoriesList.length ,
     name,
-    image ,
-    count :0,
+    image 
 })
+
 
 const other = categoryModel('other','https://vistapointe.net/images/products-wallpaper-4.jpg')
 categoriesList.push(other)
@@ -92,7 +95,6 @@ const WhiteLily   =productModel('WhiteLily',5,'https://m.media-amazon.com/images
 productsList.push(WhiteLily )
 
 
-
 //use async storage here 
 //then we an listen for product prices changes 
 
@@ -105,13 +107,13 @@ productsList.push(WhiteLily )
 
 //product can have no category and will put them in other category 
 
-const userTypes= ['ADMIN','DISTRIBUTOR']
+ const userTypes= ['ADMIN','DISTRIBUTOR']
 const model ={
     state:{
         products         : [...productsList],
         categories       : [...categoriesList],
-        selectedCategoryProducts :[productsList.filter(p=>p.category == 1)] ,
-        selectedCategory : 1 , 
+        selectedCategoryProducts :[productsList.filter(p=>p.category == 2)] ,
+        selectedCategory : 2 , 
     },
     reducers:{
         fetchedProducts : (state,products)=>({

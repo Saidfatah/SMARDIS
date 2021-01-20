@@ -20,17 +20,34 @@ const cartGuests = [
         ]
     }
 ]
-const cartModel=(id,name,guestId,items,distrubutor)=>({
+const cartGuestModel=(id,name,guestId,items,distrubutor,sector)=>({
     name ,
     guestId ,
     distrubutor:distrubutor || {name:'abdellah',id},
     id ,
-    items 
+    sector ,
+    items ,
+    status : "PENDING"
+})
+const billModel=(id,distrubutor,client,products,sector,city,status)=>({
+    id          : id,
+    ref         :("C"+client.name +( new Date().getTime()).toString()).toUpperCase() , 
+    distrubutor :  distrubutor || {id: 1,name :'ali fatah'} , 
+    client      :  client || {id: 1,name :'ali fatah'} , 
+    products    :  products || [{id:1,code : "a11",price:50.00,name:'3afya 5L', quantity:5}] , 
+    sector      :  sector || {id:1,name:'tkhisa'}, 
+    total       :  products.reduce((a,c)=> a+(c.quantity * c.prce) ,0) || 100, 
+    city        :  city ||sector.city ,
+    date        :  new Date(), //use frebase date 
+    hour        :  new Date().getHours(), //use frebase date 
+    status      :  status , //||"PENDING" || "PAID" 
 })
 
 const model ={
     state:{
         cartGuests  :[],
+        todaysBills : [] , 
+        selectedBill : null 
     },
     reducers:{
         updatedQuantity : (state,cartGuests)=>({
@@ -52,6 +69,16 @@ const model ={
         removedItem : (state,cartGuests)=>({
             ...state,
             cartGuests :cartGuests
+        }),
+        validatedGuestOrder : (state,{cartGuests,todaysBills})=>({
+            ...state,
+            cartGuests   , 
+            todaysBills, 
+            selectedBill : todaysBills[todaysBills.length -1]
+        }),
+        selectedABill : (state,selectedBill)=>({
+            ...state,
+            selectedBill 
         }),
     },
     effects: (dispatch)=>({
@@ -75,7 +102,7 @@ const model ={
              }
      
         },
-        addCartItem({guest,product},state){
+        addCartItem({guest,product,sector},state){
              const cartGuests= [...state.cart.cartGuests]
              const targetGuest = cartGuests.filter(g=>g.guestId == guest.id)[0]
              if( targetGuest ){
@@ -95,10 +122,10 @@ const model ={
                      cartGuests[tergetGuestIndex].items.push({...product})
                      dispatch.cart.addedProductQuantity(cartGuests)
                     }
-            }else{
-                cartGuests.push(cartModel(cartGuests.length,guest.name,guest.id,[product],1))
-                dispatch.cart.addedGuest(cartGuests)
-            } 
+             }else{
+                 cartGuests.push(cartGuestModel(cartGuests.length,guest.name,guest.id,[product],1,sector))
+                 dispatch.cart.addedGuest(cartGuests)
+             } 
         },
         removeGuestItem({guestId,itemId},state){
              //if guestItems are equal or less than 0 then removez the guest
@@ -127,13 +154,38 @@ const model ={
              }
              
         },
-        validateGuestOrder({guestId},state){
-             //guest id 
-             //update order status
-             //if guestItems are equal or less than 0 then removez the guest
-             console.log('validate guest'+ guestId + 'order')
-        }
+        validateGuestOrder({guestId,sector,status},state){
+             // update order status
+             // update status of cart guest to VALIDATED
+             // create order bill 
+             // is it paid or not 
+             // maybe the client paid just a portion of what he owes  
+             const cartGuests= [...state.cart.cartGuests]
+             const targetGuest = cartGuests.filter(g=>g.guestId == guestId)[0]
+             if( targetGuest ){
+                 const tergetGuestIndex =  cartGuests.indexOf(targetGuest)
+            
+                 //modfy cartGuest status to VALIDATED 
+                 cartGuests[tergetGuestIndex].status="VALIDATED"
 
+                 //create bill and add it to todaysBills list 
+                 const todaysBills = [...state.cart.todaysBills]
+                 const {name,guestId,distrubutor,items} = cartGuests[tergetGuestIndex]
+                 const orderBill = billModel(todaysBills.length,distrubutor,{id:guestId,name:name} ,items,sector.name,sector.city,status)
+                 console.log(orderBill)
+                 todaysBills.push(orderBill)
+                 dispatch.cart.validatedGuestOrder({cartGuests , todaysBills })
+
+                 //[TODO]push bill to firestore collection
+                
+            }
+        },
+        selectBill(id,state){
+            const todaysBills = [...state.cart.todaysBills]
+            const targetBill = todaysBills.filter(b=>b.id == id)[0]
+            if(targetBill)
+               dispatch.cart.selectedABill(targetBill)
+        }
     })
 }
 export default model

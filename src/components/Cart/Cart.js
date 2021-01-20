@@ -5,12 +5,12 @@ import CartGuests from './CartGuests'
 
 
 
-export const Cart=({cartGuests,removeGuestItem,updateQuantity,validateGuestOrder})=> {
+export const Cart=({navigation,cartGuests,removeGuestItem,updateQuantity,validateGuestOrder})=> {
    
     return ( 
         <View style={{padding:16}}>
             <ScrollView>
-                 <CartGuests {...{cartGuests,removeGuestItem,updateQuantity,validateGuestOrder,validateGuestOrder}} /> 
+                 <CartGuests {...{cartGuests,removeGuestItem,updateQuantity,validateGuestOrder,validateGuestOrder,navigation}} /> 
             </ScrollView>
         </View>
     )

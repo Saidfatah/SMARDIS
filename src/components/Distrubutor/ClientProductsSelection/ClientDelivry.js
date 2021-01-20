@@ -12,7 +12,7 @@ const ClientDelivry=({ route, navigation  ,categories,addCartItem,selectedCatego
     const [selectedProduct, setselectedProduct] = useState(selectedCategoryProducts[0]);
 
 
-    const { clientId ,client  } = route.params;
+    const { clientId ,client,sector  } = route.params;
     const {name}=client
     useEffect(() => {
         navigation.setParams({ clientName: name });
@@ -30,7 +30,7 @@ const ClientDelivry=({ route, navigation  ,categories,addCartItem,selectedCatego
              <CategoriesSlider  {...{navigation,handleHeight,categories,selectedCategory,selectCategory}} />
              <Products {...{setIsPanelActive,setselectedProduct,selectedCategoryProducts}} />
         </View>
-             <SwipeAbleProductDetails {...{selectedProduct,isPanelActive,setIsPanelActive,guest:client,addCartItem}}  />
+             <SwipeAbleProductDetails {...{selectedProduct,sector,isPanelActive,setIsPanelActive,guest:client,addCartItem}}  />
     </BackgroundImage> 
 }
 
@@ -47,25 +47,25 @@ export default connect(
 )(ClientDelivry)
 
 
-  var styles = StyleSheet.create({
-    tagParent:{
+var styles = StyleSheet.create({
+  tagParent:{
         display:'flex',
         alignItems:'center',
         marginTop:16,
         marginBottom:16
-    },
-    tag:{
+  },
+  tag:{
         padding:8,
         borderRadius:25,
         width:200
-    },
-    clientName:{
+  },
+  clientName:{
         textAlign:'center',
         fontWeight:'bold',
         fontSize:20,
         color:'#fff'
-    },
-    productsPanel:{
+  },
+  productsPanel:{
         backgroundColor:'#fff',
         width:'100%',
         flex:1,
@@ -74,5 +74,5 @@ export default connect(
         borderTopRightRadius:25,
         overflow:'hidden'
 
-    }
+  }
 });
