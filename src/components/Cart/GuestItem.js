@@ -4,6 +4,7 @@ import Item from '../Common/Item'
 import Quantity from './Quantity'
 import IconButton from '../Common/Buttons/IconButtons'
 
+
 const  GuestItem = ({item,guestId,removeGuestItem,updateQuantity})=> {
     return (
         <Item xStyle={styles.item}>
@@ -20,7 +21,7 @@ const  GuestItem = ({item,guestId,removeGuestItem,updateQuantity})=> {
     )
 }
 
-export default GuestItem
+export default  GuestItem
 
 var styles = StyleSheet.create({
     item:{

@@ -9,7 +9,6 @@ const CartGuests=({cartGuests,updateQuantity,validateGuestOrder,removeGuestItem}
     const TITLE = cartGuests.length >0 ? "les paneirs active" :"Le panier est vide"
     const RenderItem=({guest})=>{
         const {items,name}=guest
-       console.log({guest})
         return <Item xStyle={styles.item}>
              <GuesItems 
                  items={items} 

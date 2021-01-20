@@ -5,12 +5,12 @@ import CartGuests from './CartGuests'
 
 
 
-export const Cart=({cartGuests,updateQuantity,removeGuestItem,validateGuestOrder})=> {
+export const Cart=({cartGuests,removeGuestItem,updateQuantity,validateGuestOrder})=> {
    
     return ( 
         <View style={{padding:16}}>
             <ScrollView>
-                 <CartGuests {...{cartGuests,updateQuantity,removeGuestItem,validateGuestOrder,validateGuestOrder}} /> 
+                 <CartGuests {...{cartGuests,removeGuestItem,updateQuantity,validateGuestOrder,validateGuestOrder}} /> 
             </ScrollView>
         </View>
     )
@@ -20,8 +20,8 @@ export const Cart=({cartGuests,updateQuantity,removeGuestItem,validateGuestOrder
 export default  connect(
     state    =>({cartGuests:state.cart.cartGuests}),
     dispatch =>({
-        updateQuantity     : dispatch.cart.updateQuantity,
         removeGuestItem    : dispatch.cart.removeGuestItem,
-        validateGuestOrder : dispatch.cart.validateGuestOrder
+        validateGuestOrder : dispatch.cart.validateGuestOrder,
+        updateQuantity     : dispatch.cart.updateQuantity 
     })
 )(Cart)
