@@ -30,40 +30,48 @@ ordersList.push(order3)
 
 const model ={
     state:{
-        orders  :ordersList,
+        orders  :[],
+        ordersCount : 0 ,
     },
     reducers:{
-        fetchedorders : (state,clients)=>({
+        fetchedorders : (state,orders)=>({
             ...state,
-            orders :orders
+            orders :orders,
+            ordersCount: orders.length
         }),
-        addedorder  : (state,orders)=>({
+        addedorder  : (state,order)=>({
             ...state,
-            orders :orders
+            orders :[...state.order.orders,order],
+            ordersCount : state.order.ordersCount +1
         }),
-        updatedorder  : (state,orders)=>({
+        updatedorder  : (state,order)=>({
             ...state,
-            orders :orders
+            orders :[...state.order.orders].map(o=>o.id == order.id?order : o)
         }),
         removedorder  : (state,orders)=>({
             ...state,
-            orders :orders
-        }),
-
- 
+            orders :[...state.order.orders].filter(o=>!o.id == order.id),
+            ordersCount : state.order.ordersCount -1
+        })
     },
     effects: (dispatch)=>({
         fetchOrders(arg,state){
-
+             dispatch.order.fetchedorders(ordersList)
         },
-        addOrder(arg,state){
-
+        addOrder({adminId,distrubutorId,distination},state){
+           if(adminId && distrubutorId && distination.clients && distination.sector ){
+                const newOrder = orderModel(adminId,distrubutorId,distination)
+                dispatch.order.addedorder(newOrder)
+            }
         },
-        updateOrder(arg,state){
-
+        updateOrder({id,updatedFields},state){
+            if(id && updatedFields){
+                const targetOrder = state.order.orders.filter(o=>o.id == id)[0]
+                dispatch.order.updatedorder({...targetOrder,...updatedFields})
+            }
         },
         fetchOrder(arg,state){
-
+              //no use case yet 
         },
 
     })

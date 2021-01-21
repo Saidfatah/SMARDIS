@@ -1,39 +1,129 @@
-import React from 'react'
-import {View,Text,FlatList,StyleSheet} from 'react-native'
-import Button from '../../Common/Button'
+import React,{useEffect} from 'react'
+import {View,Text,ScrollView,TouchableOpacity} from 'react-native'
+import { connect } from 'react-redux'
+import { List } from 'react-native-paper';
+import DashBoardItem from './DashBoardItem'
+import {colors} from '../../Common/Colors'
+import {  Badge, Icon } from 'react-native-elements'
 
-const  AdminDashBoard=({ navigation })=> {
+
+
+const  AdminDashBoard=({ navigation,sectorsCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount,fetchSectors,fetchClients   ,fetchDistrubutors ,fetchOrders ,fetchValidatedOrders ,fetchCategories  ,fetchProducts })=> {
+    const ROUTES =[
+        {
+             title:"Clients",
+             subMenu:[
+                 {title:"List de clients", route :"ADMINclients"},
+                 {title:"Ajouter un client", route :"ADMINclients"},
+             ]
+        },
+        {
+             title:"Produits",
+             subMenu:[
+                 {title:"List Of Products",route :"ADMINproducts"},
+                 {title:"Add product",route :"ADMINproducts"}
+             ]
+        },
+        {
+             title:"Ventes",
+             subMenu:[
+                {title:"List de ventes", route :"ADMINsales"},
+            ]
+        },
+        {
+             route :"ADMINschedule",
+             title:"Emploi du temps",
+             subMenu:[
+                {title:"List des emploi du temps",route :"ADMINschedule"},
+                {title:"Ajouter un Emploi du temp",route :"ADMINschedule"}
+            ]
+        },
+        {
+             route :"ADMINcategories",
+             title:"Catégories",
+             subMenu:[
+                {title:"List des category",route :"ADMINcategories"},
+                {title:"Ajouter une category",route :"ADMINcategories"}
+            ]
+        },
+        {
+             route :"ADMINdistrubutors",
+             title:"Vendeurs",
+             subMenu:[
+                {title:"List des Vendeurs",route :"ADMINdistrubutors"},
+                {title:"Ajouter une vendeur",route :"ADMINdistrubutors"}
+            ]
+        },
+        {
+             route :"ADMINsectors",
+             title:"Secteurs",
+             subMenu:[
+                {title:"List des Secteurs",  route :"ADMINsectors"},
+                {title:"Ajouter une secteur",route :"ADMINsectors"}
+            ]
+        },
+        {
+             route :"ADMINordersValidated",
+             title:"Commande valider",
+             subMenu:[
+                {title:"List des commandes valider",  route :"ADMINordersValidated"},
+            ]
+        },
+        {
+             route :"ADMINcatalogue",
+             title:"Ajouter Catalogue",
+             subMenu:[
+                {title:"Ajouter Catalogue",  route :"ADMINcatalogue"},
+            ]
+        }
+    ]
+
+    useEffect(() => {
+          fetchSectors()
+          fetchClients()
+          fetchDistrubutors()
+          fetchOrders ()
+          fetchValidatedOrders()
+          fetchCategories()
+          fetchProducts()
+    }, [])
     const navigateToRoute=(r)=>navigation.navigate(r)
-
-    return <View>
-        <Button clickHandler={()=>navigateToRoute('ADMINclients')}>   
-            <Text>Clients</Text>
-        </Button>
-        <Button clickHandler={()=>navigateToRoute('ADMINproducts')}>  
-            <Text>Produits</Text>
-        </Button>
-        <Button clickHandler={()=>navigateToRoute('ADMINsales')}>
-            <Text>Vente</Text>            
-        </Button>
-        <Button clickHandler={()=>navigateToRoute('ADMINschedule')}>  
-            <Text>Emploi du temps</Text>            
-        </Button>
-        <Button clickHandler={()=>navigateToRoute('ADMINcategories')}>
-            <Text>Catégories</Text>            
-        </Button>
-        <Button clickHandler={()=>navigateToRoute('ADMINdistrubutors')}> 
-            <Text>Vendeurs</Text>            
-        </Button>
-        <Button clickHandler={()=>navigateToRoute('ADMINsectors')}>
-            <Text>Secteurs</Text>            
-        </Button>
-        <Button clickHandler={()=>navigateToRoute('ADMINordersValidated')}>
-            <Text>Command valider</Text>            
-        </Button>
-        <Button clickHandler={()=>navigateToRoute('ADMINcatalogue')}>
-            <Text>Ajouter Catalogue</Text>            
-        </Button>
-    </View>
+  
+    return <ScrollView style={{backgroundColor:'#fff'}}>
+         <List.Section  >
+         {
+             ROUTES.filter(r=>r.subMenu).map((route,index)=><DashBoardItem 
+                 navigation={navigation} 
+                 key={index} 
+                 ROUTE={route} 
+                 last={index === ROUTES.length-1}
+                 {...{sectorsCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount}}
+             />)
+         }
+         </List.Section>
+         
+    </ScrollView>
 }
 
-export default AdminDashBoard
+export default connect(
+    state=>({
+        sectorsCount  : state.client.sectorsCount, 
+        clientsCount  : state.client.clientsCount,
+        salesCount    : state.cart.salesCount,
+        ordersCount   : state.order.ordersCount,
+        productsCount   : state.products.productsCount,
+        categoriesCount : state.products.categoriesCount,
+        distrubutorsCount    : state.distrubutor.distrubutorsCount,
+        validatedOrdersCount : state.cart.validatedOrdersCount,
+    }),
+    dispatch =>({
+        //fetch products , clients , categories 
+        fetchSectors  : dispatch.client.fetchSectors,
+        fetchClients  : dispatch.client.fetchClients,
+        fetchDistrubutors : dispatch.distrubutor.fetchDistrubutors,
+        fetchOrders : dispatch.order.fetchOrders,
+        fetchValidatedOrders : dispatch.cart.fetchValidatedOrders,
+        fetchCategories : dispatch.products.fetchCategories,
+        fetchProducts   : dispatch.products.fetchProducts,
+    })
+)(AdminDashBoard)

@@ -19,7 +19,7 @@ const AdminStack     = createStackNavigator()
 
 const AdminStackNavigator =()=>{
     return <AdminStack.Navigator initialRouteName={'ADMINDashBoard'}>
-             <AdminStack.Screen name="ADMINdashBoard" component={AdminDashBoard} />
+             <AdminStack.Screen name="ADMINdashBoard" options={{title:"Admin Abdellah"}} component={AdminDashBoard} />
              <AdminStack.Screen name="ADMINcategories" component={AdminCategories} />
              <AdminStack.Screen name="ADMINcatalogue" component={AdminCatalogue} />
              <AdminStack.Screen name="ADMINaddNewAdmin" component={AdminAddNewAdmin} />

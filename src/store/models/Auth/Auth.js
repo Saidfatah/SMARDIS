@@ -9,7 +9,7 @@ const userTypes= ['ADMIN','DISTRIBUTOR']
 const model ={
     state:{
         authenticated  :true,
-        userType       :userTypes[1],
+        userType       :userTypes[0],
         distrubutorId  : 1,
         adminId        : 1,
     },

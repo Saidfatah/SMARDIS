@@ -47,7 +47,10 @@ const model ={
     state:{
         cartGuests  :[],
         todaysBills : [] , 
-        selectedBill : null 
+        validatedOrders : [] , 
+        selectedBill : null ,
+        validatedOrdersCount : 0 ,
+        salesCount : 0 ,
     },
     reducers:{
         updatedQuantity : (state,cartGuests)=>({
@@ -75,6 +78,12 @@ const model ={
             cartGuests   , 
             todaysBills, 
             selectedBill : todaysBills[todaysBills.length -1]
+        }),
+        fetchedValidatedOrders : (state,validatedOrders)=>({
+            ...state,
+            validatedOrders : [...validatedOrders]   , 
+            validatedOrdersCount : validatedOrders.length ,
+            salesCount : validatedOrders.length ,
         }),
         selectedABill : (state,selectedBill)=>({
             ...state,
@@ -185,6 +194,11 @@ const model ={
             const targetBill = todaysBills.filter(b=>b.id == id)[0]
             if(targetBill)
                dispatch.cart.selectedABill(targetBill)
+        },
+        fetchValidatedOrders(id,state){
+            //fetch from backEnd 
+            //sales are probably the products sold 
+            dispatch.cart.fetchedValidatedOrders([])
         }
     })
 }
