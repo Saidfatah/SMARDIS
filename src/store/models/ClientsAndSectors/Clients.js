@@ -20,11 +20,6 @@ const sectorModel=(name,city,province)=>({
     city,
     province : province || '',
 })
-const billModel=(clientId,products,date)=>({
-    products,
-    date,
-    clientId,
-})
 
 
 const shikh = sectorModel('shikh','tinghir')
@@ -59,52 +54,62 @@ clientsList.push(Ghafour)
 
 const model ={
     state:{
-        clients  :clientsList,
-        sectors  :sectorsList,
-        todaysSectors :[] , 
+        clients       :[],
+        sectors       :[],
+        todaysSectors :[], 
+        sectorsCount  :0,//to display in admin's dashboard
+        clientsCount  :0,//to display in admin's dashboard
+        todaysSectorsCount :0, //to display in distrubutor's dashboard
     },
     reducers:{
-        fetchedSectors : (state,clients)=>({
+        fetchedSectors : (state,sectors)=>({
             ...state,
-            clients :clients
+            sectors :sectors ,
+            sectorsCount : sectors.length
         }),
-        fetchedTodaysSectors : (state,sectors)=>({
+        fetchedTodaysSectors : (state,todaysSectors)=>({
             ...state,
-            todaysSectors :sectors
+            todaysSectors :todaysSectors,
+            todaysSectorsCount :todaysSectors.length,
         }),
-        addedSector  : (state,clients)=>({
+        addedSector  : (state,sector)=>({
             ...state,
-            clients :clients
+            sectors :[...state.client.sectors, sector],
+            sectorsCount: state.client.sectorsCount+1
         }),
-        updatedSector  : (state,clients)=>({
+        updatedSector  : (state,sector)=>({
             ...state,
-            clients :clients
+            sectors :[state.client.sectors].map(s=>s.id == sector.id ? sector:s)
         }),
-        removedSector  : (state,clients)=>({
+        removedSector  : (state,sector)=>({
             ...state,
-            clients :clients
+            sectors :[...state.client.sectors].filter(s=>!s.id==sector.id),
+            sectorsCount: state.client.sectorsCount-1
         }),
 
         fetchedClients : (state,clients)=>({
             ...state,
-            clients :clients
+            clients :clients,
+            clientsCount: clients.length
         }),
-        addedClients : (state,client)=>({
+        addedClient   : (state,client)=>({
             ...state,
-            clients :[state.products.clients,client]
+            clients  :[state.client.clients,client],
+            clientsCount: state.client.clientsCount +1
         }),
-        removededClients : (state,client)=>({
+        removedClient : (state,client)=>({
             ...state,
-            clients :[state.products.clients,client]
+            clients :[...state.products.clients].filter(c=>!c.id == client.id),
+            clientsCount: state.client.clientsCount -1
         }),
-        updatedClients : (state,client)=>({
+        updatedClient : (state,client)=>({
             ...state,
-            clients :[state.products.clients,client]
+            clients :[...state.products.clients].map(c=>c.id == client.id ?client : c)
         }),
     },
     effects: (dispatch)=>({
         fetchClients(arg,state){
-
+               dispatch.client.fetchedClients(clientsList)
         },
         addClient(arg,state){
 
@@ -118,10 +123,9 @@ const model ={
 
 
         fetchSectors(arg,state){
-
+            dispatch.client.fetchedSectors(sectorsList)
         },
         fetchTodaysSectors(arg,state){
-     
             const allClients  = state.client.clients
             const currentDistrubutorId = state.auth.distrubutorId
             const orders = state.order.orders.filter(o => o.distrubutorId == currentDistrubutorId  )
@@ -139,7 +143,8 @@ const model ={
             dispatch.client.fetchedTodaysSectors(todaysSectors)
 
         },
-        addSector(arg,state){
+        addSector({name,city,province},state){
+            const sector = sectorModel(name,city,province)
 
         },
         updateSector(arg,state){

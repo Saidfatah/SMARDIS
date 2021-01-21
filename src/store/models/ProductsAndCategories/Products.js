@@ -6,6 +6,7 @@ const productModel = (name,category,image,price1,ref,price2,price3,price4) =>({
     id:productsList.length,
     category :category || 0,
     image : image || 'NO_IMAGE' ,
+    activePrice :"price1",
     price1, 
     price2:price2 || 'NOT_DEFINED',
     price3:price3 || 'NOT_DEFINED',
@@ -110,31 +111,36 @@ productsList.push(WhiteLily )
  const userTypes= ['ADMIN','DISTRIBUTOR']
 const model ={
     state:{
-        products         : [...productsList],
-        categories       : [...categoriesList],
+        products         : [],
+        categories       : [],
         selectedCategoryProducts :[productsList.filter(p=>p.category == 2)] ,
         selectedCategory : 2 , 
+        productsCount    : 0,
+        categoriesCount  : 0,
     },
     reducers:{
         fetchedProducts : (state,products)=>({
             ...state,
-            products :products
+            products :products,
+            productsCount : products.length
         }),
         setedSelectedCategoryProducts : (state,products)=>({
             ...state,
             selectedCategoryProducts :products
         }),
-        addedProduct : (state,products)=>({
+        addedProduct : (state,product)=>({
             ...state,
-            products :products
+            products :[state.products.products,product],
+            productsCount :state.products.productsCount +1
         }),
-        updatedProduct : (state,products)=>({
+        updatedProduct : (state,product)=>({
             ...state,
-            products :products
+            products :[...state.products.products].map(p=>p.id == product.id ?product : p)
         }),
-        removedProduct : (state,products)=>({
+        removedProduct : (state,product)=>({
             ...state,
-            products :products
+            products :[...state.products.products].filter(p=>!p.id == product.id  ),
+            productsCount :state.products.productsCount -1
         }),
 
 
@@ -146,17 +152,19 @@ const model ={
             ...state,
             categories :categories
         }),
-        addedCategory : (state,categories)=>({
+        addedCategory : (state,category)=>({
             ...state,
-            categories :categories
+            categories :[state.products.categories,category],
+            categoriesCount :state.products.categoriesCount +1
         }),
-        updatedCategory : (state,categories)=>({
+        updatedCategory : (state,category)=>({
             ...state,
-            categories :categories
+            categories :[...state.products.categories].map(c=>c.id == category.id ?category : c)
         }),
-        removedCategory : (state,categories)=>({
+        removedCategory : (state,category)=>({
             ...state,
-            categories :categories
+            categories :[...state.products.categories].filter(c=>!c.id == category.id  ),
+            categoriesCount :state.products.categoriesCount -1
         }),
     },
     effects: (dispatch)=>({
@@ -169,33 +177,61 @@ const model ={
              dispatch.products.setedSelectedCategoryProducts(filterdProducts)
         },
         fetchCategories(somthing,state){
-             
+             dispatch.products.fetchedCategories(categoriesList)
         },
-        addCatgory(somthing,state){
-             
+        addCatgory({name,image},state){
+              if(name && image){
+                   const newCategory = categoryModel(name,image)
+                   dispatch.products.addedCategory(newCategory)
+              }
         },
-        updateCatgory(somthing,state){
-             
+        updateCatgeory({id,updatedFiels},state){
+             if(id && updatedFiels)
+             {
+                 const targetCategory = state.products.categories.filter(c=>c.id == id)[0]
+                 dispatch.products.updatedCategory({...targetCategory,...updatedFiels})
+              
+             }
         },
-        removeCatgory(somthing,state){
+        removeCatgory(id,state){
              //if we romve category its associeted products should be moved to other catgory 
              //set their category field to 0 
+             if(id)
+             {
+                 const targetCategory = state.products.categories.filter(c=>c.id == id)[0]
+                 dispatch.products.removedCategory({...targetCategory,...updatedFiels})
+              
+             }
         },
 
      
 
         fetchProducts(somthing,state){
              //do we fetch all products at app start 
+             //get products from asyncstorage
+             //get products from firebase
+             dispatch.products.fetchedProducts(productsList)
         },
-        addProduct(somthing,state){
+        addProduct({name,category,image,price1,ref,price2,price3,price4},state){
+            if(name && category && image && price1 && ref && price2 && price3 && price4){
+                const newProduct = productModel(name,category,image,price1,ref,price2,price3,price4)
+                dispatch.products.addedProduct(newProduct)
+           }
+        },
+        updateProduct({id,updatedFiels},state){
+            if(id && updatedFiels)
+            {
+                const targetProduct= state.products.products.filter(p=>p.id == id)[0]
+                dispatch.products.updatedProduct({...targetProduct,...updatedFiels})
              
+            }
         },
-        updateProduct(somthing,state){
-             //update price
-             //or image 
-        },
-        removeProduct(somthing,state){
-             
+        removeProduct(id,state){
+            if(id)
+            {
+                const targetProduct = state.products.products.filter(p=>p.id == id)[0]
+                dispatch.products.removedProduct(targetProduct)
+            }
         },
 
     })

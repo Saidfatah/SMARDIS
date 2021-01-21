@@ -1,5 +1,5 @@
 import React from 'react'
-import {View,Text,FlatList,StyleSheet} from 'react-native'
+import {StyleSheet} from 'react-native'
 import GuesItems from './GuesItems'
 import Item from '../Common/Item'
 import { List } from 'react-native-paper';
