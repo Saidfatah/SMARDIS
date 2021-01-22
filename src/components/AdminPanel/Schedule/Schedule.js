@@ -35,8 +35,8 @@ const Schedule = ({addOrder,clients,sectors,distrubutors,adminId})=> {
                 adminId,
                 distrubutorId:selectedDistrubutor.id,
                 distination:{
-                    sector:selectedSector.id,
-                    clients : orderListOfClients.map(cl=>cl.id)
+                    sector  : selectedSector ,
+                    clients : orderListOfClients 
                 }
             })
         }else{

@@ -51,10 +51,10 @@ const  TodaysOrders=({fetchTodaysSectors,todaysSectors,navigation})=> {
 
 export default connect(
   state=>({
-      todaysSectors : state.client.todaysSectors
+      todaysSectors : state.order.todaysSectors
   }),
   dispatch=>({
-      fetchTodaysSectors : dispatch.client.fetchTodaysSectors
+      fetchTodaysSectors : dispatch.order.fetchTodaysSectors
   })
 )(TodaysOrders)
 

@@ -71,11 +71,6 @@ const model ={
             sectors :sectors ,
             sectorsCount : sectors.length
         }),
-        fetchedTodaysSectors : (state,todaysSectors)=>({
-            ...state,
-            todaysSectors :todaysSectors,
-            todaysSectorsCount :todaysSectors.length,
-        }),
         addedSector  : (state,sector)=>({
             ...state,
             sectors :[...state.sectors, sector],
@@ -124,28 +119,8 @@ const model ={
         fetchClient(arg,state){
 
         },
-
-
         fetchSectors(arg,state){
             dispatch.client.fetchedSectors(sectorsList)
-        },
-        fetchTodaysSectors(arg,state){
-            const allClients  = state.client.clients
-            const currentDistrubutorId = state.auth.distrubutorId
-            const orders = state.order.orders.filter(o => o.distrubutorId == currentDistrubutorId  )
-            const ordersSectors = orders.map(o=>o.distination.sector)
-            const sectors =state.client.sectors.filter(s => ordersSectors.includes(s.id) )
-            const ordersClients = orders.map(o=>o.distination.clients).map(cls=>cls.map(cl=>allClients.filter(c=>c.id == cl )[0]))
-           
-
-            let todaysSectors=[]
-            sectors.forEach((s,i)=>{
-                todaysSectors.push({sector:s,clients:ordersClients[i]})
-            })
-             
-            // const sectorsWithTheirClients = sectors.map(s=>({sector:s, clients :allClients.filter(c=>c.sectorId == s.id)})) 
-            dispatch.client.fetchedTodaysSectors(todaysSectors)
-
         },
         addSector({name,city,province},state){
             const sector = sectorModel(name,city,province)

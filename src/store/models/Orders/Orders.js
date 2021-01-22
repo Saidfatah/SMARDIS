@@ -33,6 +33,9 @@ const model ={
     state:{
         orders  :[],
         ordersCount : 0 ,
+        todaysSectors :[], 
+        todaysSectorsCount :0, //to display in distrubutor's dashboard
+
     },
     reducers:{
         fetchedorders : (state,orders)=>({
@@ -53,9 +56,19 @@ const model ={
             ...state,
             orders :[...state.orders].filter(o=>!o.id == order.id),
             ordersCount : state.ordersCount -1
-        })
+        }),
+        fetchedTodaysSectors : (state,todaysSectors)=>({
+            ...state,
+            todaysSectors :todaysSectors,
+            todaysSectorsCount :todaysSectors.length,
+        }),
     },
     effects: (dispatch)=>({
+        fetchTodaysSectors(arg,state){
+            const currentDistrubutorId = state.auth.distrubutorId
+            const currentDistrubutorOrders = state.order.orders.filter(o => o.distrubutorId == currentDistrubutorId  )
+            dispatch.order.fetchedTodaysSectors(currentDistrubutorOrders)
+        },
         fetchOrders(arg,state){
             console.log('fetching orders')
             console.log(ordersList)
@@ -68,6 +81,7 @@ const model ={
                 dispatch.order.addedorder(newOrder)
             }
         },
+        
         updateOrder({id,updatedFields},state){
             if(id && updatedFields){
                 const targetOrder = state.order.orders.filter(o=>o.id == id)[0]
