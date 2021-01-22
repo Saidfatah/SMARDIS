@@ -78,17 +78,17 @@ const model ={
         }),
         addedSector  : (state,sector)=>({
             ...state,
-            sectors :[...state.client.sectors, sector],
-            sectorsCount: state.client.sectorsCount+1
+            sectors :[...state.sectors, sector],
+            sectorsCount: state.sectorsCount+1
         }),
         updatedSector  : (state,sector)=>({
             ...state,
-            sectors :[state.client.sectors].map(s=>s.id == sector.id ? sector:s)
+            sectors :[state.sectors].map(s=>s.id == sector.id ? sector:s)
         }),
         removedSector  : (state,sector)=>({
             ...state,
-            sectors :[...state.client.sectors].filter(s=>!s.id==sector.id),
-            sectorsCount: state.client.sectorsCount-1
+            sectors :[...state.sectors].filter(s=>!s.id==sector.id),
+            sectorsCount: state.sectorsCount-1
         }),
 
         fetchedClients : (state,clients)=>({
@@ -98,17 +98,17 @@ const model ={
         }),
         addedClient   : (state,client)=>({
             ...state,
-            clients  :[state.client.clients,client],
-            clientsCount: state.client.clientsCount +1
+            clients  :[state.clients,client],
+            clientsCount: state.clientsCount +1
         }),
         removedClient : (state,client)=>({
             ...state,
-            clients :[...state.products.clients].filter(c=>!c.id == client.id),
-            clientsCount: state.client.clientsCount -1
+            clients :[...state.clients].filter(c=>!c.id == client.id),
+            clientsCount: state.clientsCount -1
         }),
         updatedClient : (state,client)=>({
             ...state,
-            clients :[...state.products.clients].map(c=>c.id == client.id ?client : c)
+            clients :[...state.clients].map(c=>c.id == client.id ?client : c)
         }),
     },
     effects: (dispatch)=>({

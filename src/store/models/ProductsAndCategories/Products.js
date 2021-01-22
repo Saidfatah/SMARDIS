@@ -130,17 +130,17 @@ const model ={
         }),
         addedProduct : (state,product)=>({
             ...state,
-            products :[state.products.products,product],
-            productsCount :state.products.productsCount +1
+            products :[state.products,product],
+            productsCount :state.productsCount +1
         }),
         updatedProduct : (state,product)=>({
             ...state,
-            products :[...state.products.products].map(p=>p.id == product.id ?product : p)
+            products :[...state.products].map(p=>p.id == product.id ?product : p)
         }),
         removedProduct : (state,product)=>({
             ...state,
-            products :[...state.products.products].filter(p=>!p.id == product.id  ),
-            productsCount :state.products.productsCount -1
+            products :[...state.products].filter(p=>!p.id == product.id  ),
+            productsCount :state.productsCount -1
         }),
 
 
@@ -154,17 +154,17 @@ const model ={
         }),
         addedCategory : (state,category)=>({
             ...state,
-            categories :[state.products.categories,category],
-            categoriesCount :state.products.categoriesCount +1
+            categories :[state.categories,category],
+            categoriesCount :state.categoriesCount +1
         }),
         updatedCategory : (state,category)=>({
             ...state,
-            categories :[...state.products.categories].map(c=>c.id == category.id ?category : c)
+            categories :[...state.categories].map(c=>c.id == category.id ?category : c)
         }),
         removedCategory : (state,category)=>({
             ...state,
-            categories :[...state.products.categories].filter(c=>!c.id == category.id  ),
-            categoriesCount :state.products.categoriesCount -1
+            categories :[...state.categories].filter(c=>!c.id == category.id  ),
+            categoriesCount :state.categoriesCount -1
         }),
     },
     effects: (dispatch)=>({

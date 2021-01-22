@@ -36,17 +36,17 @@ const model ={
         }),
         addeddistrubutor  : (state,distrubutor)=>({
             ...state,
-            distrubutors :[...state.distrubutor.distrubutors,distrubutor],
-            distrubutorsCount :state.distrubutor.distrubutorsCount +1
+            distrubutors :[...state.distrubutors,distrubutor],
+            distrubutorsCount :state.distrubutorsCount +1
         }),
         updateddistrubutor  : (state,distrubutor)=>({
             ...state,
-            distrubutors :[...state.distrubutor.distrubutors].map(d=>d.id == distrubutor.id?distrubutor:d)
+            distrubutors :[...state.distrubutors].map(d=>d.id == distrubutor.id?distrubutor:d)
         }),
         removeddistrubutor : (state,distrubutor)=>({
             ...state,
-            distrubutors :[...state.distrubutor.distrubutors].filter(d=>!d.id ==distrubutor.id ),
-            distrubutorsCount :state.distrubutor.distrubutorsCount -1
+            distrubutors :[...state.distrubutors].filter(d=>!d.id ==distrubutor.id ),
+            distrubutorsCount :state.distrubutorsCount -1
         })
     },
     effects: (dispatch)=>({
