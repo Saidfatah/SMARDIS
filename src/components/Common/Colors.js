@@ -9,5 +9,6 @@ export const colors = {
     DARKGREY :"#777" , 
     RED :"#FF0000" , 
     PINK :"#b10e43" , 
-    CART : "#000f27"
+    CART : "#000f27",
+    DROPDOWN_BG : "#999",
 }
