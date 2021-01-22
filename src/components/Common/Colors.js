@@ -6,7 +6,7 @@ export const colors = {
     GREYBLUE : "#00FFFF", 
     GREY :"#00FF00" , 
     LIGHTGREY :"#c7c7c7" , 
-    DARKGREY :"#00FF00" , 
+    DARKGREY :"#777" , 
     RED :"#FF0000" , 
     PINK :"#b10e43" , 
     CART : "#000f27"
