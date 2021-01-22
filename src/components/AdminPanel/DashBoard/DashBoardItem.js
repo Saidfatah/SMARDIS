@@ -25,7 +25,7 @@ const DashBoardItem=({ROUTE,last,navigation,sectorsCount ,clientsCount ,salesCou
                 break;
             case "EMPLOI DU TEMPS":
                 ICON= {type:'material',name:'schedule'}
-                COUNT = 0
+                COUNT = ordersCount
                 STATUS="error"
                 break;
             case "VENTES":

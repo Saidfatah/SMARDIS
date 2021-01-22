@@ -1,5 +1,6 @@
 // orders sent by admin
-// emploi du temp  //get clients List for each District (Secteur)
+// emploi du temp  
+//get clients List for each District (Secteur)
 const ordersList      = []
 const orderModel=(adminId,distrubutorId,distination)=>({
     adminId,
@@ -41,26 +42,29 @@ const model ={
         }),
         addedorder  : (state,order)=>({
             ...state,
-            orders :[...state.order.orders,order],
-            ordersCount : state.order.ordersCount +1
+            orders :[...state.orders].push(order),
+            ordersCount : state.ordersCount +1
         }),
         updatedorder  : (state,order)=>({
             ...state,
-            orders :[...state.order.orders].map(o=>o.id == order.id?order : o)
+            orders :[...state.orders].map(o=>o.id == order.id?order : o)
         }),
         removedorder  : (state,orders)=>({
             ...state,
-            orders :[...state.order.orders].filter(o=>!o.id == order.id),
-            ordersCount : state.order.ordersCount -1
+            orders :[...state.orders].filter(o=>!o.id == order.id),
+            ordersCount : state.ordersCount -1
         })
     },
     effects: (dispatch)=>({
         fetchOrders(arg,state){
+            console.log('fetching orders')
+            console.log(ordersList)
              dispatch.order.fetchedorders(ordersList)
         },
         addOrder({adminId,distrubutorId,distination},state){
            if(adminId && distrubutorId && distination.clients && distination.sector ){
-                const newOrder = orderModel(adminId,distrubutorId,distination)
+            console.log('putting new schedule order')  
+            const newOrder = orderModel(adminId,distrubutorId,distination)
                 dispatch.order.addedorder(newOrder)
             }
         },

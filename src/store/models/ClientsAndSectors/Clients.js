@@ -35,6 +35,10 @@ sectorsList.push(taourirt)
 
 const Ali = clientModel('ali',1)
 clientsList.push(Ali)
+const Moaud1 = clientModel('Moaud1',1)
+clientsList.push(Moaud1)
+const smail = clientModel('smail',1)
+clientsList.push(smail)
 const Mohamed = clientModel('mohamed',1)
 clientsList.push(Mohamed)
 

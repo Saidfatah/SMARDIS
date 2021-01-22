@@ -87,6 +87,7 @@ const  AdminDashBoard=({ navigation,sectorsCount ,clientsCount ,salesCount,order
           fetchCategories()
           fetchProducts()
     }, [])
+
     const navigateToRoute=(r)=>navigation.navigate(r)
   
     return <ScrollView style={{backgroundColor:'#fff'}}>
