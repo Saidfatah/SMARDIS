@@ -26,6 +26,7 @@ distrubutorList.push(distrubutor4)
 const model ={
     state:{
         distrubutors  :[],
+        distrubutor: null,
         distrubutorsCount  :0,
     },
     reducers:{
@@ -39,7 +40,11 @@ const model ={
             distrubutors :[...state.distrubutors,distrubutor],
             distrubutorsCount :state.distrubutorsCount +1
         }),
-        updateddistrubutor  : (state,distrubutor)=>({
+        updateddistrubutor   : (state,distrubutor)=>({
+            ...state,
+            distrubutor :distrubutor ,
+        }),
+        updateddistrubutorFromAdmin  : (state,distrubutor)=>({
             ...state,
             distrubutors :[...state.distrubutors].map(d=>d.id == distrubutor.id?distrubutor:d)
         }),
@@ -50,6 +55,11 @@ const model ={
         })
     },
     effects: (dispatch)=>({
+        fetchDistrubutorDocument(arg,state){
+            const currentDistrubutorId= state.auth.distrubutorId
+            //fetch distrubutor by id from firestore
+            dispatch.admin.fetchedAdminDocument({name:'abdellah',id:1})
+        },
         fetchDistrubutors(arg,state){
             //here we getdata from firebase 
             //store it in local cache 
@@ -73,8 +83,14 @@ const model ={
         updateDistrubutor({id,updatedFields},state){
             if(id)
             {
-                const targetedDistrubutor = state.distrubutor.distrubutors.filter(d=>d.id == id)[0]
-                dispatch.distrubutor.updateDistrubutor({...targetedDistrubutor,...updatedFields})
+                if(userType=="ADMIN"){
+                    const targetedDistrubutor = state.distrubutor.distrubutors.filter(d=>d.id == id)[0]
+                    dispatch.distrubutor.updateddistrubutorFromAdmin({...targetedDistrubutor,...updatedFields})
+                }else
+                {
+                    const currentLoggedDistrubutor = state.distrubutor.distrubutor
+                    dispatch.distrubutor.updateddistrubutor({...currentLoggedDistrubutor,...updatedFields})
+                }
             }
         },
         fetchDistrubutor(id,state){
