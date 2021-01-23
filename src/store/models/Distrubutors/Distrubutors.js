@@ -3,7 +3,7 @@
 //validate orders 
 //send notifcaton to admin 
 
-const distrubutorList      = []
+export const distrubutorList      = []
 const distrubutorModel=(name,city,ref)=>({
      id:distrubutorList.length +1,
      ref: ref,
@@ -11,14 +11,14 @@ const distrubutorModel=(name,city,ref)=>({
      city : city || ''
 })
 
-const order1 = distrubutorModel('mohssine')
-distrubutorList.push(order1)
-const order2 = distrubutorModel('adil')
-distrubutorList.push(order2)
-const order3 = distrubutorModel('redouan')
-distrubutorList.push(order3)
-const order4 = distrubutorModel('abdessamad')
-distrubutorList.push(order4)
+const distrubutor1 = distrubutorModel('mohssine')
+distrubutorList.push(distrubutor1)
+const distrubutor2 = distrubutorModel('adil')
+distrubutorList.push(distrubutor2)
+const distrubutor3 = distrubutorModel('redouan')
+distrubutorList.push(distrubutor3)
+const distrubutor4 = distrubutorModel('abdessamad')
+distrubutorList.push(distrubutor4)
 
 
 

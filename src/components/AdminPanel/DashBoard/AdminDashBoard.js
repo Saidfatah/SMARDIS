@@ -34,7 +34,7 @@ const  AdminDashBoard=({ navigation,sectorsCount ,clientsCount ,salesCount,order
              route :"ADMINschedule",
              title:"Emploi du temps",
              subMenu:[
-                {title:"List des emploi du temps",route :"ADMINschedule"},
+                {title:"List des emploi du temps",route :"ADMINlistOfScheduleS"},
                 {title:"Ajouter un Emploi du temp",route :"ADMINschedule"}
             ]
         },

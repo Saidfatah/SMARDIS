@@ -12,7 +12,8 @@ import {
    AdminRegisterDistrubutor,
    AdminSales,
    AdminSchedule,
-   AdminSectors
+   AdminSectors,
+   AdminListOfSchedules
 } from './Screens'
 
 const AdminStack     = createStackNavigator()
@@ -64,6 +65,11 @@ const AdminStackNavigator =()=>{
                 name="ADMINschedule" 
                 component={AdminSchedule} 
                 options={{title:"Emploi du temps"}} 
+            />
+             <AdminStack.Screen 
+                name="ADMINlistOfScheduleS" 
+                component={AdminListOfSchedules} 
+                options={{title:"List des Emploi du temps"}} 
             />
              <AdminStack.Screen 
                 name="ADMINsectors" 

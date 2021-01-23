@@ -1,8 +1,8 @@
 //get clients List for each District (Secteur)
 //get clients localization 
 //set clients localization 
-const clientsList = []
-const sectorsList = []
+export const clientsList = []
+export const sectorsList = []
 
 
 const clientModel=(name,sectorId,email,phone,whatsapp,coardinations)=>({
@@ -22,15 +22,15 @@ const sectorModel=(name,city,province)=>({
 })
 
 
-const shikh = sectorModel('shikh','tinghir')
+const shikh = sectorModel('تيكمي لجديد','tinghir')
 sectorsList.push(shikh)
-const tajda = sectorModel('tajda','ouarzazate')
+const tajda = sectorModel('تجدة','ouarzazate')
 sectorsList.push(tajda)
-const tkhisa = sectorModel('tkhisa','ouarzazate')
+const tkhisa = sectorModel('تخيسة','ouarzazate')
 sectorsList.push(tkhisa)
-const qastor = sectorModel('qastor','ouarzazate')
+const qastor = sectorModel('كاستور','ouarzazate')
 sectorsList.push(qastor)
-const taourirt = sectorModel('taourirt','ouarzazate')
+const taourirt = sectorModel('تاوريرة','ouarzazate')
 sectorsList.push(taourirt)
 
 const Ali = clientModel('ali',1)

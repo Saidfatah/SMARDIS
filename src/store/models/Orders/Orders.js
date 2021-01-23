@@ -1,30 +1,47 @@
 // orders sent by admin
 // emploi du temp  
-//get clients List for each District (Secteur)
+// get clients List for each District (Secteur)
+import {clientsList,sectorsList} from '../ClientsAndSectors/Clients'
+import {distrubutorList} from '../Distrubutors/Distrubutors'
+
+
 const ordersList      = []
-const orderModel=(adminId,distrubutorId,distination)=>({
-    adminId,
-    distrubutorId,
-    distination: distination || {sector:'1',clientsIds :[1,2,3,5]}
+const orderModel=(adminId,distrubutorId,distination,distrubutor)=>({
+     adminId,
+     status: "PENDING",
+     date:new Date(),
+     admin:{name:"abdellah jgnour",id:1},
+     distrubutor:distrubutor ||{name:"distrubutor name",id:-1},
+     distrubutorId,
+     distination: distination || {sector:'1',clientsIds :[1,2,3,5]}
 })
 
 
-const order1 = orderModel(1,1,{
-    sector : 1,
-    clients : [1,2]
-})
+const order1 = orderModel(1,1,
+    {
+         sector  : sectorsList[0],
+         clients : [clientsList[0],clientsList[1]]
+    },
+    distrubutorList[0]
+)
 ordersList.push(order1)
 
-const order2 = orderModel(1,2,{
-    sector : 2,
-    clients : [4,3,5]
-})
+const order2 = orderModel(1,2,
+    {
+         sector : sectorsList[1],
+         clients : [clientsList[2],clientsList[3],clientsList[4]]
+    },
+    distrubutorList[1]
+)
 ordersList.push(order2)
 
-const order3 = orderModel(1,1,{
-    sector : 3,
-    clients : [8,6,7]
-})
+const order3 = orderModel(1,1,
+    {
+         sector  : sectorsList[2],
+         clients : [clientsList[5],clientsList[6],clientsList[7]]
+    },
+    distrubutorList[0]
+)
 ordersList.push(order3)
 
 
@@ -70,8 +87,8 @@ const model ={
             dispatch.order.fetchedTodaysSectors(currentDistrubutorOrders)
         },
         fetchOrders(arg,state){
-            console.log('fetching orders')
-            console.log(ordersList)
+   
+            console.log(ordersList[0].distination.clients)
              dispatch.order.fetchedorders(ordersList)
         },
         addOrder({adminId,distrubutorId,distination},state){

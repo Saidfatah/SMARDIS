@@ -15,7 +15,6 @@ const Schedule = ({addOrder,clients,sectors,distrubutors,adminId})=> {
     const [orderListOfClients, setorderListOfClients] = useState([])
 
     useEffect(() => {
-        console.log(sectors.length )
          if(sectors.length >0 && clients.length>0 && distrubutors.length>0)
          setselectedSectorClients([...clients].map(cl=> cl.sectorId == 0))
     }, [])
@@ -25,7 +24,6 @@ const Schedule = ({addOrder,clients,sectors,distrubutors,adminId})=> {
              console.log(selectedSector.id)
              const sectorClients = [...clients].filter(cl=> cl.sectorId == selectedSector.id)
              setselectedSectorClients(sectorClients)
-              console.log(sectorClients.map(c=>c.name))
          }
     }, [selectedSector.id])
     

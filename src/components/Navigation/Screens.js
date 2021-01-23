@@ -7,8 +7,9 @@ import AdminDist    from '../AdminPanel/Distrubutors/Distrubutors'
 import AdminOrders  from '../AdminPanel/Orders/OrdersValidated'
 import AdminProds  from '../AdminPanel/Products/Products'
 import AdminSls     from '../AdminPanel/Sales/Sales'
-import AdminSec     from '../AdminPanel/Sectors/Sectors'
 import AdminSch   from '../AdminPanel/Schedule/Schedule'
+import AdminListSch   from '../AdminPanel/Schedule/ListOfSchedules/ListOfSchedules'
+import AdminSec     from '../AdminPanel/Sectors/Sectors'
 import AdminAddAdmin     from '../Auth/Admin/AddNewAdmin'
 import AdminRegisterDist   from '../Auth/Admin/RegisterDistrubutor'
 
@@ -37,6 +38,7 @@ export const AdminProducts = AdminProds ;
 export const AdminSales    = AdminSls ;
 export const AdminSectors  = AdminSec ;
 export const AdminSchedule = AdminSch ;
+export const AdminListOfSchedules = AdminListSch ;
 export const AdminAddNewAdmin= AdminAddAdmin ;
 export const AdminRegisterDistrubutor= AdminRegisterDist ;
 
