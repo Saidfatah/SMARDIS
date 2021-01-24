@@ -1,68 +1,23 @@
 //get clients List for each District (Secteur)
 //get clients localization 
 //set clients localization 
-export const clientsList = []
-export const sectorsList = []
+import {clientModel,sectorModel} from './DocumentModels'
+import {clientsList, sectorsList} from './DcoumentLists'
 
 
-const clientModel=(name,sectorId,email,phone,whatsapp,coardinations)=>({
-    id:clientsList.length +1 ,
-    name,
-    sectorId,
-    phone :phone  ||'' , 
-    whatsapp : whatsapp || '',
-    email:email || '',
-    coardinations: coardinations || {x:0,y:0}
-})
-const sectorModel=(name,city,province)=>({
-    id:sectorsList.length +1 ,
-    name,
-    city,
-    province : province || '',
-})
 
 
-const shikh = sectorModel('تيكمي لجديد','tinghir')
-sectorsList.push(shikh)
-const tajda = sectorModel('تجدة','ouarzazate')
-sectorsList.push(tajda)
-const tkhisa = sectorModel('تخيسة','ouarzazate')
-sectorsList.push(tkhisa)
-const qastor = sectorModel('كاستور','ouarzazate')
-sectorsList.push(qastor)
-const taourirt = sectorModel('تاوريرة','ouarzazate')
-sectorsList.push(taourirt)
-
-const Ali = clientModel('ali',1)
-clientsList.push(Ali)
-const Moaud1 = clientModel('Moaud1',1)
-clientsList.push(Moaud1)
-const smail = clientModel('smail',1)
-clientsList.push(smail)
-const Mohamed = clientModel('mohamed',1)
-clientsList.push(Mohamed)
-
-const Souad = clientModel('souad',2)
-clientsList.push(Souad)
-const Mounir = clientModel('mounir',2)
-clientsList.push(Mounir)
-const Etmani = clientModel('etmani',2)
-clientsList.push(Etmani)
-
-const Mouad = clientModel('mouad',3)
-clientsList.push(Mouad)
-const Faycal = clientModel('faycal',3)
-clientsList.push(Faycal)
-const Ghafour = clientModel('ghafour',3)
-clientsList.push(Ghafour)
 
 const model ={
     state:{
         clients       :[],
         sectors       :[],
         todaysSectors :[], 
-        sectorsCount  :0,//to display in admin's dashboard
-        clientsCount  :0,//to display in admin's dashboard
+        firstClientsFetch:false,
+        clientsLimit  : 6 , 
+        clientsAdded  : 0 , 
+        sectorsCount  : 0 ,//to display in admin's dashboard
+        clientsCount  : 0 ,//to display in admin's dashboard
         todaysSectorsCount :0, //to display in distrubutor's dashboard
     },
     reducers:{
@@ -86,15 +41,25 @@ const model ={
             sectorsCount: state.sectorsCount-1
         }),
 
+        fetchedClientsCount : (state,clientsCount)=>({
+            ...state,
+            clientsCount 
+        }),
         fetchedClients : (state,clients)=>({
             ...state,
-            clients :clients,
-            clientsCount: clients.length
+            clients :[...clients],
+            firstClientsFetch:true,
         }),
-        addedClient   : (state,client)=>({
+        incrementedClientsLimit : (state,{clients,newLimit})=>({
             ...state,
-            clients  :[state.clients,client],
-            clientsCount: state.clientsCount +1
+            clients :clients,
+            clientsLimit: newLimit
+        }),
+        addedClient   : (state,clients)=>({
+            ...state,
+            clients  ,
+            clientsCount: state.clientsCount +1,
+            clientsAdded: state.clientsAdded +1,
         }),
         removedClient : (state,client)=>({
             ...state,
@@ -107,11 +72,42 @@ const model ={
         }),
     },
     effects: (dispatch)=>({
-        fetchClients(arg,state){
-               dispatch.client.fetchedClients(clientsList)
+        fetchClientsCount(arg,state){
+               const clientsCount= clientsList.length
+               dispatch.client.fetchedClientsCount(clientsCount)
         },
-        addClient(arg,state){
-
+        fetchMore(arg,state){
+               const limit = state.client.clientsLimit 
+               const clientsAdded = state.client.clientsAdded  
+               const clients  = [ ...state.client.clients ]
+               dispatch.client.incrementedClientsLimit({clients,newLimit:limit +8})
+        },
+        fetchClients(arg,state){
+               const firstClientsFetch = state.client.firstClientsFetch
+               if(!firstClientsFetch){
+               const limit= state.client.clientsLimit
+               const clients= [...clientsList]
+               dispatch.client.fetchedClients(clients)
+            }
+        },
+        addClient({name,sectorId,ref,phone,address,city,price,objectif},state){
+            const newClient = clientModel( 
+                 clientsList.length +1,
+                 name,
+                 sectorId,
+                 ref,
+                 phone,
+                 address,
+                 city,
+                 price,
+                 objectif
+             )
+            const currentClients = [...state.client.clients]
+             currentClients.unshift(newClient)
+            dispatch.client.addedClient(currentClients)
+        },
+        removeClient({client,admin},state){
+            dispatch.client.removedClient(client)
         },
         updateClient(arg,state){
 
@@ -123,7 +119,7 @@ const model ={
             dispatch.client.fetchedSectors(sectorsList)
         },
         addSector({name,city,province},state){
-            const sector = sectorModel(name,city,province)
+            const sector = sectorModel(sectorsList.length +1 ,name,city,province)
 
         },
         updateSector(arg,state){
@@ -134,19 +130,7 @@ const model ={
         },
 
 
-        fetchBills(arg,state){
-
-        },
-        addBill(arg,state){
-
-        },
-        updateBill(arg,state){
-
-        },
-        fetchBill(arg,state){
-
-        },
-
+ 
     })
 }
 export default model
