@@ -1,7 +1,7 @@
 // orders sent by admin
 // emploi du temp  
 // get clients List for each District (Secteur)
-import {clientsList,sectorsList} from '../ClientsAndSectors/Clients'
+import {clientsList,sectorsList} from '../ClientsAndSectors/DcoumentLists'
 import {distrubutorList} from '../Distrubutors/Distrubutors'
 
 

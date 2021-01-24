@@ -1,7 +1,9 @@
 //admin screen 
-import  AdminCat    from '../AdminPanel/Catalogue/Catalogue'  
+import AdminCat    from '../AdminPanel/Catalogue/Catalogue'  
 import AdminCateg  from '../AdminPanel/Categories/Categories'
-import AdminCl    from '../AdminPanel/Clients/Clients'
+import AdminCl    from '../AdminPanel/Clients/Clients List/Clients'
+import AdminAddCl    from '../AdminPanel/Clients/Add client/AddClient'
+import AdminClientP    from '../AdminPanel/Clients/client Page/ClientPage'
 import AdminDash  from '../AdminPanel/DashBoard/AdminDashBoard'
 import AdminDist    from '../AdminPanel/Distrubutors/Distrubutors'
 import AdminOrders  from '../AdminPanel/Orders/OrdersValidated'
@@ -27,28 +29,29 @@ import Distrubutorbt   from '../Distrubutor/validatedCommands/BillTable'
 import Log    from '../Auth/Login/Login'
 
 
-
-export const AdminCatalogue = AdminCat  ;
-export const AdminCategories= AdminCateg ;
-export const AdminClients   = AdminCl ;
-export const AdminDashBoard = AdminDash ;
+export const AdminAddClient    = AdminAddCl ;
+export const AdminClientPage   = AdminClientP ;
+export const AdminClients      = AdminCl ;
+export const AdminCatalogue    = AdminCat  ;
+export const AdminCategories   = AdminCateg ;
+export const AdminDashBoard    = AdminDash ;
+export const AdminSales        = AdminSls ;
+export const AdminSectors      = AdminSec ;
+export const AdminSchedule     = AdminSch ;
+export const AdminProducts     = AdminProds ;
+export const AdminAddNewAdmin  = AdminAddAdmin ;
 export const AdminDistrubutors    = AdminDist ;
 export const AdminOrdersValidated = AdminOrders ;
-export const AdminProducts = AdminProds ;
-export const AdminSales    = AdminSls ;
-export const AdminSectors  = AdminSec ;
-export const AdminSchedule = AdminSch ;
 export const AdminListOfSchedules = AdminListSch ;
-export const AdminAddNewAdmin= AdminAddAdmin ;
 export const AdminRegisterDistrubutor= AdminRegisterDist ;
 
 
-export const DistrubutorSectors= DistrubutorSect  ;
-export const DistrubutorCatalogue= DistrubutorCat ;
-export const DistrubutorDashBoard= DistrubutorDash  ;
+export const DistrubutorSectors   = DistrubutorSect  ;
+export const DistrubutorCatalogue = DistrubutorCat ;
+export const DistrubutorDashBoard = DistrubutorDash  ;
 export const DistrubutorCart= DistrubutorCrt ;
-export const DistrubutorClientDelivry= DistrubutorClient  ;
-export const DistrubutorTodaysOrders= DistrubutorTodays  ;
+export const DistrubutorClientDelivry = DistrubutorClient  ;
+export const DistrubutorTodaysOrders  = DistrubutorTodays  ;
 export const DistrubutorValidatedCommands= DistrubutorVc  ;
 export const DistrubutorBillTable= Distrubutorbt ;
 

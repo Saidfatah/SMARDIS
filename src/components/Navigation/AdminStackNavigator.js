@@ -13,7 +13,9 @@ import {
    AdminSales,
    AdminSchedule,
    AdminSectors,
-   AdminListOfSchedules
+   AdminListOfSchedules,
+   AdminAddClient,
+   AdminClientPage
 } from './Screens'
 
 const AdminStack     = createStackNavigator()
@@ -39,7 +41,18 @@ const AdminStackNavigator =()=>{
             />
              <AdminStack.Screen 
                 name="ADMINclients" 
+                options={{title:'List des clients'}}
                 component={AdminClients} 
+            />
+             <AdminStack.Screen 
+                name="ADMINclientProfile" 
+                options={{title:'Profile du client'}}
+                component={AdminClientPage} 
+            />
+             <AdminStack.Screen 
+                name="ADMINaddClient" 
+                options={{title:'Ajouter un client'}}
+                component={AdminAddClient} 
             />
              <AdminStack.Screen 
                 name="ADMINdistrubutors" 
