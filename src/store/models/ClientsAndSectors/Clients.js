@@ -109,6 +109,11 @@ const model ={
         removeClient({client,admin},state){
             let clients = state.client.clients
             const newclients= clients.filter(cl => cl.id != client.id) 
+            dispatch.toast.show({
+                type:'success',
+                title:'Supprission success',
+                message:`client ${client.name} est supprimer`
+            })
             dispatch.client.removedClient(newclients)
         },
         updateClient(arg,state){
