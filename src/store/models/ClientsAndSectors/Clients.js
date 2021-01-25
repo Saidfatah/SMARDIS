@@ -61,9 +61,9 @@ const model ={
             clientsCount: state.clientsCount +1,
             clientsAdded: state.clientsAdded +1,
         }),
-        removedClient : (state,client)=>({
+        removedClient : (state,clients)=>({
             ...state,
-            clients :[...state.clients].filter(c=>!c.id == client.id),
+            clients :[...clients],
             clientsCount: state.clientsCount -1
         }),
         updatedClient : (state,client)=>({
@@ -107,7 +107,9 @@ const model ={
             dispatch.client.addedClient(currentClients)
         },
         removeClient({client,admin},state){
-            dispatch.client.removedClient(client)
+            let clients = state.client.clients
+            const newclients= clients.filter(cl => cl.id != client.id) 
+            dispatch.client.removedClient(newclients)
         },
         updateClient(arg,state){
 
