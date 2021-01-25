@@ -6,6 +6,7 @@ export const clientModel=(id,name,sectorId,ref,phone,address,city,price,objectif
     objectif,
     address,
     city,
+    credit:0,
     sectorId,
     phone :phone  ||'' , 
     coardinations: coardinations || {x:0,y:0}
