@@ -1,4 +1,3 @@
-import FastImage from "react-native-fast-image"
 
  
 const adminModel=(name,phone,email,whatssap,id )=>({

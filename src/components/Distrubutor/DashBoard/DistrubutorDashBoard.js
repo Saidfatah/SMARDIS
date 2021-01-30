@@ -1,20 +1,46 @@
-import React from 'react'
-import {View,Text} from 'react-native'
-import Button from '../../Common/Button'
-import BackgroundImage from '../../Common/BackgroundImage'
+import React,{useEffect} from 'react'
+import {connect} from 'react-redux'
+import TodaysOrders from '../TodaysOrders/TodaysOrders'
 
-const DistrubutorDashBoard=({ navigation })=> {
-    const navigateToRoute=(r)=>navigation.navigate(r)
+const DistrubutorDashBoard=({route, navigation,fetchTodaysSectors,fetchSectors,fetchClientsCount   ,fetchDistrubutors ,fetchOrders ,fetchValidatedOrders ,fetchCategories  ,fetchClients,fetchProducts })=> {
+    useEffect(() => {
+        fetchClients()
+        fetchSectors()
+        fetchClientsCount()
+        fetchDistrubutors()
+        fetchOrders ()
+        fetchValidatedOrders()
+        fetchCategories()
+        fetchProducts()
+        fetchTodaysSectors()
+    }, [])
 
-
-    return <BackgroundImage>
-        <Button clickHandler={()=>navigateToRoute('DISTRIBUTORtodaysOrders')}>   
-            <Text> les mission d'aujourd'hui</Text>
-        </Button>
-        <Button clickHandler={()=>navigateToRoute('DISTRIBUTORsectors')}>  
-            <Text>Les secteurs d'aujourd'hui </Text>
-        </Button>
-   </BackgroundImage> 
+    return  <TodaysOrders {...{navigation,route}} />
+   
 }
 
-export default DistrubutorDashBoard
+
+export default connect(
+    state=>({
+        sectorsCount  : state.client.sectorsCount, 
+        clientsCount  : state.client.clientsCount,
+        salesCount    : state.cart.salesCount,
+        ordersCount   : state.order.ordersCount,
+        productsCount   : state.products.productsCount,
+        categoriesCount : state.products.categoriesCount,
+        distrubutorsCount    : state.distrubutor.distrubutorsCount,
+        validatedOrdersCount : state.cart.validatedOrdersCount,
+    }),
+    dispatch =>({
+        //fetch products , clients , categories 
+        fetchTodaysSectors : dispatch.order.fetchTodaysSectors,
+        fetchClients  : dispatch.client.fetchClients,
+        fetchSectors  : dispatch.client.fetchSectors,
+        fetchClientsCount  : dispatch.client.fetchClientsCount,
+        fetchDistrubutors : dispatch.distrubutor.fetchDistrubutors,
+        fetchOrders : dispatch.order.fetchOrders,
+        fetchValidatedOrders : dispatch.cart.fetchValidatedOrders,
+        fetchCategories : dispatch.products.fetchCategories,
+        fetchProducts   : dispatch.products.fetchProducts,
+    })
+)(DistrubutorDashBoard)

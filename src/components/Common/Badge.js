@@ -1,7 +1,7 @@
 import React from 'react'
 import {  Badge as BadgeComponent } from 'react-native-elements'
 
-const Badge=({status,value})=> {
+const Badge=({status,value,mgl})=> {
 
     return  <BadgeComponent
          status={status}
@@ -9,7 +9,7 @@ const Badge=({status,value})=> {
          textStyle={{
            fontSize:14
          }}
-         containerStyle={{marginLeft:16}}
+         containerStyle={{marginLeft:mgl||16}}
          badgeStyle={{ 
             height:24 ,
          }}

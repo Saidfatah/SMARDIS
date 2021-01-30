@@ -1,54 +1,13 @@
 // orders sent by admin
 // emploi du temp  
 // get clients List for each District (Secteur)
-import {clientsList,sectorsList} from '../ClientsAndSectors/DcoumentLists'
-import {distrubutorList} from '../Distrubutors/Distrubutors'
-
-
-const ordersList      = []
-const orderModel=(adminId,distrubutorId,distination,distrubutor)=>({
-     adminId,
-     status: "PENDING",
-     date:new Date(),
-     admin:{name:"abdellah jgnour",id:1},
-     distrubutor:distrubutor ||{name:"distrubutor name",id:-1},
-     distrubutorId,
-     distination: distination || {sector:'1',clientsIds :[1,2,3,5]}
-})
-
-
-const order1 = orderModel(1,1,
-    {
-         sector  : sectorsList[0],
-         clients : [clientsList[0],clientsList[1]]
-    },
-    distrubutorList[0]
-)
-ordersList.push(order1)
-
-const order2 = orderModel(1,2,
-    {
-         sector : sectorsList[1],
-         clients : [clientsList[2],clientsList[3],clientsList[4]]
-    },
-    distrubutorList[1]
-)
-ordersList.push(order2)
-
-const order3 = orderModel(1,1,
-    {
-         sector  : sectorsList[2],
-         clients : [clientsList[5],clientsList[6],clientsList[7]]
-    },
-    distrubutorList[0]
-)
-ordersList.push(order3)
-
+import {orderModel} from './Schemas/OrderModel'
+import {ordersList} from './Schemas/OrdersList'
 
 
 const model ={
     state:{
-        orders  :[],
+        orders  :[...ordersList],
         ordersCount : 0 ,
         todaysSectors :[], 
         todaysSectorsCount :0, //to display in distrubutor's dashboard
@@ -76,19 +35,27 @@ const model ={
         }),
         fetchedTodaysSectors : (state,todaysSectors)=>({
             ...state,
-            todaysSectors :todaysSectors,
+            todaysSectors :[...todaysSectors],
             todaysSectorsCount :todaysSectors.length,
+        }),
+        setedNextTurn : (state,todaysSectors)=>({
+            ...state,
+            todaysSectors :[...todaysSectors],
         }),
     },
     effects: (dispatch)=>({
         fetchTodaysSectors(arg,state){
             const currentDistrubutorId = state.auth.distrubutorId
-            const currentDistrubutorOrders = state.order.orders.filter(o => o.distrubutorId == currentDistrubutorId  )
-            dispatch.order.fetchedTodaysSectors(currentDistrubutorOrders)
+            let currentDistrubutorOrders = state.order.orders.filter(o => o.distrubutorId == 1  )
+            const todaysorders = [...currentDistrubutorOrders].map((o )=>{
+                const order= {...o}
+                order.distination.clients= order.distination.clients.map((c,i)=>({...c,turn: i==0 , done:false }))
+                return order
+            })
+            dispatch.order.fetchedTodaysSectors(todaysorders)
         },
         fetchOrders(arg,state){
    
-            console.log(ordersList[0].distination.clients)
              dispatch.order.fetchedorders(ordersList)
         },
         addOrder({adminId,distrubutorId,distination},state){
@@ -97,8 +64,7 @@ const model ={
             const newOrder = orderModel(adminId,distrubutorId,distination)
                 dispatch.order.addedorder(newOrder)
             }
-        },
-        
+        },  
         updateOrder({id,updatedFields},state){
             if(id && updatedFields){
                 const targetOrder = state.order.orders.filter(o=>o.id == id)[0]
@@ -108,7 +74,30 @@ const model ={
         fetchOrder(arg,state){
               //no use case yet 
         },
+        setNextTurn({id,clientId},state){
+          //here
+          let orders =[...state.order.todaysSectors]
 
+          if(orders.length<1) return console.log('no orders')
+
+          const todaysorders = orders.map((o,i)=>{
+              const order= o
+
+              if(order.id != id) return order
+               
+              const orderClients= [...order.distination.clients]
+              const lastClient = order.distination.clients.filter(c=>c.id == clientId)[0]
+              const lastClientIndex = order.distination.clients.indexOf(lastClient)
+              order.distination.clients= orderClients.map((c,i)=>({
+                  ...c, 
+                  turn : i==lastClientIndex+1 && order.id == id , 
+                  done: i <= lastClientIndex 
+              }))
+              return order
+          })
+
+          dispatch.order.setedNextTurn(todaysorders)
+        }
     })
 }
 export default model

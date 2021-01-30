@@ -1,47 +1,6 @@
-const cartGuests = [
-    {
-        name:'said',
-        guestId: 99,
-        distrubutor:null,
-        id:1,
-        items:[
-            {id:1,name:'sugar',price:150.9,quantity:2},
-            {id:2,name:'oil',price:99,quantity:4},
-        ]
-    },
-    {
-        name:'ali',
-        id:2,
-        guestId:90,
-        distrubutor:null,
-        items:[
-            {id:1,name:'choclate',price:45.9,quantity:4},
-            {id:2,name:'pasta',price:25.9,quantity:3},
-        ]
-    }
-]
-const cartGuestModel=(id,name,guestId,items,distrubutor,sector)=>({
-    name ,
-    guestId ,
-    distrubutor:distrubutor || {name:'abdellah',id},
-    id ,
-    sector ,
-    items ,
-    status : "PENDING"
-})
-const billModel=(id,distrubutor,client,products,sector,city,status)=>({
-    id          : id,
-    ref         :("C"+client.name +( new Date().getTime()).toString()).toUpperCase() , 
-    distrubutor :  distrubutor || {id: 1,name :'ali fatah'} , 
-    client      :  client || {id: 1,name :'ali fatah'} , 
-    products    :  products || [{id:1,code : "a11",price:50.00,name:'3afya 5L', quantity:5}] , 
-    sector      :  sector || {id:1,name:'tkhisa'}, 
-    total       :  products.reduce((a,c)=> a+(c.quantity * c.prce) ,0) || 100, 
-    city        :  city ||sector.city ,
-    date        :  new Date(), //use frebase date 
-    hour        :  new Date().getHours(), //use frebase date 
-    status      :  status , //||"PENDING" || "PAID" 
-})
+import {billModel} from './Schemas/BillModel'
+import {cartGuestModel} from './Schemas/CartGuestModel'
+
 
 const model ={
     state:{
@@ -111,7 +70,7 @@ const model ={
              }
      
         },
-        addCartItem({guest,product,sector},state){
+        addCartItem({guest,product,sector,orderId},state){
              const cartGuests= [...state.cart.cartGuests]
              const targetGuest = cartGuests.filter(g=>g.guestId == guest.id)[0]
              if( targetGuest ){
@@ -132,7 +91,16 @@ const model ={
                      dispatch.cart.addedProductQuantity(cartGuests)
                     }
              }else{
-                 cartGuests.push(cartGuestModel(cartGuests.length,guest.name,guest.id,[product],1,sector))
+                 cartGuests.push({...cartGuestModel(
+                     cartGuests.length,
+                     guest.name,
+                     guest.id,
+                     [product],
+                     1,
+                     sector,
+                     guest,
+                     orderId,
+                     )})
                  dispatch.cart.addedGuest(cartGuests)
              } 
         },
@@ -163,12 +131,11 @@ const model ={
              }
              
         },
-        validateGuestOrder({guestId,sector,status},state){
+        validateGuestOrder({guestId,sector,status,client},state){
              // update order status
              // update status of cart guest to VALIDATED
              // create order bill 
              // is it paid or not 
-             // maybe the client paid just a portion of what he owes  
              const cartGuests= [...state.cart.cartGuests]
              const targetGuest = cartGuests.filter(g=>g.guestId == guestId)[0]
              if( targetGuest ){
@@ -177,14 +144,22 @@ const model ={
                  //modfy cartGuest status to VALIDATED 
                  cartGuests[tergetGuestIndex].status="VALIDATED"
 
+                 //set next client turn and set current client to done with
+                 //this is better be dispatched from the react side 
+                 dispatch.order.setNextTurn({id:targetGuest.orderId,clientId:targetGuest.guestId})
                  //create bill and add it to todaysBills list 
                  const todaysBills = [...state.cart.todaysBills]
                  const {name,guestId,distrubutor,items} = cartGuests[tergetGuestIndex]
                  const orderBill = billModel(todaysBills.length,distrubutor,{id:guestId,name:name} ,items,sector.name,sector.city,status)
-                 console.log(orderBill)
                  todaysBills.push(orderBill)
-                 dispatch.cart.validatedGuestOrder({cartGuests , todaysBills })
 
+                 dispatch.toast.show({
+                    type:'success',
+                    title:'Validation ',
+                    message:`La command  est valider avec success `
+                })
+                 dispatch.cart.validatedGuestOrder({cartGuests , todaysBills })
+               
                  //[TODO]push bill to firestore collection
                 
             }

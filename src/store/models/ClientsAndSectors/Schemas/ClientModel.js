@@ -3,6 +3,7 @@ export const clientModel=(id,name,sectorId,ref,phone,address,city,price,objectif
     ref,
     name,
     price,
+    priceType:price.replace('x','ce'),
     objectif,
     address,
     city,
@@ -10,11 +11,4 @@ export const clientModel=(id,name,sectorId,ref,phone,address,city,price,objectif
     sectorId,
     phone :phone  ||'' , 
     coardinations: coardinations || {x:0,y:0}
-})
-
-export const sectorModel=(id,name,city,province)=>({
-    id  ,
-    name,
-    city,
-    province : province || '',
 })

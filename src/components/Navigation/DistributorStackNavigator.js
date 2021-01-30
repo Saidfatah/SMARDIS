@@ -1,5 +1,5 @@
 import React from 'react'
-import {createStackNavigator} from '@react-navigation/stack'
+import {createStackNavigator,HeaderBackButton} from '@react-navigation/stack'
 import {
     DistrubutorCart,
     DistrubutorCatalogue,
@@ -8,7 +8,8 @@ import {
     DistrubutorTodaysOrders,
     DistrubutorDashBoard,
     DistrubutorBillTable,
-    DistrubutorValidatedCommands
+    DistrubutorValidatedCommands,
+    
 } from './Screens'
 import {View,Text} from 'react-native'
 import {  Badge, Icon,Avatar } from 'react-native-elements'
@@ -16,6 +17,9 @@ import FAIcon from 'react-native-vector-icons/FontAwesome'
 import {colors} from '../Common/Colors'
 import {TouchableOpacity} from 'react-native'
 import { connect } from 'react-redux'
+import Button from '../Common/Button'
+
+
 const DistributorStack = createStackNavigator()
 
 const CustomHeaderTitle = (props)=>{
@@ -24,20 +28,23 @@ const CustomHeaderTitle = (props)=>{
    return <Text>panel des produits</Text>
    
 }
-const CustomHeaderRight = ({cartItems,navigation})=>{
+const CustomHeaderRight = ({cartGuests,navigation})=>{
+   const COUNT=[...cartGuests].filter(cartGuest=>cartGuest.status != "VALIDATED").length || 0
+
+
    return <View style={{marginRight:12,display:'flex',flexDirection:'row'}} >
           <TouchableOpacity onPress={()=>{navigation.navigate('DISTRIBUTORcart')}} >
              <View style={{marginRight:16}}>
                 <Icon type="ionicon" name="md-cart" size={30} />
                 <Badge
                   status="error"
-                  value={(cartItems).toString()}
+                  value={COUNT.toString()}
                    textStyle={{
                      fontSize:14
                    }}
                    badgeStyle={{ 
                       height:24 ,
-                      width:(cartItems).toString().split('').length >= 2 ? 25 : 20
+                      width:COUNT.toString().split('').length >= 2 ? 25 : 20
                    }}
                   containerStyle={{
                       position: 'absolute', 
@@ -79,7 +86,7 @@ const DistributorStackNavigator =({cartGuests})=>{
                      <CustomHeaderTitle {...{route, navigation}}  />
                   ),
                   headerRight: () => (
-                     <CustomHeaderRight {...{route, navigation}} cartItems={cartGuests.length} />
+                     <CustomHeaderRight {...{route, navigation}} cartGuests={cartGuests} />
                   ),
         
                  })}
@@ -97,7 +104,14 @@ const DistributorStackNavigator =({cartGuests})=>{
              />
              <DistributorStack.Screen 
                 name="DISTRIBUTORvalidtedCommands" 
-                options={{headerTitle:"Les commands valider"}}
+                options={({route, navigation})=>(
+                   {
+                   headerTitle:"Les commands valider",
+                   headerLeft :()=><HeaderBackButton 
+                   label="Secteurs d'aujordhui" 
+                   onPress={()=>navigation.navigate('DISTRIBUTORtodaysOrders')} 
+                   />
+                  })}
                 component={DistrubutorValidatedCommands} 
              />
              <DistributorStack.Screen 

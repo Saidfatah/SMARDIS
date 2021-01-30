@@ -9,7 +9,7 @@ const ProductItem=({product,setIsPanelActive,setselectedProduct})=> {
             setIsPanelActive(true)
             setselectedProduct(product)
             }}>
-             <ProductInfo product={product} setIsPanelActive={setIsPanelActive} opened={false} />
+             <ProductInfo product={product} opened={false} />
         </TouchableOpacity>
     </View>
 }

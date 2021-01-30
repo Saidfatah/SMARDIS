@@ -1,12 +1,91 @@
 import React from 'react'
 import {View,Text,FlatList,StyleSheet} from 'react-native'
+import { connect } from 'react-redux'
+import Image from 'react-native-fast-image'
+import Item from '../../Common/Item'
+import Button from '../../Common/Button'
 
-const  Categories=()=> {
+const  Categories=({navigation,categories})=> {
     return (
-        <Text>
-          Categories  
-        </Text>
+      <View style={{backgroundColor:'#fff'}}  >
+        <FlatList 
+           data   = {categories}
+           style  = {{...styles.list}}
+           contentContainerStyle = {props =>(styles.flatList)}
+           showsVerticalScrollIndicator={false}
+           onEndReached={e=> {
+             console.log('reached end')
+            //  setTimeout(()=>fetchMore(),2000)
+           }}
+           renderItem   = {({ item ,index}) =><Item xStyle={styles.categoryItem}  >
+
+                    <View style={styles.category} >
+                        <Text>{item.name}</Text>
+                        <Image 
+                        style={{height:50,width:50}}  
+                        // source={item.image!="NO_IMAGE"
+                        // ?{uri:item.image}
+                        // :require('../../../images/noImage.jpg')
+                        //  }
+                        source={require('../../../images/noImage.jpg')}
+                        />
+                    </View>
+                    <Button
+                      xStyle={{margin:0,borderRadius:12}} 
+                      color={"BLUE"} 
+                      clickHandler={e=>{ navigation.navigate('ADMINcategoryPage',{category:item})}} 
+                      >
+                         <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>Afficher</Text>
+                    </Button>
+
+           </Item>
+           }
+           keyExtractor = {(item, index) => index.toString()}
+        />
+      </View>
     )
 }
+export default connect(
+  state=>({
+    categories:state.products.categories
+  }),
+  null
+)(Categories)
 
-export default Categories
+var styles = StyleSheet.create({
+  categoryItem:{
+      display:'flex',
+      flexDirection:'row-reverse' ,
+      justifyContent:'space-between',
+      paddingLeft:16,
+      marginBottom:8,
+      alignItems:'center',
+  },
+  category:{
+      display:'flex',
+      flexDirection:'row',
+      alignItems:'center',
+      justifyContent:'space-between',
+      paddingTop:8,
+  },
+  list:{
+      borderColor:'#fff',
+      padding:16,
+  },
+  Clientlist:{
+      borderColor:'#fff',
+      padding:16,
+  },
+  flatList:{ 
+      alignItems: 'center',
+       justifyContent: 'center', 
+       flex:1
+  },
+  title:{
+     fontSize:20,
+     marginTop:16,
+     color:'#fff'
+  }
+});
+
+

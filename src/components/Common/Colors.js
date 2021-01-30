@@ -1,4 +1,6 @@
 export const colors = {
+    WHITE: "#fff" , 
+    TRANS: "transparent" , 
     BLACK: "#000f27" , 
     GREEN :"#00FF00" , 
     DARKBLUE : "#000f27", 

@@ -1,10 +1,23 @@
-import  React from 'react'
+import  React,{createRef,useEffect,useState} from 'react'
 import { StyleSheet} from 'react-native'
 import NumericInput from 'react-native-numeric-input'
 import {colors} from '../Common/Colors'
 
 
 const Quantity=({quantity,guestId,itemId,updateQuantity})=> {
+    const [quantityLocal, setquantityLocal] = useState(quantity)
+    const ref =createRef()
+
+    useEffect(() => {
+        let mounted = true 
+        if(mounted){
+            ref.current+=1
+            console.log({quantity,mounted})
+            setquantityLocal(quantity)
+        }
+       
+        return ()=>mounted = false
+    }, [quantity])
 
     return <NumericInput 
             iconStyle={{
@@ -19,12 +32,13 @@ const Quantity=({quantity,guestId,itemId,updateQuantity})=> {
             rightButtonBackgroundColor={"transparent"}
             minValue={1}
             step={1}
-            value={quantity} 
+            value={quantityLocal} 
             onChange={value => {
                 updateQuantity({guestId,itemId,quantity:value  })
             }} 
     />
 }
+
 
 export default Quantity
 

@@ -12,9 +12,10 @@ const ClientDelivry=({ route, navigation  ,categories,addCartItem,selectedCatego
     const [selectedProduct, setselectedProduct] = useState(selectedCategoryProducts[0]);
 
 
-    const { clientId ,client,sector  } = route.params;
+    const { clientId ,client,sector,orderId  } = route.params;
     const {name}=client
     useEffect(() => {
+        selectCategory(2)
         navigation.setParams({ clientName: name });
     }, [])
   
@@ -30,7 +31,7 @@ const ClientDelivry=({ route, navigation  ,categories,addCartItem,selectedCatego
              <CategoriesSlider  {...{navigation,handleHeight,categories,selectedCategory,selectCategory}} />
              <Products {...{setIsPanelActive,setselectedProduct,selectedCategoryProducts}} />
         </View>
-             <SwipeAbleProductDetails {...{selectedProduct,sector,isPanelActive,setIsPanelActive,guest:client,addCartItem}}  />
+             <SwipeAbleProductDetails {...{selectedProduct,sector,isPanelActive,setIsPanelActive,guest:client,client,orderId,addCartItem}}  />
     </BackgroundImage> 
 }
 

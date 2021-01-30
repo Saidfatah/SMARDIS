@@ -30,7 +30,7 @@ const DashBoardItem=({ROUTE,last,navigation,sectorsCount ,clientsCount ,salesCou
                 break;
             case "VENTES":
                 ICON= {type:'font-awesome',name:'pie-chart'}
-                COUNT= categoriesCount
+                COUNT= salesCount
                 STATUS="success"
                 break;
         

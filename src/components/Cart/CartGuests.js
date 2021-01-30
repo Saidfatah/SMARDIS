@@ -8,7 +8,10 @@ import { List } from 'react-native-paper';
 const CartGuests=({navigation,cartGuests,updateQuantity,validateGuestOrder,removeGuestItem})=> {
     const TITLE = cartGuests.length >0 ? "les paneirs active" :"Le panier est vide"
     const RenderItem=({guest})=>{
-        const {items,name,sector}=guest
+        const {items,name,sector,status}=guest
+
+        if(status == "VALIDATED") return null 
+        
         return <Item xStyle={styles.item}>
              <GuesItems 
                  items={items} 

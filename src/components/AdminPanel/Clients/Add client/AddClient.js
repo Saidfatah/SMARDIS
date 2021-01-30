@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import {View,Text,TextInput,StyleSheet} from 'react-native'
 import { connect } from 'react-redux'
 import Label from '../../../Common/Label'
@@ -28,8 +28,10 @@ const PRICES=[
     3000
 ]
 
-export const AddClient = ({navigation,addClient,sectors}) => {
+export const AddClient = ({route,navigation,updateClient,addClient,sectors}) => {
     const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
+    const [update, setupdate] = useState(false)
+    const [clientToBeUpdatedId, setclientToBeUpdatedId] = useState(-1)
     const [selectedPrice, setselectedPrice] = useState(PRICES[0])
     const [selectedSector, setselectedSector] = useState(sectors[0] || {name:"SECTOR",city:"Ouarzazate",id:-1})
     const [clientData, setclientData] = useState({
@@ -41,6 +43,31 @@ export const AddClient = ({navigation,addClient,sectors}) => {
         objectif:9000,
     })
     
+ 
+    
+    useEffect(() => {
+        if(route.params){
+            if(route.params.update == undefined) return 
+            const {client}=route.params
+            const {phone,city,ref,name,address,objectif,price,sectorId }=client
+            navigation.setParams({CLIENT_NAME:client.name})
+            setclientData({
+             ...clientData,
+              client,
+              phone,
+              city,
+              ref,
+              name,
+              address,
+              objectif
+            })
+            setupdate(true)
+            setclientToBeUpdatedId(client.id)
+            setselectedSector(sectors.filter(s=>s.id == sectorId)[0])
+            // setselectedPrice(PRICES.filter(p=>p == price)[0])
+        } 
+    }, [])
+
     const resetErrors=()=>seterrors({...ERRORS_INITIAL_CONFIG})
     const handelChange=input=>v=>{ setclientData({...clientData,[input]:v}) }
     const validateFields =()=>{
@@ -88,7 +115,8 @@ export const AddClient = ({navigation,addClient,sectors}) => {
         const clientObj = {...clientData}
         clientObj.price= selectedPrice
         clientObj.sectorId= selectedSector.id
-        addClient({...clientObj})
+        if(!update) return addClient({...clientObj})
+        updateClient({...clientObj,id:clientToBeUpdatedId,navigation})
     }
 
 
@@ -185,7 +213,7 @@ export const AddClient = ({navigation,addClient,sectors}) => {
               color={"BLUE"} 
               clickHandler={e=>dispatchAddClient()} 
               >
-                 <Text style={styles.ButtonText}>Enregistrer</Text>
+                 <Text style={styles.ButtonText}>{update?"Modifier":"Enregistrer"}</Text>
             </Button>
              <Button
               xStyle={styles.BtnXstyle} 
@@ -206,7 +234,8 @@ export default connect(
     })
     , 
     dispatch=>({
-        addClient: dispatch.client.addClient
+        addClient: dispatch.client.addClient,
+        updateClient: dispatch.client.updateClient,
     })
 )(AddClient)
 

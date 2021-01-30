@@ -2,23 +2,9 @@
 //get tasks 
 //validate orders 
 //send notifcaton to admin 
+import {distrubutorModel} from './Schemas/DistrubutorModel'
+import {distrubutorList} from './Schemas/DistrubutorsList'
 
-export const distrubutorList      = []
-const distrubutorModel=(name,city,ref)=>({
-     id:distrubutorList.length +1,
-     ref: ref,
-     name,
-     city : city || ''
-})
-
-const distrubutor1 = distrubutorModel('mohssine')
-distrubutorList.push(distrubutor1)
-const distrubutor2 = distrubutorModel('adil')
-distrubutorList.push(distrubutor2)
-const distrubutor3 = distrubutorModel('redouan')
-distrubutorList.push(distrubutor3)
-const distrubutor4 = distrubutorModel('abdessamad')
-distrubutorList.push(distrubutor4)
 
 
 
@@ -35,22 +21,22 @@ const model ={
             distrubutors :distrubutors,
             distrubutorsCount :distrubutors.length,
         }),
-        addeddistrubutor  : (state,distrubutor)=>({
+        addeddistrubutor  : (state,distrubutors)=>({
             ...state,
-            distrubutors :[...state.distrubutors,distrubutor],
+            distrubutors :[...distrubutors],
             distrubutorsCount :state.distrubutorsCount +1
         }),
-        updateddistrubutor   : (state,distrubutor)=>({
+        updateddistrubutor   : (state,distrubutors)=>({
             ...state,
-            distrubutor :distrubutor ,
+            distrubutors :[...distrubutors],
         }),
-        updateddistrubutorFromAdmin  : (state,distrubutor)=>({
+        updateddistrubutorFromAdmin  : (state,distrubutors)=>({
             ...state,
-            distrubutors :[...state.distrubutors].map(d=>d.id == distrubutor.id?distrubutor:d)
+            distrubutors :[...distrubutors],
         }),
-        removeddistrubutor : (state,distrubutor)=>({
+        removeddistrubutor : (state,distrubutors)=>({
             ...state,
-            distrubutors :[...state.distrubutors].filter(d=>!d.id ==distrubutor.id ),
+            distrubutors :[...distrubutors],
             distrubutorsCount :state.distrubutorsCount -1
         })
     },
@@ -66,32 +52,49 @@ const model ={
             //every 5 days refetch from firebase 
             dispatch.distrubutor.fetcheddistrubutors(distrubutorList)
         },
-        addDistrubutor({name,city,ref},state){
-             if(name && ref && city)
-             {
-                 const newDitrubutor = distrubutorModel(name ,city,ref)
-                 dispatch.distrubutor.addeddistrubutor(newDitrubutor)
-             }
+        addDistrubutor({name,city,ref,navigation},state){
+            const distrubutors= [...state.distrubutor.distrubutors]
+            const newDitrubutor = distrubutorModel(name ,city,ref)
+            distrubutors.unshift(newDitrubutor)
+            
+            dispatch.toast.show({
+                type:'success',
+                title:'Ajoute ',
+                message:`Vendeur ${name} est ajouter avec success`
+            })
+            dispatch.distrubutor.addeddistrubutor(distrubutors)
+            navigation.navigate('ADMINdistrubutors')
+         
         },
-        removeDistrubutor(id,state){
-             if(id)
-             {
-                 const targetedDistrubutor = state.distrubutor.distrubutors.filter(d=>d.id == id)[0]
-                 dispatch.distrubutor.removeddistrubutor(targetedDistrubutor)
-             }
+        removeDistrubutor({distrubutor,admin,navigation},state){
+            const {id,name}=distrubutor
+            const distrubutors= [...state.distrubutor.distrubutors]
+            const targetDistrubutor = distrubutors.filter(d=>d.id == id)[0]
+            const targetDistrubutorIndex = distrubutors.indexOf(targetDistrubutor)
+            distrubutors.splice(targetDistrubutorIndex,1)
+    
+            dispatch.toast.show({
+                type:'success',
+                title:'Supprision ',
+                message:`Vendeur ${name} est supprimer avec success`
+            })
+            dispatch.distrubutor.removeddistrubutor(distrubutors)
+            navigation.navigate('ADMINdistrubutors')
         },
-        updateDistrubutor({id,updatedFields},state){
-            if(id)
-            {
-                if(userType=="ADMIN"){
-                    const targetedDistrubutor = state.distrubutor.distrubutors.filter(d=>d.id == id)[0]
-                    dispatch.distrubutor.updateddistrubutorFromAdmin({...targetedDistrubutor,...updatedFields})
-                }else
-                {
-                    const currentLoggedDistrubutor = state.distrubutor.distrubutor
-                    dispatch.distrubutor.updateddistrubutor({...currentLoggedDistrubutor,...updatedFields})
-                }
-            }
+        updateDistrubutor({id,name,city,ref,navigation},state){
+            const distrubutors= [...state.distrubutor.distrubutors]
+            const targetDistrubutor = distrubutors.filter(d=>d.id == id)[0]
+            const targetDistrubutorIndex = distrubutors.indexOf(targetDistrubutor)
+            distrubutors[targetDistrubutorIndex]={...targetDistrubutor,name,city,ref}
+           
+           
+            dispatch.toast.show({
+                type:'success',
+                title:'Modification ',
+                message:`Vendeur ${name} est modifier avec success`
+            })
+            dispatch.distrubutor.updateddistrubutor(distrubutors)
+            navigation.navigate('ADMINdistrubutors')
         },
         fetchDistrubutor(id,state){
 
