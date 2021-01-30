@@ -3,46 +3,36 @@ import {View,Text,FlatList,StyleSheet , TouchableOpacity} from 'react-native'
 import { connect } from 'react-redux'
 import SectorItem from './SectorItem'
 import BackgroundImage from '../../Common/BackgroundImage'
+import { List } from 'react-native-paper';
 
-const  TodaysOrders=({fetchTodaysSectors,todaysSectors,navigation})=> {
+const  TodaysOrders=({todaysSectors,navigation})=> {
   const [sectorsToGoTo, setsectorsToGoTo] = useState([])
- 
+
+  let TITLE=todaysSectors.length
+  ? "Les mission d'aujourdhui"
+  :"Les aucaun de mission active"
+
   useEffect(() => {
   setsectorsToGoTo(todaysSectors.map((ts,i)=>({...ts,index:i,opened:false})))
   }, [todaysSectors])
   
-  useEffect(() => {
-   fetchTodaysSectors()
-  }, [])
 
-  const toggleSector = (id)=>{
-    //close the previusly opend sector 
-    //then open the clicked one 
-    //if the previosly clicked is this same one then close it 
-    const sectorsToGoToTemp = [...sectorsToGoTo.map(stt=>({...stt,opened:false})) ]
-    if(sectorsToGoTo[id].opened == true) 
-    {
-      sectorsToGoToTemp[id].opened =  false 
-    }else{
-      sectorsToGoToTemp[id].opened =  true 
-
-    }
-    setsectorsToGoTo(sectorsToGoToTemp)
-  }
-   
-  
 
   return (
-    <BackgroundImage>
-        <Text style={styles.title}> Les mission d'ajourdhui</Text>
-        <FlatList 
-         data   = {sectorsToGoTo}
-         style  = {{...styles.list}}
-         contentContainerStyle = {props =>(styles.flatList)}
-         showsVerticalScrollIndicator={false}
-         renderItem   = {({ item }) =><SectorItem toggleSector={toggleSector} sector={item.sector} navigation={navigation} index={item.index} opened={item.opened} clients={item.clients}  />}
-         keyExtractor = {(item, index) => index.toString()}
-        />
+    <BackgroundImage  >
+        <List.Section 
+        style={{padding:8}}
+        title={TITLE} 
+        titleStyle={{color:'#fff'}}
+        >
+          {sectorsToGoTo.map((order,index)=><SectorItem 
+          key={index}
+          orderId={order.id}
+          sector={order.distination.sector} 
+          navigation={navigation} 
+          clients={order.distination.clients}  
+          />)}
+         </List.Section>
     </BackgroundImage>
     
   )
@@ -53,9 +43,7 @@ export default connect(
   state=>({
       todaysSectors : state.order.todaysSectors
   }),
-  dispatch=>({
-      fetchTodaysSectors : dispatch.order.fetchTodaysSectors
-  })
+  null
 )(TodaysOrders)
 
 

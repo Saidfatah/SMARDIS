@@ -5,6 +5,7 @@ import order from './models/Orders/Orders'
 import products from './models/ProductsAndCategories/Products'
 import auth from './models/Auth/Auth'
 import toast from './models/Toast/Toast'
+import sales from './models/sales/Sales'
 import distrubutor from './models/Distrubutors/Distrubutors'
 
 const models={
@@ -15,6 +16,7 @@ const models={
     distrubutor ,
     order ,
     toast ,
+    sales
 }
 
 const store=init({

@@ -1,5 +1,5 @@
 import React from 'react'
-import {View,Text,FlatList,StyleSheet,Linking} from 'react-native'
+import {View,Text,ScrollView,StyleSheet,Linking} from 'react-native'
 import { connect } from 'react-redux'
 import Item from '../../../Common/Item'
 import Button from '../../../Common/Button'
@@ -22,7 +22,7 @@ export const ClientPage = ({navigation,route,sectors,removeClient}) => {
 
     const {phone,city,ref,name,address,objectif,price,sectorId}=client
     return (
-        <View style={styles.clientPage} >
+        <ScrollView contentContainerStyle={{ display:'flex',  flexGrow:1}}  style={styles.clientPage} >
             <View style={styles.HFlex} >
                     <Label label="Nom :"  mga={16} />
                     <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
@@ -37,8 +37,8 @@ export const ClientPage = ({navigation,route,sectors,removeClient}) => {
             </View>
             <View style={styles.HFlex} >
                     <Label  label="Prix :"  mga={16} />
-                    <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
-                        <Badge  status={"success"} value={price.toString()+"DH"} />
+                    <View style={{...styles.ClientItem,marginBottom:0}}>
+                        <Badge mgl={0} status={"success"}  value={price.toString()} />
                     </View>
             </View>
             <View style={styles.HFlex} >
@@ -71,9 +71,9 @@ export const ClientPage = ({navigation,route,sectors,removeClient}) => {
                          <Text> {sectors && sectors.filter(s=>s.id == sectorId)[0].name} </Text>
                     </View>
             </View>
-        <View style={styles.btns} >
+           <View style={styles.btns} >
                <Button
-                xStyle={{...styles.BtnXstyle,marginRight:16}} 
+                xStyle={{...styles.BtnXstyle}} 
                 color={"RED"} 
                 clickHandler={e=>{
                     removeClient({client,admin:0})
@@ -91,8 +91,16 @@ export const ClientPage = ({navigation,route,sectors,removeClient}) => {
                    <Text style={styles.ButtonText}>Appeler Le Client</Text>
                    <Icon name="call" size={25} color="#fff" />
              </Button>
+               <Button
+                xStyle={styles.BtnXstyle} 
+                color={"BLUE"} 
+                clickHandler={e=>navigation.navigate('ADMINupdateClient',{client,update:true})} 
+                >
+                   <Text style={styles.ButtonText}>Modifier Le Client</Text>
+                   <Icon name="call" size={25} color="#fff" />
+             </Button>
         </View>
-    </View>
+    </ScrollView>
     )
 }
 
@@ -109,9 +117,9 @@ export default connect(
 
 const styles = StyleSheet.create({
     clientPage:{
-        flex:1,
         backgroundColor:"#fff",
-        padding:8
+        padding:8,
+        height:"100%"
     },
     ClientItem: {
         display:'flex',
@@ -135,14 +143,15 @@ const styles = StyleSheet.create({
     },
     ButtonText:{color:"#fff",textAlign:'center',fontWeight:'bold'},
     BtnXstyle:{
-        flex:1,
         margin:0,
         borderRadius:12,
         height:50,
+        width:'100%',
         display:'flex',
         flexDirection:'row',
         alignItems:'center',
-        justifyContent:'space-between'
+        justifyContent:"space-evenly",
+        marginBottom:8
     },
     container:{
         height:'100%',
@@ -152,11 +161,10 @@ const styles = StyleSheet.create({
     btns:{
         flex:1,
         display:'flex',
-        flexDirection:'row',
         marginTop:16,
         marginBottom:16,
-        justifyContent:'space-between',
-        alignItems:"flex-end"
+        justifyContent:'flex-start',
+        alignItems:"flex-start"
     }
 })
 

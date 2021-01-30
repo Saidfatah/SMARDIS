@@ -1,9 +1,7 @@
-//get clients List for each District (Secteur)
-//get clients localization 
-//set clients localization 
-import {clientModel,sectorModel} from './DocumentModels'
-import {clientsList, sectorsList} from './DcoumentLists'
-
+import {clientModel} from './Schemas/ClientModel'
+import {sectorModel} from './Schemas/SectorModel'
+import {clientsList} from './Schemas/ClientsList'
+import {sectorsList} from './Schemas/SectorsList'
 
 
 
@@ -26,14 +24,15 @@ const model ={
             sectors :sectors ,
             sectorsCount : sectors.length
         }),
-        addedSector  : (state,sector)=>({
+        addedSector  : (state,sectors)=>({
             ...state,
-            sectors :[...state.sectors, sector],
+            sectors :[...sectors],
             sectorsCount: state.sectorsCount+1
         }),
-        updatedSector  : (state,sector)=>({
+        updatedSector  : (state,sectors)=>({
             ...state,
-            sectors :[state.sectors].map(s=>s.id == sector.id ? sector:s)
+            sectors :[...sectors]
+            // sectors :[state.sectors].map(s=>s.id == sector.id ? sector:s)
         }),
         removedSector  : (state,sector)=>({
             ...state,
@@ -66,9 +65,9 @@ const model ={
             clients :[...clients],
             clientsCount: state.clientsCount -1
         }),
-        updatedClient : (state,client)=>({
+        updatedClient : (state,clients)=>({
             ...state,
-            clients :[...state.clients].map(c=>c.id == client.id ?client : c)
+            clients :[...clients] 
         }),
     },
     effects: (dispatch)=>({
@@ -104,7 +103,28 @@ const model ={
              )
             const currentClients = [...state.client.clients]
              currentClients.unshift(newClient)
+            dispatch.toast.show({
+                type:'success',
+                title:'Ajoute ',
+                message:`le client ${name} est ajouter avec success `
+            })
             dispatch.client.addedClient(currentClients)
+        },
+        updateClient({navigation,id,updatedFields,name,sectorId,ref,phone,address,city,price,objectif},state){
+            console.log({updatedFields})
+            const updtaedFiels= {name,sectorId,ref,phone,address,city,price,objectif}
+            let   clients =[...state.client.clients]
+            const targetClient = clients.filter(client =>client.id == id)[0]
+            let   targetClientId =clients.indexOf(targetClient)
+            clients[targetClientId]= {...targetClient,...updtaedFiels} 
+
+            dispatch.toast.show({
+                type:'success',
+                title:'Ajoute ',
+                message:`le client ${name} est Modifier avec success `
+            })
+            dispatch.client.updatedClient(clients)
+            navigation.navigate('ADMINclients')
         },
         removeClient({client,admin},state){
             let clients = state.client.clients
@@ -112,32 +132,40 @@ const model ={
             dispatch.toast.show({
                 type:'success',
                 title:'Supprission success',
-                message:`client ${client.name} est supprimer`
+                message:`client ${client.name} est supprimer avec success`
             })
             dispatch.client.removedClient(newclients)
         },
-        updateClient(arg,state){
 
-        },
-        fetchClient(arg,state){
+   
 
-        },
         fetchSectors(arg,state){
             dispatch.client.fetchedSectors(sectorsList)
         },
-        addSector({name,city,province},state){
-            const sector = sectorModel(sectorsList.length +1 ,name,city,province)
-
+        addSector({name,city},state){
+            const sector = sectorModel(sectorsList.length +1 ,name,city)
+            let sectors =[...state.client.sectors]
+            sectors.unshift(sector)
+            dispatch.toast.show({
+                type    : 'success',
+                title   : 'Ajoute ',
+                message : `le sector ${name} est ajouter avec success `
+            })
+            dispatch.client.addedSector(sectors)
+            //add sector to sectors collection 
         },
-        updateSector(arg,state){
-
-        },
-        fetchSector(arg,state){
-
-        },
-
-
- 
+        updateSector({name,id,city,navigation},state){
+            let sectors =[...state.client.sectors]
+            const tragetSector = sectors.filter(sector =>sector.id == id)[0]
+            let targetSectorId =sectors.indexOf(tragetSector)
+            sectors[targetSectorId]= {...tragetSector,name,city} 
+            dispatch.toast.show({
+                type:'success',
+                title:'Modification ',
+                message:`le sector ${name} est modifier avec success `
+            })
+            dispatch.client.updatedSector(sectors)
+        }
     })
 }
 export default model

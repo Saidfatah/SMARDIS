@@ -8,7 +8,7 @@ import {  Badge, Icon } from 'react-native-elements'
 
 
 
-const  AdminDashBoard=({ navigation,sectorsCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount,fetchSectors,fetchClientsCount   ,fetchDistrubutors ,fetchOrders ,fetchValidatedOrders ,fetchCategories  ,fetchProducts })=> {
+const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount,fetchSectors,fetchClientsCount   ,fetchDistrubutors ,fetchOrders ,fetchValidatedOrders ,fetchCategories  ,fetchClients,fetchProducts })=> {
     const ROUTES =[
         {
              title:"Clients",
@@ -21,7 +21,7 @@ const  AdminDashBoard=({ navigation,sectorsCount ,clientsCount ,salesCount,order
              title:"Produits",
              subMenu:[
                  {title:"List Of Products",route :"ADMINproducts"},
-                 {title:"Add product",route :"ADMINproducts"}
+                 {title:"Add product",route :"ADMINaddProduct"}
              ]
         },
         {
@@ -43,7 +43,7 @@ const  AdminDashBoard=({ navigation,sectorsCount ,clientsCount ,salesCount,order
              title:"Catégories",
              subMenu:[
                 {title:"List des category",route :"ADMINcategories"},
-                {title:"Ajouter une category",route :"ADMINcategories"}
+                {title:"Ajouter une category",route :"ADMINaddCategory"}
             ]
         },
         {
@@ -51,7 +51,7 @@ const  AdminDashBoard=({ navigation,sectorsCount ,clientsCount ,salesCount,order
              title:"Vendeurs",
              subMenu:[
                 {title:"List des Vendeurs",route :"ADMINdistrubutors"},
-                {title:"Ajouter une vendeur",route :"ADMINdistrubutors"}
+                {title:"Ajouter une vendeur",route :"ADMINaddDistrubutor"}
             ]
         },
         {
@@ -59,7 +59,7 @@ const  AdminDashBoard=({ navigation,sectorsCount ,clientsCount ,salesCount,order
              title:"Secteurs",
              subMenu:[
                 {title:"List des Secteurs",  route :"ADMINsectors"},
-                {title:"Ajouter une secteur",route :"ADMINsectors"}
+                {title:"Ajouter un secteur",route :"ADMINaddSector"}
             ]
         },
         {
@@ -79,6 +79,7 @@ const  AdminDashBoard=({ navigation,sectorsCount ,clientsCount ,salesCount,order
     ]
 
     useEffect(() => {
+          fetchClients()
           fetchSectors()
           fetchClientsCount()
           fetchDistrubutors()
@@ -86,6 +87,8 @@ const  AdminDashBoard=({ navigation,sectorsCount ,clientsCount ,salesCount,order
           fetchValidatedOrders()
           fetchCategories()
           fetchProducts()
+          fetchTodaysSales()
+          navigation.setParams({ADMIN_NAME:"Abdellah"})
     }, [])
 
     const navigateToRoute=(r)=>navigation.navigate(r)
@@ -98,7 +101,7 @@ const  AdminDashBoard=({ navigation,sectorsCount ,clientsCount ,salesCount,order
                  key={index} 
                  ROUTE={route} 
                  last={index === ROUTES.length-1}
-                 {...{sectorsCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount}}
+                 {...{sectorsCount,salesCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount}}
              />)
          }
          </List.Section>
@@ -110,7 +113,7 @@ export default connect(
     state=>({
         sectorsCount  : state.client.sectorsCount, 
         clientsCount  : state.client.clientsCount,
-        salesCount    : state.cart.salesCount,
+        salesCount    : state.sales.todaysSalesCount,
         ordersCount   : state.order.ordersCount,
         productsCount   : state.products.productsCount,
         categoriesCount : state.products.categoriesCount,
@@ -119,6 +122,8 @@ export default connect(
     }),
     dispatch =>({
         //fetch products , clients , categories 
+        fetchTodaysSales  : dispatch.sales.fetchTodaysSales,
+        fetchClients  : dispatch.client.fetchClients,
         fetchSectors  : dispatch.client.fetchSectors,
         fetchClientsCount  : dispatch.client.fetchClientsCount,
         fetchDistrubutors : dispatch.distrubutor.fetchDistrubutors,

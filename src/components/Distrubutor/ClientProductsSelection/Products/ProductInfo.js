@@ -11,11 +11,11 @@ const ProductInfo=({product,opened})=> {
     if(!opened){
         First  =  <Text style={[styles.productText,styles.flexItem]}>{price1}.00 DH</Text> 
         Second =  <Text style={[styles.productText,styles.flexItem]}>{name}</Text> 
-        Third  =  <FastImage style={[styles.image]} source={{uri:image}} /> 
+        Third  =  <FastImage style={[styles.image]} source={image!='NO_IMAGE'?{uri:image}:require('../../../../images/noImage.jpg')} /> 
     }else{
         Third  =  <Text style={[styles.productText]}>{price1}.00 DH</Text> 
         Second =  <Text style={[styles.productText]}>{name}</Text> 
-        First  =  <FastImage style={{...styles.image,height:100, width:100}} source={{uri:image}} /> 
+        First  =  <FastImage style={{...styles.image,height:100, width:100}} source={image!='NO_IMAGE'?{uri:image}:require('../../../../images/noImage.jpg')} /> 
     }
 
     return <View style={{ ...styles.productInfo, flexDirection:opened?'column':'row'}} >
