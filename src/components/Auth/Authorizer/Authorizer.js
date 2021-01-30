@@ -15,7 +15,7 @@ const  Authorizer=({navigation,authenticated,userType})=> {
                 navigation.navigate('LOGIN')
              }
          }, 3000);
-    }, [])
+    }, [authenticated])
 
     return<BackgroundImage>
      <View style={{

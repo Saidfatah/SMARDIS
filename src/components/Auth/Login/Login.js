@@ -12,8 +12,8 @@ import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import {CheckBox} from 'react-native-elements'
 
 const  Login=({navigation,authError,login})=> {
-    const [username, setusername] = useState("06123456789")
-    const [password, setPassword] = useState("4587")
+    const [username, setusername] = useState("vendeur1@vendeur.com")
+    const [password, setPassword] = useState("123456")
     const [savePassword, setsavePassword] = useState(false)
     const [errors, seterrors] = useState([])
     const [passwordRequired, setpasswordRequired] = useState(null)
@@ -83,6 +83,7 @@ const  Login=({navigation,authError,login})=> {
                          placeholder={"Entrer le mote de passe"}   
                          defaultValue={password} 
                          textContentType="password"
+                         secureTextEntry={true}
                          placeholderTextColor="#fff"
                          keyboardType="default"
                          onFocus={e=> setpasswordRequired(null)}
