@@ -6,16 +6,11 @@ import Logo from '../../Common/Logo'
 import BackgroundImage from '../../Common/BackgroundImage'
 
 
-const  Authorizer=({navigation,authenticated,userType})=> {
+const  Authorizer=({navigation,authenticated,userType,checkAuthetication})=> {
     useEffect(() => {
-         setTimeout(() => {
-            if(authenticated ){
-                navigation.navigate(userType+'DashBoard') 
-             }else{
-                navigation.navigate('LOGIN')
-             }
-         }, 3000);
-    }, [authenticated])
+        checkAuthetication({navigation})
+    }, [])
+
 
     return<BackgroundImage>
      <View style={{
@@ -42,6 +37,8 @@ export default connect(
         authenticated : state.auth.authenticated,
         userType : state.auth.userType,
     }),
-    null
+    dispatch=>({
+         checkAuthetication:dispatch.auth.checkAuthetication
+    })
 )(Authorizer)
 

@@ -15,9 +15,11 @@ const model ={
         user           : null ,
     },
     reducers:{
-        checkedAuthentication : (state,{authenticated})=>({
+        checkedAuthentication : (state,{authenticated,user,userType})=>({
             ...state,
             authenticated ,
+            user,
+            userType
         }),
         loginFailed:  (state,authError)=>({
             ...state,
@@ -35,7 +37,12 @@ const model ={
     effects: (dispatch)=>({
         checkAuthetication(somthing,state){
              auth().onAuthStateChanged(user=>{
-                 if(user) return 
+                 console.log(user)
+                //  if(user ){
+                //     navigation.navigate(userType+'DashBoard') 
+                //  }else{
+                //     navigation.navigate('LOGIN')
+                //  }
              })
         },
         async login({password,username,savePassword,navigation},state){
@@ -68,8 +75,15 @@ const model ={
                    return dispatch.auth.loginFailed({message:'email est pas valide'})
              }
         },
-        logout(somthing,state){
-             
+        async logout({navigation},state){
+             try {
+                  
+                 const logoutResponse= await auth().signOut()
+                 navigation.navigate('LOGIN')
+                
+             } catch (error) {
+                 console.log(error)
+             }
         },
 
     })
