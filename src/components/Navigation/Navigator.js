@@ -5,16 +5,23 @@ import { connect } from 'react-redux'
 import DistributorStackNavigator from './DistributorStackNavigator'
 import AdminStackNavigator from './AdminStackNavigator'
 import {Login,Authorizer} from './Screens'
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import DrawerContent from './DrawerNavigator/DrawerContent'
+
 const RouteStack     = createStackNavigator()
- 
+const Drawer = createDrawerNavigator();
 const Navigator =({authenticated,userType})=>{
     return <NavigationContainer >
-       <RouteStack.Navigator screenOptions={{headerShown:false}} initialRouteName="AUTHORIZER">
-             <RouteStack.Screen name="ADMINDashBoard"  component={AdminStackNavigator} />
-             <RouteStack.Screen name="DISTRUBUTORDashBoard" component={DistributorStackNavigator} />
-             <RouteStack.Screen name="LOGIN" component={Login} />
-             <RouteStack.Screen name="AUTHORIZER" component={Authorizer} />
-       </RouteStack.Navigator>
+       <Drawer.Navigator 
+       screenOptions={{headerShown:false}} 
+       initialRouteName="AUTHORIZER"
+       drawerContent={props => <DrawerContent {...props} />}
+       >
+             <Drawer.Screen name="ADMINDashBoard"  component={AdminStackNavigator} />
+             <Drawer.Screen name="DISTRUBUTORDashBoard" component={DistributorStackNavigator} />
+             <Drawer.Screen name="LOGIN" component={Login} />
+             <Drawer.Screen name="AUTHORIZER" component={Authorizer} />
+       </Drawer.Navigator>
     </NavigationContainer>
 }
 
