@@ -1,21 +1,29 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import {View,Text,FlatList,StyleSheet} from 'react-native'
 import { connect } from 'react-redux'
 import Item from '../../Common/Item'
 import Button from '../../Common/Button'
 
-const  Distrubutors=({navigation,distrubutors})=> {
+const  Distrubutors=({navigation,distrubutors,fetchMoreDistrubutors,fetchDistrubutors})=> {
+    useEffect(() => {
+        fetchDistrubutors()
+    }, [])
+    
+    const handleLoadMore=()=>{
+        console.log('laodmore')
+        fetchMoreDistrubutors()
+    }
+
     return (
-        <View style={{backgroundColor:'#fff'}}  >
+        <View style={{backgroundColor:'#fff',flex: 1}}  >
         <FlatList 
            data   = {distrubutors}
            style  = {{...styles.list}}
            contentContainerStyle = {props =>(styles.flatList)}
            showsVerticalScrollIndicator={false}
-           onEndReached={e=> {
-             console.log('reached end')
-            //  setTimeout(()=>fetchMore(),2000)
-           }}
+           onEndReached={e=>handleLoadMore()}
+           onEndReachedThreshold={distrubutors.length-2/distrubutors.length}
+           ListFooterComponent={<View style={{ height: 0, marginBottom: 90 }}></View>}
            renderItem   = {({ item ,index}) =><Item xStyle={styles.distrubutorItem}  >
                <View style={styles.distrubutor} >
                    <Text>{item.name}</Text>     
@@ -38,6 +46,10 @@ const  Distrubutors=({navigation,distrubutors})=> {
 export default connect(
     state=>({
         distrubutors:state.distrubutor.distrubutors
+    }),
+    dispatch=>({
+        fetchDistrubutors     : dispatch.distrubutor.fetchDistrubutors,
+        fetchMoreDistrubutors : dispatch.distrubutor.fetchMoreDistrubutors,
     })
 )(Distrubutors)
 
@@ -58,17 +70,16 @@ var styles = StyleSheet.create({
         paddingTop:8,
     },
     list:{
-        borderColor:'#fff',
         padding:16,
+        flex: 1
     },
     Clientlist:{
         borderColor:'#fff',
         padding:16,
     },
     flatList:{ 
-        alignItems: 'center',
-         justifyContent: 'center', 
-         flex:1
+
+         paddingBottom: 20 
     },
     title:{
        fontSize:20,

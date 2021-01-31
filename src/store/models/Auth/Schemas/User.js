@@ -1,6 +1,7 @@
 import firestore from '@react-native-firebase/firestore'
 
 export const user=(
+    user_id,
     type,
     name,
     email,
@@ -12,7 +13,7 @@ export const user=(
   if(type != "ADMIN" && type != "DISTRUBUTOR" )  throw Error('NO_USER_TYPE_PROVIDED')
   
   let userObj={
-      user_id:"Insert auth user id here ",
+      user_id ,
       type,
       name,
       email,

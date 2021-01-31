@@ -36,7 +36,6 @@ const DrawerContent=(props)=> {
     )
 
     const {type} = user
-    console.log(user)
     if(type == "ADMIN")
     return (
         <View style={{flex:1}}>

@@ -8,7 +8,7 @@ import {  Badge, Icon } from 'react-native-elements'
 
 
 
-const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount,fetchSectors,fetchClientsCount   ,fetchDistrubutors ,fetchOrders ,fetchValidatedOrders ,fetchCategories  ,fetchClients,fetchProducts })=> {
+const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount,fetchSectors,fetchClientsCount   ,fetchDistrubutorsCount ,fetchOrders ,fetchValidatedOrders ,fetchCategories  ,fetchClients,fetchProducts })=> {
     const ROUTES =[
         {
              title:"Clients",
@@ -82,7 +82,7 @@ const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clients
           fetchClients()
           fetchSectors()
           fetchClientsCount()
-          fetchDistrubutors()
+          fetchDistrubutorsCount()
           fetchOrders ()
           fetchValidatedOrders()
           fetchCategories()
@@ -126,7 +126,7 @@ export default connect(
         fetchClients  : dispatch.client.fetchClients,
         fetchSectors  : dispatch.client.fetchSectors,
         fetchClientsCount  : dispatch.client.fetchClientsCount,
-        fetchDistrubutors : dispatch.distrubutor.fetchDistrubutors,
+        fetchDistrubutorsCount : dispatch.distrubutor.fetchDistrubutorsCount,
         fetchOrders : dispatch.order.fetchOrders,
         fetchValidatedOrders : dispatch.cart.fetchValidatedOrders,
         fetchCategories : dispatch.products.fetchCategories,

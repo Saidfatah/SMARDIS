@@ -3,7 +3,10 @@
 //validate orders 
 //send notifcaton to admin 
 import {distrubutorModel} from './Schemas/DistrubutorModel'
+import {user} from '../Auth/Schemas/User'
 import {distrubutorList} from './Schemas/DistrubutorsList'
+import firestore from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
 
 
 
@@ -14,12 +17,25 @@ const model ={
         distrubutors  :[],
         distrubutor: null,
         distrubutorsCount  :0,
+        fetch_limit :10,
+        last_visible : null,
+        first_fetch :false
     },
     reducers:{
-        fetcheddistrubutors : (state,distrubutors)=>({
+        fetcheddistrubutors : (state,{distrubutors,last_visible})=>({
             ...state,
             distrubutors :distrubutors,
-            distrubutorsCount :distrubutors.length,
+            last_visible
+        }),
+        fetchedMoreDistrubutors : (state,{distrubutors,last_visible})=>({
+            ...state,
+            distrubutorsCount ,
+            last_visible,
+            first_fetch:true
+        }),
+        fetcheddistrubutorsCount : (state,distrubutorsCount)=>({
+            ...state,
+            distrubutorsCount ,
         }),
         addeddistrubutor  : (state,distrubutors)=>({
             ...state,
@@ -46,17 +62,104 @@ const model ={
             //fetch distrubutor by id from firestore
             dispatch.admin.fetchedAdminDocument({name:'abdellah',id:1})
         },
-        fetchDistrubutors(arg,state){
-            //here we getdata from firebase 
-            //store it in local cache 
-            //every 5 days refetch from firebase 
-            dispatch.distrubutor.fetcheddistrubutors(distrubutorList)
-        },
-        addDistrubutor({name,city,ref,navigation},state){
-            const distrubutors= [...state.distrubutor.distrubutors]
-            const newDitrubutor = distrubutorModel(name ,city,ref)
-            distrubutors.unshift(newDitrubutor)
+        async fetchDistrubutorsCount(arg,state){
+            try {
+                const distrybytorsResponse= await firestore()
+                                        .collection('users')
+                                        .where('type','==','DISTRUBUTOR')
+                                        .get()
+                 const count = distrybytorsResponse.docs.length
+                 dispatch.distrubutor.fetcheddistrubutorsCount(count)
+            } catch (error) {
+                console.log(error)
+            }
             
+        },
+        async fetchDistrubutors(arg,state){
+            try {
+                //this only gets called once per session 
+                const first_fetch = state.distrubutor.first_fetch
+                if(first_fetch) return
+
+                const fetch_limit = state.distrubutor.fetch_limit
+              
+                
+                const distrubutorsResponse= await firestore()
+                                        .collection('users')
+                                        .where('type','==','DISTRUBUTOR')
+                                        .orderBy('name','asc')
+                                        .limit(fetch_limit)
+                                        .get()
+
+                const docs =distrubutorsResponse.docs
+                distrubtors = docs.map(doc=>doc.data())
+                dispatch.distrubutor.fetcheddistrubutors({
+                    distrubutors:distrubtors,
+                    last_visible : distrubtors[distrubtors.length-1].name
+                })
+                 
+            } catch (error) {
+                console.log(error)
+            }
+            
+        },
+        async fetchMoreDistrubutors(arg,state){
+            try {
+                const fetch_limit = state.distrubutor.fetch_limit
+                const last_visible = state.distrubutor.last_visible
+
+                console.log({last_visible})
+                console.log({fetch_limit})
+
+                const moreDstrubutorsResponse= await firestore()
+                                        .collection('users')
+                                        .where('type','==','DISTRUBUTOR')
+                                        .orderBy('name',"asc")
+                                        .startAt(last_visible)
+                                        .limit(4)
+                                        .get()
+                                    
+                const docs = moreDstrubutorsResponse.docs
+
+                const PrevDistrubtors =  [...state.distrubutor.distrubutors]
+                PrevDistrubtors.pop()
+                const newDistrubtors  = docs.map(doc=>doc.data())
+
+                dispatch.distrubutor.fetcheddistrubutors({
+                    distrubutors : [...PrevDistrubtors,...newDistrubtors],
+                    last_visible : newDistrubtors[newDistrubtors.length -1].name
+                })              
+               
+            } catch (error) {
+                console.log(error)
+            }
+            
+        },
+        incrementFetchLimit(arg,state){
+            const fetch_limit = state.distrubutor.fetch_limit + 5
+            dispatch.distrubutor.incrementedFetchLimit(fetch_limit)
+        },
+        async addDistrubutor({name,email,password,phone,city,ref,navigation},state){
+            const distrubutors= [...state.distrubutor.distrubutors]
+            
+
+            //if we still order by name check if name exists 
+            const createAuthResponse= await auth().createUserWithEmailAndPassword(email,password)
+            const id=  createAuthResponse.user.uid
+            const newDitrubutor = user(
+                id ,
+                'DISTRUBUTOR',
+                name,
+                email,
+                phone ,
+                city,{
+                    ref
+                },
+                null
+            )
+            const addResponse= firestore().collection('users').add(newDitrubutor)
+            
+            distrubutors.unshift(newDitrubutor)
             dispatch.toast.show({
                 type:'success',
                 title:'Ajoute ',
@@ -66,12 +169,23 @@ const model ={
             navigation.navigate('ADMINdistrubutors')
          
         },
-        removeDistrubutor({distrubutor,admin,navigation},state){
-            const {id,name}=distrubutor
+        async removeDistrubutor({distrubutor,admin,navigation},state){
+            try {
+                const {user_id,name}=distrubutor
             const distrubutors= [...state.distrubutor.distrubutors]
-            const targetDistrubutor = distrubutors.filter(d=>d.id == id)[0]
+            const targetDistrubutor = distrubutors.filter(d=>d.user_id == user_id)[0]
             const targetDistrubutorIndex = distrubutors.indexOf(targetDistrubutor)
             distrubutors.splice(targetDistrubutorIndex,1)
+
+            //remove auth account 
+            const distrubutorRef=await firestore()
+                                       .collection('users')
+                                       .where('user_id','==',user_id)
+                                       .get()
+
+            distrubutorRef.docs.forEach(doc=>{
+                doc.ref.delete()
+            })
     
             dispatch.toast.show({
                 type:'success',
@@ -80,14 +194,22 @@ const model ={
             })
             dispatch.distrubutor.removeddistrubutor(distrubutors)
             navigation.navigate('ADMINdistrubutors')
+            } catch (error) {
+                console.log(error)
+            }
         },
-        updateDistrubutor({id,name,city,ref,navigation},state){
+        async updateDistrubutor({user_id,name,city,email,ref,navigation},state){
             const distrubutors= [...state.distrubutor.distrubutors]
             const targetDistrubutor = distrubutors.filter(d=>d.id == id)[0]
             const targetDistrubutorIndex = distrubutors.indexOf(targetDistrubutor)
-            distrubutors[targetDistrubutorIndex]={...targetDistrubutor,name,city,ref}
+            distrubutors[targetDistrubutorIndex]={...targetDistrubutor,name,city,email,ref}
            
-           
+            //firestore update 
+            const updateResponse= await firestore()
+                                       .collection("users")
+                                       .where('user_id','==',user_id)
+                                       .update({name,city,email,ref});
+                                                        
             dispatch.toast.show({
                 type:'success',
                 title:'Modification ',
@@ -96,7 +218,7 @@ const model ={
             dispatch.distrubutor.updateddistrubutor(distrubutors)
             navigation.navigate('ADMINdistrubutors')
         },
-        fetchDistrubutor(id,state){
+        async fetchDistrubutor(id,state){
 
         },
     })
