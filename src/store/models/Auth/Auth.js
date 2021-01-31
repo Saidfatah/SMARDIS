@@ -52,17 +52,18 @@ const model ={
         async checkAuthetication({navigation},state){
             try {
                 auth().onAuthStateChanged(async user=>{
+                    console.log({user})
                     let savePassword  = await AsyncStorage.getItem('SAVE_PASSWORD')
                     savePassword = JSON.stringify(savePassword)
                     const savedPassword  = await AsyncStorage.getItem('PASSWORD')
                    if(user){      
+                      
                       //get user doc from async storage
                       const userjsonValue = await AsyncStorage.getItem('USER')
                       const user = userjsonValue != null ? JSON.parse(userjsonValue) : null
                       const userType      = await AsyncStorage.getItem('USER_TYPE')
                      
-                      console.log(user)
-                      console.log({userType})
+             
                       dispatch.auth.checkedAuthentication({
                           authenticated:true,
                           user,
@@ -98,7 +99,7 @@ const model ={
                                               .where('user_id','==',loginResponse.user.uid)
                                               .get()
                                               
-                        if(!userDocs.empty){
+                        if(userDocs.docs.length){
                             const user =  userDocs.docs[0].data()
                             //pressist state to local storage  so that when we oen up next time we don't have to refetch from firestore
                             await AsyncStorage.setItem('USER', JSON.stringify(user))
@@ -403,7 +404,7 @@ const model ={
         },
         async toggleSavePassword({savePassword},state){
             try {
-                console.log(savePassword)
+       
                 await AsyncStorage.setItem('SAVE_PASSWORD', (savePassword).toString())
              
                 if(savePassword == false)

@@ -10,6 +10,10 @@ import { colors } from '../../../Common/Colors'
 
 const ERRORS_INITIAL_CONFIG = {
     nameREQUIRED:false,
+    emailREQUIRED:false,
+    cityREQUIRED:false,
+    refREQUIRED:false,
+    passwordREQUIRED:false,
  
 }
 const ERRORS_MESSAGES= [
@@ -17,8 +21,10 @@ const ERRORS_MESSAGES= [
 ]
 export const AddDistrubutor = ({navigation,route,updateDistrubutor,addDistrubutor}) => {
      const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
-     const [name, setname] = useState("")
-     const [city, setcity] = useState("")
+     const [name, setname]   = useState("")
+     const [city, setcity]   = useState("")
+     const [password, setpassword]   = useState("")
+     const [email, setemail] = useState("")
      const [ref, setref] = useState("")
      const [distrubutorToBeUpdated, setdistrubutorToBeUpdated] = useState(-1)
      const [update, setupdate] = useState(false)
@@ -28,13 +34,14 @@ export const AddDistrubutor = ({navigation,route,updateDistrubutor,addDistrubuto
         if(route.params){
             if(route.params.update == undefined) return 
             const {distrubutor}=route.params
-            const { id }=distrubutor
+            const { user_id }=distrubutor
             navigation.setParams({DISTRUBUTOR_NAME:distrubutor.name})
             setname(distrubutor.name)
             setref(distrubutor.ref)
+            setemail(distrubutor.email)
             setcity(distrubutor.city)
             setupdate(true)
-            setdistrubutorToBeUpdated(id)
+            setdistrubutorToBeUpdated(user_id)
         } 
     }, [])
 
@@ -44,6 +51,22 @@ export const AddDistrubutor = ({navigation,route,updateDistrubutor,addDistrubuto
         let errorsTemp = {...errors}
         if(name == ""){
             errorsTemp.nameREQUIRED =true
+            errorsCount++
+        }
+        if(email == ""){
+            errorsTemp.emailREQUIRED =true
+            errorsCount++
+        }
+        if(password == ""){
+            errorsTemp.passwordREQUIRED =true
+            errorsCount++
+        }
+        if(city == ""){
+            errorsTemp.cityREQUIRED =true
+            errorsCount++
+        }
+        if(ref == ""){
+            errorsTemp.refREQUIRED =true
             errorsCount++
         }
 
@@ -56,10 +79,10 @@ export const AddDistrubutor = ({navigation,route,updateDistrubutor,addDistrubuto
     const dispatchAddDistrubutor=()=>{
         if(!validateFields()) return 
 
-        const distrubutorObj = {name,city,ref}
+        const distrubutorObj = {name,city,ref,email,password}
       
         if(!update) return addDistrubutor({...distrubutorObj,navigation})
-        updateDistrubutor({...distrubutorObj,id:distrubutorToBeUpdated,navigation})
+        updateDistrubutor({...distrubutorObj,user_id:distrubutorToBeUpdated,navigation})
     }
 
 
@@ -76,6 +99,27 @@ export const AddDistrubutor = ({navigation,route,updateDistrubutor,addDistrubuto
                     onFocus={e=> resetErrors()}
                     keyboardType="default"
                     onChangeText={text=> setname(text) } 
+            />
+
+            <Label label="Email"  mga={16} />
+            <Error trigger={errors.emailREQUIRED} error={ERRORS_MESSAGES[0].message} />
+            <TextInput style={styles.Input}   
+                    placeholder={"entrer l'email  du vendeur"}   
+                    defaultValue={email} 
+                    onFocus={e=> resetErrors()}
+                    keyboardType="default"
+                    onChangeText={text=> setemail(text) } 
+            />
+
+            <Label label="Mote de passe"  mga={16} />
+            <Error trigger={errors.passwordREQUIRED} error={ERRORS_MESSAGES[0].message} />
+            <TextInput style={styles.Input}   
+                    placeholder={"entrer l'mode de passe du vendeur"} 
+                    secureTextEntry={true}  
+                    defaultValue={password} 
+                    onFocus={e=> resetErrors()}
+                    keyboardType="default"
+                    onChangeText={text=> setpassword(text) } 
             />
 
             <Label label="Ref"  mga={16} />

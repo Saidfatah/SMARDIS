@@ -6,11 +6,12 @@ import Logo from '../../Common/Logo'
 import BackgroundImage from '../../Common/BackgroundImage'
 
 
-const  Authorizer=({navigation,authenticated,userType,addDistrubutorsList,checkAuthetication})=> {
+const  Authorizer=({navigation,logout,authenticated,userType,addDistrubutorsList,checkAuthetication})=> {
     useEffect(() => {
-        setTimeout(() => {
-            checkAuthetication({navigation})
-        }, 4000);
+        
+       setTimeout(() => {
+           checkAuthetication({navigation})
+       }, 4000);
     }, [])
 
 
@@ -45,6 +46,7 @@ export default connect(
     dispatch=>({
          checkAuthetication:dispatch.auth.checkAuthetication,
          addDistrubutorsList:dispatch.auth.addDistrubutorsList,
+         logout:dispatch.auth.logout,
     })
 )(Authorizer)
 
