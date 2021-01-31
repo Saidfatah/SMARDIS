@@ -11,15 +11,20 @@ import { connect } from 'react-redux'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import {CheckBox} from 'react-native-elements'
 
-const  Login=({navigation,authError,login})=> {
-    const [username, setusername] = useState("vendeur1@vendeur.com")
+const  Login=({navigation,authError,login,toggleSavePassword,savePassword,savedPassword})=> {
+    const [username, setusername] = useState("jgnour@admin.com")
     const [password, setPassword] = useState("123456")
-    const [savePassword, setsavePassword] = useState(false)
-    const [errors, seterrors] = useState([])
+    const [savePasswordLogin, setsavePasswordLogin] = useState(false)
     const [passwordRequired, setpasswordRequired] = useState(null)
     const [usernameRequired, setusernameRequired] = useState(null)
     const [authErrorLocal, setauthErrorLocal] = useState(null)
 
+    useEffect(() => {
+          if(savePassword){
+            setsavePasswordLogin(true)
+            setPassword(savedPassword)
+          }
+    }, [])
     useEffect(() => {
           if(authError!= null){
             setauthErrorLocal(authError)
@@ -30,8 +35,8 @@ const  Login=({navigation,authError,login})=> {
          if(password == '') return setpasswordRequired({message:"Inserer votre mote de passe !"})
          if(username == '') return setusernameRequired({message:"Inserer votre numero du Téléphone !"})
        
-         login({password,username,savePassword,navigation})
-   }
+         login({password,username,savePassword:savePasswordLogin,navigation})
+    }
     
     const Errors = ()=>{
          if(passwordRequired != null)
@@ -54,8 +59,8 @@ const  Login=({navigation,authError,login})=> {
 
         <View style={styles.Logo}>
             <View style={{borderColor:'#fff',
-        borderWidth:2,
-        borderRadius:12}} >
+              borderWidth:2,
+              borderRadius:12}} >
              <Logo width={100} height={100}  />
 
             </View>
@@ -98,8 +103,11 @@ const  Login=({navigation,authError,login})=> {
                  </Button>
             </View>
            <CheckBox 
-           checked={savePassword} 
-           onPress={v=>setsavePassword(!savePassword)} 
+           checked={savePasswordLogin} 
+           onPress={v=>{
+               setsavePasswordLogin(!savePasswordLogin)
+               toggleSavePassword({savePassword:!savePasswordLogin})
+            }} 
            title="Enrg more de passe " 
            textStyle={{color:colors.WHITE}}
            checkedColor={colors.WHITE}
@@ -114,10 +122,13 @@ const  Login=({navigation,authError,login})=> {
 
 export default connect(
     state=>({
-       authError : state.auth.authError ,
+        authError : state.auth.authError ,
+        savedPassword : state.auth.savedPassword ,
+        savePassword : state.auth.savePassword ,
     }),
     dispatch=>({
        login : dispatch.auth.login,
+       toggleSavePassword : dispatch.auth.toggleSavePassword,
     })
 )(Login)
 
