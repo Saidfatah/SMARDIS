@@ -16,6 +16,7 @@ const model ={
         user           : null ,
         savePassword   : false,
         savedPassword  : null,
+        done_first_Logging  : false
     },
     reducers:{
   
@@ -51,8 +52,11 @@ const model ={
     effects: (dispatch)=>({
         async checkAuthetication({navigation},state){
             try {
+                const done_first_Logging = state.auth.done_first_Logging
+
+                if(done_first_Logging) return console.log('first logging')
+
                 auth().onAuthStateChanged(async user=>{
-                    console.log({user})
                     let savePassword  = await AsyncStorage.getItem('SAVE_PASSWORD')
                     savePassword = JSON.stringify(savePassword)
                     const savedPassword  = await AsyncStorage.getItem('PASSWORD')
@@ -62,7 +66,7 @@ const model ={
                       const userjsonValue = await AsyncStorage.getItem('USER')
                       const user = userjsonValue != null ? JSON.parse(userjsonValue) : null
                       const userType      = await AsyncStorage.getItem('USER_TYPE')
-                     
+                      console.log("on auth changed fired")
              
                       dispatch.auth.checkedAuthentication({
                           authenticated:true,
@@ -71,7 +75,7 @@ const model ={
                           savePassword  ,
                           savedPassword  ,
                       })
-                      navigation.navigate(userType+'DashBoard') 
+                      if(user != undefined)  navigation.navigate(userType+'DashBoard') 
                    }else{        
                        dispatch.auth.checkedAuthentication({
                            authenticated : false,
@@ -99,8 +103,31 @@ const model ={
                                               .where('user_id','==',loginResponse.user.uid)
                                               .get()
                                               
-                        if(userDocs.docs.length){
+                        if(userDocs.docs.length>0){
                             const user =  userDocs.docs[0].data()
+                            //pressist state to local storage  so that when we oen up next time we don't have to refetch from firestore
+                            await AsyncStorage.setItem('USER', JSON.stringify(user))
+                            await AsyncStorage.setItem('AUTHENTICATED', JSON.stringify(true))
+                            await AsyncStorage.setItem('USER_TYPE', user.type)
+                            await AsyncStorage.setItem('SAVE_PASSWORD', JSON.stringify(savePassword))
+                            await AsyncStorage.setItem('PASSWORD', password)
+                            await AsyncStorage.setItem('VALUE', "VALUE")
+                            
+                            dispatch.auth.loginSuccess({user,userType:user.type})
+
+                            //redirect user to their approprate dashboard 
+                            return navigation.navigate(user.type+'DashBoard')   
+                        }
+
+                        //f user wasn't fetched we retry 
+                        const userDocs2 = await firestore()
+                                              .collection('users')
+                                              .where('user_id','==',loginResponse.user.uid)
+                                              .get()
+                                              
+                        if(userDocs2.docs.length>0){
+                            console.log('from second try ')
+                            const user =  userDocs2.docs[0].data()
                             //pressist state to local storage  so that when we oen up next time we don't have to refetch from firestore
                             await AsyncStorage.setItem('USER', JSON.stringify(user))
                             await AsyncStorage.setItem('AUTHENTICATED', JSON.stringify(true))

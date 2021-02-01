@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Label from '../../../Common/Label'
 import Button from '../../../Common/Button'
 import Error from '../../../Common/Error'
+import ImagePicker from '../../../Common/ImagePicker'
 import DropDown from '../../../Common/DropDown'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
@@ -25,26 +26,26 @@ const ERRORS_INITIAL_CONFIG = {
 const ERRORS_MESSAGES= [
     {id:'REQUIRED',message:'ce champ est obligatoir'}
 ]
-const PRICES=["price1","price2","price3","price4"]
+// const PRICES=["price1","price2","price3","price4"]
 
 
 
-export const AddProduct = ({route,navigation,updateProduct,addProduct,categories}) => {
+export const AddProduct = ({route,navigation,updateProduct,addProduct,categories,uploadedProductImageUri,uploadProductImage}) => {
+    const [modalVisible, setModalVisible] = useState(false);
     const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
     const [update, setupdate] = useState(false)
     const [productToBeUpdatedId, setproductToBeUpdatedId] = useState(-1)
     const [selectedCategory, setselectedCategory] = useState(categories[0])
-    const [activePrice, setactivePrice] = useState(PRICES[0])
+    // const [activePrice, setactivePrice] = useState(PRICES[0])
     const [productData, setproductData] = useState({
         name   : 'Dove',
         ref    : 'REF',
         image  : 'NO_IMAGE',
-        activePrice : 'price1' , 
-        stock  : 90 ,
         price1 : 90, 
         price2 : 50 ,
         price3 : 45 ,
-        price4 : 54 
+        price4 : 54 ,
+        category : null ,
     })
     
    
@@ -52,7 +53,7 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
         if(route.params){
             if(route.params.update == undefined) return 
             const {product}=route.params
-            const {id,name,ref,image,stock,activePrice,price1, price2,price3,price4,category}=product
+            const {id,name,ref,image,stock,price1, price2,price3,price4,category}=product
             navigation.setParams({PRODUCT_NAME: name})
             setproductData({
              ...productData,
@@ -60,7 +61,6 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
              ref ,
              image ,
              stock ,
-             activePrice ,
              price1 , 
              price2 ,
              price3 ,
@@ -71,6 +71,9 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
             setselectedCategory(categories.filter(c=>c.id == category)[0])
         } 
     }, [])
+    useEffect(() => {
+        if(uploadedProductImageUri != null) handelChange('image')(uploadedProductImageUri)
+    }, [uploadedProductImageUri])
 
     const resetErrors=()=>seterrors({...ERRORS_INITIAL_CONFIG})
     const handelChange=input=>v=>{ setproductData({...productData,[input]:v}) }
@@ -88,8 +91,8 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
              errorsCount++
          }
          if(image == 'NO_IMAGE'){
-            //  errorsTemp.imageREQUIRED =true
-            //  errorsCount++
+             errorsTemp.imageREQUIRED =true
+             errorsCount++
          }
          if(activePrice == ''){
              errorsTemp.activePriceREQUIRED =true
@@ -119,10 +122,7 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
              errorsTemp.categoryREQUIRED =true
              errorsCount++
          }
-         if(activePrice == "" || activePrice == undefined){
-             errorsTemp.activePriceREQUIRED =true
-             errorsCount++
-         }
+     
 
          if(errorsCount >0) {
             seterrors(errorsTemp)
@@ -130,20 +130,32 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
          }
          return true
     }
+    const handleTextChange=(input)=>(text)=>{
+    //    let number=text.replace(/[^0-9]/g, '')
+       
+       let number=text==""?0:text.replace(/^\d+\.\d{0,2}$/, '')
+       console.log(number)
+       let  value = parseFloat(number)
+       if(value == NaN || value.toString().includes('NaN') || value=='NAN') value = 0
+       handelChange(input)(value)
+    }
     const dispatchAddProduct=()=>{
         if(!validateFields()) return 
 
         const productObj = {...productData}
         productObj.category= selectedCategory.id
-        productObj.activePrice= activePrice
+        // productObj.activePrice= activePrice
 
         if(!update) return addProduct({...productObj,navigation})
         updateProduct({...productObj,id:productToBeUpdatedId,navigation})
     }
 
 
-    const {name,ref,image,stock,price1, price2,price3,price4}=productData
-    return  <KeyboardAwareScrollView   contentContainerStyle={{ display:'flex',  flexGrow:1 }}  style={styles.container} >
+    const {name,ref,price1, price2,price3,price4}=productData
+    return  <KeyboardAwareScrollView   
+    contentContainerStyle={{ display:'flex',  flexGrow:1 }}  
+    style={styles.container} >
+
         <View style={{flex:1}} >
             <Label label="Titre " mga={16} />
             <Error trigger={errors.nameREQUIRED} error={ERRORS_MESSAGES[0].message} />
@@ -158,13 +170,36 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
             <Label label="Référence"  mga={16} />
             <Error trigger={errors.refREQUIRED} error={ERRORS_MESSAGES[0].message} />
             <TextInput style={styles.Input}   
-                    placeholder={"entrer La Référence du produit"}   
+                    placeholder={"Entrer Le refrence du produit"}   
                     defaultValue={ref} 
-                    onFocus={e=> resetErrors()}
+                    editable={!update}
                     keyboardType="default"
+                    onFocus={e=> resetErrors()}
                     onChangeText={text=>handelChange('ref')(text)} 
-            />
+            /> 
+
+            <Label label="Image" mga={16} />
+            <Error trigger={errors.imageREQUIRED} error={ERRORS_MESSAGES[0].message} />
+            <Button
+              xStyle={{...styles.BtnXstyle,marginRight:16}} 
+              color={"LIGHTGREY"} 
+              clickHandler={e=>{
+                  if(name == "")return seterrors({...errors,nameREQUIRED:true})
+                  setModalVisible(true)
+                 
+               }} 
+              >
+                 <Text style={styles.ButtonText}>Ajouter Une Image</Text>
+            </Button>
+            <ImagePicker {...{
+                setModalVisible,
+                modalVisible,
+                model:'PRODUCT',
+                imageUploadHandler:uploadProductImage,
+                name
+            }}/>
     
+
             <Label label="Category" mga={16} />
             <Error trigger={errors.categoryREQUIRED} error={ERRORS_MESSAGES[0].message} />
             <DropDown 
@@ -180,11 +215,7 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
                     defaultValue={price1.toString()} 
                     keyboardType="decimal-pad"
                     onFocus={e=> resetErrors()}
-                    onChangeText={text=>{
-                        let  value = parseFloat(text)
-                        if(value == NaN || text.includes('NaN')) value = 0
-                        handelChange('price1')(value)
-                    }} 
+                    onChangeText={handleTextChange('price1')} 
             />
             <Label label="Prix 2" mga={16}/>
             <Error trigger={errors.price2REQUIRED} error={ERRORS_MESSAGES[0].message} />
@@ -193,11 +224,7 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
                     defaultValue={price2.toString()} 
                     keyboardType="decimal-pad"
                     onFocus={e=> resetErrors()}
-                    onChangeText={text=>{
-                        let  value = parseFloat(text)
-                        if(value == NaN || text.includes('NaN')) value = 0
-                        handelChange('price2')(value)
-                    }} 
+                    onChangeText={handleTextChange('price2')} 
             />
             <Label label="Prix 3" mga={16}/>
             <Error trigger={errors.price3REQUIRED} error={ERRORS_MESSAGES[0].message} />
@@ -206,11 +233,7 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
                     defaultValue={price3.toString()} 
                     keyboardType="decimal-pad"
                     onFocus={e=> resetErrors()}
-                    onChangeText={text=>{
-                        let  value = parseFloat(text)
-                        if(value == NaN || text.includes('NaN')) value = 0
-                        handelChange('price3')(value)
-                    }} 
+                    onChangeText={handleTextChange('price3')} 
             />
             <Label label="Prix 4" mga={16}/>
             <Error trigger={errors.price4REQUIRED} error={ERRORS_MESSAGES[0].message} />
@@ -219,24 +242,20 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
                     defaultValue={price4.toString()} 
                     keyboardType="decimal-pad"
                     onFocus={e=> resetErrors()}
-                    onChangeText={text=>{
-                        let  value = parseFloat(text)
-                        if(value == NaN || text.includes('NaN')) value = 0
-                        handelChange('price4')(value)
-                    }} 
+                    onChangeText={handleTextChange('price4')} 
             />
             
             
            
     
-            <Label label="Prix active" />
+            {/* <Label label="Prix active" />
             <Error trigger={errors.activePriceREQUIRED} error={ERRORS_MESSAGES[0].message} />
             <DropDown 
                 data={PRICES.map(p=>({value : p, label :p}))} 
                 setSelected={setactivePrice} 
                 selected={activePrice}
-            />
-
+            /> */}
+{/* 
             <Label label="Stock" mga={16}/>
             <Error trigger={errors.stockREQUIRED} error={ERRORS_MESSAGES[0].message} />
             <TextInput style={styles.Input}   
@@ -249,7 +268,7 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
                         if(value == NaN || text.includes('NaN')) value = 0
                         handelChange('stock')(value)
                     }} 
-            />
+            /> */}
     
         </View>
 
@@ -278,12 +297,14 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
 
 export default connect(
     state=>({
-       categories : state.products.categories
+       categories : state.products.categories,
+       uploadedProductImageUri : state.products.uploadedProductImageUri,
     })
     , 
     dispatch=>({
-        addProduct: dispatch.products.addProduct,
-        updateProduct: dispatch.products.updateProduct,
+        updateProduct : dispatch.products.updateProduct,
+        uploadProductImage: dispatch.products.uploadProductImage,
+        addProduct: dispatch.products.addProduct
     })
 )(AddProduct)
 
