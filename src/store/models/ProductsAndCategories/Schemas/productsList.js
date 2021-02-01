@@ -32,15 +32,15 @@ productsList.push(hayat )
 
 
 
-const dove   =productModel(productsList.length,'dove   ',3,'https://www.dove.com/content/dam/unilever/dove/saudi_arabia/pack_shot/6281006473607-1617638-png.png.ulenscale.460x460.png',70)
+const dove   =productModel('dove',3,'https://firebasestorage.googleapis.com/v0/b/distrubazate.appspot.com/o/productImages%2FDove?alt=media&token=86ade115-ba24-4953-883a-f0880c164e1a',70)
 productsList.push(dove )
-const rexona   =productModel(productsList.length,'rexona   ',3,'https://cdn1.bigcommerce.com/n-dvzvde/vef0tp/products/8676/images/9391/Rexona_Soap_5.29_OZ_150_Grams__70413.1430724192.1280.1280.jpg?c=2',70)
+const rexona   =productModel('rexona   ',3,'https://cdn1.bigcommerce.com/n-dvzvde/vef0tp/products/8676/images/9391/Rexona_Soap_5.29_OZ_150_Grams__70413.1430724192.1280.1280.jpg?c=2',70)
 productsList.push(rexona )
-const dial   =productModel(productsList.length,'dial   ',3,'https://images.heb.com/is/image/HEBGrocery/000032889',70)
+const dial   =productModel('dial   ',3,'https://images.heb.com/is/image/HEBGrocery/000032889',70)
 productsList.push(dial )
-const garnier   =productModel(productsList.length,'garnier   ',3,'https://i.ebayimg.com/images/g/cSQAAOSwzUVdHYJX/s-l300.jpg',70)
+const garnier   =productModel('garnier   ',3,'https://i.ebayimg.com/images/g/cSQAAOSwzUVdHYJX/s-l300.jpg',70)
 productsList.push(garnier )
-const camay   =productModel(productsList.length,'camay   ',3,'https://imperialsoap.com/wp-content/uploads/2018/10/1-Camay.jpg',70)
+const camay   =productModel('camay   ',3,'https://imperialsoap.com/wp-content/uploads/2018/10/1-Camay.jpg',70)
 productsList.push(camay )
 
 

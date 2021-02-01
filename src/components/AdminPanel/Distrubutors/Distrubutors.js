@@ -73,13 +73,10 @@ var styles = StyleSheet.create({
         padding:16,
         flex: 1
     },
-    Clientlist:{
-        borderColor:'#fff',
-        padding:16,
-    },
     flatList:{ 
-
-         paddingBottom: 20 
+        alignItems: 'center',
+         justifyContent: 'center', 
+         flex:1
     },
     title:{
        fontSize:20,

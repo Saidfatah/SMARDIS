@@ -57,11 +57,6 @@ const model ={
         })
     },
     effects: (dispatch)=>({
-        fetchDistrubutorDocument(arg,state){
-            const currentDistrubutorId= state.auth.distrubutorId
-            //fetch distrubutor by id from firestore
-            dispatch.admin.fetchedAdminDocument({name:'abdellah',id:1})
-        },
         async fetchDistrubutorsCount(arg,state){
             try {
                 const distrybytorsResponse= await firestore()
@@ -217,10 +212,7 @@ const model ={
             })
             dispatch.distrubutor.updateddistrubutor(distrubutors)
             navigation.navigate('ADMINdistrubutors')
-        },
-        async fetchDistrubutor(id,state){
-
-        },
+        }
     })
 }
 export default model

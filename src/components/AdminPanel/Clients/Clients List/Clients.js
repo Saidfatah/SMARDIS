@@ -2,28 +2,40 @@ import React,{useEffect} from 'react'
 import {View,FlatList,StyleSheet} from 'react-native'
 import { connect } from 'react-redux'
 import ClientItem from './ClientItem'
+import Loading from '../../../Common/Loading'
 
 
-
-const  Clients=({navigation,clients,fetchClients})=> {
+const  Clients=({navigation,clients,fetchMoreClients,fetchClients})=> {
     useEffect(() => {
-      // fetchClients()
+      fetchClients()
     }, [])
 
+    const handleLoadMore=()=>{
+      console.log('laodmore')
+      fetchMoreClients()
+  }
+
+  if(clients.length < 1 ) 
+  return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
+      <Loading spacing={50} />   
+  </View>
 
 
     return (
-        <View>
+        <View style={{backgroundColor:'#fff',flex: 1}} >
          <FlatList 
          data   = {clients}
          style  = {{...styles.list}}
          contentContainerStyle = {props =>(styles.flatList)}
          showsVerticalScrollIndicator={false}
-         onEndReached={e=> {
-           console.log('reached end')
-          //  setTimeout(()=>fetchMore(),2000)
-          }}
-         renderItem   = {({ item ,index}) =><ClientItem  key={index}  navigation={navigation} client={item}  />}
+         onEndReached={e=>handleLoadMore()}
+         onEndReachedThreshold={clients.length-2/clients.length}
+         ListFooterComponent={<View style={{ height: 0, marginBottom: 90 }}></View>}
+         renderItem   = {({ item ,index}) =><ClientItem  
+              key={index}  
+              navigation={navigation} 
+              client={item}  
+         />}
          keyExtractor = {(item, index) => index.toString()}
         />
         </View>
@@ -41,20 +53,19 @@ export default connect(
 
 
 var styles = StyleSheet.create({
-  list:{
-      borderColor:'#fff',
-      padding:16,
-  },
   Clientlist:{
       borderColor:'#fff',
       padding:16,
   },
-  flatList:{ 
-      alignItems: 'center',
-       justifyContent: 'center', 
-       height:200,
-       flex:1
-  },
+  list:{
+    padding:16,
+    flex: 1
+},
+flatList:{ 
+    alignItems: 'center',
+     justifyContent: 'center', 
+     flex:1
+},
   title:{
      fontSize:20,
      marginTop:16,
