@@ -8,7 +8,7 @@ import {  Badge, Icon } from 'react-native-elements'
 
 
 
-const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount,fetchSectors,fetchClientsCount   ,fetchDistrubutorsCount ,fetchOrders ,fetchValidatedOrders ,fetchCategories  ,fetchProductsCount })=> {
+const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount,fetchSectorsCount,fetchClientsCount   ,fetchDistrubutorsCount ,fetchOrders ,fetchValidatedOrders ,fetchCategories  ,fetchProductsCount })=> {
     const ROUTES =[
         {
              title:"Clients",
@@ -82,7 +82,7 @@ const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clients
           fetchDistrubutorsCount()
           fetchValidatedOrders()
           fetchProductsCount()
-          fetchSectors()
+          fetchSectorsCount()
           fetchClientsCount()
           fetchOrders ()
           fetchCategories()
@@ -121,7 +121,7 @@ export default connect(
     }),
     dispatch =>({
         fetchTodaysSales  : dispatch.sales.fetchTodaysSales,
-        fetchSectors  : dispatch.client.fetchSectors,
+        fetchSectorsCount  : dispatch.client.fetchSectorsCount,
         fetchClientsCount  : dispatch.client.fetchClientsCount,
         fetchDistrubutorsCount : dispatch.distrubutor.fetchDistrubutorsCount,
         fetchOrders : dispatch.order.fetchOrders,

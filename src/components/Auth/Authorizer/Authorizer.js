@@ -6,7 +6,7 @@ import Logo from '../../Common/Logo'
 import BackgroundImage from '../../Common/BackgroundImage'
 
 
-const  Authorizer=({navigation,logout,authenticated,userType,addClientsList,checkAuthetication})=> {
+const  Authorizer=({navigation,logout,authenticated,userType,addSectorsList,checkAuthetication})=> {
     useEffect(() => {
         // logout({navigation})
        setTimeout(() => {
@@ -16,7 +16,7 @@ const  Authorizer=({navigation,logout,authenticated,userType,addClientsList,chec
 
 
     return<BackgroundImage>
-        <TouchableOpacity onPress={e=>addClientsList()}>
+        <TouchableOpacity onPress={e=>addSectorsList()}>
                <Text>Add distrubutors array</Text>
         </TouchableOpacity>
      <View style={{
@@ -45,7 +45,7 @@ export default connect(
     }),
     dispatch=>({
          checkAuthetication:dispatch.auth.checkAuthetication,
-         addClientsList:dispatch.client.addClientsList,
+         addSectorsList:dispatch.client.addSectorsList,
          logout:dispatch.auth.logout,
     })
 )(Authorizer)

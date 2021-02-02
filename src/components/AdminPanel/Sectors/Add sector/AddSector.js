@@ -10,17 +10,20 @@ import { colors } from '../../../Common/Colors'
 export const AddSector = ({navigation,route,addSector,updateSector}) => {
     const [name, setname] = useState("")
     const [city, setcity] = useState("")
+    const [update, setupdate] = useState(false)
+    const [sectorToBeUpdatedId, setsectorToBeUpdatedId] = useState(null)
     const [cityREQUIRED, setcityREQUIRED] = useState(null)
     const [nameREQUIRED, setnameREQUIRED] = useState(null)
-    
-    const {update,sector}=route.params
  
-
     useEffect(() => {
-        if(update){
+        if(route.params){
+            if(route.params.update == undefined) return
+            setupdate(true)
+            const {sector}=route.params
             navigation.setParams({SECTOR_NAME:sector.name})
             setname(sector.name)
             setcity(sector.city)
+            setsectorToBeUpdatedId(sector.id)
         }
     }, [])
     
@@ -28,8 +31,8 @@ export const AddSector = ({navigation,route,addSector,updateSector}) => {
         if(name == "") return setnameREQUIRED({message:'Le nom du scteur est obligatioir !'})
         if(city == "") return setcityREQUIRED({message:'la ville  est obligatioir !'})
         //check if sector name exists 
-        if(!update) return  addSector({name,city})
-         updateSector({name,id:sector.id,city})
+        if(!update) return  addSector({navigation,name,city})
+         updateSector({navigation,name,id:sectorToBeUpdatedId,city})
     }
 
     const Errors = ()=>{
