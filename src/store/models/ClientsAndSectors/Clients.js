@@ -146,36 +146,6 @@ const model ={
             }
            
         },
-        async addClientsList(args,state){
-             try {
-                const clientsList = [
-                  clientModel('النجمي',1,'AB1','0654785421','زاوية الشيخ سيدي عتمان','Ouarzazate','prix1',3000.00),
-                  clientModel('Moaud1',1,'AB2','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('smail',1,'AB3','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('mohamed',1,'AB4','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('souad',2,'AB5','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('mounir',2,'AB6','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('etmani',2,'AB7','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('mouad',3,'AB8','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('faycal',3,'AB9','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('ghafour',3,'AC1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('felix',3,'AC2','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('stephan',3,'AC3','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('malik',3,'AC4','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                ]
- 
-                
-                var batch = firestore().batch()
-                clientsList.forEach((doc) => {
-                var docRef = firestore().collection("clients").doc(); //automatically generate unique id
-                batch.set(docRef, doc);
-                console.log('added clients list ')
-            });
-            batch.commit()
-             } catch (error) {
-                 console.log(error)
-             }
-        },
         async addClient({name,sectorId,ref,phone,address,city,price,objectif},state){
             try {
                 const newClient = clientModel(name,sectorId,ref,phone,address,city,price,objectif)
@@ -270,7 +240,31 @@ const model ={
                 message:`le sector ${name} est modifier avec success `
             })
             dispatch.client.updatedSector(sectors)
-        }
+        },
+        async addClientsList(args,state){
+            try {
+               sectorsList = [
+                   sectorModel(sectorsList.length +1 ,'الزاوية','tinghir'),
+               sectorModel(sectorsList.length +1 ,'تجدة','ouarzazate'),
+               sectorModel(sectorsList.length +1 ,'تخيسة','ouarzazate'),
+               sectorModel(sectorsList.length +1 ,'كاستور','ouarzazate'),
+               sectorModel(sectorsList.length +1 ,'تاوريرة','ouarzazate'),
+            ]
+
+                 
+              
+               
+               var batch = firestore().batch()
+               clientsList.forEach((doc) => {
+               var docRef = firestore().collection("clients").doc(); //automatically generate unique id
+               batch.set(docRef, doc);
+               console.log('added clients list ')
+           });
+           batch.commit()
+            } catch (error) {
+                console.log(error)
+            }
+       },
     })
 }
 export default model
