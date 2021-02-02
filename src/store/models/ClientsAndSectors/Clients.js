@@ -1,18 +1,18 @@
 import {clientModel} from './Schemas/ClientModel'
 import {sectorModel} from './Schemas/SectorModel'
-import {clientsList} from './Schemas/ClientsList'
 import {sectorsList} from './Schemas/SectorsList'
 
+import firestore from '@react-native-firebase/firestore'
 
 
-
+FETCH_LIMIT=10
 const model ={
     state:{
         clients       :[],
         sectors       :[],
         todaysSectors :[], 
         firstClientsFetch:false,
-        clientsLimit  : 6 , 
+        first_fetch:false,
         clientsAdded  : 0 , 
         sectorsCount  : 0 ,//to display in admin's dashboard
         clientsCount  : 0 ,//to display in admin's dashboard
@@ -47,7 +47,11 @@ const model ={
         fetchedClients : (state,clients)=>({
             ...state,
             clients :[...clients],
-            firstClientsFetch:true,
+            first_fetch:true,
+        }),
+        fetcheClientsFailed : (state,clients)=>({
+            ...state,
+    
         }),
         incrementedClientsLimit : (state,{clients,newLimit})=>({
             ...state,
@@ -81,13 +85,58 @@ const model ={
                const clients  = [ ...state.client.clients ]
                dispatch.client.incrementedClientsLimit({clients,newLimit:limit +8})
         },
-        fetchClients(arg,state){
-               const firstClientsFetch = state.client.firstClientsFetch
-               if(!firstClientsFetch){
-               const limit= state.client.clientsLimit
-               const clients= [...clientsList]
-               dispatch.client.fetchedClients(clients)
+        async fetchClients(arg,state){
+            try {
+                const first_fetch = state.client.first_fetch
+                if(first_fetch) return
+    
+                const clientsResponse= await firestore()
+                                        .collection('clients')
+                                        .orderBy('created_at','asc')
+                                        .limit(FETCH_LIMIT)
+                                        .get()
+    
+                const docs =clientsResponse.docs
+                clients = docs.map(doc=>({...doc.data(),id:doc.id}))
+                dispatch.client.fetchedClients({
+                    clients,
+                    last_visible : clients[clients.length-1].ref
+                })
+
+            } catch (error) {
+                dispatch.client.fetcheClientsFailed(clients)
+                console.log(erro)
             }
+           
+        },
+        async addClientsList(args,state){
+             try {
+                const clientsList = [
+                  clientModel('النجمي',1,'AB1','0654785421','زاوية الشيخ سيدي عتمان','Ouarzazate','prix1',3000.00),
+                  clientModel('Moaud1',1,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('smail',1,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('mohamed',1,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('souad',2,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('mounir',2,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('etmani',2,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('mouad',3,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('faycal',3,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('ghafour',3,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('felix',3,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('stephan',3,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('malik',3,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                ]
+ 
+               
+                var batch = firestore().batch()
+                clientsList.forEach((doc) => {
+                var docRef = firestore().collection("products").doc(); //automatically generate unique id
+                batch.set(docRef, doc);
+            });
+            batch.commit()
+             } catch (error) {
+                 
+             }
         },
         addClient({name,sectorId,ref,phone,address,city,price,objectif},state){
             const newClient = clientModel( 

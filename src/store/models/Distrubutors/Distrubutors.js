@@ -2,9 +2,7 @@
 //get tasks 
 //validate orders 
 //send notifcaton to admin 
-import {distrubutorModel} from './Schemas/DistrubutorModel'
 import {user} from '../Auth/Schemas/User'
-import {distrubutorList} from './Schemas/DistrubutorsList'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 

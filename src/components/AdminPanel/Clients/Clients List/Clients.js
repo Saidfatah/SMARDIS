@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import ClientItem from './ClientItem'
 import Loading from '../../../Common/Loading'
 
-
 const  Clients=({navigation,clients,fetchMoreClients,fetchClients})=> {
     useEffect(() => {
       fetchClients()

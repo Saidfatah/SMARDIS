@@ -1,5 +1,6 @@
-export const clientModel=(id,name,sectorId,ref,phone,address,city,price,objectif,coardinations)=>({
-    id,
+import firestore from '@react-native-firebase/firestore'
+
+export const clientModel=(name,sectorId,ref,phone,address,city,price,objectif,coardinations)=>({
     ref,
     name,
     price,
@@ -9,6 +10,7 @@ export const clientModel=(id,name,sectorId,ref,phone,address,city,price,objectif
     city,
     credit:0,
     sectorId,
-    phone :phone  ||'' , 
-    coardinations: coardinations || {x:0,y:0}
+    phone :phone  ||'NO_DEFINED' , 
+    coardinations: coardinations || {x:0,y:0},
+    created_at:firestore.Timestamp.fromDate(new Date())
 })

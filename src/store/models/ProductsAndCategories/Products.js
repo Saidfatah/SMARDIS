@@ -322,7 +322,9 @@ const model ={
              .collection('products')
              .doc(product.id)
              .delete()
- 
+              
+             //remove image 
+            //  const imageRef= Storage.get
               
              dispatch.toast.show({
                  type:'success',
