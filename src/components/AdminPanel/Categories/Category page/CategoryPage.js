@@ -11,17 +11,24 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import Image from 'react-native-fast-image'
 import ProductInfo from '../../../Distrubutor/ClientProductsSelection/Products/ProductInfo'
+import Loading from '../../../Common/Loading'
 
-export const CategoryPage = ({navigation,route,selectedCategoryProducts,selectCategory,removeCategory}) => {
+export const CategoryPage = ({navigation,route,selectedCategoryProducts,selectCategory,category_has_products,removeCategory}) => {
     const [isExpanded, setIsExpanded] = useState(false)
     const {category} = route.params;
-       console.log(category.isOther)
+
     useEffect(() => {
         navigation.setParams({CATEGORY_NAME:category.name})
+        console.log(category.id)
         selectCategory(category.id)
-    }, [])
+    }, [category])
 
     if(!category) return <Text>category nexist pas</Text>
+
+    if(selectedCategoryProducts.length < 1  && category_has_products == true) 
+    return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
+        <Loading spacing={50} />   
+    </View>
 
     const {name,image}=category
     const ACCORDION_PROPS={
@@ -73,12 +80,11 @@ export const CategoryPage = ({navigation,route,selectedCategoryProducts,selectCa
                     <Label label="Image :"  mga={16} />
                     <View style={{...styles.productItem,marginBottom:0,marginLeft:8}}>
                        <Image 
-                          style={{height:50,width:50}}  
-                        //   source={image!="NO_IMAGE"
-                        //   ?{uri:image}
-                        //   :require('../../../../images/noImage.jpg')
-                        //   }  
-                          source={require('../../../../images/noImage.jpg')}  
+                          style={{height:70,width:70,borderRadius:70,marginLeft:8}}  
+                          source={image!="NO_IMAGE"
+                          ?{uri:image}
+                          :require('../../../../images/noImage.jpg')
+                          }  
                           />
                     </View>
                 </View>
@@ -140,6 +146,7 @@ export const CategoryPage = ({navigation,route,selectedCategoryProducts,selectCa
 export default connect(
     state=>({
        selectedCategoryProducts :  state.products.selectedCategoryProducts,
+       category_has_products :  state.products.category_has_products,
     }), 
     dispatch =>({
       removeCategory: dispatch.products.removeCategory,

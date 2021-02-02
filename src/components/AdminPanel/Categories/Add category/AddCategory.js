@@ -6,6 +6,7 @@ import Button from '../../../Common/Button'
 import Error from '../../../Common/Error'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
+import ImagePicker from '../../../Common/ImagePicker'
 
 
 const ERRORS_INITIAL_CONFIG = {
@@ -15,7 +16,8 @@ const ERRORS_INITIAL_CONFIG = {
 const ERRORS_MESSAGES= [
     {id:'REQUIRED',message:'ce champ est obligatoir'}
 ]
-export const AddCategory = ({navigation,route,updateCategory,addCategory}) => {
+export const AddCategory = ({navigation,route,updateCategory,addCategory,uploadedCategoryImageUri,uploadCategoryImage}) => {
+     const [modalVisible, setModalVisible] = useState(false);
      const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
      const [name, setname] = useState("")
      const [image, setimage] = useState("NO_IMAGE")
@@ -35,6 +37,9 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory}) => {
             setcategoryToBeUpdated(id)
         } 
     }, [])
+    useEffect(() => {
+        if(uploadedCategoryImageUri != null) setimage(uploadedCategoryImageUri)
+    }, [uploadedCategoryImageUri])
 
     const resetErrors=()=>seterrors({...ERRORS_INITIAL_CONFIG})
     const validateFields =()=>{
@@ -45,8 +50,8 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory}) => {
             errorsCount++
         }
         if(image == "NO_IMAGE"){
-            // errorsTemp.nameREQUIRED =true
-            // errorsCount++
+            errorsTemp.imageREQUIRED =true
+            errorsCount++
         }
 
         if(errorsCount >0) {
@@ -79,6 +84,30 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory}) => {
                     keyboardType="default"
                     onChangeText={text=> setname(text) } 
             />
+
+
+            <Label label="Image" mga={16} />
+            <Error trigger={errors.imageREQUIRED} error={ERRORS_MESSAGES[0].message} />
+            <Button
+              xStyle={{...styles.BtnXstyle,marginRight:16}} 
+              color={"LIGHTGREY"} 
+              clickHandler={e=>{
+                  if(name == "")return seterrors({...errors,nameREQUIRED:true})
+                  setModalVisible(true)
+                 
+               }} 
+              >
+                 <Text style={styles.ButtonText}>Ajouter Une Image</Text>
+            </Button>
+            <ImagePicker {...{
+                setModalVisible,
+                modalVisible,
+                model:'CATEGORY',
+                imageUploadHandler:uploadCategoryImage,
+                name
+            }}/>
+
+            
         </View>
 
         <View style={styles.btns} >
@@ -103,12 +132,15 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory}) => {
  
 
 export default connect(
-    null
-    , 
+    state=>({
+        uploadedCategoryImageUri    : state.products.uploadedCategoryImageUri,
+    }),
     dispatch=>({
         addCategory    : dispatch.products.addCategory,
         updateCategory : dispatch.products.updateCategory,
+        uploadCategoryImage : dispatch.products.uploadCategoryImage,
     })
+    
 )
 (AddCategory)
 

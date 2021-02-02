@@ -9,12 +9,13 @@ const ImagePicker=({modalVisible, setModalVisible,imageUploadHandler,productImag
     const [imageUri, setimageUri] = useState(null)
 
     useEffect(() => {
+        console.log({categoryImageUploadState})
         if(model ==="PRODUCT" && productImageUploadState === "DONE") 
             setuploading(false)
-         else if (model === "CATEGORY" && categoryImageUploadState === "DONE" ) 
+        if (model === "CATEGORY" && categoryImageUploadState === "DONE" ) 
              setuploading(false)
         
-        if(productImageUploadState == "FAILED")
+        if(productImageUploadState === "FAILED" || categoryImageUploadState === "FAILED" )
              setuploading(false)
     }, [productImageUploadState,categoryImageUploadState])
 
@@ -76,11 +77,12 @@ const ImagePicker=({modalVisible, setModalVisible,imageUploadHandler,productImag
     return <Modal 
     title="Image du profil"
     modalVisible={modalVisible} 
+    onClose={()=> setuploading(false)}
     setModalVisible={setModalVisible}
     >
          {!uploading ?<ImagePickerButtons />:<View >
             <Text>Uploading</Text> 
-            <Image source={{uri:imageUri}} />
+            <Image source={{uri:imageUri}}  style={{width:50,height:50}} />
             </View>}
     </Modal>
 }
