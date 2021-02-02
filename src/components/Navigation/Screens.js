@@ -18,6 +18,7 @@ import AdminSls     from '../AdminPanel/Sales/Sales'
 import AdminSch   from '../AdminPanel/Schedule/Schedule'
 import AdminListSch   from '../AdminPanel/Schedule/ListOfSchedules/ListOfSchedules'
 import AdminSec     from '../AdminPanel/Sectors/Sectors'
+import AdminSecPage     from '../AdminPanel/Sectors/Sector Page/SectorPage'
 import AdminAddSec     from '../AdminPanel/Sectors/Add sector/AddSector'
 import AdminAddAdmin     from '../Auth/Admin/AddNewAdmin'
 import AdminRegisterDist   from '../Auth/Admin/RegisterDistrubutor'
@@ -48,6 +49,7 @@ export const AdminAddCategory  = AdminAddCateg ;
 export const AdminDashBoard    = AdminDash ;
 export const AdminSales        = AdminSls ;
 export const AdminSectors      = AdminSec ;
+export const AdminSectorPage   = AdminSecPage ;
 export const AdminSchedule     = AdminSch ;
 export const AdminProducts     = AdminProds ;
 export const AdminProductPage  = AdminProductP ;

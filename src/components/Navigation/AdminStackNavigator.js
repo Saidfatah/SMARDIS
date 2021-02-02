@@ -22,7 +22,8 @@ import {
    AdminAddCategory,
    AdminCategoryPage,
    AdminDistrubutorPage,
-   AdminAddDistrubutor
+   AdminAddDistrubutor,
+   AdminSectorPage
 } from './Screens'
 
 const AdminStack     = createStackNavigator()
@@ -166,7 +167,19 @@ const AdminStackNavigator =()=>{
             />
              <AdminStack.Screen 
                 name="ADMINsectors" 
+                options={{title:"List des secteurs"}}
                 component={AdminSectors} 
+            />
+             <AdminStack.Screen 
+                name="ADMINsectorPage" 
+                options={({route, navigation})=>{
+                    if(route.params){
+                      if(route.params.SECTOR_NAME)
+                      return{title:"Secteur ("+route.params.SECTOR_NAME+")"}  
+                    }
+                    return {title:"Page de Secteur "}
+                }}
+                component={AdminSectorPage} 
             />
              <AdminStack.Screen 
                 name="ADMINaddSector" 
