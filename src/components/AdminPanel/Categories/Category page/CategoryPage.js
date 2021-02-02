@@ -7,7 +7,7 @@ import Item from '../../../Common/Item'
 import {colors} from '../../../Common/Colors'
 import Badge from '../../../Common/Badge'
 import Label from '../../../Common/Label'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import Image from 'react-native-fast-image'
 import ProductInfo from '../../../Distrubutor/ClientProductsSelection/Products/ProductInfo'
@@ -134,7 +134,7 @@ export const CategoryPage = ({navigation,route,selectedCategoryProducts,selectCa
                 clickHandler={e=>navigation.navigate('ADMINupdateCategory',{category,update:true}) } 
                 >
                    <Text style={styles.ButtonText}>Modifier la category</Text>
-                   <Icon name="call" size={25} color="#fff" />
+                   <Icon name="circle-edit-outline" size={25} color="#fff" />
                </Button>
         </View>
     </ScrollView>
