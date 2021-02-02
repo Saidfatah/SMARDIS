@@ -8,7 +8,7 @@ import {  Badge, Icon } from 'react-native-elements'
 
 
 
-const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount,fetchSectors,fetchClientsCount   ,fetchDistrubutorsCount ,fetchOrders ,fetchValidatedOrders ,fetchCategories  ,fetchClients,fetchProductsCount })=> {
+const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount,fetchSectors,fetchClientsCount   ,fetchDistrubutorsCount ,fetchOrders ,fetchValidatedOrders ,fetchCategories  ,fetchProductsCount })=> {
     const ROUTES =[
         {
              title:"Clients",
@@ -79,14 +79,13 @@ const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clients
     ]
 
     useEffect(() => {
-          fetchClients()
+          fetchDistrubutorsCount()
+          fetchValidatedOrders()
+          fetchProductsCount()
           fetchSectors()
           fetchClientsCount()
-          fetchDistrubutorsCount()
           fetchOrders ()
-          fetchValidatedOrders()
           fetchCategories()
-          fetchProductsCount()
           fetchTodaysSales()
           navigation.setParams({ADMIN_NAME:"Abdellah"})
     }, [])
@@ -122,7 +121,6 @@ export default connect(
     }),
     dispatch =>({
         fetchTodaysSales  : dispatch.sales.fetchTodaysSales,
-        fetchClients  : dispatch.client.fetchClients,
         fetchSectors  : dispatch.client.fetchSectors,
         fetchClientsCount  : dispatch.client.fetchClientsCount,
         fetchDistrubutorsCount : dispatch.distrubutor.fetchDistrubutorsCount,

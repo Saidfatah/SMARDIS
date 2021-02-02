@@ -5,7 +5,7 @@ import {sectorsList} from './Schemas/SectorsList'
 import firestore from '@react-native-firebase/firestore'
 
 
-FETCH_LIMIT=10
+const FETCH_LIMIT=10
 const model ={
     state:{
         clients       :[],
@@ -17,6 +17,7 @@ const model ={
         sectorsCount  : 0 ,//to display in admin's dashboard
         clientsCount  : 0 ,//to display in admin's dashboard
         todaysSectorsCount :0, //to display in distrubutor's dashboard
+        last_visible_client : null
     },
     reducers:{
         fetchedSectors : (state,sectors)=>({
@@ -44,10 +45,11 @@ const model ={
             ...state,
             clientsCount 
         }),
-        fetchedClients : (state,clients)=>({
+        fetchedClients : (state,{clients,last_visible_client})=>({
             ...state,
             clients :[...clients],
             first_fetch:true,
+            last_visible_client
         }),
         fetcheClientsFailed : (state,clients)=>({
             ...state,
@@ -75,15 +77,46 @@ const model ={
         }),
     },
     effects: (dispatch)=>({
-        fetchClientsCount(arg,state){
-               const clientsCount= clientsList.length
-               dispatch.client.fetchedClientsCount(clientsCount)
+        async fetchClientsCount(arg,state){
+           try {
+                const clientsResponse= await firestore().collection('clients').get()
+                const count = clientsResponse.docs.length
+                dispatch.client.fetchedClientsCount(count) 
+           } catch (error) {
+               console.log(error)
+           }
         },
-        fetchMore(arg,state){
-               const limit = state.client.clientsLimit 
-               const clientsAdded = state.client.clientsAdded  
-               const clients  = [ ...state.client.clients ]
-               dispatch.client.incrementedClientsLimit({clients,newLimit:limit +8})
+        async fetchMoreClients(arg,state){
+            try {
+                const last_visible_client = state.client.last_visible_client
+
+                const moreClientsResponse= await firestore()
+                                        .collection('clients')
+                                        .orderBy('ref',"asc")
+                                        .startAt(last_visible_client)
+                                        .limit(FETCH_LIMIT)
+                                         
+                                        
+                moreClientsResponse.onSnapshot(res=>{
+                    if(res.docs){
+                        const docs =res.docs
+                        const PrevClients =  [...state.client.clients]
+                        PrevClients.pop()
+                        const newClients  =  docs.map(doc=>({...doc.data(),id:doc.id}))
+                       
+                        dispatch.client.fetchedClients({
+                            clients : [...PrevClients,...newClients],
+                            last_visible_client : newClients[newClients.length -1].ref
+                        }) 
+                    }
+                })
+                             
+               
+            } catch (error) {
+                dispatch.client.fetcheClientsFailed()
+                console.log(error)
+            }
+            
         },
         async fetchClients(arg,state){
             try {
@@ -92,20 +125,24 @@ const model ={
     
                 const clientsResponse= await firestore()
                                         .collection('clients')
-                                        .orderBy('created_at','asc')
+                                        .orderBy('ref',"asc")
                                         .limit(FETCH_LIMIT)
-                                        .get()
-    
-                const docs =clientsResponse.docs
-                clients = docs.map(doc=>({...doc.data(),id:doc.id}))
-                dispatch.client.fetchedClients({
-                    clients,
-                    last_visible : clients[clients.length-1].ref
+                                        
+                clientsResponse.onSnapshot(res=>{
+                    if(res.docs){
+                        const docs =res.docs
+                        const clients = docs.map(doc=>({...doc.data(),id:doc.id}))
+                        dispatch.client.fetchedClients({
+                            clients,
+                            last_visible_client : clients[clients.length-1].ref
+                        })
+                    }
                 })
+                
 
             } catch (error) {
-                dispatch.client.fetcheClientsFailed(clients)
-                console.log(erro)
+                dispatch.client.fetcheClientsFailed()
+                console.log(error)
             }
            
         },
@@ -113,77 +150,96 @@ const model ={
              try {
                 const clientsList = [
                   clientModel('النجمي',1,'AB1','0654785421','زاوية الشيخ سيدي عتمان','Ouarzazate','prix1',3000.00),
-                  clientModel('Moaud1',1,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('smail',1,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('mohamed',1,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('souad',2,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('mounir',2,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('etmani',2,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('mouad',3,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('faycal',3,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('ghafour',3,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('felix',3,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('stephan',3,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                  clientModel('malik',3,'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('Moaud1',1,'AB2','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('smail',1,'AB3','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('mohamed',1,'AB4','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('souad',2,'AB5','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('mounir',2,'AB6','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('etmani',2,'AB7','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('mouad',3,'AB8','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('faycal',3,'AB9','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('ghafour',3,'AC1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('felix',3,'AC2','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('stephan',3,'AC3','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
+                  clientModel('malik',3,'AC4','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
                 ]
  
-               
+                
                 var batch = firestore().batch()
                 clientsList.forEach((doc) => {
-                var docRef = firestore().collection("products").doc(); //automatically generate unique id
+                var docRef = firestore().collection("clients").doc(); //automatically generate unique id
                 batch.set(docRef, doc);
+                console.log('added clients list ')
             });
             batch.commit()
              } catch (error) {
-                 
+                 console.log(error)
              }
         },
-        addClient({name,sectorId,ref,phone,address,city,price,objectif},state){
-            const newClient = clientModel( 
-                 clientsList.length +1,
-                 name,
-                 sectorId,
-                 ref,
-                 phone,
-                 address,
-                 city,
-                 price,
-                 objectif
-             )
-            const currentClients = [...state.client.clients]
-             currentClients.unshift(newClient)
-            dispatch.toast.show({
-                type:'success',
-                title:'Ajoute ',
-                message:`le client ${name} est ajouter avec success `
-            })
-            dispatch.client.addedClient(currentClients)
-        },
-        updateClient({navigation,id,updatedFields,name,sectorId,ref,phone,address,city,price,objectif},state){
-            console.log({updatedFields})
-            const updtaedFiels= {name,sectorId,ref,phone,address,city,price,objectif}
-            let   clients =[...state.client.clients]
-            const targetClient = clients.filter(client =>client.id == id)[0]
-            let   targetClientId =clients.indexOf(targetClient)
-            clients[targetClientId]= {...targetClient,...updtaedFiels} 
+        async addClient({name,sectorId,ref,phone,address,city,price,objectif},state){
+            try {
+                const newClient = clientModel(name,sectorId,ref,phone,address,city,price,objectif)
 
-            dispatch.toast.show({
-                type:'success',
-                title:'Ajoute ',
-                message:`le client ${name} est Modifier avec success `
-            })
-            dispatch.client.updatedClient(clients)
-            navigation.navigate('ADMINclients')
+               //firestore
+               const addResponse= firestore().collection('clients').add(newClient)
+              
+               //redux
+               const currentClients = [...state.client.clients]
+               currentClients.unshift(newClient)
+               dispatch.toast.show({
+                   type:'success',
+                   title:'Ajoute ',
+                   message:`le client ${name} est ajouter avec success `
+               })
+               dispatch.client.addedClient(currentClients)
+            } catch (error) {
+                console.log(error)
+            }
         },
-        removeClient({client,admin},state){
-            let clients = state.client.clients
-            const newclients= clients.filter(cl => cl.id != client.id) 
-            dispatch.toast.show({
-                type:'success',
-                title:'Supprission success',
-                message:`client ${client.name} est supprimer avec success`
-            })
-            dispatch.client.removedClient(newclients)
+        async updateClient({navigation,id,name,sectorId,phone,address,city,price,objectif},state){
+           try {
+                 const updatedFields= {name,sectorId,phone,address,city,price,objectif}
+                 let   clients =[...state.client.clients]
+                 const targetClient = clients.filter(client =>client.id == id)[0]
+                 let   targetClientIndex =clients.indexOf(targetClient)
+                 clients[targetClientIndex]= {...targetClient,...updatedFields} 
+
+                 const updateResponse= await firestore()
+                                             .collection("clients")
+                                             .doc(id)
+                                             .update({...updatedFields});
+                                             
+                 dispatch.toast.show({
+                     type:'success',
+                     title:'Ajoute ',
+                     message:`le client ${name} est Modifier avec success `
+                 })
+                 dispatch.client.updatedClient(clients)
+                 navigation.navigate('ADMINclients')
+
+           } catch (error) {
+               console.log(error)
+           }
+        },
+        async removeClient({client,admin},state){
+            try {
+                let clients = state.client.clients
+                 const newclients= clients.filter(cl => cl.id != client.id) 
+
+                 const ClientRef=await firestore()
+                                            .collection('clients')
+                                            .doc(client.id)
+                                            .delete()
+
+                 dispatch.toast.show({
+                     type:'success',
+                     title:'Supprission success',
+                     message:`client ${client.name} est supprimer avec success`
+                 })
+                 dispatch.client.removedClient(newclients)
+            } catch (error) {
+                 console.log(error)
+            }
         },
 
    

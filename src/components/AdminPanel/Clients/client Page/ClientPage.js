@@ -19,6 +19,7 @@ export const ClientPage = ({navigation,route,sectors,removeClient}) => {
   
 
     if(!client) return <Text>Client nexst pas</Text>
+    if(sectors.length<1) return <Text>loading</Text>
 
     const {phone,city,ref,name,address,objectif,price,sectorId}=client
     return (

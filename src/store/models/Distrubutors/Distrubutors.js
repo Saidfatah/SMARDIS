@@ -9,7 +9,7 @@ import auth from '@react-native-firebase/auth'
 
 
 
-
+const FECTH_LIMIT= 10
 const model ={
     state:{
         distrubutors  :[],
@@ -74,18 +74,18 @@ const model ={
                 const first_fetch = state.distrubutor.first_fetch
                 if(first_fetch) return
 
-                const fetch_limit = state.distrubutor.fetch_limit
+ 
               
                 
                 const distrubutorsResponse= await firestore()
                                         .collection('users')
                                         .where('type','==','DISTRUBUTOR')
                                         .orderBy('name','asc')
-                                        .limit(fetch_limit)
+                                        .limit(FECTH_LIMIT)
                                         .get()
 
                 const docs =distrubutorsResponse.docs
-                distrubtors = docs.map(doc=>doc.data())
+                distrubtors = docs.map(doc=>({...doc.data(),id:doc.id}))
                 dispatch.distrubutor.fetcheddistrubutors({
                     distrubutors:distrubtors,
                     last_visible : distrubtors[distrubtors.length-1].name
@@ -98,26 +98,22 @@ const model ={
         },
         async fetchMoreDistrubutors(arg,state){
             try {
-                const fetch_limit = state.distrubutor.fetch_limit
                 const last_visible = state.distrubutor.last_visible
-
-                console.log({last_visible})
-                console.log({fetch_limit})
 
                 const moreDstrubutorsResponse= await firestore()
                                         .collection('users')
                                         .where('type','==','DISTRUBUTOR')
                                         .orderBy('name',"asc")
                                         .startAt(last_visible)
-                                        .limit(4)
+                                        .limit(FECTH_LIMIT)
                                         .get()
                                     
                 const docs = moreDstrubutorsResponse.docs
 
                 const PrevDistrubtors =  [...state.distrubutor.distrubutors]
                 PrevDistrubtors.pop()
-                const newDistrubtors  = docs.map(doc=>doc.data())
-
+                const newDistrubtors  =  docs.map(doc=>({...doc.data(),id:doc.id}))
+               
                 dispatch.distrubutor.fetcheddistrubutors({
                     distrubutors : [...PrevDistrubtors,...newDistrubtors],
                     last_visible : newDistrubtors[newDistrubtors.length -1].name
@@ -193,7 +189,7 @@ const model ={
         },
         async updateDistrubutor({user_id,name,city,email,ref,navigation},state){
             const distrubutors= [...state.distrubutor.distrubutors]
-            const targetDistrubutor = distrubutors.filter(d=>d.id == id)[0]
+            const targetDistrubutor = distrubutors.filter(d=>d.user_id == user_id)[0]
             const targetDistrubutorIndex = distrubutors.indexOf(targetDistrubutor)
             distrubutors[targetDistrubutorIndex]={...targetDistrubutor,name,city,email,ref}
            
