@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import {colors} from './Colors'
 
 
-export const ModalWrraper = ({modalVisible, setModalVisible,children}) => {
+export const ModalWrraper = ({modalVisible, setModalVisible,children,onClose}) => {
     
     return (
         <Modal
@@ -20,7 +20,10 @@ export const ModalWrraper = ({modalVisible, setModalVisible,children}) => {
                     <View style={styles.modalHeader} >
                        <TouchableHighlight
                          style={{ ...styles.openButton  }}
-                         onPress={()=>{setModalVisible(!modalVisible)}}>
+                         onPress={()=>{
+                           setModalVisible(!modalVisible);
+                           if(onClose) onClose()
+                           }}>
                          <Icon name="close" size={20} color={colors.RED} />
                        </TouchableHighlight>
                     </View>

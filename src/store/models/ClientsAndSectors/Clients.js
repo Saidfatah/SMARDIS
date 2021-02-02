@@ -347,38 +347,7 @@ const model ={
             } catch (error) {
                 console.log(error)
             }
-        },
-        async addSectorsList(args,state){
-            try {
-               const sectorsList = [
-                clientModel('Moaud1',"3USVNsvauVckZKU2qpZg",'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                clientModel('smail',"3USVNsvauVckZKU2qpZg",'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                clientModel('mohamed',"3USVNsvauVckZKU2qpZg",'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                clientModel('souad',"On9ZhtSx6phMkFmfejlm",'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                clientModel('mounir',"On9ZhtSx6phMkFmfejlm",'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                clientModel('etmani',"On9ZhtSx6phMkFmfejlm",'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                clientModel('mouad',"Qp2MogvwrFgzb2yJLaiV",'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                clientModel('faycal',"Qp2MogvwrFgzb2yJLaiV",'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                clientModel('ghafour',"Qp2MogvwrFgzb2yJLaiV",'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                clientModel('felix',"UBqdsSN13n6iFQDCSrbo",'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                clientModel('stephan',"UBqdsSN13n6iFQDCSrbo",'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00),
-                clientModel('malik',"i445TLusEfNgD2nJhhOS",'AB1','0654785421','Hmam ahbass','Ouarzazate','prix1',3000.00)
-             ]
-
-                      
-                   
-                    
-                    var batch = firestore().batch()
-                    sectorsList.forEach((doc) => {
-                    var docRef = firestore().collection("clients").doc(); //automatically generate unique id
-                    batch.set(docRef, doc);
-                    });
-                console.log('added clients list ')  
-                batch.commit()
-            } catch (error) {
-                console.log(error)
-            }
-       },
+        }
     })
 }
 export default model
