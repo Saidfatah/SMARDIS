@@ -17,7 +17,7 @@ const ClientItem=({navigation,client,onclick,isInTodaysOrders })=> {
             <Button
              xStyle={{flex:1,margin:0,borderRadius:12}} 
              color={"BLUE"} 
-             disabled={isInTodaysOrders ? (client.done || !client.turn?true:false) :true}
+             disabled={isInTodaysOrders ? (client.done || !client.turn?true:false) :false}
             //  clickHandler={ e=>navigation.navigate('ADMINclientProfile',{client})}:onclick} 
              clickHandler={onclick} 
              >

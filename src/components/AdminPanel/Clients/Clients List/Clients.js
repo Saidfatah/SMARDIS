@@ -28,12 +28,14 @@ const  Clients=({navigation,clients,fetchMoreClients,fetchClients})=> {
          contentContainerStyle = {props =>(styles.flatList)}
          showsVerticalScrollIndicator={false}
          onEndReached={e=>handleLoadMore()}
-         onEndReachedThreshold={clients.length-2/clients.length}
+         onEndReachedThreshold={0.5}
          ListFooterComponent={<View style={{ height: 0, marginBottom: 90 }}></View>}
          renderItem   = {({ item ,index}) =><ClientItem  
               key={index}  
               navigation={navigation} 
               client={item}  
+              isInTodaysOrders={false}
+              onclick={()=>navigation.navigate('ADMINclientProfile',{client:item})}
          />}
          keyExtractor = {(item, index) => index.toString()}
         />
@@ -47,6 +49,7 @@ export default connect(
   }),
   dispatch =>({
      fetchClients : dispatch.client.fetchClients,
+     fetchMoreClients : dispatch.client.fetchMoreClients,
   })
 )(Clients)
 
