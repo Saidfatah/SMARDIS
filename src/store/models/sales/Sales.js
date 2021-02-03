@@ -25,31 +25,26 @@ const model ={
         }),
     },
     effects: (dispatch)=>({
-        fetchTodaysSales(args,state){
+        async fetchTodaysSales(args,state){
             //when validatting cart guest iterate over tha products of that guest here
             //dispatch.sales.fetchedTodaysSales()
-             const todaysSales=[...state.sales.todaysSales] 
-             cartGuests[0].items.forEach(product=>{
-                 const newSale = saleModel(
-                   salesList.length+1,
-                   cartGuests[0].distrubutor,
-                   cartGuests[0].client,
-                   product,
-                   product.quantity,
-                   cartGuests[0].sector
-                 )
-                 todaysSales.push(newSale)
-             })
-           console.log(todaysSales[0])
+            //we go into orders colllection 
+            //fetch orders of last week or so 
+            //filter only orders with satus == "done"
+            //map the results to these fields 
+         
             dispatch.sales.fetchedTodaysSales(todaysSales)
 
         },
-        fetchSales(args,state){
+        async fetchSales(args,state){
 
         },
-        addSale(args,state){
+        async addSale(args,state){
 
-        }
+        },
+        async addSalesList(args,state){
+          
+        },
     })
 }
 export default model
