@@ -6,19 +6,19 @@ import Logo from '../../Common/Logo'
 import BackgroundImage from '../../Common/BackgroundImage'
 
 
-const  Authorizer=({navigation,logout,authenticated,userType,addCategoriesList,checkAuthetication})=> {
+const  Authorizer=({navigation,logout,checkAuthetication})=> {
     useEffect(() => {
         // logout({navigation})
-       setTimeout(() => {
+     
            checkAuthetication({navigation})
-       }, 4000);
+       
     }, [])
 
 
     return<BackgroundImage>
-        <TouchableOpacity onPress={e=>addCategoriesList()}>
+        {/* <TouchableOpacity onPress={e=>addOrdersList()}>
                <Text>Add distrubutors array</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
      <View style={{
         display:'flex',
         justifyContent:'center',
@@ -45,7 +45,6 @@ export default connect(
     }),
     dispatch=>({
          checkAuthetication:dispatch.auth.checkAuthetication,
-         addCategoriesList:dispatch.products.addCategoriesList,
          logout:dispatch.auth.logout,
     })
 )(Authorizer)

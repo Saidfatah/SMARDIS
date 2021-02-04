@@ -5,10 +5,10 @@ import {colors} from '../../../Common/Colors'
 import Badge from '../../../Common/Badge'
 import Label from '../../../Common/Label'
 
-export const ScheduleItem = ({schedule}) => {
+export const ScheduleItem = ({scheduel}) => {
     const [expanded, setExpanded] = useState(false);
     const handlePress = () => setExpanded(!expanded);
-    const {admin,distrubutor,distination,status,date,distrubutorId,adminId} = schedule
+    const {admin,distrubutor,distination,status,date} = scheduel
 
     return (
         <List.Accordion
@@ -49,6 +49,7 @@ export const ScheduleItem = ({schedule}) => {
                     </View>
                 </View>
                 
+           
                 <Label label="Liste ordonnée des clients"  mga={16} />
                 <View style={styles.clientsItemsWrapper}>
                     {

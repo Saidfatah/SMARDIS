@@ -23,7 +23,8 @@ import {
    AdminCategoryPage,
    AdminDistrubutorPage,
    AdminAddDistrubutor,
-   AdminSectorPage
+   AdminSectorPage,
+   AdminListOfOrders
 } from './Screens'
 
 const AdminStack     = createStackNavigator()
@@ -164,6 +165,11 @@ const AdminStackNavigator =()=>{
                 name="ADMINlistOfScheduleS" 
                 component={AdminListOfSchedules} 
                 options={{title:"List des Emploi du temps"}} 
+            />
+             <AdminStack.Screen 
+                name="ADMINlistOfOrders" 
+                component={AdminListOfOrders} 
+                options={{title:"List des command"}} 
             />
              <AdminStack.Screen 
                 name="ADMINsectors" 

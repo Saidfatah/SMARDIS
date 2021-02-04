@@ -1,14 +1,10 @@
-import {billModel} from './Schemas/BillModel'
 import {cartGuestModel} from './Schemas/CartGuestModel'
-
+import firestore from '@react-native-firebase/firestore'
 
 const model ={
     state:{
         cartGuests  :[],
         todaysBills : [] , 
-        validatedOrders : [] , 
-        selectedBill : null ,
-        validatedOrdersCount : 0 ,
         salesCount : 0 ,
     },
     reducers:{
@@ -44,10 +40,7 @@ const model ={
             validatedOrdersCount : validatedOrders.length ,
             salesCount : validatedOrders.length ,
         }),
-        selectedABill : (state,selectedBill)=>({
-            ...state,
-            selectedBill 
-        }),
+        
     },
     effects: (dispatch)=>({
         updateQuantity({guestId,itemId,quantity},state){
@@ -70,7 +63,7 @@ const model ={
              }
      
         },
-        addCartItem({guest,product,sector,orderId},state){
+        addCartItem({guest,product,sector},state){
              const cartGuests= [...state.cart.cartGuests]
              const targetGuest = cartGuests.filter(g=>g.guestId == guest.id)[0]
              if( targetGuest ){
@@ -99,7 +92,7 @@ const model ={
                      1,
                      sector,
                      guest,
-                     orderId,
+                     guest.orderId,
                      )})
                  dispatch.cart.addedGuest(cartGuests)
              } 
@@ -131,44 +124,50 @@ const model ={
              }
              
         },
-        validateGuestOrder({guestId,sector,status,client},state){
-             // update order status
-             // update status of cart guest to VALIDATED
-             // create order bill 
-             // is it paid or not 
+        async validateGuestOrder({guestId,scheduelId},state){
+           try {
              const cartGuests= [...state.cart.cartGuests]
              const targetGuest = cartGuests.filter(g=>g.guestId == guestId)[0]
              if( targetGuest ){
+                 const orderId =targetGuest.orderId 
                  const tergetGuestIndex =  cartGuests.indexOf(targetGuest)
             
                  //modfy cartGuest status to VALIDATED 
                  cartGuests[tergetGuestIndex].status="VALIDATED"
 
-                 //set next client turn and set current client to done with
-                 //this is better be dispatched from the react side 
-                 dispatch.order.setNextTurn({id:targetGuest.orderId,clientId:targetGuest.guestId})
+                 //set next client turn 
+                 dispatch.scheduel.setNextTurn()
+
                  //create bill and add it to todaysBills list 
-                 const todaysBills = [...state.cart.todaysBills]
-                 const {name,guestId,distrubutor,items} = cartGuests[tergetGuestIndex]
-                 const orderBill = billModel(todaysBills.length,distrubutor,{id:guestId,name:name} ,items,sector.name,sector.city,status)
-                 todaysBills.push(orderBill)
+                 //update order associated to this client 
+                 const client = targetGuest
+                
+                 const validateOrderReponse = await firestore()
+                  .collection('orders')
+                  .doc(orderId)
+                  .update({
+                        products:[...targetGuest.items],
+                        billRef:client.name.toUpperCase()+scheduelId ,
+                        status: "VALIDATED",
+                        sale_date : firestore.Timestamp.fromDate(new Date()), 
+                        sale_hour : firestore.Timestamp.fromDate(new Date()),
+                  })
+               
+               
+                
 
                  dispatch.toast.show({
                     type:'success',
                     title:'Validation ',
                     message:`La command  est valider avec success `
                 })
-                 dispatch.cart.validatedGuestOrder({cartGuests , todaysBills })
-               
-                 //[TODO]push bill to firestore collection
-                
+                dispatch.cart.validatedGuestOrder({cartGuests})
+  
+             }
+            } catch (error) {
+                console.log("validate order cart")
+                console.log(error)
             }
-        },
-        selectBill(id,state){
-            const todaysBills = [...state.cart.todaysBills]
-            const targetBill = todaysBills.filter(b=>b.id == id)[0]
-            if(targetBill)
-               dispatch.cart.selectedABill(targetBill)
         },
         fetchValidatedOrders(id,state){
             //fetch from backEnd 

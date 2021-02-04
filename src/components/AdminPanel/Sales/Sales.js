@@ -25,7 +25,7 @@ const Sales=({todaysSales})=> {
 
 export default connect(
     state=>({
-        todaysSales: state.sales.todaysSales 
+        todaysSales: state.scheduel.todaysSales 
     }),
     null
 )

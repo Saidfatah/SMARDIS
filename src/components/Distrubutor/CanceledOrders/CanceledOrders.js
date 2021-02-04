@@ -4,10 +4,10 @@ import {View,Text,ScrollView,StyleSheet} from 'react-native'
 import Item from '../../Common/Item'
 import Button from '../../Common/Button'
 
-const ValidatedCommands=({navigation,todaysBills,fetchDistrubutorTodaysValideOrders,selectBill})=> {
+const CanceledOrders=({navigation,distrubutor_todays_canceled_orders,fetchDistrubutorTodaysCanceledOrders})=> {
    
     useEffect(() => {
-        fetchDistrubutorTodaysValideOrders()
+        fetchDistrubutorTodaysCanceledOrders()
     }, [])
 
     return <ScrollView  style={{flex:1}} contentContainerStyle={{
@@ -17,22 +17,24 @@ const ValidatedCommands=({navigation,todaysBills,fetchDistrubutorTodaysValideOrd
         paddingTop:32
         }} >
         {
-            todaysBills.map((bill,index) => <Item xStyle={styles.xstyle} key={index}>
+            distrubutor_todays_canceled_orders.map((canceledOrder,index) => <Item xStyle={styles.xstyle} key={index}>
             <View style={styles.item}>
                       
-                <Text style={styles.text}  >
-                {bill.billRef}
-                </Text> 
+                <View style={{display:'flex',flexDirection:'row'}} >
+                       <Text style={styles.text}  >
+                       { canceledOrder.client.name }
+                       </Text> 
+                       <Text style={styles.text}  >
+                       {"("+canceledOrder.sector.name+")"}
+                       </Text> 
+                </View>
                
                 <Button
                  xStyle={{margin:0,borderRadius:12}} 
                  color={"BLUE"} 
-                 clickHandler={e=>{
-                    selectBill({id:bill.id,distrubutor:true})
-                    navigation.navigate('DISTRIBUTOOrderBill')
-                }} 
+                 clickHandler={e=>{resetOrder(canceledOrder.id) }} 
                  >
-                    <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>Afficher</Text>
+                    <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>Reainstaller</Text>
                 </Button>
              </View>
          </Item>)
@@ -42,13 +44,13 @@ const ValidatedCommands=({navigation,todaysBills,fetchDistrubutorTodaysValideOrd
 
  export default connect(
     state=>({
-        todaysBills : state.scheduel.distrubutor_todays_valide_orders
+        distrubutor_todays_canceled_orders : state.scheduel.distrubutor_todays_canceled_orders
     }),
     dispatch =>({
-        selectBill : dispatch.scheduel.selectBill,
-        fetchDistrubutorTodaysValideOrders : dispatch.scheduel.fetchDistrubutorTodaysValideOrders,
+        resetOrder : dispatch.scheduel.resetOrder,
+        fetchDistrubutorTodaysCanceledOrders : dispatch.scheduel.fetchDistrubutorTodaysCanceledOrders,
     })
-)(ValidatedCommands)
+)(CanceledOrders)
 
 const styles = StyleSheet.create({
     item:{  

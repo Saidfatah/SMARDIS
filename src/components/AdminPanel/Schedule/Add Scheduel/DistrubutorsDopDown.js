@@ -1,7 +1,7 @@
 import React from 'react'
-import DropDown from '../../Common/DropDown'
+import DropDown from '../../../Common/DropDown'
 import {View} from 'react-native'
-import Label from '../../Common/Label'
+import Label from '../../../Common/Label'
 
 
 const DistrubutorsDopDown=({distrubutors,selectedDistrubutor, setselectedDistrubutor})=> {

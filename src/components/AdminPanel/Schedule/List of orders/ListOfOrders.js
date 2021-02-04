@@ -1,7 +1,7 @@
-import React ,{useState,useEffect} from 'react'
+import React,{useState,useEffect} from 'react'
 import {View,Text,ScrollView,Dimensions,StatusBar} from 'react-native'
 import { connect } from 'react-redux'
-import ScheduleItem from './ScheduleItem'
+import OrderItem from './OrderItem'
 import { List } from 'react-native-paper';
 import Loading from '../../../Common/Loading'
 
@@ -9,7 +9,7 @@ const {height}=Dimensions.get('screen')
 const HEIGHT = height- StatusBar.currentHeight
 
 
-export const ListOfSchedules = ({scheduels}) => {
+export const ListOfOrders = ({navigation,selectBill,orders}) => {
     const [finishedLoading, setfinishedLoading] = useState(false)
     useEffect(() => {
         let mounted =true
@@ -20,9 +20,10 @@ export const ListOfSchedules = ({scheduels}) => {
         return ()=>mounted=false
     }, [])
 
-    const TITLE = scheduels.length >0 ? "les order active" :"ilnya pas de emploi du temps"
+    const TITLE = orders.length >0 ? "les order active" :"ilnya pas de emploi du temps"
 
-    if(scheduels.length <1 && !finishedLoading ) 
+    
+    if(orders.length<1 && finishedLoading) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
         <Loading spacing={50} />   
     </View>
@@ -31,7 +32,13 @@ export const ListOfSchedules = ({scheduels}) => {
         <ScrollView  > 
             <View style={{backgroundColor:'#fff',minHeight:HEIGHT, flex:1 ,padding:8}}>
                  <List.Section title={TITLE}>
-                    {scheduels.map((item,i)=> <ScheduleItem scheduel={item} key={i}  />)}
+                    {orders.map((item,index)=> <OrderItem 
+                    validated={false} 
+                    navigation={navigation} 
+                    selectBill={selectBill}
+                    order={item} 
+                    key={index}  
+                    />)}
                  </List.Section>
             </View>
         </ScrollView>
@@ -42,8 +49,10 @@ export const ListOfSchedules = ({scheduels}) => {
 
 export default connect(
     state=>({
-        scheduels: state.scheduel.scheduels 
+        orders: state.scheduel.orders 
     }),
-    null
+    state=>({
+        selectAbill: state.scheduel.selectBill 
+    }),
 )
-(ListOfSchedules)
+(ListOfOrders)

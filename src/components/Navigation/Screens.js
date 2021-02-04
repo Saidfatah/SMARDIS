@@ -10,13 +10,14 @@ import AdminDash  from '../AdminPanel/DashBoard/AdminDashBoard'
 import AdminDist    from '../AdminPanel/Distrubutors/Distrubutors'
 import AdminAddDist    from '../AdminPanel/Distrubutors/Add distrubutor/AddDistrubutor'
 import AdminDistPage    from '../AdminPanel/Distrubutors/Distrubutor page/DistrubutorPage'
-import AdminOrders  from '../AdminPanel/Orders/OrdersValidated'
+import AdminOrders  from '../AdminPanel/Schedule/List of orders/ListOfOrdersValidated'
 import AdminProds  from '../AdminPanel/Products/Products'
 import AdminaddProd  from '../AdminPanel/Products/Add product/AddProduct'
 import AdminProductP  from '../AdminPanel/Products/Product Page/ProductPage'
 import AdminSls     from '../AdminPanel/Sales/Sales'
-import AdminSch   from '../AdminPanel/Schedule/Schedule'
+import AdminSch   from '../AdminPanel/Schedule/Add Scheduel/Schedule'
 import AdminListSch   from '../AdminPanel/Schedule/ListOfSchedules/ListOfSchedules'
+import AdminListOfOrdrs   from '../AdminPanel/Schedule/List of orders/ListOfOrders'
 import AdminSec     from '../AdminPanel/Sectors/Sectors'
 import AdminSecPage     from '../AdminPanel/Sectors/Sector Page/SectorPage'
 import AdminAddSec     from '../AdminPanel/Sectors/Add sector/AddSector'
@@ -32,6 +33,7 @@ import DistrubutorClient     from '../Distrubutor/ClientProductsSelection/Client
 import DistrubutorCrt   from '../Cart/Cart'
 import DistrubutorVc   from '../Distrubutor/validatedCommands/ValidatedCommands'
 import Distrubutorbt   from '../Distrubutor/validatedCommands/BillTable'
+import DistrubutorCanceledOrds  from '../Distrubutor/CanceledOrders/CanceledOrders'
 
 //common 
 import Log    from '../Auth/Login/Login'
@@ -60,6 +62,7 @@ export const AdminAddDistrubutor   = AdminAddDist ;
 export const AdminDistrubutorPage    = AdminDistPage ;
 export const AdminOrdersValidated = AdminOrders ;
 export const AdminListOfSchedules = AdminListSch ;
+export const AdminListOfOrders = AdminListOfOrdrs ;
 export const AdminRegisterDistrubutor= AdminRegisterDist ;
 
 
@@ -70,6 +73,7 @@ export const DistrubutorCart= DistrubutorCrt ;
 export const DistrubutorClientDelivry = DistrubutorClient  ;
 export const DistrubutorTodaysOrders  = DistrubutorTodays  ;
 export const DistrubutorValidatedCommands= DistrubutorVc  ;
+export const DistrubutorCanceledOrders= DistrubutorCanceledOrds  ;
 export const DistrubutorBillTable= Distrubutorbt ;
 
 export const Login= Log ;

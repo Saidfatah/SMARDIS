@@ -1,8 +1,8 @@
 import React from 'react'
-import {View,Text,StyleSheet,Dimensions,SafeAreaView} from 'react-native'
+import {View,Text,StyleSheet,Dimensions} from 'react-native'
 import {AutoDragSortableView} from 'react-native-drag-sort'
-import Item from '../../Common/Item'
-import {colors} from '../../Common/Colors'
+import {colors} from '../../../Common/Colors'
+
 const {width} = Dimensions.get('window')
 const PARENT_WIDTH = width
 const SPACING = 16
@@ -20,7 +20,11 @@ const ClientsOrdering=({sectorClients,setorderListOfClients})=> {
               marginChildrenBottom={10}
               marginChildrenTop={10}
               isDragFreely={true}
-              onDataChange={orderdData=>setorderListOfClients(orderdData)}
+              onDataChange={orderdData=>{
+                  console.log('-----------ClientsOrdering-----------')
+                  console.log(orderdData)
+                  setorderListOfClients(orderdData)
+              }}
               keyExtractor={(item,index)=> index}
               renderItem={(item,index)=>{
                   return <View style={styles.item}>

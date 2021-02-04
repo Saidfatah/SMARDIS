@@ -27,7 +27,7 @@ const model ={
         fetchedSectors : (state,sectors)=>({
             ...state,
             sectors :sectors ,
-            sectors_first_fetch:true,
+            sectorsCount:sectors.length
         }),
         fetchedSectorClients : (state,{selected_sector_Clients,last_visited_sector,visited_Sector_has_clients})=>({
             ...state,
@@ -71,6 +71,7 @@ const model ={
             ...state,
             clients :[...clients],
             first_fetch:true,
+            clientsCount:clients.length,
             last_visible_client
         }),
         fetcheClientsFailed : (state,clients)=>({
@@ -99,15 +100,6 @@ const model ={
         }),
     },
     effects: (dispatch)=>({
-        async fetchClientsCount(arg,state){
-           try {
-                const clientsResponse= await firestore().collection('clients').get()
-                const count = clientsResponse.docs.length
-                dispatch.client.fetchedClientsCount(count) 
-           } catch (error) {
-               console.log(error)
-           }
-        },
         async fetchMoreClients(arg,state){
             try {
                 const last_visible_client = state.client.last_visible_client
@@ -145,10 +137,14 @@ const model ={
                 const first_fetch = state.client.first_fetch
                 if(first_fetch) return
     
+                // const clientsResponse= await firestore()
+                //                         .collection('clients')
+                //                         .orderBy('ref',"asc")
+                //                         .limit(FETCH_LIMIT)
                 const clientsResponse= await firestore()
                                         .collection('clients')
                                         .orderBy('ref',"asc")
-                                        .limit(FETCH_LIMIT)
+         
                                         
                 clientsResponse.onSnapshot(res=>{
                     if(res.docs){
@@ -238,15 +234,6 @@ const model ={
         },
 
    
-        async fetchSectorsCount(arg,state){
-            try {
-                const sectorsResponse= await firestore().collection('sectors').get()
-                const count = sectorsResponse.docs.length
-                dispatch.client.fetchedSectorsCount(count) 
-            } catch (error) {
-                console.log(error)
-            }
-        },
         async fetchSectors(arg,state){
              try {
                 const sectors_first_fetch = state.client.sectors_first_fetch

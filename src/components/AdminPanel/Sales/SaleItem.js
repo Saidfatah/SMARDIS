@@ -10,7 +10,7 @@ export const SaleItem = ({sale}) => {
     const [expanded, setExpanded] = useState(false);
     const handlePress = () => setExpanded(!expanded);
   
-    const {client,distrubutor,product,sector,quantity,ref,total}= sale
+    const {client,distrubutor,product,sector,billRef,total}= sale
 
     return (
         <List.Accordion
@@ -29,7 +29,7 @@ export const SaleItem = ({sale}) => {
                 <View style={styles.HFlex} >
                     <Label label="Facetru refrence :"  mga={16} />
                     <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
-                              <Text>{ref}</Text>
+                              <Text>{billRef}</Text>
                     </View>
                 </View>
           

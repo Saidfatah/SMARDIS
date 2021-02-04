@@ -3,7 +3,7 @@ import { SwipeablePanel } from 'rn-swipeable-panel';
 import ProductInfo from './ProductInfo'
 import ProductAddToCart from './ProductAddToCart'
 
-const SwipeAbleProductDetails=({selectedProduct,sector,orderId,isPanelActive,setIsPanelActive,addCartItem,guest,client})=> {
+const SwipeAbleProductDetails=({selectedProduct,sector,isPanelActive,setIsPanelActive,addCartItem,guest,client})=> {
  
     const closePanel = () => {
       setIsPanelActive(false);
@@ -20,7 +20,7 @@ const SwipeAbleProductDetails=({selectedProduct,sector,orderId,isPanelActive,set
            style={{padding:16}}
          >
         <ProductInfo product={selectedProduct} opened={true} />
-        <ProductAddToCart {...{selectedProduct,sector, guest,orderId, addCartItem}} />
+        <ProductAddToCart {...{selectedProduct,sector, guest, addCartItem}} />
     </SwipeablePanel>
     
 }
