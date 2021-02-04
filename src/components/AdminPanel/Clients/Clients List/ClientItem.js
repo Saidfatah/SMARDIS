@@ -3,8 +3,8 @@ import {View,Text} from 'react-native'
 import Item from '../../../Common/Item'
 import Button from '../../../Common/Button'
 
-const ClientItem=({navigation,client,onclick,isInTodaysOrders })=> {
-    const {name}=client
+const ClientItem=({navigation,client })=> {
+  const {name}=client
       return <Item xStyle={{ marginBottom:16}} >
         <View style={{ 
           display:'flex',
@@ -17,12 +17,9 @@ const ClientItem=({navigation,client,onclick,isInTodaysOrders })=> {
             <Button
              xStyle={{flex:1,margin:0,borderRadius:12}} 
              color={"BLUE"} 
-             disabled={isInTodaysOrders ? (client.done || !client.turn?true:false) :false}
-            //  clickHandler={ e=>navigation.navigate('ADMINclientProfile',{client})}:onclick} 
-             clickHandler={onclick} 
+             clickHandler={ e=>navigation.navigate('ADMINclientProfile',{client})} 
              >
-                <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>
-                  {!client.done ?"Afficher":"Done"}
+                <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>Afficher
                </Text>
             </Button>
         </View>

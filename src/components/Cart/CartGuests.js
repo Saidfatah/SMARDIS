@@ -9,7 +9,7 @@ const CartGuests=({navigation,cartGuests,updateQuantity,validateGuestOrder,remov
     const TITLE = cartGuests.length >0 ? "les paneirs active" :"Le panier est vide"
     const RenderItem=({guest})=>{
         const {items,name,sector,status}=guest
-
+ 
         if(status == "VALIDATED") return null 
         
         return <Item xStyle={styles.item}>

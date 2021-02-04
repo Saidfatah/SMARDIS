@@ -1,15 +1,17 @@
 import React from 'react'
-import {StyleSheet,View,Text} from 'react-native' 
+import {StyleSheet,View,Text,TouchableOpacity} from 'react-native' 
 import {
     DrawerContentScrollView,
     DrawerItem
 } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-
+import {colors} from '../../Common/Colors'
+import Badge from '../../Common/Badge'
+import TodaysOrders from '../../Distrubutor/TodaysOrders/TodaysOrders';
 
 const DrawerContent=(props)=> {
-    const {user,logout,navigation}=props
+    const {user,distrubutor_todays_valide_orders_count,logout,navigation,distrubutor_todays_canceled_orders_count}=props
     if(!user || user == null || user == undefined)
     return (
         <View style={{flex:1}}>
@@ -87,17 +89,43 @@ const DrawerContent=(props)=> {
                     </View>
                     <View style={styles.drawerSection}>
 
-                        <DrawerItem 
-                            icon={({color, size}) => (
-                                <Icon 
-                                name="account-outline" 
-                                color={color}
-                                size={size}
-                                />
-                            )}
-                            label="Configuer L'admin"
-                            onPress={() => {navigation.navigate('Profile')}}
-                        />
+                        <View style={styles.drawerItem}>
+                              <Icon 
+                                 name="clipboard-check-outline" 
+                                 color={colors.BLACK}
+                                 style={{margin:0}}
+                                 size={20}
+                                 />
+                            <TouchableOpacity  onPress={() => {navigation.navigate('DISTRIBUTORvalidtedCommands')}}>
+                               <View style={{ 
+                                   display :'flex',
+                                   flexDirection:'row',
+                                   alignItems:'center',
+                                   justifyContent:"space-between",}} >
+                                   <Text style={{color:colors.BLACK}} >Les command valider </Text>
+                                   <Badge status="success" value={distrubutor_todays_valide_orders_count} />
+                               </View>
+                            </TouchableOpacity>
+                        </View>
+    
+                        <View style={styles.drawerItem}>
+                              <Icon 
+                                 name="clipboard-check-outline" 
+                                 color={colors.BLACK}
+                                 style={{margin:0}}
+                                 size={20}
+                                 />
+                            <TouchableOpacity  onPress={() => {navigation.navigate('DISTRIBUTORcanceledCommands')}}>
+                               <View style={{ 
+                                   display :'flex',
+                                   flexDirection:'row',
+                                   alignItems:'center',
+                                   justifyContent:"space-between",}} >
+                                   <Text style={{color:colors.BLACK}} >Les command anuller </Text>
+                                   <Badge status="error" value={distrubutor_todays_canceled_orders_count} />
+                               </View>
+                            </TouchableOpacity>
+                        </View>
     
                     </View>
                  </View>
@@ -144,7 +172,9 @@ const DrawerContent=(props)=> {
 
 export default connect(
     state=>({
-        user : state.auth.user
+        user : state.auth.user,
+        distrubutor_todays_valide_orders_count : state.scheduel.distrubutor_todays_valide_orders_count,
+        distrubutor_todays_canceled_orders_count : state.scheduel.distrubutor_todays_canceled_orders_count,
     }),
     dispatch=>({
         logout:dispatch.auth.logout
@@ -152,6 +182,17 @@ export default connect(
 )(DrawerContent)
 
 const styles = StyleSheet.create({
+    drawerItem: {
+        display :'flex',
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:"space-between",
+        padding:16,
+        elevation:12,
+        backgroundColor:'#fff',
+        borderRadius:12,
+        marginBottom:16
+    },
     drawerContent: {
       flex: 1,
     },
@@ -183,6 +224,7 @@ const styles = StyleSheet.create({
     },
     drawerSection: {
       marginTop: 15,
+      padding:8
     },
     bottomDrawerSection: {
         marginBottom: 15,

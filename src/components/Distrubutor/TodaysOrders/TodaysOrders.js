@@ -1,38 +1,43 @@
 import React , {useEffect,useState} from 'react'
-import {View,Text,FlatList,StyleSheet , TouchableOpacity} from 'react-native'
+import {View,Text,FlatList,StyleSheet ,ScrollView, TouchableOpacity} from 'react-native'
 import { connect } from 'react-redux'
 import SectorItem from './SectorItem'
 import BackgroundImage from '../../Common/BackgroundImage'
+import Loading from '../../Common/Loading'
 import { List } from 'react-native-paper';
 
 const  TodaysOrders=({todaysSectors,navigation})=> {
-  const [sectorsToGoTo, setsectorsToGoTo] = useState([])
+  let TITLE=todaysSectors.length ? " Les mission d'aujourdhui" : " Les aucaun de mission active"
 
-  let TITLE=todaysSectors.length
-  ? "Les mission d'aujourdhui"
-  :"Les aucaun de mission active"
-
-  useEffect(() => {
-  setsectorsToGoTo(todaysSectors.map((ts,i)=>({...ts,index:i,opened:false})))
-  }, [todaysSectors])
-  
+ 
 
 
   return (
     <BackgroundImage  >
-        <List.Section 
-        style={{padding:8}}
-        title={TITLE} 
-        titleStyle={{color:'#fff'}}
-        >
-          {sectorsToGoTo.map((order,index)=><SectorItem 
-          key={index}
-          orderId={order.id}
-          sector={order.distination.sector} 
-          navigation={navigation} 
-          clients={order.distination.clients}  
-          />)}
-         </List.Section>
+      <ScrollView style={{flex:1}} >
+        {
+          todaysSectors.length <1
+          ?
+             <View style={{backgroundColor:'transparent',flex: 1,display:'flex',alignItems:'center'}} >
+               <Loading spacing={50} />   
+            </View> 
+          :
+            <List.Section 
+               style={{padding:8}}
+               title={TITLE} 
+               titleStyle={{color:'#fff'}}
+               >
+                 {todaysSectors.map((sector,index)=><SectorItem 
+                 key={index}
+                 orderId={sector.orderId}
+                 sector={sector.sector} 
+                 scheduleId={sector.scheduleId} 
+                 navigation={navigation} 
+                 clients={sector.orders.map(order=>({orderId:order.orderId,currentSectorIndex:index,turn:order.turn,...order.client,done:false}))}  
+                 />)}
+            </List.Section>
+      }
+      </ScrollView>
     </BackgroundImage>
     
   )
@@ -41,9 +46,11 @@ const  TodaysOrders=({todaysSectors,navigation})=> {
 
 export default connect(
   state=>({
-      todaysSectors : state.order.todaysSectors
+      todaysSectors : state.scheduel.todaysSectors
   }),
-  null
+  dispatch =>({
+    fetchTodaysSectors:dispatch.scheduel.fetchTodaysSectors
+  })
 )(TodaysOrders)
 
 

@@ -1,7 +1,7 @@
 import {init} from '@rematch/core'
 import cart from './models/Cart/cart'
 import client from './models/ClientsAndSectors/Clients'
-import order from './models/Orders/Orders'
+import scheduel from './models/Scheduels/Scheduels'
 import products from './models/ProductsAndCategories/Products'
 import auth from './models/Auth/Auth'
 import toast from './models/Toast/Toast'
@@ -14,7 +14,7 @@ const models={
     products, 
     auth ,
     distrubutor ,
-    order ,
+    scheduel ,
     toast ,
     sales
 }

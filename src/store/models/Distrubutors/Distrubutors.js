@@ -23,6 +23,7 @@ const model ={
         fetcheddistrubutors : (state,{distrubutors,last_visible})=>({
             ...state,
             distrubutors :distrubutors,
+            distrubutorsCount:distrubutors.length,
             last_visible
         }),
         fetchedMoreDistrubutors : (state,{distrubutors,last_visible})=>({
@@ -55,19 +56,7 @@ const model ={
         })
     },
     effects: (dispatch)=>({
-        async fetchDistrubutorsCount(arg,state){
-            try {
-                const distrybytorsResponse= await firestore()
-                                        .collection('users')
-                                        .where('type','==','DISTRUBUTOR')
-                                        .get()
-                 const count = distrybytorsResponse.docs.length
-                 dispatch.distrubutor.fetcheddistrubutorsCount(count)
-            } catch (error) {
-                console.log(error)
-            }
-            
-        },
+  
         async fetchDistrubutors(arg,state){
             try {
                 //this only gets called once per session 
@@ -80,15 +69,15 @@ const model ={
                 const distrubutorsResponse= await firestore()
                                         .collection('users')
                                         .where('type','==','DISTRUBUTOR')
-                                        .orderBy('name','asc')
-                                        .limit(FECTH_LIMIT)
-                                        .get()
 
-                const docs =distrubutorsResponse.docs
-                distrubtors = docs.map(doc=>({...doc.data(),id:doc.id}))
-                dispatch.distrubutor.fetcheddistrubutors({
-                    distrubutors:distrubtors,
-                    last_visible : distrubtors[distrubtors.length-1].name
+             
+                distrubutorsResponse.onSnapshot(res=>{
+                    if(res.docs == undefined) return  
+                    distrubtors = res.docs.map(doc=>({...doc.data(),id:doc.id}))
+                    dispatch.distrubutor.fetcheddistrubutors({
+                        distrubutors:distrubtors,
+                        last_visible : distrubtors[distrubtors.length-1].name
+                    })
                 })
                  
             } catch (error) {
@@ -98,6 +87,7 @@ const model ={
         },
         async fetchMoreDistrubutors(arg,state){
             try {
+                return 
                 const last_visible = state.distrubutor.last_visible
 
                 const moreDstrubutorsResponse= await firestore()

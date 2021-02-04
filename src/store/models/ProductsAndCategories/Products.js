@@ -22,7 +22,7 @@ const model ={
         categories       : [],
         selected_Categories : [],
         selectedCategoryProducts :[],
-        selectedCategory : 2 , 
+        selectedCategory : "0hxbmFxnEtU05QcWbaxv" , 
         productsCount    : 0,
         categoriesCount  : 0,
 

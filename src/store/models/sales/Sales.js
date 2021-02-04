@@ -33,7 +33,7 @@ const model ={
             //filter only orders with satus == "done"
             //map the results to these fields 
          
-            dispatch.sales.fetchedTodaysSales(todaysSales)
+            dispatch.sales.fetchedTodaysSales([])
 
         },
         async fetchSales(args,state){

@@ -9,7 +9,7 @@ import {
     DistrubutorDashBoard,
     DistrubutorBillTable,
     DistrubutorValidatedCommands,
-    
+    DistrubutorCanceledOrders
 } from './Screens'
 import {View,Text} from 'react-native'
 import {  Badge, Icon,Avatar } from 'react-native-elements'
@@ -24,8 +24,7 @@ const DistributorStack = createStackNavigator()
 
 const CustomHeaderTitle = (props)=>{
    const {clientName}=props.route.params
-   if(clientName) return <Text>panel des produits pour {clientName}</Text>
-   return <Text>panel des produits</Text>
+   return <Text>Panel des produits</Text>
    
 }
 const CustomHeaderRight = ({cartGuests,navigation})=>{
@@ -113,6 +112,18 @@ const DistributorStackNavigator =({cartGuests})=>{
                    />
                   })}
                 component={DistrubutorValidatedCommands} 
+             />
+             <DistributorStack.Screen 
+                name="DISTRIBUTORcanceledCommands" 
+                options={({route, navigation})=>(
+                   {
+                   headerTitle:"Les commands annuler",
+                   headerLeft :()=><HeaderBackButton 
+                   label="Secteurs d'aujordhui" 
+                   onPress={()=>navigation.navigate('DISTRIBUTORtodaysOrders')} 
+                   />
+                  })}
+                component={DistrubutorCanceledOrders} 
              />
              <DistributorStack.Screen 
                 name="DISTRIBUTOOrderBill" 

@@ -2,17 +2,12 @@ import React,{useEffect} from 'react'
 import {connect} from 'react-redux'
 import TodaysOrders from '../TodaysOrders/TodaysOrders'
 
-const DistrubutorDashBoard=({route, navigation,fetchTodaysSectors,fetchSectors,fetchClientsCount   ,fetchDistrubutors ,fetchOrders ,fetchValidatedOrders ,fetchCategories  ,fetchClients,fetchProducts })=> {
+const DistrubutorDashBoard=({route,navigation,fetchTodaysSectors,fetchDistrubutorTodaysValideOrders,fetchCategories,fetchProducts})=> {
     useEffect(() => {
-        fetchClients()
-        fetchSectors()
-        fetchClientsCount()
-        fetchDistrubutors()
-        fetchOrders ()
-        fetchValidatedOrders()
         fetchCategories()
         fetchProducts()
         fetchTodaysSectors()
+        fetchDistrubutorTodaysValideOrders()
     }, [])
 
     return  <TodaysOrders {...{navigation,route}} />
@@ -22,24 +17,16 @@ const DistrubutorDashBoard=({route, navigation,fetchTodaysSectors,fetchSectors,f
 
 export default connect(
     state=>({
-        sectorsCount  : state.client.sectorsCount, 
-        clientsCount  : state.client.clientsCount,
-        salesCount    : state.cart.salesCount,
-        ordersCount   : state.order.ordersCount,
-        productsCount   : state.products.productsCount,
-        categoriesCount : state.products.categoriesCount,
-        distrubutorsCount    : state.distrubutor.distrubutorsCount,
-        validatedOrdersCount : state.cart.validatedOrdersCount,
+        ordersCount   : state.scheduel.ordersCount,
+        distrubutor_todays_valide_orders_count : state.scheduel.distrubutor_todays_valide_orders_count,
     }),
     dispatch =>({
-        //fetch products , clients , categories 
-        fetchTodaysSectors : dispatch.order.fetchTodaysSectors,
+        fetchTodaysSectors : dispatch.scheduel.fetchTodaysSectors,
+        fetchDistrubutorTodaysValideOrders : dispatch.scheduel.fetchDistrubutorTodaysValideOrders,
         fetchClients  : dispatch.client.fetchClients,
         fetchSectors  : dispatch.client.fetchSectors,
         fetchClientsCount  : dispatch.client.fetchClientsCount,
         fetchDistrubutors : dispatch.distrubutor.fetchDistrubutors,
-        fetchOrders : dispatch.order.fetchOrders,
-        fetchValidatedOrders : dispatch.cart.fetchValidatedOrders,
         fetchCategories : dispatch.products.fetchCategories,
         fetchProducts   : dispatch.products.fetchProducts,
     })

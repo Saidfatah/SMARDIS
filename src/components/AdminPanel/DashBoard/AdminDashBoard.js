@@ -8,7 +8,32 @@ import {  Badge, Icon } from 'react-native-elements'
 
 
 
-const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount,fetchSectorsCount,fetchClientsCount   ,fetchDistrubutorsCount ,fetchOrders ,fetchValidatedOrders ,fetchCategoriesCount  ,fetchProductsCount })=> {
+const  AdminDashBoard=(props)=> {
+    const {
+        route,
+        fetchTodaysSales,
+        fetchCategories,
+        navigation,
+        sectorsCount ,
+        fetchClients,
+        fetchSectors,
+        clientsCount ,
+        salesCount,
+        ordersCount,
+        productsCount,
+        categoriesCount,
+        distrubutorsCount,
+        validatedOrdersCount,
+        fetchScheduels ,
+        fetchDistrubutors,
+        fetchOrders ,
+        fetchValidatedOrders ,
+        fetchCategoriesCount ,
+        scheduelsCount ,
+        fetchProductsCount ,
+        user
+    }=props
+
     const ROUTES =[
         {
              title:"Clients",
@@ -35,6 +60,7 @@ const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clients
              title:"Emploi du temps",
              subMenu:[
                 {title:"List des emploi du temps",route :"ADMINlistOfScheduleS"},
+                {title:"List des command ",route :"ADMINlistOfOrders"},
                 {title:"Ajouter un Emploi du temp",route :"ADMINschedule"}
             ]
         },
@@ -79,15 +105,18 @@ const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clients
     ]
 
     useEffect(() => {
-          fetchDistrubutorsCount()
           fetchValidatedOrders()
           fetchProductsCount()
-          fetchSectorsCount()
-          fetchClientsCount()
-          fetchOrders ()
           fetchCategoriesCount()
+           
+          fetchCategories()
+          fetchSectors()
+          fetchDistrubutors()
+          fetchClients()
+          fetchOrders()
+          fetchScheduels()
           fetchTodaysSales()
-          navigation.setParams({ADMIN_NAME:"Abdellah"})
+          if(user)  navigation.setParams({ADMIN_NAME:user.name})
     }, [])
 
     const navigateToRoute=(r)=>navigation.navigate(r)
@@ -110,21 +139,25 @@ const  AdminDashBoard=({route,fetchTodaysSales, navigation,sectorsCount ,clients
 
 export default connect(
     state=>({
+        user  : state.auth.user, 
         sectorsCount  : state.client.sectorsCount, 
         clientsCount  : state.client.clientsCount,
-        salesCount    : state.sales.todaysSalesCount,
-        ordersCount   : state.order.ordersCount,
+        salesCount    : state.scheduel.todaysSalesCount,
+        ordersCount   : state.scheduel.ordersCount,
+        scheduelsCount   : state.scheduel.scheduelsCount,
         productsCount   : state.products.productsCount,
         categoriesCount : state.products.categoriesCount,
         distrubutorsCount    : state.distrubutor.distrubutorsCount,
-        validatedOrdersCount : state.cart.validatedOrdersCount,
+        validatedOrdersCount : state.scheduel.validatedOrdersCount,
     }),
     dispatch =>({
-        fetchTodaysSales  : dispatch.sales.fetchTodaysSales,
-        fetchSectorsCount  : dispatch.client.fetchSectorsCount,
-        fetchClientsCount  : dispatch.client.fetchClientsCount,
-        fetchDistrubutorsCount : dispatch.distrubutor.fetchDistrubutorsCount,
-        fetchOrders : dispatch.order.fetchOrders,
+        fetchSectors  : dispatch.client.fetchSectors,
+        fetchClients  : dispatch.client.fetchClients,
+        fetchCategories  : dispatch.products.fetchCategories,
+        fetchDistrubutors  : dispatch.distrubutor.fetchDistrubutors ,
+        fetchOrders : dispatch.scheduel.fetchOrders,
+        fetchScheduels : dispatch.scheduel.fetchScheduels,
+        fetchTodaysSales : dispatch.scheduel.fetchTodaysSales,
         fetchValidatedOrders : dispatch.cart.fetchValidatedOrders,
         fetchCategoriesCount : dispatch.products.fetchCategoriesCount,
         fetchProductsCount   : dispatch.products.fetchProductsCount,

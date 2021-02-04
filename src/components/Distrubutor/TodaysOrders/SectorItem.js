@@ -1,22 +1,20 @@
-import React,{useState,createRef} from 'react'
-import {View,Text,FlatList,StyleSheet , TouchableOpacity} from 'react-native'
+import React,{useState,createRef,useMemo} from 'react'
+import {View,Text,StyleSheet } from 'react-native'
 import { List } from 'react-native-paper';
 import {colors} from '../../Common/Colors'
 import ClientItem from '../../AdminPanel/Clients/Clients List/ClientItem'
 import Badge from '../../Common/Badge'
-import Item from '../../Common/Item'
-
-// import Animated, {useAnimatedStyle} from 'react-native-reanimated';
-// import {bin,mix,useTiming} from 'react-native-redash' 
-// const {interpolate,not}=Animated
+import {connect} from 'react-redux'
+import ClientItems from './ClientsItems'
 
 
-const SectorItem=({sector,clients,orderId,navigation})=> {
+
+const SectorItem=({sector,clients,orderId,navigation,currentSector,currentSectorIndex,currentTurn})=> {
         const [expanded, setexpanded] = useState(false)
-        const navigateToRoute=(clientId,client)=>navigation.navigate('DISTRIBUTORclientDelivery', { clientId ,client ,sector,orderId });
-        const {name}=sector
-    
-
+        const {name,id}=sector
+        console.log('-----SectorItem-----')
+         console.log({orderId})
+        
         const ACCORDION_PROPS={
             title:<View style={{
                 flex:1,
@@ -49,28 +47,25 @@ const SectorItem=({sector,clients,orderId,navigation})=> {
             expanded:expanded ,
             onPress:()=>setexpanded(!expanded)
         }
-        return (
-            <List.Accordion  {...ACCORDION_PROPS} >
+        
+   
+
+      
+        return <List.Accordion  {...ACCORDION_PROPS} >
               <View style={styles.accordionContentWrrapper}>  
-               {
-               clients.map((sCl,index)=><ClientItem 
-                    isInTodaysOrders={true}
-                    key={index} 
-                    navigation={navigation} 
-                    client={sCl} 
-                    onclick={()=>{
-                        if(sCl.turn) return navigateToRoute(sCl.id,sCl)
-                        console.log('not your turn , sho message here')
-                    }} 
-                    />)
-               }  
+               <ClientItems {...{clients,navigation,sector,currentTurn,currentSectorIndex,currentSector,orderId}}/>  
               </View>
         </List.Accordion>
-        )
-   
 }
 
-export default SectorItem
+export default  connect(
+    state=>({
+        currentTurn   : state.scheduel.currentTurn ,
+        currentSector : state.scheduel.currentSector,
+        currentSectorIndex : state.scheduel.currentSectorIndex,
+    }),
+    null
+)(SectorItem)
 
   
   const styles = StyleSheet.create({
