@@ -444,7 +444,10 @@ const model ={
                 if(clientLeft){
                     currentTurn=clientLeft.turn
                 }else{
-                   currentTurn = 0
+                    currentTurn = 0
+                    //check if sector exists 
+                    if(todaysSectors.length == currentSectorIndex+1) return 
+
                    currentSector = todaysSectors[currentSectorIndex+1].sector.id
                    currentSectorIndex++
                 }

@@ -12,7 +12,7 @@ import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import {CheckBox} from 'react-native-elements'
 
 const  Login=({navigation,authError,login,toggleSavePassword,savePassword,savedPassword})=> {
-    const [username, setusername] = useState("jgnour@admin.com")
+    const [username, setusername] = useState("mouad@vendor.com")
     const [password, setPassword] = useState("123456")
     const [savePasswordLogin, setsavePasswordLogin] = useState(false)
     const [passwordRequired, setpasswordRequired] = useState(null)
@@ -58,12 +58,7 @@ const  Login=({navigation,authError,login,toggleSavePassword,savePassword,savedP
         <KeyboardAwareScrollView   contentContainerStyle={{ display:'flex',  flexGrow:1 }} >
 
         <View style={styles.Logo}>
-            <View style={{borderColor:'#fff',
-              borderWidth:2,
-              borderRadius:12}} >
              <Logo width={100} height={100}  />
-
-            </View>
         </View>
         <View style={styles.Form}>
        

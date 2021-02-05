@@ -9,8 +9,10 @@ import BackgroundImage from '../../Common/BackgroundImage'
 const  Authorizer=({navigation,logout,checkAuthetication})=> {
     useEffect(() => {
         // logout({navigation})
-     
-           checkAuthetication({navigation})
+       //
+           setTimeout(() => {
+            checkAuthetication({navigation})
+           }, 4000);
        
     }, [])
 
@@ -27,9 +29,6 @@ const  Authorizer=({navigation,logout,checkAuthetication})=> {
         height:'100%',
     }}>
          <View style={{
-         borderColor:'#fff',
-         borderWidth:2,
-         borderRadius:12,
          elevation:12
          }} >
          <Logo width={100} height={100}  />

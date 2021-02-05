@@ -26,6 +26,8 @@ const Schedule = ({addScheduel,clients,sectors,distrubutors,adminId})=> {
          {
              const sectorClients = [...clients].filter(cl=> cl.sectorId == selectedSector.id)
              setselectedSectorClients(sectorClients)
+             setorderListOfClients(sectorClients)
+
          }
     }, [selectedSector.id])
     
@@ -36,6 +38,10 @@ const Schedule = ({addScheduel,clients,sectors,distrubutors,adminId})=> {
 
 
     const createNewSchdule=e=>{
+        console.log(orderListOfClients.length>0)
+        console.log({
+            adminId ,selectedDistrubutor, selectedSector
+        })
         if(adminId != undefined && selectedDistrubutor &&  selectedSector && orderListOfClients.length>0 ){
             addScheduel({
                 distrubutor   :selectedDistrubutor,
