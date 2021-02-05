@@ -8,7 +8,7 @@ const IMAGE_HEIGHT= (width- (16*4))/4
 const CategoryItem=({category,selectedCategory,selectCategory})=> {
     const {id , name, image , count } = category
     const isSelected= selectedCategory == id
-
+   
  
     return (
         <TouchableOpacity onPress={e=> selectCategory(id)}>

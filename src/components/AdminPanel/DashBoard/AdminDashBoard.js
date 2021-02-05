@@ -1,16 +1,14 @@
 import React,{useEffect} from 'react'
-import {View,Text,ScrollView,TouchableOpacity} from 'react-native'
+import { ScrollView} from 'react-native'
 import { connect } from 'react-redux'
 import { List } from 'react-native-paper';
 import DashBoardItem from './DashBoardItem'
-import {colors} from '../../Common/Colors'
-import {  Badge, Icon } from 'react-native-elements'
+ 
 
 
 
 const  AdminDashBoard=(props)=> {
     const {
-        route,
         fetchTodaysSales,
         fetchCategories,
         navigation,
@@ -31,6 +29,8 @@ const  AdminDashBoard=(props)=> {
         fetchCategoriesCount ,
         scheduelsCount ,
         fetchProductsCount ,
+        fetchWaitingList,
+        fetchAdmins,
         user
     }=props
 
@@ -108,7 +108,8 @@ const  AdminDashBoard=(props)=> {
           fetchValidatedOrders()
           fetchProductsCount()
           fetchCategoriesCount()
-           
+          fetchAdmins()
+          fetchWaitingList()
           fetchCategories()
           fetchSectors()
           fetchDistrubutors()
@@ -119,7 +120,6 @@ const  AdminDashBoard=(props)=> {
           if(user)  navigation.setParams({ADMIN_NAME:user.name})
     }, [])
 
-    const navigateToRoute=(r)=>navigation.navigate(r)
   
     return <ScrollView style={{backgroundColor:'#fff'}}>
          <List.Section  >
@@ -151,6 +151,8 @@ export default connect(
         validatedOrdersCount : state.scheduel.validatedOrdersCount,
     }),
     dispatch =>({
+        fetchWaitingList  : dispatch.auth.fetchWaitingList,
+        fetchAdmins  : dispatch.auth.fetchAdmins,
         fetchSectors  : dispatch.client.fetchSectors,
         fetchClients  : dispatch.client.fetchClients,
         fetchCategories  : dispatch.products.fetchCategories,

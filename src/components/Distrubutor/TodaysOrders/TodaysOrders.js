@@ -1,27 +1,23 @@
-import React , {useEffect,useState} from 'react'
-import {View,Text,FlatList,StyleSheet ,ScrollView, TouchableOpacity} from 'react-native'
+import React  from 'react'
+import {View,StyleSheet ,ScrollView} from 'react-native'
 import { connect } from 'react-redux'
 import SectorItem from './SectorItem'
 import BackgroundImage from '../../Common/BackgroundImage'
 import Loading from '../../Common/Loading'
 import { List } from 'react-native-paper';
 
-const  TodaysOrders=({todaysSectors,navigation})=> {
+const  TodaysOrders=({todaysSectors,distrubutor_todays_orders_done_fetching,navigation})=> {
   let TITLE=todaysSectors.length ? " Les mission d'aujourdhui" : " Les aucaun de mission active"
-
- 
-
-
+  
+  
   return (
     <BackgroundImage  >
-      <ScrollView style={{flex:1}} >
-        {
-          todaysSectors.length <1
-          ?
-             <View style={{backgroundColor:'transparent',flex: 1,display:'flex',alignItems:'center'}} >
-               <Loading spacing={50} />   
-            </View> 
-          :
+      {
+      !distrubutor_todays_orders_done_fetching
+      ?<View style={{backgroundColor:'transparent',flex: 1,display:'flex',alignItems:'center'}} >
+            <Loading spacing={50} />   
+      </View> 
+      : <ScrollView style={{flex:1}} >
             <List.Section 
                style={{padding:8}}
                title={TITLE} 
@@ -33,11 +29,18 @@ const  TodaysOrders=({todaysSectors,navigation})=> {
                  sector={sector.sector} 
                  scheduleId={sector.scheduleId} 
                  navigation={navigation} 
-                 clients={sector.orders.map(order=>({orderId:order.orderId,currentSectorIndex:index,turn:order.turn,...order.client,done:false}))}  
+                 clients={sector.orders.map(order=>({
+                        orderId:order.orderId,
+                        currentSectorIndex:index,
+                        turn:order.turn,
+                        ...order.client,
+                        done:false
+                     }))}  
                  />)}
             </List.Section>
-      }
+ 
       </ScrollView>
+      }
     </BackgroundImage>
     
   )
@@ -46,7 +49,8 @@ const  TodaysOrders=({todaysSectors,navigation})=> {
 
 export default connect(
   state=>({
-      todaysSectors : state.scheduel.todaysSectors
+      todaysSectors : state.scheduel.todaysSectors,
+      distrubutor_todays_orders_done_fetching : state.scheduel.distrubutor_todays_orders_done_fetching,
   }),
   dispatch =>({
     fetchTodaysSectors:dispatch.scheduel.fetchTodaysSectors

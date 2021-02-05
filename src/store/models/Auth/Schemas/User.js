@@ -1,15 +1,7 @@
 import firestore from '@react-native-firebase/firestore'
 
-export const user=(
-    user_id,
-    type,
-    name,
-    email,
-    phone,
-    city,
-    distrubutorAdditional,
-    adminAdditional
-)=>{
+export const user=( user_id,type,name,email,phone,city,distrubutorAdditional,adminAdditional)=>{
+ 
   if(type != "ADMIN" && type != "DISTRUBUTOR" )  throw Error('NO_USER_TYPE_PROVIDED')
   
   let userObj={
@@ -18,18 +10,17 @@ export const user=(
       name,
       email,
       city,
+      confirmed:"PENDING",//PENNDING || APPROVED
       phone:phone || "NOT_DEFINED",
       created_at:firestore.Timestamp.fromDate(new Date())
   } 
 
-  if(type == "ADMIN" && adminAdditional){
-    const {isMaster} = adminAdditional
-    userObj.isMaster = isMaster
+  if(type == "ADMIN"  ){
+    userObj.isMaster = false
   }
 
-  if(type == "DISTRUBUTOR" && distrubutorAdditional){
-    const {ref} = distrubutorAdditional
-    userObj.ref = ref
+  if(type == "DISTRUBUTOR" ){
+    userObj.ref = user_id.substring(0,5)+name.toUpperCase().substring(0,2)
   }
 
   return userObj

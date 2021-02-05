@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import {View,Text,ScrollView,StyleSheet} from 'react-native'
 import Item from '../../Common/Item'
 import Button from '../../Common/Button'
+import Loading from '../../Common/Loading'
+import BackgroundImage from '../../Common/BackgroundImage'
 
 const ValidatedCommands=({navigation,todaysBills,fetchDistrubutorTodaysValideOrders,selectBill})=> {
    
@@ -10,34 +12,37 @@ const ValidatedCommands=({navigation,todaysBills,fetchDistrubutorTodaysValideOrd
         fetchDistrubutorTodaysValideOrders()
     }, [])
 
-    return <ScrollView  style={{flex:1}} contentContainerStyle={{
-        height:'100%',
-        backgroundColor:'#fff',
-        padding:8,
-        paddingTop:32
-        }} >
+    return <BackgroundImage>
         {
-            todaysBills.map((bill,index) => <Item xStyle={styles.xstyle} key={index}>
-            <View style={styles.item}>
-                      
-                <Text style={styles.text}  >
-                {bill.billRef}
-                </Text> 
-               
-                <Button
-                 xStyle={{margin:0,borderRadius:12}} 
-                 color={"BLUE"} 
-                 clickHandler={e=>{
-                    selectBill({id:bill.id,distrubutor:true})
-                    navigation.navigate('DISTRIBUTOOrderBill')
-                }} 
-                 >
-                    <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>Afficher</Text>
-                </Button>
-             </View>
-         </Item>)
+            todaysBills.length<1 
+            ?<View style={{backgroundColor:'transparent',flex: 1,display:'flex',alignItems:'center'}} >
+            <Loading spacing={50} />   
+            </View> 
+            :<ScrollView  style={{flex:1}} contentContainerStyle={{ flex:1, padding:8,paddingTop:32}} >
+                {
+                    todaysBills.map((bill,index) => <Item xStyle={styles.xstyle} key={index}>
+                    <View style={styles.item}>
+                              
+                        <Text style={styles.text}  >
+                        {bill.billRef}
+                        </Text> 
+                       
+                        <Button
+                         xStyle={{margin:0,borderRadius:12}} 
+                         color={"BLUE"} 
+                         clickHandler={e=>{
+                            selectBill({id:bill.id,distrubutor:true})
+                            navigation.navigate('DISTRIBUTOOrderBill')
+                        }} 
+                         >
+                            <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>Afficher</Text>
+                        </Button>
+                     </View>
+                 </Item>)
+                }
+            </ScrollView>
         }
-    </ScrollView>
+    </BackgroundImage>
 }
 
  export default connect(

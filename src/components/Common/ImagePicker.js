@@ -10,16 +10,20 @@ const ImagePicker=({modalVisible, setModalVisible,imageUploadHandler,productImag
 
     useEffect(() => {
         console.log({categoryImageUploadState})
-        if(model ==="PRODUCT" && productImageUploadState === "DONE") 
+        if(model ==="PRODUCT" && productImageUploadState === "DONE"){ 
             setuploading(false)
-        if (model === "CATEGORY" && categoryImageUploadState === "DONE" ) 
+        }
+        if (model === "CATEGORY" && categoryImageUploadState === "DONE" ){ 
              setuploading(false)
+        }
         
-        if(productImageUploadState === "FAILED" || categoryImageUploadState === "FAILED" )
+        if(productImageUploadState === "FAILED" || categoryImageUploadState === "FAILED" ){
              setuploading(false)
+        }
     }, [productImageUploadState,categoryImageUploadState])
 
     const uploadImage =(selectedImage)=>{
+          
           const uploadUri = Platform.OS === 'ios' 
           ? selectedImage.replace('file://', '') 
           : selectedImage;

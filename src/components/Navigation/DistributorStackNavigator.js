@@ -1,23 +1,21 @@
 import React from 'react'
 import {createStackNavigator,HeaderBackButton} from '@react-navigation/stack'
-import {
-    DistrubutorCart,
-    DistrubutorCatalogue,
-    DistrubutorClientDelivry,
-    DistrubutorSectors,
-    DistrubutorTodaysOrders,
-    DistrubutorDashBoard,
-    DistrubutorBillTable,
-    DistrubutorValidatedCommands,
-    DistrubutorCanceledOrders
-} from './Screens'
+
+import DistrubutorDashBoard from '../Distrubutor/DashBoard/DistrubutorDashBoard'
+import DistrubutorSectors  from '../Distrubutor/sectors/sectors'
+import DistrubutorTodaysOrders   from '../Distrubutor/TodaysOrders/TodaysOrders'
+import DistrubutorCatalogue  from '../Distrubutor/Catalogue/Catalogue'
+import DistrubutorClientDelivry     from '../Distrubutor/ClientProductsSelection/ClientDelivry'
+import DistrubutorCart   from '../Cart/Cart'
+import DistrubutorValidatedCommands   from '../Distrubutor/validatedCommands/ValidatedCommands'
+import DistrubutorBillTable   from '../Distrubutor/validatedCommands/BillTable'
+import DistrubutorCanceledOrders  from '../Distrubutor/CanceledOrders/CanceledOrders'
+
 import {View,Text} from 'react-native'
 import {  Badge, Icon,Avatar } from 'react-native-elements'
-import FAIcon from 'react-native-vector-icons/FontAwesome'
-import {colors} from '../Common/Colors'
 import {TouchableOpacity} from 'react-native'
 import { connect } from 'react-redux'
-import Button from '../Common/Button'
+ 
 
 
 const DistributorStack = createStackNavigator()

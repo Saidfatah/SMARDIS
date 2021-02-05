@@ -12,8 +12,7 @@ import ClientItems from './ClientsItems'
 const SectorItem=({sector,clients,orderId,navigation,currentSector,currentSectorIndex,currentTurn})=> {
         const [expanded, setexpanded] = useState(false)
         const {name,id}=sector
-        console.log('-----SectorItem-----')
-         console.log({orderId})
+    
         
         const ACCORDION_PROPS={
             title:<View style={{
