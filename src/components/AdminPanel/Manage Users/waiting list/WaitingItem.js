@@ -3,7 +3,7 @@ import {View,Text,StyleSheet} from 'react-native'
 import { List } from 'react-native-paper';
 import {colors} from '../../../Common/Colors'
 import Button from '../../../Common/Button'
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 export const WaitingItem = ({user,approveUser,rejectUser}) => {
     const [expanded, setExpanded] = useState(false);
@@ -24,14 +24,18 @@ export const WaitingItem = ({user,approveUser,rejectUser}) => {
     expanded={expanded}
     onPress={handlePress}
     >
-           <View style={styles.HFlex} >
-              <Button color="GREEN" clickHandler={()=>approveUser(id)} >
-                 <Text style={{color:'#fff',fontWeight:'bold'}}>Approuver </Text>
+          <View style={styles.accordionContentWrrapper} >
+          <View style={styles.HFlex} >
+              <Button xStyle={styles.xButton} color="GREEN" clickHandler={()=>approveUser(id)} >
+                  <Icon style={styles.icon} size={20} name="account-check" />
+                  <Text style={styles.text}>Approuver </Text>
               </Button>
-              <Button color="GREEN" clickHandler={()=>approveUser(id)} >
-                 <Text style={{color:'#fff',fontWeight:'bold'}}>rejeter  </Text>
+              <Button  xStyle={styles.xButton}  color="RED" clickHandler={()=>approveUser(id)} >
+                 <Icon style={styles.icon} size={20} name="account-cancel-outline" />
+                 <Text style={styles.text}>rejeter  </Text>
               </Button>
            </View>
+          </View>
 
 </List.Accordion>
 }
@@ -79,6 +83,15 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center'
     },
+    xButton:{
+        display:'flex',
+        justifyContent:'center',
+        alignItems:'center',
+        flexDirection:'row',
+        padding:8
+    },
+    icon:{color:'#fff',marginRight:8},
+    text:{color:'#fff',fontWeight:'bold'}
 })
 
 

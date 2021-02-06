@@ -29,7 +29,8 @@ const model ={
         authError      : null , 
         registerError  : null , 
         catalogue_url : "NOT_UPLOADED",
-        done_fetching_catalogue:false
+        done_fetching_catalogue:false ,
+        done_fetching_waiting_list:false ,
     },
     reducers:{
         checkedAuthentication : (state,{authenticated,user,userType,savePassword,savedPassword})=>({
@@ -88,7 +89,13 @@ const model ={
             ...state,
             waitingList:[...waitingList],
             waitingList_count:waitingList.length,
-            waitingList_done_first_fetch :true
+            waitingList_done_first_fetch :true ,
+            done_fetching_waiting_list :true,
+        }),
+        fetchingWaitingListFailed:  (state,args)=>({
+            ...state,
+            waitingList_done_first_fetch :true ,
+            done_fetching_waiting_list :true,
         }),
         approvedUser:  (state,waitingList)=>({
             ...state,
@@ -313,15 +320,18 @@ const model ={
                                             .where('confirmed','==','PENDING')
 
                  waitingListResponse.onSnapshot(res=>{
+                     let waitingList =[]
                      if(res.docs){
-                         const waitingList = res.docs.map(doc=>({...doc.data(),id:doc.id}))
-                         dispatch.auth.fetchedWaitingList(waitingList)
+                          waitingList = res.docs.map(doc=>({...doc.data(),id:doc.id}))
+                        
                      }
+                     dispatch.auth.fetchedWaitingList(waitingList)
                  })      
 
             } catch (error) {
                 console.log('----fetchWaitingList-----')
                 console.log(error)
+                dispatch.auth.fetchingWaitingListFailed()
             }
         },
         async register(userObj,state){
