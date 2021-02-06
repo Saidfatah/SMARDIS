@@ -47,19 +47,42 @@ const DrawerContent=(props)=> {
                         <Text>{"Admin ("+user.name+")"}</Text>
                     </View>
                     <View style={styles.drawerSection}>
-
-                        <DrawerItem 
-                            icon={({color, size}) => (
-                                <Icon 
-                                name="account-outline" 
-                                color={color}
-                                size={size}
-                                />
-                            )}
-                            label="Configuer L'admin"
-                            onPress={() => {navigation.navigate('Profile')}}
-                        />
-    
+                       <View style={styles.drawerItem}>
+                           <Icon 
+                             name="clipboard-check-outline" 
+                             color={colors.BLACK}
+                             style={{margin:0}}
+                             size={20}
+                             />
+                            <TouchableOpacity  onPress={() => {navigation.navigate('DISTRIBUTORvalidtedCommands')}}>
+                               <View style={{ 
+                                   display :'flex',
+                                   flexDirection:'row',
+                                   alignItems:'center',
+                                   justifyContent:"space-between",}} >
+                                   <Text style={{color:colors.BLACK}} >Configurer mon compte</Text>
+                                
+                               </View>
+                            </TouchableOpacity>
+                        </View>
+                       <View style={styles.drawerItem}>
+                            <Icon 
+                             name="clipboard-check-outline" 
+                             color={colors.BLACK}
+                             style={{margin:0}}
+                             size={20}
+                             />
+                            <TouchableOpacity  onPress={() => {navigation.navigate('ADMINmanageAdmins')}}>
+                               <View style={{ 
+                                   display :'flex',
+                                   flexDirection:'row',
+                                   alignItems:'center',
+                                   justifyContent:"space-between",}} >
+                                   <Text style={{color:colors.BLACK}} >Gérer les admins </Text>
+                               </View>
+                            </TouchableOpacity>
+                        </View>
+        
                     </View>
                  </View>
             </DrawerContentScrollView>
@@ -87,9 +110,10 @@ const DrawerContent=(props)=> {
                     <View style={styles.drawerSection}>
                         <Text>{"Vendeur ("+user.name+")"}</Text>
                     </View>
-                    <View style={styles.drawerSection}>
-
-                        <View style={styles.drawerItem}>
+                    {
+                        user.confirmed == "VALIDATED"
+                        ? <View style={styles.drawerSection}>
+                            <View style={styles.drawerItem}>
                               <Icon 
                                  name="clipboard-check-outline" 
                                  color={colors.BLACK}
@@ -107,8 +131,8 @@ const DrawerContent=(props)=> {
                                </View>
                             </TouchableOpacity>
                         </View>
-    
-                        <View style={styles.drawerItem}>
+        
+                            <View style={styles.drawerItem}>
                               <Icon 
                                  name="clipboard-check-outline" 
                                  color={colors.BLACK}
@@ -126,8 +150,9 @@ const DrawerContent=(props)=> {
                                </View>
                             </TouchableOpacity>
                         </View>
-    
-                    </View>
+                        </View>
+                        :null
+                    }
                  </View>
             </DrawerContentScrollView>
             <View style={styles.bottomDrawerSection}>

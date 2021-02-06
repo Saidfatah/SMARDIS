@@ -15,6 +15,7 @@ import CheckBoxGorup from '../../Common/CheckBoxGorup'
 const ERRORS_INITIAL_CONFIG = {
     ACCESS_CODE_REQUIRED:false,
     ACCESS_CODE_INVALIDE:false,
+    UNKNOWN:false,
     nameREQUIRED:false,
     emailREQUIRED:false,
     emailUSED:false,
@@ -36,11 +37,11 @@ const  Register=({navigation,registerError,register})=> {
     const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
     const [canSubmit, setcanSubmit] = useState(true)
     const [type, settype] = useState("DISTRUBUTOR")
-    const [passwordConfirm, setpasswordConfirm] = useState("")
+    const [passwordConfirm, setpasswordConfirm] = useState("123456")
     const [userInfo, setuserInfo] = useState({
-      ACCESS_CODE:"123457",
-      name:"NEW USER",
-      email:"mouad@vendor.com",
+      ACCESS_CODE:"123456",
+      name:"said vendeur",
+      email:"said_said@vendor.com",
       city:"Ouarzazate",
       phone :"0625414578" ,
       password:"123456",   
@@ -55,6 +56,8 @@ const  Register=({navigation,registerError,register})=> {
               if(registerError.id == "EMAIL_INVALID")
                  seterrors({...errors,emailINVALID:true})
               if(registerError.id == "ACCESS_CODE_INVALID")
+                 seterrors({...errors,ACCESS_CODE_INVALIDE:true})
+              if(registerError.id == "UNKNOWN")
                  seterrors({...errors,ACCESS_CODE_INVALIDE:true})
         }
         setcanSubmit(true)
@@ -233,6 +236,7 @@ const  Register=({navigation,registerError,register})=> {
                           onChangeText={handelChange('city')} 
                       />
                  </View>
+                     <Error trigger={errors.UNKNOWN} error={registerError && registerError.message} />
                       <Button 
                        xStyle={styles.BtnXstyle} 
                        color={"WHITE"} 

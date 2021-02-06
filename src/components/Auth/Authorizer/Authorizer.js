@@ -8,11 +8,11 @@ import BackgroundImage from '../../Common/BackgroundImage'
 
 const  Authorizer=({navigation,logout,checkAuthetication})=> {
     useEffect(() => {
-        // logout({navigation})
-       //
-           setTimeout(() => {
-            checkAuthetication({navigation})
-           }, 4000);
+    // logout({navigation})
+      
+        checkAuthetication({navigation})
+        //    setTimeout(() => {
+        //    }, 4000);
        
     }, [])
 
