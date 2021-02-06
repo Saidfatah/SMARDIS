@@ -117,8 +117,9 @@ const  AdminDashBoard=(props)=> {
           fetchOrders()
           fetchScheduels()
           fetchTodaysSales()
+          console.log(user)
           if(user)  navigation.setParams({ADMIN_NAME:user.name})
-    }, [])
+    }, [user])
 
   
     return <ScrollView style={{backgroundColor:'#fff'}}>

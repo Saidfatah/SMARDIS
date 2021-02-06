@@ -190,9 +190,9 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
-   implementation 'com.android.support:multidex:2.0.1' 
+    implementation 'com.android.support:multidex:2.0.1' 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-
+ compile project(':react-native-fs')
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

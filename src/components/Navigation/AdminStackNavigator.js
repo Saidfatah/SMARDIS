@@ -26,6 +26,7 @@ import AdminRegisterDistrubutor   from '../Auth/Admin/RegisterDistrubutor'
 import AdminAddNewAdmin     from '../Auth/Admin/AddNewAdmin'
 import AdminWaitingList    from '../AdminPanel/Manage Users/waiting list/WaitingList'
 import AdminManageAdmins  from '../AdminPanel/Manage Users/admins/ManageAdmins'
+import OrdersValidated  from '../AdminPanel/Orders/OrdersValidated'
 
  
 
@@ -43,6 +44,11 @@ const AdminStackNavigator =()=>{
                     return {title:"Admin"}
                 }} 
                 component={AdminDashBoard} 
+            />
+             <AdminStack.Screen 
+                name="ADMINvalidatedExcel" 
+                options={{title:"Orders Valider excel"}}
+                component={OrdersValidated} 
             />
              <AdminStack.Screen 
                 name="ADMINmanageAdmins" 

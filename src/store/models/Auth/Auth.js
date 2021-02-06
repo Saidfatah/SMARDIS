@@ -2,7 +2,11 @@ import {user} from './Schemas/User'
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Storage from '@react-native-firebase/storage'
 
+
+
+let   ON_AUTH_STATE_CHANGED_UNSUBSCRIBE = null
 const userTypes= ['ADMIN','DISTRIBUTOR']
 const model ={
     state:{
@@ -24,6 +28,8 @@ const model ={
         admins_done_first_fetch      : false,
         authError      : null , 
         registerError  : null , 
+        catalogue_url : "NOT_UPLOADED",
+        done_fetching_catalogue:false
     },
     reducers:{
         checkedAuthentication : (state,{authenticated,user,userType,savePassword,savedPassword})=>({
@@ -42,13 +48,14 @@ const model ={
         }),
         loginSuccess:  (state,{user,userType})=>({
             ...state,
-            user,
+            done_first_Logging : true,
+            distrubutorId : user.id,
+            authenticated : true,
+            done_Logging  : true,
+            authError     : null,
+            adminId       : user.id,
             userType,
-            authenticated:true,
-            distrubutorId:user.id,
-            adminId:user.id,
-            done_first_Logging :true,
-            done_Logging:true
+            user,
         }),
         logedOut:  (state,args)=>({
             ...state,
@@ -91,23 +98,31 @@ const model ={
             ...state,
             waitingList_count:state.waitingList_count -1 ,
         }),
+        uploadedCatalogue:  (state,catalogue_url)=>({
+            ...state,
+            catalogue_url
+        }),
+        loadedCatalogue:  (state,catalogue_url)=>({
+            ...state,
+            catalogue_url,
+            done_fetching_catalogue:true
+        }),
     },
     effects: (dispatch)=>({
         async checkAuthetication({navigation},state){
             try {
-                auth().onAuthStateChanged(async user=>{
-                    const done_first_Logging = state.auth.done_first_Logging
-                    if(done_first_Logging) return console.log('first logging')
+                ON_AUTH_STATE_CHANGED_UNSUBSCRIBE = auth().onAuthStateChanged(async user=>{
 
                     let savePassword  = await AsyncStorage.getItem('SAVE_PASSWORD')
                     savePassword = JSON.stringify(savePassword)
                     const savedPassword  = await AsyncStorage.getItem('PASSWORD')
+
                     if(user){      
                          //get user doc from async storage
                          const userjsonValue = await AsyncStorage.getItem('USER')
                          const userDoc = userjsonValue != null ? JSON.parse(userjsonValue) : null
                          const userType      = await AsyncStorage.getItem('USER_TYPE')
-                       console.log({userDoc,user})
+                      
                          dispatch.auth.checkedAuthentication({
                              authenticated:true,
                              user:userDoc,
@@ -116,9 +131,10 @@ const model ={
                              savedPassword  ,
                          })
 
-                         //check if user in approved by admin 
+                         //check if user in approved by admin if not then we redirect them to waitingRoom 
                          if(userDoc != undefined && userDoc.confirmed =="PENDING") return navigation.navigate("WAIT_ROOM") 
-                         //redirect logged user to their appropriate Dashboard
+
+                         //redirect logged users that are approved to their appropriate Dashboard
                          if(userDoc != undefined)  navigation.navigate(userType+'DashBoard') 
                     }else{        
                          dispatch.auth.checkedAuthentication({
@@ -139,7 +155,10 @@ const model ={
         },
         async login({password,username,savePassword,navigation},state){
              try {
-                if(username && password && navigation){
+                    //unsubscribe to onAuthStateChanged because otherwise it'll try to take controll as soon as we log in hence
+                    //preventing us from retrieving user doc from firestore  
+                    ON_AUTH_STATE_CHANGED_UNSUBSCRIBE && ON_AUTH_STATE_CHANGED_UNSUBSCRIBE()
+
                     const loginResponse = await auth().signInWithEmailAndPassword(username,password)
                     if(loginResponse.user){
                         const userDocs = await firestore()
@@ -167,7 +186,7 @@ const model ={
                         }
                     }
                     throw new Error('no data found')
-                 }
+                 
              } catch (error) {
                  let ERROR_MESSAGE = error.message.toString()
                  console.log('error')
@@ -307,8 +326,12 @@ const model ={
         },
         async register(userObj,state){
             try {
-                //get type then check for additional user 
-                const {type,name,email,phone,additional,password,ACCESS_CODE } = userObj
+                //unsubscribe to onAuthStateChanged because otherwise it'll try to take controll as soon as we create userAccount 
+                //in Authentication  hence preventing us from creating user doc in users collection 
+                ON_AUTH_STATE_CHANGED_UNSUBSCRIBE && ON_AUTH_STATE_CHANGED_UNSUBSCRIBE()
+         
+                    
+                const {type,name,email,phone,additional,password,ACCESS_CODE ,city} = userObj
                 
                 //validate ACCESS_CODE , get the master admin's access code and check agains it
                 const masterAdmin = await firestore()
@@ -363,9 +386,9 @@ const model ={
                 navigation.navigate("WAIT_ROOM") 
             } catch (error) {
                 let ERROR_MESSAGE = error.message.toString()
-                console.log('error')
+                console.log(error)
                
-                if(ERROR_MESSAGE.indexOf("email-already-exists") > -1)
+                if(ERROR_MESSAGE.indexOf("email-already-exists") > -1 || ERROR_MESSAGE.indexOf("email-already-in-use") > -1 )
                 {
                    console.log("\nEmail used ") 
                    return dispatch.auth.registerFail({id:"EMAIL_USED",message:'Email est déja utuliser'})
@@ -375,6 +398,65 @@ const model ={
                     console.log("\nemail") 
                      return dispatch.auth.registerFail({id:"EMAIL_INVALID",message:'email est pas valide'})
                 }
+                return dispatch.auth.registerFail({id:"UNKNOWN",message:'somthing wen wrong'})
+            }
+        },
+        async uploadCatalogue(uri,state){
+            try {
+                if(!uri) return 
+
+                let CATALOGUE_URI = "NOT_UPLOADED"
+                const task =  Storage().ref('catalogue/catalogue').putFile(uri);
+                task.on('state_changed', 
+                    sn =>{},
+                    err=>console.log(err),
+                    () => {
+                       console.log(' uploaded! catalogue')
+                       Storage()
+                       .ref("catalogue").child("catalogue").getDownloadURL()
+                       .then(url => {
+                         console.log('uploaded catalogue url', url);
+                         CATALOGUE_URI=url
+                       }).catch(err=>console.log(err))
+                   }
+                )
+                await task 
+                if(CATALOGUE_URI){
+                    const setMasterAdminCatalogue = await firestore()
+                                       .collection('users')
+                                       .doc('v6xM6xIb9lOBPczPiyvK')
+                                       .update({
+                                        catalogue:CATALOGUE_URI
+                                       })
+                
+                   dispatch.uploadedCatalogue(CATALOGUE_URI)
+                }
+  
+
+                navigation.navigate("WAIT_ROOM") 
+            } catch (error) {
+                let ERROR_MESSAGE = error.message.toString()
+                console.log('-----uploadCatalogue------')
+                console.log(error)
+     
+            }
+        },
+        async loadCatalogue(args,state){
+            try {
+              
+                const getCatalogueResponse = await firestore()
+                                   .collection('users')
+                                   .doc('v6xM6xIb9lOBPczPiyvK')
+                                   .get()
+                if(getCatalogueResponse.data()){
+                const catalogue_url= getCatalogueResponse.data().catalogue
+                dispatch.auth.loadedCatalogue(catalogue_url)
+                }
+            } catch (error) {
+                let ERROR_MESSAGE = error.message.toString()
+                console.log('-----loadCatalogue------')
+                console.log(error)
+     
             }
         }
     })

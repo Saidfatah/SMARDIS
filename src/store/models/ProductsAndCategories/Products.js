@@ -256,7 +256,7 @@ const model ={
         },
         async removeCategory({category,admin,navigation},state){
              try {
-                const {name,id} = category
+                const {name,id,image} = category
                 //remove from redux side
                 let categories= [...state.products.categories]
                 const targetCategory = categories.filter(c=>c.id == id)[0]
@@ -270,6 +270,14 @@ const model ={
                                         .delete()
    
                 //remove category image from storage
+                if(image != "NO_IMAGE"){
+                    const imageName =  image.split('categoryImages%2F')[1].split("?alt")[0] 
+                    if(imageName){
+                           var imageRef = Storage().child('categoryImages/'+imageName);
+                           const imageRemove = await imageRef.delete() 
+                           console.log('removed image')
+                    }
+               }
                 
                 //set this category's products category to other category 
                 const associatedProductsRef=await firestore()
@@ -504,15 +512,24 @@ const model ={
              try {
                 let products = [...state.products.products]
                 const newProducts  = products.filter(p => p.id != product.id) 
-   
-                //remove auth account 
+                const {image}=product
+              
+                //remove doc 
                 const distrubutorRef=await firestore()
                 .collection('products')
                 .doc(product.id)
                 .delete()
-                 
-                //remove image 
-               //  const imageRef= Storage.get
+
+                //remove product image 
+                if(image != "NO_IMAGE"){
+                     const imageName =  image.split('productImages%2F')[1].split("?alt")[0] 
+                     if(imageName){
+                            var imageRef =  Storage().child('productImages/'+imageName);
+                            const imageRemove = await imageRef.delete() 
+                            console.log('removed image')
+                     }
+                }
+
                  
                 dispatch.toast.show({
                     type:'success',
