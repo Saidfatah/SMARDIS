@@ -11,7 +11,7 @@ import Badge from '../../Common/Badge'
 import TodaysOrders from '../../Distrubutor/TodaysOrders/TodaysOrders';
 
 const DrawerContent=(props)=> {
-    const {user,distrubutor_todays_valide_orders_count,logout,navigation,distrubutor_todays_canceled_orders_count}=props
+    const {user,distrubutor_todays_valide_orders_count,logout,navigation,waitingList_count,distrubutor_todays_canceled_orders_count}=props
     if(!user || user == null || user == undefined)
     return (
         <View style={{flex:1}}>
@@ -49,7 +49,7 @@ const DrawerContent=(props)=> {
                     <View style={styles.drawerSection}>
                        <View style={styles.drawerItem}>
                            <Icon 
-                             name="clipboard-check-outline" 
+                             name="account-settings-outline" 
                              color={colors.BLACK}
                              style={{margin:0}}
                              size={20}
@@ -67,7 +67,7 @@ const DrawerContent=(props)=> {
                         </View>
                        <View style={styles.drawerItem}>
                             <Icon 
-                             name="clipboard-check-outline" 
+                             name="format-list-bulleted-triangle" 
                              color={colors.BLACK}
                              style={{margin:0}}
                              size={20}
@@ -79,6 +79,26 @@ const DrawerContent=(props)=> {
                                    alignItems:'center',
                                    justifyContent:"space-between",}} >
                                    <Text style={{color:colors.BLACK}} >Gérer les admins </Text>
+                               </View>
+                            </TouchableOpacity>
+                        </View>
+        
+                       <View style={styles.drawerItem}>
+                            <Icon 
+                             name="format-list-bulleted-triangle" 
+                             color={colors.BLACK}
+                             style={{margin:0}}
+                             size={20}
+                             />
+                            <TouchableOpacity  onPress={() => {navigation.navigate('ADMINwaitingList')}}>
+                               <View style={{ 
+                                   display :'flex',
+                                   flexDirection:'row',
+                                   alignItems:'center',
+                                   justifyContent:"space-between",}} >
+                                   <Text style={{color:colors.BLACK}} >List d'attendre</Text>
+                                   <Badge status="success" value={waitingList_count} />
+
                                </View>
                             </TouchableOpacity>
                         </View>
@@ -200,6 +220,7 @@ export default connect(
         user : state.auth.user,
         distrubutor_todays_valide_orders_count : state.scheduel.distrubutor_todays_valide_orders_count,
         distrubutor_todays_canceled_orders_count : state.scheduel.distrubutor_todays_canceled_orders_count,
+        waitingList_count : state.auth.waitingList_count,
     }),
     dispatch=>({
         logout:dispatch.auth.logout
