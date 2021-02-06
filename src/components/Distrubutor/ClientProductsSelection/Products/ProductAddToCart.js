@@ -26,6 +26,7 @@ const ProductAddToCart =({selectedProduct,guest,addCartItem,sector})=> {
                  <TextInput 
                     style={styles.input}
                    value={(quantity*price1).toString()}
+                   editable={false}
                    keyboardType="numeric"
                    onChangeText={onChangeHandler} 
                   />

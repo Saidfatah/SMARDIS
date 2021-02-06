@@ -36,12 +36,12 @@ const BillTable=({selectedBill})=> {
                color:#fff;
               }
               tbody{
-               background-color: ${colors.LIGHTGREY};
+               background-color: ${colors.WHITE};
                color: ${colors.BLACK};
               }
               h1,th,td{text-align:center}
               th,td{padding:.5rem}
-
+            
               .bill_header{
                 padding:1rem;
                 flex:1

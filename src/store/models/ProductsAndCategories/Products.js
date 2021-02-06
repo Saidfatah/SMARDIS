@@ -49,11 +49,12 @@ const model ={
             ...state,
             productsCount  
         }),
-        setedSelectedCategoryProducts : (state,{products,category_has_products,last_selected_Category})=>({
+        setedSelectedCategoryProducts : (state,{products,category_has_products,last_selected_Category,selectedCategory})=>({
             ...state,
             selectedCategoryProducts :products,
             category_has_products,
-            last_selected_Category
+            last_selected_Category,
+            selectedCategory :last_selected_Category ,
         }),
         addedProduct : (state,products)=>({
             ...state,

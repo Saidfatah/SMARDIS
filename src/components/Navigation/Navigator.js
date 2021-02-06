@@ -4,11 +4,13 @@ import {createStackNavigator} from '@react-navigation/stack'
 import { connect } from 'react-redux'
 import DistributorStackNavigator from './DistributorStackNavigator'
 import AdminStackNavigator from './AdminStackNavigator'
-import {Login,Authorizer} from './Screens'
+import Login       from '../Auth/Login/Login'
+import Authorizer  from '../Auth/Authorizer/Authorizer'
+import WaitingRoom from '../Auth/Register/WaitingRoom'
+import Register    from '../Auth/Register/Register'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import DrawerContent from './DrawerNavigator/DrawerContent'
 
-const RouteStack     = createStackNavigator()
 const Drawer = createDrawerNavigator();
 const Navigator =({authenticated,userType})=>{
     return <NavigationContainer >
@@ -20,7 +22,9 @@ const Navigator =({authenticated,userType})=>{
              <Drawer.Screen name="ADMINDashBoard"  component={AdminStackNavigator} />
              <Drawer.Screen name="DISTRUBUTORDashBoard" component={DistributorStackNavigator} />
              <Drawer.Screen name="LOGIN" component={Login} />
+             <Drawer.Screen name="REGISTER" component={Register} />
              <Drawer.Screen name="AUTHORIZER" component={Authorizer} />
+             <Drawer.Screen name="WAIT_ROOM" component={WaitingRoom} />
        </Drawer.Navigator>
     </NavigationContainer>
 }

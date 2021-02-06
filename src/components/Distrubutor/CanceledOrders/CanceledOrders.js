@@ -3,43 +3,46 @@ import { connect } from 'react-redux'
 import {View,Text,ScrollView,StyleSheet} from 'react-native'
 import Item from '../../Common/Item'
 import Button from '../../Common/Button'
+import Loading from '../../Common/Loading'
+import BackgroundImage from '../../Common/BackgroundImage'
 
-const CanceledOrders=({navigation,distrubutor_todays_canceled_orders,fetchDistrubutorTodaysCanceledOrders})=> {
+const CanceledOrders=({navigation,distrubutor_todays_canceled_orders})=> {
    
-    useEffect(() => {
-        fetchDistrubutorTodaysCanceledOrders()
-    }, [])
 
-    return <ScrollView  style={{flex:1}} contentContainerStyle={{
-        height:'100%',
-        backgroundColor:'#fff',
-        padding:8,
-        paddingTop:32
-        }} >
-        {
-            distrubutor_todays_canceled_orders.map((canceledOrder,index) => <Item xStyle={styles.xstyle} key={index}>
-            <View style={styles.item}>
-                      
-                <View style={{display:'flex',flexDirection:'row'}} >
-                       <Text style={styles.text}  >
-                       { canceledOrder.client.name }
-                       </Text> 
-                       <Text style={styles.text}  >
-                       {"("+canceledOrder.sector.name+")"}
-                       </Text> 
-                </View>
-               
-                <Button
+    return <BackgroundImage >
+       {
+             distrubutor_todays_canceled_orders.length<1
+             ?<View style={{backgroundColor:'transparent',flex: 1,display:'flex',alignItems:'center'}} >
+                   <Loading spacing={50} />   
+             </View> 
+             :  <ScrollView  style={{flex:1}} contentContainerStyle={{height:'100%',padding:8, paddingTop:32}} >
+                 {
+                     distrubutor_todays_canceled_orders.map((canceledOrder,index) => <Item xStyle={styles.xstyle} key={index}>
+                     <View style={styles.item}>
+                               
+                         <View style={{display:'flex',flexDirection:'row',flex:1}} >
+                                <Text style={styles.text}  >
+                                { canceledOrder.client.name }
+                                </Text> 
+                                <Text style={styles.text}  >
+                                {"("+canceledOrder.sector.name+")"}
+                                </Text> 
+                         </View>
+                        
+                         <Button
                  xStyle={{margin:0,borderRadius:12}} 
                  color={"BLUE"} 
                  clickHandler={e=>{resetOrder(canceledOrder.id) }} 
                  >
                     <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>Reainstaller</Text>
                 </Button>
-             </View>
-         </Item>)
-        }
-    </ScrollView>
+                      </View>
+                   </Item>)
+                 }
+            </ScrollView>
+       }
+    </BackgroundImage> 
+
 }
 
  export default connect(
@@ -48,7 +51,6 @@ const CanceledOrders=({navigation,distrubutor_todays_canceled_orders,fetchDistru
     }),
     dispatch =>({
         resetOrder : dispatch.scheduel.resetOrder,
-        fetchDistrubutorTodaysCanceledOrders : dispatch.scheduel.fetchDistrubutorTodaysCanceledOrders,
     })
 )(CanceledOrders)
 

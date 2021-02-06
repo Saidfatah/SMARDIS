@@ -15,6 +15,7 @@ const model ={
         validatedOrdersCount : 0 ,
         todaysSalesCount : 0 ,
         distrubutor_todays_valide_orders_count : 0 ,
+        distrubutor_todays_orders_done_fetching: false ,
         distrubutor_todays_canceled_orders_count : 0 ,
         todaysSectorsCount :0, //to display in distrubutor's dashboard
         todaysSectors :[], 
@@ -72,7 +73,15 @@ const model ={
             currentTurn   :todaysSectors[0].orders[0].turn || 0,
             currentSector : todaysSectors[0].sector.id,
             todays_orders_first_fetch:true,
-            currentSectorIndex:0
+            currentSectorIndex:0,
+            distrubutor_todays_orders_done_fetching:true,
+        }),
+        fetchedTodaysSectorsFailed : (state,todaysSectors)=>({
+            ...state,
+            todaysSectors :[],
+            todaysSectorsCount :0,
+            todays_orders_first_fetch:true,
+            distrubutor_todays_orders_done_fetching:true,
         }),
         fetchedTodaysSales : (state,todaysSales)=>({
             ...state,
@@ -131,7 +140,7 @@ const model ={
                 console.log(error)
             }
         },
-        async fetchTodaysSectors(arg,state){
+        async fetchTodaysOrders(arg,state){
             try {
                 const todays_orders_first_fetch= state.scheduel.todays_orders_first_fetch
                 if(todays_orders_first_fetch) return 
@@ -145,53 +154,60 @@ const model ={
     
                 fetchOrdersReponse.onSnapshot(res=>{
                     const docs= res.docs
-                 
-                    if(docs && docs.length){
-                         const orderList = docs.map(doc=>({...doc.data(),orderId:doc.id}))
-                         let lastOrder= orderList[0]
-                         const firstOrder ={...lastOrder}
-                         let started = false
-                         let i = 0
-                         const todaysOrders=orderList.reduce((a,currentOrder)=>{
-                              const arr= [...a]
-                              
-                              if(!started){
-                                   let obj={
-                                       sector:lastOrder.sector,
-                                       scheduleId:lastOrder.scheduleId,
-                                       orders:[{
-                                           ...lastOrder,     
-                                       }]
-                                   }
-                                   arr.push(obj)
-                                  started=true
-                              }
-                         
-                              if(lastOrder.sectorId == currentOrder.sectorId && firstOrder.orderId != currentOrder.orderId){
-                                 arr[i].orders.push({...currentOrder})
-                              }
-                              else if(lastOrder.sectorId != currentOrder.sectorId && started){
-                                  console.log('new sector'+currentOrder.sectorId)
-                                let obj={
-                                    sector:currentOrder.sector,
-                                    scheduleId:currentOrder.scheduleId,
-                                    orders:[{...currentOrder}]
-                                }
-                                arr.push(obj)
-                                  i++
-                              }
-                         
-                              lastOrder={...currentOrder}
-                         
-                              return arr
-                         }
-                         ,[]) 
-                        
-                         dispatch.scheduel.fetchedTodaysSectors(todaysOrders)
+                    try {
+                        if(docs && docs.length){
+                             const orderList = docs.map(doc=>({...doc.data(),orderId:doc.id}))
+                             let lastOrder= orderList[0]
+                             const firstOrder ={...lastOrder}
+                             let started = false
+                             let i = 0
+                             const todaysOrders=orderList.reduce((a,currentOrder)=>{
+                                  const arr= [...a]
+                                  
+                                  if(!started){
+                                       let obj={
+                                           sector:lastOrder.sector,
+                                           scheduleId:lastOrder.scheduleId,
+                                           orders:[{
+                                               ...lastOrder,     
+                                           }]
+                                       }
+                                       arr.push(obj)
+                                      started=true
+                                  }
+                             
+                                  if(lastOrder.sectorId == currentOrder.sectorId && firstOrder.orderId != currentOrder.orderId){
+                                     arr[i].orders.push({...currentOrder})
+                                  }
+                                  else if(lastOrder.sectorId != currentOrder.sectorId && started){
+                                      console.log('\nnew sector'+currentOrder.sectorId)
+                                    let obj={
+                                        sector:currentOrder.sector,
+                                        scheduleId:currentOrder.scheduleId,
+                                        orders:[{...currentOrder}]
+                                    }
+                                    arr.push(obj)
+                                      i++
+                                  }
+                             
+                                  lastOrder={...currentOrder}
+                             
+                                  return arr
+                             }
+                             ,[]) 
+                            
+                             dispatch.scheduel.fetchedTodaysSectors(todaysOrders)
+                        }else{
+                            throw new Error('NO_DOCS')
+                        }
+                    } catch (error) {
+                        console.log("----fetchTodaysSectors catch2------")
+                        dispatch.scheduel.fetchedTodaysSectorsFailed()
                     }
                 })
             } catch (error) {
-                console.log(error)
+                console.log("----fetchTodaysSectors catch1------")
+                dispatch.scheduel.fetchedTodaysSectorsFailed()
             }
         },
         async fetchOrders(arg,state){
@@ -212,7 +228,7 @@ const model ={
                 })
                  
              } catch (error) {
-                 console.log('-----fetchOrders-----')
+                 console.log('\n-----fetchOrders-----')
                  console.log(error)
              }
         },
@@ -240,7 +256,7 @@ const model ={
                 })
                  
              } catch (error) {
-                 console.log('-----fetchOrders-----')
+                 console.log('\n-----fetchOrders-----')
                  console.log(error)
              }
         },
@@ -255,6 +271,8 @@ const model ={
 
       
                 fetchOrdersReponse.onSnapshot(res=>{
+                    console.log('\n fetch cancled orders')
+                    console.log(res.docs.length)
                     if(res.docs){
                         const orders=res.docs.map(order=>({
                             ...order.data(),
@@ -268,7 +286,7 @@ const model ={
                 })
                  
              } catch (error) {
-                 console.log('-----fetchOrders-----')
+                 console.log('\n-----fetchOrders-----')
                  console.log(error)
              }
         },
@@ -280,10 +298,10 @@ const model ={
                       .update({
                           status:'PENDING'
                       })
-               console.log('resetedOrder')
+               console.log('\nresetedOrder')
                  
              } catch (error) {
-                 console.log('-----resetOrder-----')
+                 console.log('\n-----resetOrder-----')
                  console.log(error)
              }
         },
@@ -320,7 +338,7 @@ const model ={
                  })
                 
             } catch (error) {
-                console.log('-----fetchScheduels-----')
+                console.log('\n-----fetchScheduels-----')
                 console.log(error)
             }             
         },
@@ -356,7 +374,7 @@ const model ={
                          var docRef = firestore().collection("orders").doc(); 
                          batch.set(docRef, doc);
                      });
-                     console.log('added orders list ')  
+                     console.log('\nadded orders list ')  
                      batch.commit()
                 }
 
@@ -364,7 +382,7 @@ const model ={
                 scheduels.push(newSchedule)
                 dispatch.scheduel.addedScheduel({scheduels,addedOrdersCount})
            } catch (error) {
-               console.log('------[addOrder]------')
+               console.log('\n------[addOrder]------')
                console.log(error)
            }
         },
@@ -396,7 +414,7 @@ const model ={
 
               dispatch.scheduel.updatedScheduel(scheduels)
          } catch (error) {
-             console.log('-----updateScheduel-----')
+             console.log('\n-----updateScheduel-----')
              console.log(error)
          }
         },
@@ -425,7 +443,7 @@ const model ={
                                                 
               dispatch.scheduel.removedScheduel({scheduels,deletedOrdersCount})
          } catch (error) {
-             console.log('-----updateScheduel-----')
+             console.log('\n-----updateScheduel-----')
              console.log(error)
          }
         },

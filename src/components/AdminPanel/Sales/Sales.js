@@ -3,6 +3,7 @@ import {View,ScrollView,Dimensions,StatusBar} from 'react-native'
 import { connect } from 'react-redux'
 import { List } from 'react-native-paper';
 import SaleItem from './SaleItem'
+import Loading from '../../Common/Loading'
 
 const {height}=Dimensions.get('screen')
 const HEIGHT = height- StatusBar.currentHeight
@@ -11,6 +12,13 @@ const Sales=({todaysSales})=> {
     const TITLE = todaysSales.length >0 
     ? "les ventes d'aujourdhui" 
     :"aucune ventes ajourdhui"
+
+    if(todaysSales.length < 1 ) 
+    return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
+        <Loading spacing={50} />   
+    </View>
+  
+
 
     return (
         <ScrollView  > 
@@ -30,3 +38,5 @@ export default connect(
     null
 )
 (Sales)
+
+

@@ -1,31 +1,33 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
-import {
-   AdminAddNewAdmin,
-   AdminCategories,
-   AdminCatalogue,
-   AdminDashBoard,
-   AdminClients,
-   AdminDistrubutors,
-   AdminProducts,
-   AdminProductPage,
-   AdminOrdersValidated,
-   AdminRegisterDistrubutor,
-   AdminSales,
-   AdminSchedule,
-   AdminSectors,
-   AdminListOfSchedules,
-   AdminAddClient,
-   AdminClientPage,
-   AdminAddSector,
-   AdminAddProduct,
-   AdminAddCategory,
-   AdminCategoryPage,
-   AdminDistrubutorPage,
-   AdminAddDistrubutor,
-   AdminSectorPage,
-   AdminListOfOrders
-} from './Screens'
+import AdminCatalogue    from '../AdminPanel/Catalogue/Catalogue'  
+import AdminAddCategory  from '../AdminPanel/Categories/Add category/AddCategory'
+import AdminCategories  from '../AdminPanel/Categories/Categories'
+import AdminCategoryPage  from '../AdminPanel/Categories/Category page/CategoryPage'
+import AdminClients    from '../AdminPanel/Clients/Clients List/Clients'
+import AdminAddClient    from '../AdminPanel/Clients/Add client/AddClient'
+import AdminClientPage    from '../AdminPanel/Clients/client Page/ClientPage'
+import AdminDashBoard  from '../AdminPanel/DashBoard/AdminDashBoard'
+import AdminDistrubutors    from '../AdminPanel/Distrubutors/Distrubutors'
+import AdminAddDistrubutor    from '../AdminPanel/Distrubutors/Add distrubutor/AddDistrubutor'
+import AdminDistrubutorPage    from '../AdminPanel/Distrubutors/Distrubutor page/DistrubutorPage'
+import AdminOrdersValidated  from '../AdminPanel/Schedule/List of orders/ListOfOrdersValidated'
+import AdminProducts  from '../AdminPanel/Products/Products'
+import AdminAddProduct  from '../AdminPanel/Products/Add product/AddProduct'
+import AdminProductPage  from '../AdminPanel/Products/Product Page/ProductPage'
+import AdminSales     from '../AdminPanel/Sales/Sales'
+import AdminSchedule   from '../AdminPanel/Schedule/Add Scheduel/Schedule'
+import AdminListOfSchedules   from '../AdminPanel/Schedule/ListOfSchedules/ListOfSchedules'
+import AdminListOfOrders   from '../AdminPanel/Schedule/List of orders/ListOfOrders'
+import AdminSectors     from '../AdminPanel/Sectors/Sectors'
+import AdminSectorPage     from '../AdminPanel/Sectors/Sector Page/SectorPage'
+import AdminAddSector     from '../AdminPanel/Sectors/Add sector/AddSector'
+import AdminRegisterDistrubutor   from '../Auth/Admin/RegisterDistrubutor'
+import AdminAddNewAdmin     from '../Auth/Admin/AddNewAdmin'
+import AdminWaitingList    from '../AdminPanel/Manage Users/waiting list/WaitingList'
+import AdminManageAdmins  from '../AdminPanel/Manage Users/admins/ManageAdmins'
+
+ 
 
 const AdminStack     = createStackNavigator()
 
@@ -41,6 +43,16 @@ const AdminStackNavigator =()=>{
                     return {title:"Admin"}
                 }} 
                 component={AdminDashBoard} 
+            />
+             <AdminStack.Screen 
+                name="ADMINmanageAdmins" 
+                options={{title:"Gérer Les admins"}}
+                component={AdminManageAdmins} 
+            />
+             <AdminStack.Screen 
+                name="ADMINwaitingList" 
+                options={{title:"List d'attendre"}}
+                component={AdminWaitingList} 
             />
              <AdminStack.Screen 
                 name="ADMINcategories" 

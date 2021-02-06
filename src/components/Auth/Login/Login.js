@@ -1,19 +1,21 @@
 
 import React,{useEffect,useState} from 'react'
-import {View,Text,TextInput,StyleSheet} from 'react-native'
+import {View,Text,TextInput,StyleSheet,TouchableOpacity} from 'react-native'
 import BackgroundImage from '../../Common/BackgroundImage'
 import Logo from '../../Common/Logo'
 import {colors} from '../../Common/Colors'
 import  Button from '../../Common/Button'
 import  Error from '../../Common/Error'
 import  Label from '../../Common/Label'
+import Loading from '../../Common/Loading'
 import { connect } from 'react-redux'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import {CheckBox} from 'react-native-elements'
 
-const  Login=({navigation,authError,login,toggleSavePassword,savePassword,savedPassword})=> {
-    const [username, setusername] = useState("mouad@vendor.com")
+const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePassword,savedPassword})=> {
+    const [username, setusername] = useState("jgnour@admin.com")
     const [password, setPassword] = useState("123456")
+    const [canSubmit, setcanSubmit] = useState(true)
     const [savePasswordLogin, setsavePasswordLogin] = useState(false)
     const [passwordRequired, setpasswordRequired] = useState(null)
     const [usernameRequired, setusernameRequired] = useState(null)
@@ -28,14 +30,22 @@ const  Login=({navigation,authError,login,toggleSavePassword,savePassword,savedP
     useEffect(() => {
           if(authError!= null){
             setauthErrorLocal(authError)
+            setcanSubmit(true)
           }
     }, [authError!= null])
+    useEffect(() => {
+          if(done_Logging){
+            setcanSubmit(true)
+          }
+    }, [done_Logging])
 
     const handleLogin=()=>{
+        if(!canSubmit) return 
          if(password == '') return setpasswordRequired({message:"Inserer votre mote de passe !"})
          if(username == '') return setusernameRequired({message:"Inserer votre numero du Téléphone !"})
        
          login({password,username,savePassword:savePasswordLogin,navigation})
+         setcanSubmit(false)
     }
     
     const Errors = ()=>{
@@ -60,11 +70,11 @@ const  Login=({navigation,authError,login,toggleSavePassword,savePassword,savedP
         <View style={styles.Logo}>
              <Logo width={100} height={100}  />
         </View>
-        <View style={styles.Form}>
+         <View style={styles.Form}>
        
-            <Errors />
-             
-            <View style={styles.inputs} >
+             <Errors />
+              
+             <View style={styles.inputs} >
                  <View style={{width:'100%'}} >
                       <Label label="Téléphone"  color="#fff"  mga={4} />
                       <TextInput style={{...styles.Input}}   
@@ -93,23 +103,42 @@ const  Login=({navigation,authError,login,toggleSavePassword,savePassword,savedP
                  <Button 
                      xStyle={styles.BtnXstyle} 
                      color={"WHITE"} 
+                     disabled={!canSubmit}
                      clickHandler={e=>handleLogin()} >
-                     <Text style={styles.ButtonText}>Connexion</Text>
+                     { canSubmit
+                        ? <Text style={styles.ButtonText}>Connexion</Text>
+                        :<View style={{display:'flex',flexDirection:'row',justifyContent:'center'}} >
+                        <Loading  spacing={30} /> 
+                    </View>
+                     }
                  </Button>
             </View>
-           <CheckBox 
-           checked={savePasswordLogin} 
-           onPress={v=>{
-               setsavePasswordLogin(!savePasswordLogin)
-               toggleSavePassword({savePassword:!savePasswordLogin})
-            }} 
-           title="Enrg more de passe " 
-           textStyle={{color:colors.WHITE}}
-           checkedColor={colors.WHITE}
-           uncheckedColor={colors.WHITE}
-           containerStyle={{borderRadius:12,backgroundColor:'transparent'}}
-           />
-        </View>
+
+             <View style={{
+                          display:"flex",
+                          flexDirection:"row",
+                          alignItems:'center',
+                          }} >
+                          <Text style={{color:'#fff',marginRight:16}}>vous n'avez pas de compte ?</Text>
+                          <TouchableOpacity onPress={e=>navigation.navigate('REGISTER')} >
+                                 <Text style={{color:'#fff',fontWeight:"bold",padding:16}}>s'inscrire  </Text>
+                          </TouchableOpacity>
+           </View>
+             
+             <CheckBox 
+                 checked={savePasswordLogin} 
+                onPress={v=>{
+                    setsavePasswordLogin(!savePasswordLogin)
+                    toggleSavePassword({savePassword:!savePasswordLogin})
+                 }} 
+                title="Enrg more de passe " 
+                textStyle={{color:colors.WHITE}}
+                checkedColor={colors.WHITE}
+                uncheckedColor={colors.WHITE}
+                 containerStyle={{borderRadius:12,backgroundColor:'transparent'}}
+             />
+        
+         </View>
         </KeyboardAwareScrollView>
     </BackgroundImage>
     )
@@ -120,6 +149,7 @@ export default connect(
         authError : state.auth.authError ,
         savedPassword : state.auth.savedPassword ,
         savePassword : state.auth.savePassword ,
+        done_Logging : state.auth.done_Logging ,
     }),
     dispatch=>({
        login : dispatch.auth.login,
