@@ -1,6 +1,4 @@
-import {salesList} from './Schemas/SalesList'
-import {saleModel} from './Schemas/SaleModel'
-import {cartGuests} from '../Cart/Schemas/CartGuests'
+
 
 const model ={
     state:{

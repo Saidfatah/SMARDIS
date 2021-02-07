@@ -124,11 +124,11 @@ export const SecorPage = ({navigation,route,fetchSectorClients,selected_sector_C
 
 export default connect(
     state=>({
-        selected_sector_Clients   : state.client.selected_sector_Clients,
-        visited_Sector_has_clients: state.client.visited_Sector_has_clients,
+        selected_sector_Clients   : state.sector.selected_sector_Clients,
+        visited_Sector_has_clients: state.sector.visited_Sector_has_clients,
     }),
     dispatch=>({
-        fetchSectorClients: dispatch.client.fetchSectorClients
+        fetchSectorClients: dispatch.sector.fetchSectorClients
     }),
 )(SecorPage)
 

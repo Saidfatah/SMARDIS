@@ -76,7 +76,7 @@ const Schedule = ({addScheduel,clients,sectors,distrubutors,adminId})=> {
 export default connect(
     state=>({
        clients : state.client.clients,
-       sectors : state.client.sectors,
+       sectors : state.sector.sectors,
        distrubutors : state.distrubutor.distrubutors,
        adminId : state.auth.adminId,
     }),

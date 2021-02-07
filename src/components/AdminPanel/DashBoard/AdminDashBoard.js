@@ -141,7 +141,7 @@ const  AdminDashBoard=(props)=> {
 export default connect(
     state=>({
         user  : state.auth.user, 
-        sectorsCount  : state.client.sectorsCount, 
+        sectorsCount  : state.sector.sectorsCount, 
         clientsCount  : state.client.clientsCount,
         salesCount    : state.scheduel.todaysSalesCount,
         ordersCount   : state.scheduel.ordersCount,
@@ -154,7 +154,7 @@ export default connect(
     dispatch =>({
         fetchWaitingList  : dispatch.auth.fetchWaitingList,
         fetchAdmins  : dispatch.auth.fetchAdmins,
-        fetchSectors  : dispatch.client.fetchSectors,
+        fetchSectors  : dispatch.sector.fetchSectors,
         fetchClients  : dispatch.client.fetchClients,
         fetchCategories  : dispatch.products.fetchCategories,
         fetchDistrubutors  : dispatch.distrubutor.fetchDistrubutors ,

@@ -2,17 +2,9 @@ import {productModel} from './Schemas/productModel'
 import {categoryModel} from './Schemas/categoryModel'
 import Storage from '@react-native-firebase/storage'
 import firestore from '@react-native-firebase/firestore'
-//use async storage here 
-//then we an listen for product prices changes 
 
-//diffrente use scenario
-//admin - all products - categories 
-//vendor
 
-//shpould we store these in cache 
-//then lsiten to chanegsin db if something changes we update it in local
 
-//product can have no category and will put them in other category 
 const OTHER_CATEGORY_ID="snnGC98TUUzJYTIkDFDq"
 const userTypes= ['ADMIN','DISTRIBUTOR']
 const PRODUCTS_FETCH_LIMIT = 8
