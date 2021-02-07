@@ -16,6 +16,8 @@ const model ={
         sectors_first_fetch:false,
         visited_Sector_has_clients:false,
         done_fetching_sectors:false,
+        done_adding_sector:false,
+        // done_removing_sector:false,
     },
     reducers:{
         fetchedSectors : (state,sectors)=>({
@@ -41,22 +43,36 @@ const model ={
         addedSector  : (state,sectors)=>({
             ...state,
             sectors :[...sectors],
-            sectorsCount: state.sectorsCount+1
+            sectorsCount: state.sectorsCount+1,
+            done_adding_sector:true
         }),
         sectorAddFailed  : (state,sectors)=>({
             ...state,
-            //set something 
+            done_adding_sector:true
         }),
         updatedSector  : (state,sectors)=>({
             ...state,
-            sectors :[...sectors]
-            // sectors :[state.sectors].map(s=>s.id == sector.id ? sector:s)
+            sectors :[...sectors],
+            done_adding_sector :true
         }),
-        removedSector  : (state,sector)=>({
+        sectorUpdateFailed  : (state,args)=>({
             ...state,
-            sectors :[...state.sectors].filter(s=>!s.id==sector.id),
-            sectorsCount: state.sectorsCount-1
+            done_adding_sector :true
         }),
+        reseted:  (state,field)=>({
+            ...state,
+            [field]:false
+        }),
+        // removedSector  : (state,sector)=>({
+        //     ...state,
+        //     sectors :[...state.sectors].filter(s=>!s.id==sector.id),
+        //     sectorsCount: state.sectorsCount-1,
+        //     done_removing_sector :true
+        // }),
+        // removingSectorFailed  : (state,sector)=>({
+        //     ...state,
+        //     done_removing_sector :true
+        // }),
     },
     effects: (dispatch)=>({
         async fetchSectors(arg,state){
@@ -158,7 +174,12 @@ const model ={
                  navigation.navigate("ADMINsectors")
             } catch (error) {
                 console.log(error)
+                dispatch.sector.sectorUpdateFailed()
+
             }
+        },
+        resetIsDone(field,state){
+            dispatch.sector.reseted(field)
         }
     })
 }

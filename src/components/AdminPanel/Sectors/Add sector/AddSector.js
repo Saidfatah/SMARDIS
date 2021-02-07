@@ -7,14 +7,18 @@ import Error from '../../../Common/Error'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
 
-export const AddSector = ({navigation,route,addSector,updateSector}) => {
+export const AddSector = ({navigation,route,done_adding_sector,resetIsDone,addSector,updateSector}) => {
     const [name, setname] = useState("")
     const [city, setcity] = useState("")
+    const [canSubmit, setcanSubmit] = useState(initialState)
     const [update, setupdate] = useState(false)
     const [sectorToBeUpdatedId, setsectorToBeUpdatedId] = useState(null)
     const [cityREQUIRED, setcityREQUIRED] = useState(null)
     const [nameREQUIRED, setnameREQUIRED] = useState(null)
  
+    useEffect(() => {
+        done_adding_sector==true && setcanSubmit(true) && resetIsDone('done_adding_sector')
+    }, [done_adding_sector])
     useEffect(() => {
         if(route.params){
             if(route.params.update == undefined) return
@@ -31,6 +35,7 @@ export const AddSector = ({navigation,route,addSector,updateSector}) => {
         if(name == "") return setnameREQUIRED({message:'Le nom du scteur est obligatioir !'})
         if(city == "") return setcityREQUIRED({message:'la ville  est obligatioir !'})
         //check if sector name exists 
+        setcanSubmit(false)
         if(!update) return  addSector({navigation,name,city})
          updateSector({navigation,name,id:sectorToBeUpdatedId,city})
     }
@@ -70,6 +75,7 @@ export const AddSector = ({navigation,route,addSector,updateSector}) => {
              <Button
               xStyle={{...styles.BtnXstyle,marginRight:16}} 
               color={"BLUE"} 
+              disabled={!canSubmit}
               clickHandler={e=>dispatchAddSector()} 
               >
                  <Text style={styles.ButtonText}>{update?"Modifier":"Ajouter"}</Text>
@@ -88,11 +94,14 @@ export const AddSector = ({navigation,route,addSector,updateSector}) => {
 
 
 export default connect(
-    null
+    state=>({
+        done_adding_sector:state.sector.done_adding_sector
+    })
     , 
     dispatch=>({
-       addSector: dispatch.sector.addSector,
        updateSector: dispatch.sector.updateSector,
+       resetIsDone: dispatch.sector.resetIsDone,
+       addSector: dispatch.sector.addSector,
     })
 )(AddSector)
 

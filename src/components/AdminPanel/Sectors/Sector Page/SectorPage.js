@@ -98,16 +98,6 @@ export const SecorPage = ({navigation,route,fetchSectorClients,selected_sector_C
         
            <View style={styles.btns} >
                <Button
-                xStyle={{...styles.BtnXstyle}} 
-                color={"RED"} 
-                clickHandler={e=>{
-                    console.log('remove sector')
-                }} 
-                >
-                     <Text style={styles.ButtonText}>Supprimer Le secteur</Text>
-                     <IonIcon name="trash" size={25} color="#fff" />
-               </Button>
-               <Button
                 xStyle={styles.BtnXstyle} 
                 color={"BLUE"} 
                 clickHandler={e=> navigation.navigate('ADMINupdateSector',{update:true,sector})} 
@@ -128,7 +118,7 @@ export default connect(
         visited_Sector_has_clients: state.sector.visited_Sector_has_clients,
     }),
     dispatch=>({
-        fetchSectorClients: dispatch.sector.fetchSectorClients
+        fetchSectorClients: dispatch.sector.fetchSectorClients,
     }),
 )(SecorPage)
 

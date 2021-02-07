@@ -13,10 +13,14 @@ import Image from 'react-native-fast-image'
 import ProductInfo from '../../../Distrubutor/ClientProductsSelection/Products/ProductInfo'
 import Loading from '../../../Common/Loading'
 
-export const CategoryPage = ({navigation,route,selectedCategoryProducts,selectCategory,category_has_products,removeCategory}) => {
+export const CategoryPage = ({navigation,route,selectedCategoryProducts,resetIsDone,done_removing_category,selectCategory,category_has_products,removeCategory}) => {
     const [isExpanded, setIsExpanded] = useState(false)
+    const [canRemove, setcanRemove] = useState(true)
     const {category} = route.params;
 
+    useEffect(() => {
+        done_removing_category == true && setcanRemove(true) && resetIsDone("done_removing_category")
+    }, [done_removing_category])
     useEffect(() => {
         navigation.setParams({CATEGORY_NAME:category.name})
         console.log(category.id)
@@ -117,8 +121,9 @@ export const CategoryPage = ({navigation,route,selectedCategoryProducts,selectCa
                ?<Button
                 xStyle={{...styles.BtnXstyle}} 
                 color={"RED"} 
-                disabled={category.isOther}
+                disabled={category.isOther || !canRemove}
                 clickHandler={e=>{
+                    setcanRemove(false)
                     removeCategory({category,admin:0,navigation})
                     navigation.goBack()
                 }} 
@@ -147,12 +152,12 @@ export default connect(
     state=>({
        selectedCategoryProducts :  state.categories.selectedCategoryProducts,
        category_has_products :  state.categories.category_has_products,
+       done_removing_category :  state.categories.done_removing_category,
     }), 
     dispatch =>({
       removeCategory: dispatch.categories.removeCategory,
-      updateCategory: dispatch.categories.updateCategory,
       selectCategory : dispatch.categories.selectCategory,
-
+      resetIsDone : dispatch.categories.resetIsDone,
     })
 )(CategoryPage)
 

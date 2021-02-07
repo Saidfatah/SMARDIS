@@ -5,7 +5,7 @@ import Item from '../Common/Item'
 import { List } from 'react-native-paper';
 
 
-const CartGuests=({navigation,cartGuests,updateQuantity,validateGuestOrder,removeGuestItem})=> {
+const CartGuests=({navigation,cartGuests,done_validating_product,resetIsDone,updateQuantity,validateGuestOrder,removeGuestItem})=> {
     const TITLE = cartGuests.length >0 ? "les paneirs active" :"Le panier est vide"
     const RenderItem=({guest})=>{
         const {items,name,sector,status}=guest
@@ -17,6 +17,8 @@ const CartGuests=({navigation,cartGuests,updateQuantity,validateGuestOrder,remov
                  items={items} 
                  name={name} 
                  validateGuestOrder={validateGuestOrder} 
+                 resetIsDone={resetIsDone} 
+                 done_validating_product={done_validating_product} 
                  sector={sector}
                  navigation={navigation}
                  removeGuestItem={removeGuestItem} 

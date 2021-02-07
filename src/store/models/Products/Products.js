@@ -13,6 +13,8 @@ const model ={
         products_first_fetch : false,
         done_fetching_products : false,
         last_visible_Product:null,
+        done_adding_product:false,
+        done_removing_product:false,
     },
     reducers:{
         fetchedProducts : (state,{products,last_visible_Product})=>({
@@ -35,7 +37,12 @@ const model ={
         addedProduct : (state,products)=>({
             ...state,
             products :[...products],
-            productsCount :state.productsCount +1
+            productsCount :state.productsCount +1,
+            done_adding_product:true
+        }),
+        addingProductFailed : (state,products)=>({
+            ...state,
+            done_adding_product:true
         }),
         uploadedProductImage : (state,{url,name,productImageUploadState})=>({
             ...state,
@@ -60,7 +67,16 @@ const model ={
         removedProduct : (state,products)=>({
             ...state,
             products :[...products],
-            productsCount :state.productsCount -1
+            productsCount :state.productsCount -1,
+            done_removing_product:true
+        }),
+        removingProductFailed : (state,args)=>({
+            ...state,
+            done_removing_product:true
+        }),
+        reseted:  (state,field)=>({
+            ...state,
+            [field]:false
         }),
     },
     effects: (dispatch)=>({
@@ -154,6 +170,7 @@ const model ={
                 dispatch.products.addedProduct(products)
              } catch (error) {
                  console.log(error)
+                 dispatch.products.addingProductFailed()
              }
         },
         async updateProduct({id,navigation,name,category,image,ref,price1,price2,price3,price4},state){
@@ -212,6 +229,7 @@ const model ={
                 navigation.goBack()
              } catch (error) {
                  console.log(error)
+                 dispatch.products.removingProductFailed()
              }
         },
         async uploadProductImage({image_uri,name},state){
@@ -237,6 +255,9 @@ const model ={
                 dispatch.products.productImageUploadFailed()
             }
         },
+        resetIsDone(field,state){
+            dispatch.products.reseted(field)
+        }
 
     })
 }

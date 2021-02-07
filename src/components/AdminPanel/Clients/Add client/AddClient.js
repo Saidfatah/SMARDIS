@@ -28,7 +28,7 @@ const PRICES=[
     3000
 ]
 
-export const AddClient = ({route,navigation,done_adding_client,updateClient,addClient,sectors}) => {
+export const AddClient = ({route,navigation,resetIsDone,done_adding_client,updateClient,addClient,sectors}) => {
     const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
     const [canSubmit, setcanSubmit] = useState(true)
     const [update, setupdate] = useState(false)
@@ -46,7 +46,7 @@ export const AddClient = ({route,navigation,done_adding_client,updateClient,addC
     
  
     useEffect(() => {
-        done_adding_client==true &&  setcanSubmit(done_adding_client)
+        done_adding_client==true &&  setcanSubmit(done_adding_client) && resetIsDone('done_adding_client')
     }, [done_adding_client])
     useEffect(() => {
         if(route.params){
@@ -114,7 +114,8 @@ export const AddClient = ({route,navigation,done_adding_client,updateClient,addC
     }
     const dispatchAddClient=()=>{
         if(!validateFields()) return 
-
+        
+        setcanSubmit(false)
         const clientObj = {...clientData}
         clientObj.price= selectedPrice
         clientObj.sectorId= selectedSector.id
@@ -241,6 +242,7 @@ export default connect(
     dispatch=>({
         addClient: dispatch.client.addClient,
         updateClient: dispatch.client.updateClient,
+        resetIsDone: dispatch.client.resetIsDone,
     })
 )(AddClient)
 

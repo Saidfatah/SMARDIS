@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import {TextInput,StyleSheet,Text} from 'react-native'
 import Label from '../../Common/Label'
 import Button from '../../Common/Button'
@@ -9,10 +9,15 @@ import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 
 
 
-export const SwipeAbleCancelOrder = ({orderId,navigation,isPanelActive,setIsPanelActive,cancelOrder}) => {
+export const SwipeAbleCancelOrder = ({orderId,navigation,done_canceling_order,resetIsDone,isPanelActive,setIsPanelActive,cancelOrder}) => {
     const [note, setnote] = useState("")
+    const [canCancel, setcanCancel] = useState(true)
     const [noteREQUIRED, setnoteREQUIRED] = useState("")
-     console.log({orderId})
+ 
+    useEffect(() => {
+      done_canceling_order == true && setcanCancel(true) && resetIsDone("done_canceling_order")
+    }, [done_canceling_order])
+
     const closePanel = () => {
         setIsPanelActive(false);
       };
@@ -39,8 +44,9 @@ export const SwipeAbleCancelOrder = ({orderId,navigation,isPanelActive,setIsPane
                     onChangeText={text=>setnote(text)} 
             /> 
 
-            <Button color="RED"  clickHandler={()=>{
+            <Button color="RED"  disabled={!canCancel} clickHandler={()=>{
                 if(note == "")return  setnoteREQUIRED(true)
+                setcanCancel(false)
                 cancelOrder({orderId,note,navigation})
             }} >
               <Text style={{textAlign:'center',color:'#fff'}}  >Confimer L'annulation </Text>

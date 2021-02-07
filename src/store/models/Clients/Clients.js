@@ -62,6 +62,10 @@ const model ={
             ...state,
             clients :[...clients] 
         }),
+        reseted:  (state,field)=>({
+            ...state,
+            [field]:false
+        }),
     },
     effects: (dispatch)=>({
         async fetchMoreClients(arg,state){
@@ -148,6 +152,7 @@ const model ={
                })
                dispatch.client.addedClient(currentClients)
             } catch (error) {
+                dispatch.client.addingClientFailed(currentClients)
                 console.log(error)
             }
         },
@@ -192,10 +197,14 @@ const model ={
                      message:`client ${client.name} est supprimer avec success`
                  })
                  dispatch.client.removedClient(newclients)
-            } catch (error) {
-                 console.log(error)
+                } catch (error) {
+                    console.log(error)
+                    dispatch.client.removingClientFailed()
             }
         },
+        resetIsDone(field,state){
+            dispatch.auth.reseted(field)
+        }
     })
 }
 export default model

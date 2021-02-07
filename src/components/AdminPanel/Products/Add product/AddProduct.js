@@ -30,10 +30,11 @@ const ERRORS_MESSAGES= [
 
 
 
-export const AddProduct = ({route,navigation,updateProduct,addProduct,categories,uploadedProductImageUri,uploadProductImage}) => {
+export const AddProduct = ({route,navigation,updateProduct,addProduct,categories,done_adding_product,resetIsDone,uploadedProductImageUri,uploadProductImage}) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
     const [update, setupdate] = useState(false)
+    const [canSubmit, setcanSubmit] = useState(true)
     const [productToBeUpdatedId, setproductToBeUpdatedId] = useState(-1)
     const [selectedCategory, setselectedCategory] = useState(categories[0])
     // const [activePrice, setactivePrice] = useState(PRICES[0])
@@ -48,7 +49,9 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
         category : null ,
     })
     
-   
+    useEffect(() => {
+        done_adding_product == true && setcanSubmit(true) && resetIsDone("done_adding_product")
+    }, [done_adding_product])
     useEffect(() => {
         if(route.params){
             if(route.params.update == undefined) return 
@@ -141,7 +144,7 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
     }
     const dispatchAddProduct=()=>{
         if(!validateFields()) return 
-
+        setcanSubmit(false)
         const productObj = {...productData}
         productObj.category= selectedCategory.id
         // productObj.activePrice= activePrice
@@ -277,6 +280,7 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
              <Button
               xStyle={{...styles.BtnXstyle,marginRight:16}} 
               color={"BLUE"} 
+              disabled={!canSubmit}
               clickHandler={e=>dispatchAddProduct()} 
               >
                  <Text style={styles.ButtonText}>{update?"Modifier":"Enregistrer"}</Text>
@@ -299,12 +303,14 @@ export default connect(
     state=>({
        categories : state.categories.categories,
        uploadedProductImageUri : state.products.uploadedProductImageUri,
+       done_adding_product:state.products.done_adding_product
     })
     , 
     dispatch=>({
         updateProduct : dispatch.products.updateProduct,
         uploadProductImage: dispatch.products.uploadProductImage,
-        addProduct: dispatch.products.addProduct
+        addProduct: dispatch.products.addProduct,
+        resetIsDone: dispatch.products.resetIsDone,
     })
 )(AddProduct)
 

@@ -8,7 +8,7 @@ import Button from '../../Common/Button'
 import  SwipeAbleProductDetails from './Products/SwipeAbleProductDetails'
 import SwipeAbleCancelOrder from './SwipeAbleCancelOrder'
 
-const ClientDelivry=({ route, navigation,cancelOrder  ,categories,addCartItem,selectedCategory,selectCategory,selectedCategoryProducts})=> {
+const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetIsDone  ,categories,addCartItem,selectedCategory,selectCategory,selectedCategoryProducts})=> {
     const [clientNameHeight, setclientNameHeight] = useState(0)
     const [isPanelActive, setIsPanelActive] = useState(false);
     const [isCancelPanelActive, setIsCancelPanelActive] = useState(false);
@@ -47,6 +47,8 @@ const ClientDelivry=({ route, navigation,cancelOrder  ,categories,addCartItem,se
                  navigation,
                  cancelOrder,
                  orderId,
+                 done_canceling_order,
+                 resetIsDone,
                  isPanelActive:isCancelPanelActive,
                  setIsPanelActive :setIsCancelPanelActive
                  }}  />
@@ -60,11 +62,13 @@ export default connect(
         selectedCategory :  state.categories.selectedCategory,
         done_fetching_categories : state.categories.done_fetching_categories,
         selectedCategoryProducts :  state.categories.selectedCategoryProducts,
+        done_canceling_order :  state.categories.done_canceling_order,
     }),
     dispatch=>({
         selectCategory : dispatch.categories.selectCategory,
         addCartItem : dispatch.cart.addCartItem,
         cancelOrder: dispatch.scheduel.cancelOrder,
+        resetIsDone: dispatch.scheduel.resetIsDone,
     })
 )(ClientDelivry)
 

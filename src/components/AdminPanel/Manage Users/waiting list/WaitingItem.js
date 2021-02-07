@@ -1,15 +1,26 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import {View,Text,StyleSheet} from 'react-native'
 import { List } from 'react-native-paper';
 import {colors} from '../../../Common/Colors'
 import Button from '../../../Common/Button'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-export const WaitingItem = ({user,approveUser,rejectUser}) => {
+export const WaitingItem = ({user,approveUser,rejectUser,resetIsDone,done_rejecting_client,done_approving_client}) => {
+    const [canSubmit, setcanSubmit] = useState(true)
     const [expanded, setExpanded] = useState(false);
     const handlePress = () => setExpanded(!expanded);
     const {type,name,id}=user
     const TYPE = type =="ADMIN" ? "Admin":"Vendeur"
+    useEffect(() => {
+        if(done_rejecting_client ){
+            setcanSubmit(true)
+            resetIsDone("done_rejecting_client")
+        }
+        if(done_approving_client ){
+            setcanSubmit(true)
+            resetIsDone("done_approving_client")
+        }
+    }, [done_rejecting_client,done_approving_client])
 
     return <List.Accordion
     title={`${name} (${TYPE})` }
@@ -26,11 +37,18 @@ export const WaitingItem = ({user,approveUser,rejectUser}) => {
     >
           <View style={styles.accordionContentWrrapper} >
           <View style={styles.HFlex} >
-              <Button xStyle={styles.xButton} color="GREEN" clickHandler={()=>approveUser(id)} >
+              <Button xStyle={styles.xButton} disabled={!canSubmit} color="GREEN" clickHandler={()=>{
+                  approveUser(id)
+                  setcanSubmit(false)
+                  }} >
                   <Icon style={styles.icon} size={20} name="account-check" />
                   <Text style={styles.text}>Approuver </Text>
               </Button>
-              <Button  xStyle={styles.xButton}  color="RED" clickHandler={()=>approveUser(id)} >
+              <Button  xStyle={styles.xButton}  disabled={!canSubmit}  color="RED" clickHandler={()=>{
+                  rejectUser(id)
+                  setcanSubmit(false)
+                  
+                  }} >
                  <Icon style={styles.icon} size={20} name="account-cancel-outline" />
                  <Text style={styles.text}>rejeter  </Text>
               </Button>

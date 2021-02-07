@@ -44,6 +44,12 @@ const model ={
         todays_scheduels_first_fetch:false,
         done_fetching_todays_scheduels:false,
         
+        done_adding_scheduel:false,
+        done_removing_scheduel:false,
+
+        done_canceling_order:false,
+        done_resetting_order:false,
+        
         //seclection
         selectedBill : null ,
 
@@ -87,6 +93,11 @@ const model ={
             scheduels ,
             scheduelsCount : state.scheduelsCount +1,
             ordersCount : state.scheduelsCount +addedOrdersCount,
+            done_adding_scheduel:true
+        }),
+        addingScheduelFailed  : (state,args)=>({
+            ...state, 
+            done_adding_scheduel:true
         }),
         updatedScheduel  : (state,scheduels)=>({
             ...state,
@@ -150,6 +161,11 @@ const model ={
             ...state,
             currentTurn   ,
             currentSector ,
+            done_canceling_order:true
+        }),
+        cancelOrderFailed : (state,args)=>({
+            ...state,
+            done_canceling_order:true
         }),
         selectedABill : (state,selectedBill)=>({
             ...state,
@@ -170,7 +186,18 @@ const model ={
             distrubutor_todays_canceled_orders_done_fetching: true ,
             todays_canceled_orders_first_fetch:false,
         }),
- 
+        restedOrder:  (state,field)=>({
+            ...state,
+            done_resetting_order:true
+        }),
+        resitingOrderFailed:  (state,field)=>({
+            ...state,
+            done_resetting_order:true
+        }),
+        reseted:  (state,field)=>({
+            ...state,
+            [field]:false
+        }),
     },
     effects: (dispatch)=>({
         async fetchTodaysSales(arg,state){
@@ -399,9 +426,11 @@ const model ={
                           status:'PENDING'
                       })
                console.log('\nresetedOrder')
-                 
-             } catch (error) {
-                 console.log('\n-----resetOrder-----')
+               dispatch.scheduel.restedOrder()
+               
+            } catch (error) {
+                console.log('\n-----resetOrder-----')
+                dispatch.scheduel.resitingOrderFailed()
                  console.log(error)
              }
         },
@@ -487,6 +516,8 @@ const model ={
            } catch (error) {
                console.log('\n------[addOrder]------')
                console.log(error)
+               dispatch.scheduel.addingScheduelFailed()
+
            }
         },
         async updateScheduel({id,distination,distrubutor},state){
@@ -594,11 +625,14 @@ const model ={
                 dispatch.scheduel.setNextTurn()
                 navigation.goBack()
              } catch (error) {
-                 
                  console.log("set next item :")
                  console.log(error)
+                 dispatch.scheduel.cancelOrderFailed()
              }
         },
+        resetIsDone(field,state){
+            dispatch.scheduel.reseted(field)
+        }
     })
 }
 export default model

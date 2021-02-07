@@ -19,6 +19,8 @@ const model ={
         done_fetching_categories : false,
         categories_first_fetch : false,
         category_has_products : false,
+        done_adding_category : false,
+        done_removing_category : false,
         last_selected_Category:null,
     },
     reducers:{
@@ -52,7 +54,12 @@ const model ={
         addedCategory : (state,categories)=>({
             ...state,
             categories :[...categories],
-            categoriesCount :state.categoriesCount +1
+            categoriesCount :state.categoriesCount +1,
+            done_adding_category:true
+        }),
+        addingCategoryFailed : (state,args)=>({
+            ...state,
+            done_adding_category:true
         }),
         updatedCategory : (state,categories)=>({
             ...state,
@@ -61,7 +68,12 @@ const model ={
         removedCategory : (state,categories)=>({
             ...state,
             categories :[... categories],
-            categoriesCount :state.categoriesCount -1
+            categoriesCount :state.categoriesCount -1,
+            done_removing_category:true
+        }),
+        removingCategoryFailed : (state,args)=>({
+            ...state,
+            done_removing_category:true
         }),
         uploadedCategoryImage : (state,{url,name,productImageUploadState})=>({
             ...state,
@@ -74,6 +86,10 @@ const model ={
             categoryImageUploadState:"FAILED",
             productImageUploadState: "STALE",
             uploadedCategoryImageUri:"NO_IMAGE"
+        }),
+        reseted:  (state,field)=>({
+            ...state,
+            [field]:false
         }),
     },
     effects: (dispatch)=>({
@@ -177,6 +193,7 @@ const model ={
                 navigation.navigate('ADMINcategories')
             } catch (error) {
                 console.log(error)
+                dispatch.categories.addingCategoryFailed()
             }
         },
         async updateCategory({id,name,image,navigation},state){
@@ -247,6 +264,7 @@ const model ={
                 navigation.goBack()
              } catch (error) {
                  console.log(error)
+                 dispatch.categories.removingCategoryFailed()
              }
         },
         async uploadCategoryImage({image_uri,name},state){
@@ -272,6 +290,9 @@ const model ={
                 dispatch.categories.categoryImageUploadFailed()
             }
         },
+        resetIsDone(field,state){
+            dispatch.categories.reseted(field)
+        }
     })
 }
 export default model
