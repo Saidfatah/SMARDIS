@@ -7,9 +7,7 @@ import Button from '../../Common/Button'
 import Loading from '../../Common/Loading'
 
 const  Categories=({navigation,categories,fetchCategories})=> {
-    useEffect(() => {
-      fetchCategories()
-    }, [fetchCategories])
+
 
     if(categories.length < 1 ) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
@@ -53,10 +51,10 @@ const  Categories=({navigation,categories,fetchCategories})=> {
 }
 export default connect(
   state=>({
-    categories:state.products.categories
+    categories:state.categories.categories
   }),
   dispatch=>({
-    fetchCategories:dispatch.products.fetchCategories
+    fetchCategories:dispatch.categories.fetchCategories
   })
 )(Categories)
 

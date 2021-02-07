@@ -133,12 +133,12 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory,uploade
 
 export default connect(
     state=>({
-        uploadedCategoryImageUri    : state.products.uploadedCategoryImageUri,
+        uploadedCategoryImageUri    : state.categories.uploadedCategoryImageUri,
     }),
     dispatch=>({
-        addCategory    : dispatch.products.addCategory,
-        updateCategory : dispatch.products.updateCategory,
-        uploadCategoryImage : dispatch.products.uploadCategoryImage,
+        addCategory    : dispatch.categories.addCategory,
+        updateCategory : dispatch.categories.updateCategory,
+        uploadCategoryImage : dispatch.categories.uploadCategoryImage,
     })
     
 )

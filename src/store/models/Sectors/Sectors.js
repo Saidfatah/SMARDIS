@@ -59,7 +59,7 @@ const model ={
     effects: (dispatch)=>({
         async fetchSectors(arg,state){
              try {
-                const sectors_first_fetch = state.client.sectors_first_fetch
+                const sectors_first_fetch = state.sector.sectors_first_fetch
                 if(sectors_first_fetch) return
 
                 const clientsResponse= await firestore().collection('sectors')
@@ -83,7 +83,7 @@ const model ={
                  //and we can check if array has an item with key id if so don't fetch 
                  //if not fetch and add item with key id and values clients 
 
-                const last_visited_sector = state.client.last_visited_sector
+                const last_visited_sector = state.sector.last_visited_sector
                 
                 if(last_visited_sector == id) return
 
@@ -113,7 +113,7 @@ const model ={
         async addSector({name,city,navigation},state){
             try {
                  const sector = sectorModel(name,city)
-                 let sectors =[...state.client.sectors]
+                 let sectors =[...state.sector.sectors]
 
                  const newSector = sectorModel(name,city)
                  //firestore
@@ -137,7 +137,7 @@ const model ={
         },
         async updateSector({name,id,city,navigation},state){
             try {
-                 let sectors =[...state.client.sectors]
+                 let sectors =[...state.sector.sectors]
                  const tragetSector = sectors.filter(sector =>sector.id == id)[0]
                  let targetSectorId =sectors.indexOf(tragetSector)
                  sectors[targetSectorId]= {...tragetSector,name,city}
