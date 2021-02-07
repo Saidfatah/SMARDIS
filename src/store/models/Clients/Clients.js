@@ -8,6 +8,8 @@ const model ={
         clients       :[],
         clients_first_fetch:false,
         done_fetching_clients:false,
+        done_adding_client:false,
+        done_removing_client:false,
         clientsAdded  : 0 , 
         clientsCount  : 0 ,//to display in admin's dashboard
         last_visible_client : null,
@@ -40,11 +42,21 @@ const model ={
             clients  ,
             clientsCount: state.clientsCount +1,
             clientsAdded: state.clientsAdded +1,
+            done_adding_client:true,
+        }),
+        addingClientFailed   : (state,clients)=>({
+            ...state,
+            done_adding_client:true,
         }),
         removedClient : (state,clients)=>({
             ...state,
             clients :[...clients],
-            clientsCount: state.clientsCount -1
+            clientsCount: state.clientsCount -1,
+            done_removing_client:true
+        }),
+        removingClientFailed : (state,clients)=>({
+            ...state,
+            done_removing_client:false
         }),
         updatedClient : (state,clients)=>({
             ...state,

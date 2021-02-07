@@ -28,8 +28,9 @@ const PRICES=[
     3000
 ]
 
-export const AddClient = ({route,navigation,updateClient,addClient,sectors}) => {
+export const AddClient = ({route,navigation,done_adding_client,updateClient,addClient,sectors}) => {
     const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
+    const [canSubmit, setcanSubmit] = useState(true)
     const [update, setupdate] = useState(false)
     const [clientToBeUpdatedId, setclientToBeUpdatedId] = useState(-1)
     const [selectedPrice, setselectedPrice] = useState(PRICES[0])
@@ -44,7 +45,9 @@ export const AddClient = ({route,navigation,updateClient,addClient,sectors}) => 
     })
     
  
-    
+    useEffect(() => {
+        done_adding_client==true &&  setcanSubmit(done_adding_client)
+    }, [done_adding_client])
     useEffect(() => {
         if(route.params){
             if(route.params.update == undefined) return 
@@ -211,6 +214,7 @@ export const AddClient = ({route,navigation,updateClient,addClient,sectors}) => 
              <Button
               xStyle={{...styles.BtnXstyle,marginRight:16}} 
               color={"BLUE"} 
+              disabled={!canSubmit}
               clickHandler={e=>dispatchAddClient()} 
               >
                  <Text style={styles.ButtonText}>{update?"Modifier":"Enregistrer"}</Text>
@@ -230,7 +234,8 @@ export const AddClient = ({route,navigation,updateClient,addClient,sectors}) => 
 
 export default connect(
     state=>({
-       sectors : state.sector.sectors
+       sectors : state.sector.sectors,
+       done_adding_client : state.client.done_adding_client,
     })
     , 
     dispatch=>({
