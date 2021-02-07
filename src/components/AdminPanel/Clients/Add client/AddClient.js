@@ -230,7 +230,7 @@ export const AddClient = ({route,navigation,updateClient,addClient,sectors}) => 
 
 export default connect(
     state=>({
-       sectors : state.client.sectors
+       sectors : state.sector.sectors
     })
     , 
     dispatch=>({

@@ -297,7 +297,7 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
 
 export default connect(
     state=>({
-       categories : state.products.categories,
+       categories : state.categories.categories,
        uploadedProductImageUri : state.products.uploadedProductImageUri,
     })
     , 

@@ -26,10 +26,10 @@ export default connect(
         fetchDistrubutorTodaysValideOrders : dispatch.scheduel.fetchDistrubutorTodaysValideOrders,
         fetchDistrubutorTodaysCanceledOrders : dispatch.scheduel.fetchDistrubutorTodaysCanceledOrders,
         fetchClients  : dispatch.client.fetchClients,
-        fetchSectors  : dispatch.client.fetchSectors,
+        fetchSectors  : dispatch.sector.fetchSectors,
         fetchClientsCount  : dispatch.client.fetchClientsCount,
         fetchDistrubutors : dispatch.distrubutor.fetchDistrubutors,
-        fetchCategories : dispatch.products.fetchCategories,
+        fetchCategories : dispatch.categories.fetchCategories,
         fetchProducts   : dispatch.products.fetchProducts,
     })
 )(DistrubutorDashBoard)

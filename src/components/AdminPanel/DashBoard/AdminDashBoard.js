@@ -26,7 +26,6 @@ const  AdminDashBoard=(props)=> {
         fetchDistrubutors,
         fetchOrders ,
         fetchValidatedOrders ,
-        fetchCategoriesCount ,
         scheduelsCount ,
         fetchProductsCount ,
         fetchWaitingList,
@@ -107,7 +106,6 @@ const  AdminDashBoard=(props)=> {
     useEffect(() => {
           fetchValidatedOrders()
           fetchProductsCount()
-          fetchCategoriesCount()
           fetchAdmins()
           fetchWaitingList()
           fetchCategories()
@@ -147,7 +145,7 @@ export default connect(
         ordersCount   : state.scheduel.ordersCount,
         scheduelsCount   : state.scheduel.scheduelsCount,
         productsCount   : state.products.productsCount,
-        categoriesCount : state.products.categoriesCount,
+        categoriesCount : state.categories.categoriesCount,
         distrubutorsCount    : state.distrubutor.distrubutorsCount,
         validatedOrdersCount : state.scheduel.validatedOrdersCount,
     }),
@@ -156,13 +154,12 @@ export default connect(
         fetchAdmins  : dispatch.auth.fetchAdmins,
         fetchSectors  : dispatch.sector.fetchSectors,
         fetchClients  : dispatch.client.fetchClients,
-        fetchCategories  : dispatch.products.fetchCategories,
+        fetchCategories  : dispatch.categories.fetchCategories,
         fetchDistrubutors  : dispatch.distrubutor.fetchDistrubutors ,
         fetchOrders : dispatch.scheduel.fetchOrders,
         fetchScheduels : dispatch.scheduel.fetchScheduels,
         fetchTodaysSales : dispatch.scheduel.fetchTodaysSales,
         fetchValidatedOrders : dispatch.cart.fetchValidatedOrders,
-        fetchCategoriesCount : dispatch.products.fetchCategoriesCount,
         fetchProductsCount   : dispatch.products.fetchProductsCount,
     })
 )(AdminDashBoard)

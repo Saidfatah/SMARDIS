@@ -56,12 +56,12 @@ const ClientDelivry=({ route, navigation,cancelOrder  ,categories,addCartItem,se
 
 export default connect(
     state=>({
-        categories       : state.products.categories,
-        selectedCategory :  state.products.selectedCategory,
-        selectedCategoryProducts :  state.products.selectedCategoryProducts,
+        categories       : state.categories.categories,
+        selectedCategory :  state.categories.selectedCategory,
+        selectedCategoryProducts :  state.categories.selectedCategoryProducts,
     }),
     dispatch=>({
-        selectCategory : dispatch.products.selectCategory,
+        selectCategory : dispatch.categories.selectCategory,
         addCartItem : dispatch.cart.addCartItem,
         cancelOrder: dispatch.scheduel.cancelOrder,
     })

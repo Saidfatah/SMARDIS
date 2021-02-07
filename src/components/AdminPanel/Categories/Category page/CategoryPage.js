@@ -145,13 +145,13 @@ export const CategoryPage = ({navigation,route,selectedCategoryProducts,selectCa
 
 export default connect(
     state=>({
-       selectedCategoryProducts :  state.products.selectedCategoryProducts,
-       category_has_products :  state.products.category_has_products,
+       selectedCategoryProducts :  state.categories.selectedCategoryProducts,
+       category_has_products :  state.categories.category_has_products,
     }), 
     dispatch =>({
-      removeCategory: dispatch.products.removeCategory,
-      updateCategory: dispatch.products.updateCategory,
-      selectCategory : dispatch.products.selectCategory,
+      removeCategory: dispatch.categories.removeCategory,
+      updateCategory: dispatch.categories.updateCategory,
+      selectCategory : dispatch.categories.selectCategory,
 
     })
 )(CategoryPage)

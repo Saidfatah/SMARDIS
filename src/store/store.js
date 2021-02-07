@@ -3,7 +3,8 @@ import cart from './models/Cart/cart'
 import client from './models/Clients/Clients'
 import sector from './models/Sectors/Sectors'
 import scheduel from './models/Scheduels/Scheduels'
-import products from './models/Products'
+import products from './models/Products/Products'
+import categories from './models/Categories/Categories'
 import auth from './models/Auth/Auth'
 import toast from './models/Toast/Toast'
 import sales from './models/sales/Sales'
@@ -13,6 +14,7 @@ const models={
     cart ,
     client, 
     products, 
+    categories,
     sector,
     auth ,
     distrubutor ,
