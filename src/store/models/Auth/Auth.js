@@ -26,6 +26,7 @@ const model ={
         done_first_register          : false,
         waitingList_done_first_fetch : false,
         admins_done_first_fetch      : false,
+        done_fetching_admins         : false,
         authError      : null , 
         registerError  : null , 
         catalogue_url : "NOT_UPLOADED",
@@ -83,7 +84,15 @@ const model ={
             ...state,
             admins:[...admins],
             admins_count:admins.length,
-            admins_done_first_fetch :true
+            admins_done_first_fetch :true,
+            done_fetching_admins :true,
+        }),
+        fetchingAdminsFailed:  (state,admins)=>({
+            ...state,
+            admins:[],
+            admins_count:0,
+            admins_done_first_fetch :false,
+            done_fetching_admins :true,
         }),
         fetchedWaitingList:  (state,waitingList)=>({
             ...state,
@@ -303,11 +312,13 @@ const model ={
                          const admins = res.docs.map(doc=>({...doc.data(),id:doc.id}))
                          dispatch.auth.fetchedAdmins(admins)
                      }
+                     dispatch.auth.fetchingAdminsFailed()
                  })      
 
             } catch (error) {
                 console.log('----fetchWaitingList-----')
                 console.log(error)
+                dispatch.auth.fetchingAdminsFailed()
             }
         },
         async fetchWaitingList(args,state){

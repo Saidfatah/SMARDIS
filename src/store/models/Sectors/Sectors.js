@@ -10,16 +10,18 @@ const model ={
         sectors       :[],
         todaysSectors :[], 
         selected_sector_Clients :[], 
-        sectors_first_fetch:false,
         sectorsCount  : 0 ,//to display in admin's dashboard
         todaysSectorsCount :0, //to display in distrubutor's dashboard
         last_visited_sector : null,
+        sectors_first_fetch:false,
         visited_Sector_has_clients:false,
+        done_fetching_sectors:false,
     },
     reducers:{
         fetchedSectors : (state,sectors)=>({
             ...state,
             sectors :sectors ,
+            done_fetching_sectors:true,
             sectorsCount:sectors.length
         }),
         fetchedSectorClients : (state,{selected_sector_Clients,last_visited_sector,visited_Sector_has_clients})=>({
@@ -30,7 +32,7 @@ const model ={
         }),
         sectorsFetchFailed : (state,sectors)=>({
             ...state,
-            //something
+            done_fetching_sectors:true
         }),
         fetchedSectorsCount : (state,sectorsCount)=>({
             ...state,
@@ -66,12 +68,12 @@ const model ={
                 clientsResponse.onSnapshot(res=>{
                     const docs =res.docs
                     const sectors = docs.map(doc=>({...doc.data(),id:doc.id}))
-                    dispatch.client.fetchedSectors(sectors)
+                    dispatch.sector.fetchedSectors(sectors)
                      
                 })
                 } catch (error) {
                  console.log(error)
-                 dispatch.client.sectorsFetchFailed()
+                 dispatch.sector.sectorsFetchFailed()
              }
 
         },
@@ -91,13 +93,13 @@ const model ={
                 const docs =SectorClientsResponse.docs
                 const clients = docs.map(doc=>({...doc.data(),id:doc.id}))
                 if(clients.length>0){
-                   dispatch.client.fetchedSectorClients({
+                   dispatch.sector.fetchedSectorClients({
                        selected_sector_Clients:clients,
                        last_visited_sector : id,
                        visited_Sector_has_clients:true
                    })
                 }else{
-                    dispatch.client.fetchedSectorClients({
+                    dispatch.sector.fetchedSectorClients({
                         selected_sector_Clients:[],
                         last_visited_sector : id,
                         visited_Sector_has_clients:false
@@ -106,7 +108,7 @@ const model ={
                  
                 } catch (error) {
                  console.log(error)
-                 dispatch.client.sectorsFetchFailed()
+                 dispatch.sector.sectorsFetchFailed()
              }
 
         },
@@ -128,10 +130,10 @@ const model ={
                      title   : 'Ajoute ',
                      message : `le sector ${name} est ajouter avec success `
                  })
-                 dispatch.client.addedSector(sectors)
+                 dispatch.sector.addedSector(sectors)
                  navigation.goBack()
             } catch (error) {
-                dispatch.client.sectorAddFailed()
+                dispatch.sector.sectorAddFailed()
                console.log(error) 
             }
         },
@@ -152,7 +154,7 @@ const model ={
                      title:'Modification ',
                      message:`le sector ${name} est modifier avec success `
                  })
-                 dispatch.client.updatedSector(sectors)
+                 dispatch.sector.updatedSector(sectors)
                  navigation.navigate("ADMINsectors")
             } catch (error) {
                 console.log(error)

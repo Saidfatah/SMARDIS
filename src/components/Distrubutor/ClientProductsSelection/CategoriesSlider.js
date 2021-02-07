@@ -1,12 +1,14 @@
 import React from 'react'
 import {View,Text,FlatList,StyleSheet,Dimensions} from 'react-native'
 import CategoryItem from './CategoryItem'
-
+import Loading from '../../Common/Loading'
 
 const width= Dimensions.get('screen').width
 const IMAGE_HEIGHT= (width- (16*4))/4
 
-const CategoriesSlider=({categories,selectedCategory,selectCategory})=> {
+const CategoriesSlider=({categories,done_fetching_categories,selectedCategory,selectCategory})=> {
+    if(categories.length <1 && !done_fetching_categories)return <Loading spacing={30} />
+    
     return (
         <View  >
             <FlatList 

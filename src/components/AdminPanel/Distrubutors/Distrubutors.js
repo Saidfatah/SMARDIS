@@ -3,16 +3,19 @@ import {View,Text,FlatList,StyleSheet} from 'react-native'
 import { connect } from 'react-redux'
 import Item from '../../Common/Item'
 import Button from '../../Common/Button'
+import Loading from '../../Common/Loading'
 
-const  Distrubutors=({navigation,distrubutors,fetchMoreDistrubutors,fetchDistrubutors})=> {
-    useEffect(() => {
-        fetchDistrubutors()
-    }, [])
-    
+const  Distrubutors=({navigation,distrubutors,fetchMoreDistrubutors,done_fetching_distrubutors})=> {
+ 
     const handleLoadMore=()=>{
-        console.log('laodmore')
         fetchMoreDistrubutors()
     }
+
+
+    if(distrubutors.length < 1 && !done_fetching_distrubutors ) 
+    return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
+        <Loading spacing={50} />   
+    </View>
 
     return (
         <View style={{backgroundColor:'#fff',flex: 1}}  >
@@ -45,10 +48,10 @@ const  Distrubutors=({navigation,distrubutors,fetchMoreDistrubutors,fetchDistrub
 
 export default connect(
     state=>({
-        distrubutors:state.distrubutor.distrubutors
+        distrubutors:state.distrubutor.distrubutors,
+        done_fetching_distrubutors:state.distrubutor.done_fetching_distrubutors,
     }),
     dispatch=>({
-        fetchDistrubutors     : dispatch.distrubutor.fetchDistrubutors,
         fetchMoreDistrubutors : dispatch.distrubutor.fetchMoreDistrubutors,
     })
 )(Distrubutors)

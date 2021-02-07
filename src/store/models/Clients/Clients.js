@@ -6,8 +6,8 @@ const FETCH_LIMIT=10
 const model ={
     state:{
         clients       :[],
-        first_fetch:false,
-        firstClientsFetch:false,
+        clients_first_fetch:false,
+        done_fetching_clients:false,
         clientsAdded  : 0 , 
         clientsCount  : 0 ,//to display in admin's dashboard
         last_visible_client : null,
@@ -20,13 +20,15 @@ const model ={
         fetchedClients : (state,{clients,last_visible_client})=>({
             ...state,
             clients :[...clients],
-            first_fetch:true,
+            clients_first_fetch:true,
+            done_fetching_clients:true,
             clientsCount:clients.length,
             last_visible_client
         }),
         fetcheClientsFailed : (state,clients)=>({
             ...state,
-    
+            clients_first_fetch:false,
+            done_fetching_clients:true,
         }),
         incrementedClientsLimit : (state,{clients,newLimit})=>({
             ...state,
@@ -84,8 +86,8 @@ const model ={
         },
         async fetchClients(arg,state){
             try {
-                const first_fetch = state.client.first_fetch
-                if(first_fetch) return
+                const clients_first_fetch = state.client.clients_first_fetch
+                if(clients_first_fetch) return
     
                 // const clientsResponse= await firestore()
                 //                         .collection('clients')

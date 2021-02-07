@@ -169,11 +169,7 @@ const model ={
                 console.log(error)
             }
         },
-        fetchValidatedOrders(id,state){
-            //fetch from backEnd 
-            //sales are probably the products sold 
-            dispatch.cart.fetchedValidatedOrders([])
-        }
+
     })
 }
 export default model

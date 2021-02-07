@@ -6,12 +6,10 @@ import Loading from '../../Common/Loading'
 import Item from '../../Common/Item'
 
 
-const  Sectors=({navigation,sectors,fetchSectors})=> {
-    useEffect(() => {
-        fetchSectors()
-    }, [fetchSectors])
+const  Sectors=({navigation,sectors,done_fetching_sectors})=> {
 
-    if( sectors.length <1) 
+
+    if( sectors.length <1 && !done_fetching_sectors) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
         <Loading spacing={50} />   
     </View>
@@ -53,10 +51,9 @@ const  Sectors=({navigation,sectors,fetchSectors})=> {
 export default connect(
     state=>({
         sectors : state.sector.sectors,
+        done_fetching_sectors : state.sector.done_fetching_sectors,
     }),
-    dispatch=>({
-        fetchSectors: dispatch.sector.fetchSectors,
-    })
+    null
 )(Sectors)
 
 var styles = StyleSheet.create({

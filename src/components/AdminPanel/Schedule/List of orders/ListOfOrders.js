@@ -9,21 +9,12 @@ const {height}=Dimensions.get('screen')
 const HEIGHT = height- StatusBar.currentHeight
 
 
-export const ListOfOrders = ({navigation,selectBill,orders}) => {
-    const [finishedLoading, setfinishedLoading] = useState(false)
-    useEffect(() => {
-        let mounted =true
-        setTimeout(() => {
-            if(mounted)
-            setfinishedLoading(true)
-        }, 10000);
-        return ()=>mounted=false
-    }, [])
+export const ListOfOrders = ({navigation,selectBill,orders,done_fetching_todays_orders}) => {
 
     const TITLE = orders.length >0 ? "les order active" :"ilnya pas de emploi du temps"
 
     
-    if(orders.length<1 && finishedLoading) 
+    if(orders.length<1 && !done_fetching_todays_orders) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
         <Loading spacing={50} />   
     </View>
@@ -49,7 +40,8 @@ export const ListOfOrders = ({navigation,selectBill,orders}) => {
 
 export default connect(
     state=>({
-        orders: state.scheduel.orders 
+        orders: state.scheduel.orders ,
+        done_fetching_todays_orders: state.scheduel.done_fetching_todays_orders ,
     }),
     state=>({
         selectAbill: state.scheduel.selectBill 

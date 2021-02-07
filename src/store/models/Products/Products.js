@@ -11,6 +11,7 @@ const model ={
         productImageUploadState: "STALE" ,//"UPLOADING" || "FAILED"  || "DONE" || "STALE"
         uploadedProductImageUri : null ,
         products_first_fetch : false,
+        done_fetching_products : false,
         last_visible_Product:null,
     },
     reducers:{
@@ -18,7 +19,14 @@ const model ={
             ...state,
             products :[...products],
             products_first_fetch:true,
+            done_fetching_products:true,
             last_visible_Product
+        }),
+        productsFetchingFailed : (state,{products,last_visible_Product})=>({
+            ...state,
+            products :[],
+            products_first_fetch:false,
+            done_fetching_products:true,
         }),
         fetchedProductsCount : (state,productsCount)=>({
             ...state,
@@ -70,13 +78,15 @@ const model ={
                  const docs =productsResponse.docs
                  const products = docs.map(doc=>({...doc.data(), id : doc.id}))
                 
-                 if(products.length <1) return 
+                 if(products.length <1)  dispatch.products.productsFetchingFailed()
                  dispatch.products.fetchedProducts({
                      products,
                      last_visible_Product:products[products.length -1].ref
                  })
              } catch (error) {
+                 console.log("----fetchProducts --------")
                  console.log(error)
+                 dispatch.products.productsFetchingFailed()
              }
         },
         async fetchMoreProducts(arg,state){
