@@ -338,7 +338,7 @@ const model ={
                  adminsResponse.onSnapshot(res=>{
                      if(res.docs){
                          const admins = res.docs.map(doc=>({...doc.data(),id:doc.id}))
-                         dispatch.auth.fetchedAdmins(admins)
+                         return dispatch.auth.fetchedAdmins(admins)
                      }
                      dispatch.auth.fetchingAdminsFailed()
                  })      

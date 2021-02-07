@@ -10,7 +10,7 @@ import { colors } from '../../../Common/Colors'
 export const AddSector = ({navigation,route,done_adding_sector,resetIsDone,addSector,updateSector}) => {
     const [name, setname] = useState("")
     const [city, setcity] = useState("")
-    const [canSubmit, setcanSubmit] = useState(initialState)
+    const [canSubmit, setcanSubmit] = useState(true)
     const [update, setupdate] = useState(false)
     const [sectorToBeUpdatedId, setsectorToBeUpdatedId] = useState(null)
     const [cityREQUIRED, setcityREQUIRED] = useState(null)

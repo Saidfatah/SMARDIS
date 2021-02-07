@@ -100,7 +100,7 @@ export const ClientPage = ({navigation,route,sectors,resetIsDone,done_removing_c
                 clickHandler={e=>navigation.navigate('ADMINupdateClient',{client,update:true})} 
                 >
                    <Text style={styles.ButtonText}>Modifier Le Client</Text>
-                   <Icon name="call" size={25} color="#fff" />
+                   <IonIcon name="ios-settings-sharp" size={25} color="#fff" />
              </Button>
         </View>
     </ScrollView>

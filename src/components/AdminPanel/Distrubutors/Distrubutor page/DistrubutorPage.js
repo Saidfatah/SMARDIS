@@ -16,7 +16,7 @@ import IonIcon from 'react-native-vector-icons/Ionicons'
 //sectors
 //some charts
 export const DistrubutorPage = ({navigation,route,done_removing_distrubutor,removeDistrubutor}) => {
-    const [canRemove, setcanRemove] = useState(initialState)
+    const [canRemove, setcanRemove] = useState(true)
     const {distrubutor} = route.params;
     
     useEffect(() => {

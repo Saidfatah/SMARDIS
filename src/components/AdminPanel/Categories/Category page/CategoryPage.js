@@ -135,11 +135,11 @@ export const CategoryPage = ({navigation,route,selectedCategoryProducts,resetIsD
                }
                <Button
                 xStyle={styles.BtnXstyle} 
-                color={"GREEN"} 
+                color={"BLUE"} 
                 clickHandler={e=>navigation.navigate('ADMINupdateCategory',{category,update:true}) } 
                 >
                    <Text style={styles.ButtonText}>Modifier la category</Text>
-                   <Icon name="call" size={25} color="#fff" />
+                   <IonIcon name="ios-settings-sharp" size={25} color="#fff" />
                </Button>
         </View>
     </ScrollView>

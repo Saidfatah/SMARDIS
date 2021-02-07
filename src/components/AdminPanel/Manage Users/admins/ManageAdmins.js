@@ -1,10 +1,13 @@
 import React from 'react'
+import {ScrollView,View} from 'react-native'
 import { connect } from 'react-redux'
 import { List } from 'react-native-paper';
 import AdminItem from './AdminItem'
+import Loading from '../../../Common/Loading'
+
 
 export const ManageAdmin = ({navigation,done_fetching_admins,resetIsDone,done_setting_admin_to_master,setMaster,admins}) => {
-    const TITLE = waitingList.length >0  ? "List des admins"  :"List des admins est vide est vide "
+    const TITLE = admins.length >0  ? "List des admins"  :"List des admins est vide est vide "
 
     if(admins.length < 1 && !done_fetching_admins ) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
@@ -13,8 +16,8 @@ export const ManageAdmin = ({navigation,done_fetching_admins,resetIsDone,done_se
 
  
     return (
-        <ScrollView  > 
-            <View style={{backgroundColor:'#fff',minHeight:"100%", flex:1 ,padding:8}}>
+        <ScrollView style={{flex:1,backgroundColor:'#fff', }} contentContainerStyle={{backgroundColor:'#fff'}} > 
+            <View style={{flex:1 ,padding:8}}>
                  <List.Section title={TITLE}>
                     {admins.map((user,i)=> <AdminItem  key={i} {...{user,setMaster,resetIsDone,done_setting_admin_to_master}} /> )}
                  </List.Section>

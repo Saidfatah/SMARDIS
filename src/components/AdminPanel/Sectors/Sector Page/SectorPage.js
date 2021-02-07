@@ -103,7 +103,7 @@ export const SecorPage = ({navigation,route,fetchSectorClients,selected_sector_C
                 clickHandler={e=> navigation.navigate('ADMINupdateSector',{update:true,sector})} 
                 >
                    <Text style={styles.ButtonText}>Modifier Le Secteur</Text>
-                   <Icon name="call" size={25} color="#fff" />
+                   <IonIcon name="ios-settings-sharp" size={25} color="#fff" />
              </Button>
         </View>
     </ScrollView>

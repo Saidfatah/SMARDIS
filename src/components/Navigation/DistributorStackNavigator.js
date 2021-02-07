@@ -8,7 +8,6 @@ import DistrubutorCatalogue  from '../AdminPanel/Catalogue/Catalogue'
 import DistrubutorClientDelivry     from '../Distrubutor/ClientProductsSelection/ClientDelivry'
 import DistrubutorCart   from '../Cart/Cart'
 import DistrubutorValidatedCommands   from '../Distrubutor/validatedCommands/ValidatedCommands'
-import DistrubutorBillTable   from '../Distrubutor/validatedCommands/BillTable'
 import DistrubutorCanceledOrders  from '../Distrubutor/CanceledOrders/CanceledOrders'
 
 import {View,Text} from 'react-native'
@@ -123,11 +122,7 @@ const DistributorStackNavigator =({cartGuests})=>{
                   })}
                 component={DistrubutorCanceledOrders} 
              />
-             <DistributorStack.Screen 
-                name="DISTRIBUTOOrderBill" 
-                options={{headerTitle:"Bon de command"}}
-                component={DistrubutorBillTable} 
-             />
+        
     </DistributorStack.Navigator>
 }
 

@@ -83,21 +83,22 @@ const  OrdersValidated=()=> {
                 type: [DocumentPicker.types.allFiles],
             });
            
-            // const task =  Storage().ref('catalogue/'+ res.name).putFile(res.uri);
+            const task =  Storage().ref('catalogue/'+ res.name).putFile(res.fileCopyUri);
            
-            // task.on('state_changed', 
-            //     sn =>{},
-            //     err=>console.log(err),
-            //     () => {
-            //        console.log('excel uploaded!'+res.name)
-            //        Storage()
-            //        .ref("catalogue").child(res.name).getDownloadURL()
-            //        .then(url => {
-            //          console.log('uploaded excel url', url);
-            //        }).catch(err=>console.log(err))
-            //    }
-            // )
-            // await task 
+            task.on('state_changed', 
+                sn =>{},
+                err=>console.log(err),
+                () => {
+                   console.log('excel uploaded!'+res.name)
+                   Storage()
+                   .ref("catalogue").child(res.name).getDownloadURL()
+                   .then(url => {
+                     console.log('uploaded excel url', url);
+                   }).catch(err=>console.log(err))
+               }
+            )
+            await task 
+          
              
            
           } catch (err) {

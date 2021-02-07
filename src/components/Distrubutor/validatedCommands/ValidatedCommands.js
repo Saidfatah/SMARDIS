@@ -32,7 +32,7 @@ const ValidatedCommands=({navigation,valide_orders,done_fetching_todays_validate
                          color={"BLUE"} 
                          clickHandler={e=>{
                             selectBill({id:bill.id,distrubutor:true})
-                            navigation.navigate('DISTRIBUTOOrderBill')
+                            navigation.navigate('BillTable')
                         }} 
                          >
                             <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>Afficher</Text>

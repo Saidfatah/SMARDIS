@@ -3,6 +3,7 @@ import {Text,StyleSheet} from 'react-native'
 import { List } from 'react-native-paper';
 import {colors} from '../../../Common/Colors'
 import Button from '../../../Common/Button'
+import { View } from 'native-base';
 
 
 export const AdminItem = ({user,setMaster,resetIsDone,done_setting_admin_to_master}) => {
@@ -30,15 +31,17 @@ export const AdminItem = ({user,setMaster,resetIsDone,done_setting_admin_to_mast
     onPress={handlePress}
     >
            
+      <View style={styles.accordionContentWrrapper} >
       {  !isMaster
-           ?  <Button color="GREEN" clickHandler={()=>setMaster({id,isMaster:true})} >
+           ?  <Button color="BLUE" clickHandler={()=>setMaster({id,isMaster:true})} >
                  <Text style={{color:'#fff',fontWeight:'bold'}}>definir  MASTER  </Text>
               </Button>
-           :   <Button color="GREEN" clickHandler={()=>setMaster({id,isMaster:false})} >
+           :   <Button color="BLUE" clickHandler={()=>setMaster({id,isMaster:false})} >
                  <Text style={{color:'#fff',fontWeight:'bold'}}>definir REGULIARE  </Text>
               </Button>
       }
 
+      </View>
 </List.Accordion>
 }
 

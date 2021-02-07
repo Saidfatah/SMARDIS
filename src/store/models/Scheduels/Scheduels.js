@@ -128,14 +128,14 @@ const model ={
         fetchedTodaysValideOrders : (state,orders)=>({
             ...state,
             valide_orders :orders,
-            valide_orders_count :orders.length,
+            valide_orders_count :orders.length || 0,
             todays_validated_orders_first_fetch:true,
             done_fetching_todays_validated_orders:true,
         }),
         fetchTodaysValideOrdersFAILED : (state,orders)=>({
             ...state,
             valide_orders :orders,
-            valide_orders_count :orders.length,
+            valide_orders_count :orders.length || 0,
             todays_validated_orders_first_fetch:false,
             done_fetching_todays_validated_orders:true,
         }),
@@ -320,6 +320,7 @@ const model ={
                                                  .collection('orders')
       
                 fetchOrdersReponse.onSnapshot(res=>{
+           
                     if(res.docs){
                         const orders=res.docs.map(order=>({
                             ...order.data(),
@@ -327,7 +328,7 @@ const model ={
                             sale_date:order.data().sale_date.toDate(),
                             sale_hour:order.data().sale_hour.toDate(),
                         }))
-                        dispatch.scheduel.fetchedOrders(orders)
+                       return  dispatch.scheduel.fetchedOrders(orders)
                     }
                     dispatch.scheduel.ordersFetchingFailed()
                 })
@@ -435,23 +436,32 @@ const model ={
              }
         },
         selectBill({id,distrubutor},state){
-            let selectedBil =null
-            if(distrubutor){
-                //calling from distrubutor Interface  
-                const valide_orders = [...state.scheduel.valide_orders]
-                selectedBil = valide_orders.filter(b=>b.id == id)[0]
-                
-                   
-            }else{
-               //calling from admin iterface
-               const valide_orders = [...state.scheduel.orders]
-               selectedBil = valide_orders.filter(b=>b.id == id)[0]
+            try {
+                  let selectedBil =null
+                  if(distrubutor){
+                      //calling from distrubutor Interface  
+                      const valide_orders = [...state.scheduel.valide_orders]
+                      selectedBil = valide_orders.filter(b=>b.id == id)[0]
+                      
+                         
+                  }else{
+                     //calling from admin iterface
+                     const valide_orders = [...state.scheduel.orders]
+                     console.log("valide_orders:"+valide_orders.length)
+                     selectedBil = valide_orders.filter(b=>b.id == id)[0]
+                     console.log({selectedBil})
+                  }
+                  if(selectedBil != null) dispatch.scheduel.selectedABill(selectedBil)
+                 
+            } catch (error) {
+                console.log("----selctedbill---")
+                console.log(error)
             }
-            dispatch.scheduel.selectedABill(selectedBil)
         },
 
         async fetchScheduels(arg,state){
             try {
+                console.log('-----fetchScheduels-----')
                 const fetchScheduelsReponse = await firestore()
                                                 .collection('scheduels')
 
@@ -462,9 +472,9 @@ const model ={
                               id:order.id,
                               date:order.data().date.toDate()
                             }))
-                          dispatch.scheduel.fetchedScheduels(scheduels)
-                        }
-                        dispatch.scheduel.scheduelsFetchingFailed()
+                         return  dispatch.scheduel.fetchedScheduels(scheduels)
+                      }
+                   dispatch.scheduel.scheduelsFetchingFailed()
                  })
                 
             } catch (error) {

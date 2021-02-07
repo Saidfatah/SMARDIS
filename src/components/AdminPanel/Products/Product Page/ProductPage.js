@@ -45,7 +45,7 @@ const ProductPage=({navigation,route,removeProduct,done_removing_product,resetIs
                     }} 
                   >
                      <Text style={styles.ButtonText}>Supprimer le produit</Text>
-                     <Icon name="call" size={25} color="#fff" />
+                     <IonIcon name="trash" size={25} color="#fff" />
                  </Button>
                  <Button
                   xStyle={styles.BtnXstyle} 
@@ -53,7 +53,7 @@ const ProductPage=({navigation,route,removeProduct,done_removing_product,resetIs
                   clickHandler={e=>navigation.navigate('ADMINupdateProduct',{product,update:true})} 
                   >
                      <Text style={styles.ButtonText}>Modifier Le produit</Text>
-                     <Icon name="call" size={25} color="#fff" />
+                     <IonIcon name="ios-settings-sharp" size={25} color="#fff" />
                  </Button>
         </View>
         </ScrollView>

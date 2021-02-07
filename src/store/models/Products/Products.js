@@ -88,17 +88,21 @@ const model ={
                  const productsResponse= await firestore()
                                               .collection('products')
                                               .orderBy('category','desc')
-                                              .orderBy('ref','desc')
-                                              .limit(PRODUCTS_FETCH_LIMIT)
-                                              .get()
-                 const docs =productsResponse.docs
-                 const products = docs.map(doc=>({...doc.data(), id : doc.id}))
+                                              
+                                            //   .orderBy('ref','desc')
+                                            //   .limit(PRODUCTS_FETCH_LIMIT)
+                                            //   .get()
+                productsResponse.onSnapshot(res=>{
+                    const docs =res.docs
+                    if(!docs) return dispatch.products.productsFetchingFailed()
+                    const products = docs.map(doc=>({...doc.data(), id : doc.id}))
+                    dispatch.products.fetchedProducts({
+                        products,
+                        last_visible_Product:products[products.length -1].ref
+                    })
+                })
                 
-                 if(products.length <1)  dispatch.products.productsFetchingFailed()
-                 dispatch.products.fetchedProducts({
-                     products,
-                     last_visible_Product:products[products.length -1].ref
-                 })
+                 
              } catch (error) {
                  console.log("----fetchProducts --------")
                  console.log(error)
@@ -106,6 +110,7 @@ const model ={
              }
         },
         async fetchMoreProducts(arg,state){
+            return
             try {
                 const last_visible_Product = state.products.last_visible_Product
                 const productsCount        = state.products.productsCount

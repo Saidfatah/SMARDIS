@@ -9,11 +9,13 @@ import firestore from '@react-native-firebase/firestore'
 
 const BillTable=({selectedBill})=> {
     const [uri, seturi] = useState("") 
-    const {products,sale_date} = selectedBill
 
     useEffect(() => {
       let mounted= true 
-    
+       console.log(selectedBill)
+       if(!selectedBill) return 
+       const {products,sale_date} = selectedBill
+
       const HMTL= `<html>
         <head>
           <meta charset="UTF-8">
@@ -99,6 +101,7 @@ const BillTable=({selectedBill})=> {
            </div>
         </body>   
       </html>`
+
       PDF.fromHTML(HMTL,'https://localhost:3000')
       .then((data)=>{
         console.log({data})
@@ -109,7 +112,7 @@ const BillTable=({selectedBill})=> {
       })
 
       return ()=>mounted=false
-    }, [ ])
+    }, [selectedBill])
 
     if(uri === '')
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >

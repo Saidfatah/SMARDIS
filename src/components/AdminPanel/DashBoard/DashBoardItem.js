@@ -4,7 +4,7 @@ import {View,Text,TouchableOpacity} from 'react-native'
 import { List } from 'react-native-paper';
 import {  Badge, Icon } from 'react-native-elements'
 
-const DashBoardItem=({ROUTE,last,navigation,sectorsCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount})=> {
+const DashBoardItem=({ROUTE,last,navigation,sectorsCount ,clientsCount,scheduelsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,valide_orders_count})=> {
         const [expanded, setExpanded] = useState(false);
         const {title,subMenu}=ROUTE
         const navigateToRoute=r=>e=>navigation.navigate(r)
@@ -25,7 +25,7 @@ const DashBoardItem=({ROUTE,last,navigation,sectorsCount ,clientsCount ,salesCou
                 break;
             case "EMPLOI DU TEMPS":
                 ICON= {type:'material',name:'schedule'}
-                COUNT = ordersCount
+                COUNT = scheduelsCount
                 STATUS="error"
                 break;
             case "VENTES":
@@ -44,7 +44,7 @@ const DashBoardItem=({ROUTE,last,navigation,sectorsCount ,clientsCount ,salesCou
                 break;
             case "COMMANDE VALIDER":
                 ICON  = {type:'font-awesome',name:'map-marker'}
-                COUNT = validatedOrdersCount
+                COUNT = valide_orders_count
                 STATUS="error"
                 break;
         

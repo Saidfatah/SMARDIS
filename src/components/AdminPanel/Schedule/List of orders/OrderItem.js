@@ -82,12 +82,18 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
                     <Label label="Liste des produits ventes "  mga={16} />
                     <View style={styles.productsWrapper}>
                         {
-                         products.map((product,i)=><View key={i} style={styles.FieldItem}>
+                         products.map((product,i)=><View key={i} style={styles.orderProducts}>
                                  <Text>{"titre :"+product.name}</Text>
                                  <Text>{"ref :"+product.ref}</Text>
                                  <Text>{"quantity :"+product.quantity}</Text>
                                  <Text>{"tota :"}</Text>
-                                 <Badge value={product.price1 * product.quantity} status="primary" />
+                                 <View style={styles.HFlex} >
+                                   <Label label="Total :"  mga={16} />
+                                   <View  style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
+                                   <Badge value={product.price1 * product.quantity} status="primary" />
+                                   </View>
+                                </View>
+                                 
                            </View>)
                         }
                         
@@ -95,19 +101,21 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
                     </>
                     :null
                 }
-
-                <Label label="Total :"  mga={16} />
-                <View key={i} style={styles.FieldItem}>
-                     <Badge value={products.reduce((a,c)=>a+(c.price1*c.quantity),0)} status="primary" /> 
+                <View style={styles.HFlex} >
+                   <Label label="Total :"  mga={16} />
+                   <View  style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
+                        <Badge value={products.reduce((a,c)=>a+(c.price1*c.quantity),0)} status="primary" /> 
+                   </View>
                 </View>
+               
                 <Button 
-                 xStyle={{margin:0,borderRadius:12}} 
+                 xStyle={{margin:0,borderRadius:12,marginTop:16}} 
                  color={"BLUE"} 
                  clickHandler={e=>{
                     selectBill({id:order.id,distrubutor:false})
-                    navigation.navigate('DISTRIBUTOOrderBill')
+                    navigation.navigate('BillTable')
                 }} >
-                    <Text>Bon de command</Text>
+                    <Text style={{color:'#fff',textAlign:'center'}} >Bon de command</Text>
                 </Button>
                 
            </View>
@@ -151,8 +159,6 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
      </List.Accordion>
     )
 }
- 
-
 export default  OrderItem 
 
 const styles = StyleSheet.create({
@@ -194,6 +200,16 @@ const styles = StyleSheet.create({
         borderRadius:12,
         marginRight:8,
         marginBottom:8,
+    },
+    orderProducts: {
+        display:'flex',
+        padding:8,
+        backgroundColor:'#fff',
+        elevation:5,
+        borderRadius:12,
+        marginRight:8,
+        marginBottom:8,
+
     },
     productsWrapper: {
         display:'flex',

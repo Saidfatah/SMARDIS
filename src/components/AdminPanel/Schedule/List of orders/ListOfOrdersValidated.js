@@ -17,18 +17,20 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
 
 
     return (
-        <ScrollView style={{flex:1}} > 
-            <View style={{backgroundColor:'#fff',flex:1}}>
+        <ScrollView style={{flex:1,backgroundColor:'#fff'}} contentContainerStyle={{padding:8}}  > 
                  <List.Section title={TITLE}>
-                    {valide_orders.map((item,i)=> <OrderItem 
-                    order={item} 
-                    validated={true} 
-                    navigation={navigation} 
-                    selectBill={selectBill}
-                    key={i}  
-                    />)}
+                    {
+                    valide_orders.map((item,index)=>{
+                        return <OrderItem 
+                        order={item} 
+                        validated={true} 
+                        navigation={navigation} 
+                        selectBill={selectBill}
+                        key={index}  
+                        />
+                    })
+                    }
                  </List.Section>
-            </View>
         </ScrollView>
     )
 }

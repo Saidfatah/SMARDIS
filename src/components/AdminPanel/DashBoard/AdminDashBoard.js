@@ -21,7 +21,7 @@ const  AdminDashBoard=(props)=> {
         productsCount,
         categoriesCount,
         distrubutorsCount,
-        validatedOrdersCount,
+        valide_orders_count,
         fetchScheduels ,
         fetchDistrubutors,
         fetchOrders ,
@@ -32,7 +32,22 @@ const  AdminDashBoard=(props)=> {
         fetchAdmins,
         user
     }=props
-
+    useEffect(() => {
+          fetchOrders()
+          fetchTodaysValideOrders("ADMIN")
+          fetchProductsCount()
+          fetchAdmins()
+          fetchWaitingList()
+          fetchCategories()
+          fetchSectors()
+          fetchDistrubutors()
+          fetchClients()
+          fetchScheduels()
+          fetchTodaysSales()
+    }, [])
+    useEffect(() => {
+          if(user)  navigation.setParams({ADMIN_NAME:user.name})
+    }, [user])
     const ROUTES =[
         {
              title:"Clients",
@@ -102,21 +117,7 @@ const  AdminDashBoard=(props)=> {
         }
     ]
 
-    useEffect(() => {
-          fetchTodaysValideOrders("ADMIN")
-          fetchProductsCount()
-          fetchAdmins()
-          fetchWaitingList()
-          fetchCategories()
-          fetchSectors()
-          fetchDistrubutors()
-          fetchClients()
-          fetchOrders()
-          fetchScheduels()
-          fetchTodaysSales()
-          console.log(user)
-          if(user)  navigation.setParams({ADMIN_NAME:user.name})
-    }, [user])
+   
 
   
     return <ScrollView style={{backgroundColor:'#fff'}}>
@@ -127,7 +128,7 @@ const  AdminDashBoard=(props)=> {
                  key={index} 
                  ROUTE={route} 
                  last={index === ROUTES.length-1}
-                 {...{sectorsCount,salesCount ,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,validatedOrdersCount}}
+                 {...{sectorsCount,salesCount ,scheduelsCount,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,valide_orders_count}}
              />)
          }
          </List.Section>
@@ -146,7 +147,7 @@ export default connect(
         productsCount   : state.products.productsCount,
         categoriesCount : state.categories.categoriesCount,
         distrubutorsCount    : state.distrubutor.distrubutorsCount,
-        validatedOrdersCount : state.scheduel.validatedOrdersCount,
+        valide_orders_count : state.scheduel.valide_orders_count,
     }),
     dispatch =>({
         fetchWaitingList  : dispatch.auth.fetchWaitingList,
