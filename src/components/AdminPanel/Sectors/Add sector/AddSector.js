@@ -91,8 +91,8 @@ export default connect(
     null
     , 
     dispatch=>({
-       addSector: dispatch.client.addSector,
-       updateSector: dispatch.client.updateSector,
+       addSector: dispatch.sector.addSector,
+       updateSector: dispatch.sector.updateSector,
     })
 )(AddSector)
 

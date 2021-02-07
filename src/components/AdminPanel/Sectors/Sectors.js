@@ -52,10 +52,10 @@ const  Sectors=({navigation,sectors,fetchSectors})=> {
 
 export default connect(
     state=>({
-        sectors : state.client.sectors,
+        sectors : state.sector.sectors,
     }),
     dispatch=>({
-        fetchSectors: dispatch.client.fetchSectors,
+        fetchSectors: dispatch.sector.fetchSectors,
     })
 )(Sectors)
 
