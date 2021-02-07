@@ -11,7 +11,7 @@ import Badge from '../../Common/Badge'
 import TodaysOrders from '../../Distrubutor/TodaysOrders/TodaysOrders';
 
 const DrawerContent=(props)=> {
-    const {user,distrubutor_todays_valide_orders_count,logout,navigation,waitingList_count,distrubutor_todays_canceled_orders_count}=props
+    const {user,valide_orders_count,logout,navigation,waitingList_count,distrubutor_todays_canceled_orders_count}=props
     if(!user || user == null || user == undefined)
     return (
         <View style={{flex:1}}>
@@ -147,7 +147,7 @@ const DrawerContent=(props)=> {
                                    alignItems:'center',
                                    justifyContent:"space-between",}} >
                                    <Text style={{color:colors.BLACK}} >Les command valider </Text>
-                                   <Badge status="success" value={distrubutor_todays_valide_orders_count} />
+                                   <Badge status="success" value={valide_orders_count} />
                                </View>
                             </TouchableOpacity>
                         </View>
@@ -218,7 +218,7 @@ const DrawerContent=(props)=> {
 export default connect(
     state=>({
         user : state.auth.user,
-        distrubutor_todays_valide_orders_count : state.scheduel.distrubutor_todays_valide_orders_count,
+        valide_orders_count : state.scheduel.valide_orders_count,
         distrubutor_todays_canceled_orders_count : state.scheduel.distrubutor_todays_canceled_orders_count,
         waitingList_count : state.auth.waitingList_count,
     }),

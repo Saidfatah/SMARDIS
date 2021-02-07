@@ -16,6 +16,7 @@ const model ={
         categoryImageUploadState: "STALE" ,//"UPLOADING" || "FAILED"  || "DONE" || "STALE"
         uploadedCategoryImageUri : null ,
 
+        done_fetching_categories : false,
         categories_first_fetch : false,
         category_has_products : false,
         last_selected_Category:null,
@@ -40,7 +41,13 @@ const model ={
             ...state,
             categories :[...categories],
             products_first_fetch :true,
+            done_fetching_categories : true,
             categoriesCount: categories.length
+        }),
+        categoriesFetchFailed : (state,categories)=>({
+            ...state,
+            categories :[],
+            done_fetching_categories : true,
         }),
         addedCategory : (state,categories)=>({
             ...state,
@@ -89,13 +96,13 @@ const model ={
                  if(docs.length>0)
                  {
                      const products = docs.map(doc=>({...doc.data(), id : doc.id}))
-                     dispatch.products.setedSelectedCategoryProducts({
+                     dispatch.categories.setedSelectedCategoryProducts({
                          products,
                          category_has_products:true,
                          last_selected_Category : selectedCategory
                         })
                  }else{
-                     dispatch.products.setedSelectedCategoryProducts({
+                     dispatch.categories.setedSelectedCategoryProducts({
                          products:[],
                          category_has_products:false,
                          last_selected_Category : selectedCategory
@@ -103,7 +110,7 @@ const model ={
                         })
                  }
                 
-                dispatch.products.selectedCategory(selectedCategory)
+                dispatch.categories.selectedCategory(selectedCategory)
 
             } catch (error) {
                 console.log('error')
@@ -116,7 +123,7 @@ const model ={
                                                 .get()
                 const count = categoriesResponse.docs.length
                 
-                dispatch.products.fetchedCategoriesCount(count)
+                dispatch.categories.fetchedCategoriesCount(count)
             } catch (error) {
                 console.log(error)
             }
@@ -131,11 +138,13 @@ const model ={
                 categoriesResponse.onSnapshot(res=>{
                     const docs =res.docs
                     const categories = docs.map(doc=>({...doc.data(),id:doc.id}))
-                    dispatch.products.fetchedCategories(categories)
+                    dispatch.categories.fetchedCategories(categories)
                 })
-
+                
             } catch (error) {
+                console.log("-----fetchCategories-----")
                 console.log(error)
+                dispatch.categories.categoriesFetchFailed()
             }
         },
         async fetchSelectedCategoryProducts(somthing,state){
@@ -164,7 +173,7 @@ const model ={
                     title:'Ajoute ',
                     message:`Category ${name} est ajouter avec success`
                 })
-                dispatch.products.addedCategory(categories)
+                dispatch.categories.addedCategory(categories)
                 navigation.navigate('ADMINcategories')
             } catch (error) {
                 console.log(error)
@@ -187,7 +196,7 @@ const model ={
                    title:'Modification ',
                    message:`Category ${name} est modifier avec success`
                 })
-                dispatch.products.updatedCategory(categories)
+                dispatch.categories.updatedCategory(categories)
                 navigation.navigate("ADMINcategories")
                 
             } catch (error) {
@@ -233,7 +242,7 @@ const model ={
                     title:'Supprision ',
                     message:`Category ${name} est supprimer avec success`
                  })
-                dispatch.products.removedCategory(categories)
+                dispatch.categories.removedCategory(categories)
                 
                 navigation.goBack()
              } catch (error) {
@@ -253,14 +262,14 @@ const model ={
                        .ref("categoryImages").child(name).getDownloadURL()
                        .then(url => {
                          console.log('uploaded image url', url);
-                         dispatch.products.uploadedCategoryImage({url,name})
+                         dispatch.categories.uploadedCategoryImage({url,name})
                        }).catch(err=>console.log(err))
                    }
                 )
                 await task 
             } catch (error) {
                 console.log(error)
-                dispatch.products.categoryImageUploadFailed()
+                dispatch.categories.categoryImageUploadFailed()
             }
         },
     })

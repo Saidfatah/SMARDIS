@@ -8,12 +8,12 @@ import Loading from '../../Common/Loading'
 const {height}=Dimensions.get('screen')
 const HEIGHT = height- StatusBar.currentHeight
 
-const Sales=({todaysSales})=> {
-    const TITLE = todaysSales.length >0 
+const Sales=({todaysSales,done_fetching_todays_Sales})=> {
+    const TITLE = todaysSales.length >0   
     ? "les ventes d'aujourdhui" 
     :"aucune ventes ajourdhui"
 
-    if(todaysSales.length < 1 ) 
+    if(todaysSales.length < 1 && !done_fetching_todays_Sales ) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
         <Loading spacing={50} />   
     </View>
@@ -33,7 +33,8 @@ const Sales=({todaysSales})=> {
 
 export default connect(
     state=>({
-        todaysSales: state.scheduel.todaysSales 
+        todaysSales: state.scheduel.todaysSales ,
+        done_fetching_todays_Sales: state.scheduel.done_fetching_todays_Sales ,
     }),
     null
 )

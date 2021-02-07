@@ -6,12 +6,12 @@ import Button from '../../Common/Button'
 import Loading from '../../Common/Loading'
 import BackgroundImage from '../../Common/BackgroundImage'
 
-const CanceledOrders=({navigation,distrubutor_todays_canceled_orders})=> {
+const CanceledOrders=({navigation,distrubutor_todays_canceled_orders,distrubutor_todays_canceled_orders_done_fetching})=> {
    
 
     return <BackgroundImage >
        {
-             distrubutor_todays_canceled_orders.length<1
+             distrubutor_todays_canceled_orders.length<1 && !distrubutor_todays_canceled_orders_done_fetching
              ?<View style={{backgroundColor:'transparent',flex: 1,display:'flex',alignItems:'center'}} >
                    <Loading spacing={50} />   
              </View> 
@@ -47,7 +47,8 @@ const CanceledOrders=({navigation,distrubutor_todays_canceled_orders})=> {
 
  export default connect(
     state=>({
-        distrubutor_todays_canceled_orders : state.scheduel.distrubutor_todays_canceled_orders
+        distrubutor_todays_canceled_orders : state.scheduel.distrubutor_todays_canceled_orders,
+        distrubutor_todays_canceled_orders_done_fetching : state.scheduel.distrubutor_todays_canceled_orders_done_fetching,
     }),
     dispatch =>({
         resetOrder : dispatch.scheduel.resetOrder,

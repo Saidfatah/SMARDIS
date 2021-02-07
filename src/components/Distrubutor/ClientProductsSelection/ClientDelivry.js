@@ -39,7 +39,7 @@ const ClientDelivry=({ route, navigation,cancelOrder  ,categories,addCartItem,se
             </Button>
         </View>
         <View style={styles.productsPanel} >
-             <CategoriesSlider  {...{navigation,handleHeight,categories,selectedCategory,selectCategory}} />
+             <CategoriesSlider  {...{done_fetching_categories,navigation,handleHeight,categories,selectedCategory,selectCategory}} />
              <Products {...{setIsPanelActive,setselectedProduct,selectedCategoryProducts}} />
         </View>
              <SwipeAbleProductDetails {...{selectedProduct,sector,isPanelActive,setIsPanelActive,guest:client,client,orderId,addCartItem}}  />
@@ -58,6 +58,7 @@ export default connect(
     state=>({
         categories       : state.categories.categories,
         selectedCategory :  state.categories.selectedCategory,
+        done_fetching_categories : state.categories.done_fetching_categories,
         selectedCategoryProducts :  state.categories.selectedCategoryProducts,
     }),
     dispatch=>({

@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React from 'react'
 import {View,Text,FlatList,StyleSheet} from 'react-native'
 import { connect } from 'react-redux'
 import Image from 'react-native-fast-image'
@@ -6,10 +6,10 @@ import Item from '../../Common/Item'
 import Button from '../../Common/Button'
 import Loading from '../../Common/Loading'
 
-const  Categories=({navigation,categories,fetchCategories})=> {
+const  Categories=({navigation,categories,done_fetching_categories})=> {
 
 
-    if(categories.length < 1 ) 
+    if(categories.length < 1 && !done_fetching_categories ) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
         <Loading spacing={50} />   
     </View>
@@ -51,11 +51,10 @@ const  Categories=({navigation,categories,fetchCategories})=> {
 }
 export default connect(
   state=>({
-    categories:state.categories.categories
+    categories:state.categories.categories,
+    done_fetching_categories:state.categories.done_fetching_categories,
   }),
-  dispatch=>({
-    fetchCategories:dispatch.categories.fetchCategories
-  })
+  null
 )(Categories)
 
 var styles = StyleSheet.create({

@@ -8,47 +8,79 @@ import firestore from '@react-native-firebase/firestore'
 
 const model ={
     state:{
+        //arrays
         scheduels  :[],
         orders     :[],
+        todaysSales:[],
+        todaysSectors :[], 
+        valide_orders :[], 
+        distrubutor_todays_canceled_orders :[], 
+
+        //counters
         scheduelsCount : 0 ,
         ordersCount : 0 ,
         validatedOrdersCount : 0 ,
         todaysSalesCount : 0 ,
-        distrubutor_todays_valide_orders_count : 0 ,
-        distrubutor_todays_orders_done_fetching: false ,
+        valide_orders_count : 0 ,
         distrubutor_todays_canceled_orders_count : 0 ,
-        todaysSectorsCount :0, //to display in distrubutor's dashboard
-        todaysSectors :[], 
-        distrubutor_todays_valide_orders :[], 
-        distrubutor_todays_canceled_orders :[], 
-        currentTurn   : null ,
+        todaysSectorsCount :0,
+
+        //fetchng booleans
+        distrubutor_todays_orders_done_fetching: false ,
         todays_orders_first_fetch:false,
-        todaysSales:false,
+
+        distrubutor_todays_canceled_orders_done_fetching: false ,
+        todays_canceled_orders_first_fetch:false,
+
+        todays_sales_first_fetch:false,
+        done_fetching_todays_Sales:false,
+
+        todays_validated_orders_first_fetch:false,
+        done_fetching_todays_validated_orders:false,
+
+        todays_orders_first_fetch:false,
+        done_fetching_todays_orders:false,
+
+        todays_scheduels_first_fetch:false,
+        done_fetching_todays_scheduels:false,
+        
+        //seclection
         selectedBill : null ,
+
+        //control turns in distrubutors todays orders 
+        currentTurn   : null ,
         currentSector : null,
         currentSectorIndex : 0,
     },
     reducers:{
+        //todays sales [ADMIN] screens
         fetchedScheduels : (state,scheduels)=>({
             ...state,
             scheduels ,
-            scheduelsCount: scheduels.length
+            scheduelsCount: scheduels.length,
+            todays_scheduels_first_fetch:true,
+            done_fetching_todays_scheduels:true,
+        }),
+        scheduelsFetchingFailed : (state,args)=>({
+            ...state,
+            scheduels :[] ,
+            scheduelsCount: 0,
+            todays_scheduels_first_fetch:false,
+            done_fetching_todays_scheduels:true,
         }),
         fetchedOrders : (state,orders)=>({
             ...state,
             orders ,
-            validatedOrdersCount:orders?.filter(o=>o.status =="VALIDATED").length,
-            ordersCount: orders.length
+            ordersCount: orders.length,
+            todays_orders_first_fetch:true,
+            done_fetching_todays_orders:true,
         }),
-        fetchedDistrubutorTodaysValideOrders : (state,orders)=>({
+        ordersFetchingFailed : (state,args)=>({
             ...state,
-            distrubutor_todays_valide_orders :orders,
-            distrubutor_todays_valide_orders_count :orders.length
-        }),
-        fetchedDistrubutorTodaysCanceledOrders : (state,orders)=>({
-            ...state,
-            distrubutor_todays_canceled_orders :orders,
-            distrubutor_todays_canceled_orders_count :orders.length
+            orders :[] ,
+            ordersCount: 0,
+            todays_orders_first_fetch:false,
+            done_fetching_todays_orders:true,
         }),
         addedScheduel  : (state,{scheduels,addedOrdersCount})=>({
             ...state,
@@ -66,6 +98,37 @@ const model ={
             scheduelsCount : state.scheduelsCount -1,
             ordersCount : state.scheduelsCount -deletedOrdersCount
         }),
+        fetchedTodaysSales : (state,todaysSales)=>({
+            ...state,
+            todaysSales,
+            todaysSalesCount:todaysSales.length,
+            done_fetching_todays_Sales : true,
+            todays_sales_first_fetch : true,
+        }),
+        todaysSalesFetchFailed : (state,args)=>({
+            ...state,
+            todaysSales:[],
+            todaysSalesCount:0,
+            done_fetching_todays_Sales : true,
+            todays_sales_first_fetch : false,
+        }),
+        
+        //used in both [ADMIN,DISTRUBUTOR]$   
+        fetchedTodaysValideOrders : (state,orders)=>({
+            ...state,
+            valide_orders :orders,
+            valide_orders_count :orders.length,
+            todays_validated_orders_first_fetch:true,
+            done_fetching_todays_validated_orders:true,
+        }),
+        fetchTodaysValideOrdersFAILED : (state,orders)=>({
+            ...state,
+            valide_orders :orders,
+            valide_orders_count :orders.length,
+            todays_validated_orders_first_fetch:false,
+            done_fetching_todays_validated_orders:true,
+        }),
+        //used in [DISTRUBUTOR] screens
         fetchedTodaysSectors : (state,todaysSectors)=>({
             ...state,
             todaysSectors :[...todaysSectors],
@@ -83,11 +146,6 @@ const model ={
             todays_orders_first_fetch:true,
             distrubutor_todays_orders_done_fetching:true,
         }),
-        fetchedTodaysSales : (state,todaysSales)=>({
-            ...state,
-            todaysSales,
-            todaysSalesCount:todaysSales.length
-        }),
         setedNextTurn : (state,{currentSector,currentTurn,currentSectorIndex})=>({
             ...state,
             currentTurn   ,
@@ -97,6 +155,22 @@ const model ={
             ...state,
             selectedBill 
         }),
+     
+        fetchedDistrubutorTodaysCanceledOrders : (state,orders)=>({
+            ...state,
+            distrubutor_todays_canceled_orders :orders,
+            distrubutor_todays_canceled_orders_count :orders.length,
+            distrubutor_todays_canceled_orders_done_fetching: true ,
+            todays_canceled_orders_first_fetch:true,
+        }),
+        distrubutorTodaysCanceledOrdersFetchingFailed : (state,orders)=>({
+            ...state,
+            distrubutor_todays_canceled_orders :[],
+            distrubutor_todays_canceled_orders_count :0,
+            distrubutor_todays_canceled_orders_done_fetching: true ,
+            todays_canceled_orders_first_fetch:false,
+        }),
+ 
     },
     effects: (dispatch)=>({
         async fetchTodaysSales(arg,state){
@@ -132,12 +206,15 @@ const model ={
                                });
                           })
                           dispatch.scheduel.fetchedTodaysSales(sales)
-                     }
-                 })
-                 
-                
+                        }
+                    })
+                    
+                    
             } catch (error) {
-                console.log(error)
+               console.log("-----fetchTodaysSales-----")
+               console.log(error)
+               dispatch.scheduel.todaysSalesFetchFailed()
+
             }
         },
         async fetchTodaysOrders(arg,state){
@@ -225,22 +302,38 @@ const model ={
                         }))
                         dispatch.scheduel.fetchedOrders(orders)
                     }
+                    dispatch.scheduel.ordersFetchingFailed()
                 })
                  
              } catch (error) {
                  console.log('\n-----fetchOrders-----')
+                 dispatch.scheduel.ordersFetchingFailed()
                  console.log(error)
              }
         },
-        async fetchDistrubutorTodaysValideOrders(arg,state){
+        async fetchTodaysValideOrders(type,state){
              try {
-                const currentDistrubutorId = state.auth.distrubutorId
+                 console.log("-----fetchTodaysValideOrders------")
+                 console.log({type})
 
-                const fetchOrdersReponse = await firestore()
-                      .collection('orders')
-                      .where('distrubutorId','==',currentDistrubutorId)
-                      .where('status','==','VALIDATED')
-
+                const  todays_validated_orders_first_fetch = state.scheduel.todays_validated_orders_first_fetch
+                if(todays_validated_orders_first_fetch) return 
+               
+                let fetchOrdersReponse 
+                if(type=="ADMIN"){
+                    fetchOrdersReponse = await firestore()
+                    .collection('orders')
+                    .where('status','==','VALIDATED')
+                }else{
+                    const currentDistrubutorId = state.auth.distrubutorId
+                
+                    fetchOrdersReponse = await firestore()
+                          .collection('orders')
+                          .where('distrubutorId','==',currentDistrubutorId)
+                          .where('status','==','VALIDATED')
+    
+                }
+               
       
                 fetchOrdersReponse.onSnapshot(res=>{
                     if(res.docs){
@@ -251,17 +344,22 @@ const model ={
                             sale_hour:order.data().sale_hour.toDate(),
                         }))
 
-                        dispatch.scheduel.fetchedDistrubutorTodaysValideOrders(orders)
+                        dispatch.scheduel.fetchedTodaysValideOrders(orders)
                     }
                 })
                  
              } catch (error) {
                  console.log('\n-----fetchOrders-----')
                  console.log(error)
+                 dispatch.scheduel.fetchTodaysValideOrdersFAILED(orders)
              }
         },
         async fetchDistrubutorTodaysCanceledOrders(arg,state){
              try {
+             
+                const todays_canceled_orders_first_fetch = state.scheduel.todays_canceled_orders_first_fetch
+                if(todays_canceled_orders_first_fetch) return
+                
                 const currentDistrubutorId = state.auth.distrubutorId
 
                 const fetchOrdersReponse = await firestore()
@@ -283,11 +381,13 @@ const model ={
 
                         dispatch.scheduel.fetchedDistrubutorTodaysCanceledOrders(orders)
                     }
+                    dispatch.scheduel.distrubutorTodaysCanceledOrdersFetchingFailed()
                 })
-                 
-             } catch (error) {
-                 console.log('\n-----fetchOrders-----')
-                 console.log(error)
+                
+            } catch (error) {
+                console.log('\n-----fetchOrders-----')
+                console.log(error)
+                dispatch.scheduel.distrubutorTodaysCanceledOrdersFetchingFailed()
              }
         },
         async resetOrder(id,state){
@@ -309,14 +409,14 @@ const model ={
             let selectedBil =null
             if(distrubutor){
                 //calling from distrubutor Interface  
-                const todaysBills = [...state.scheduel.distrubutor_todays_valide_orders]
-                selectedBil = todaysBills.filter(b=>b.id == id)[0]
+                const valide_orders = [...state.scheduel.valide_orders]
+                selectedBil = valide_orders.filter(b=>b.id == id)[0]
                 
                    
             }else{
                //calling from admin iterface
-               const todaysBills = [...state.scheduel.orders]
-               selectedBil = todaysBills.filter(b=>b.id == id)[0]
+               const valide_orders = [...state.scheduel.orders]
+               selectedBil = valide_orders.filter(b=>b.id == id)[0]
             }
             dispatch.scheduel.selectedABill(selectedBil)
         },
@@ -327,19 +427,22 @@ const model ={
                                                 .collection('scheduels')
 
                  fetchScheduelsReponse.onSnapshot(res=>{
-                 if(res.docs){
-                      const scheduels=res.docs.map(order=>({
-                          ...order.data(),
-                          id:order.id,
-                          date:order.data().date.toDate()
-                        }))
-                      dispatch.scheduel.fetchedScheduels(scheduels)
-                 }
+                     if(res.docs){
+                          const scheduels=res.docs.map(order=>({
+                              ...order.data(),
+                              id:order.id,
+                              date:order.data().date.toDate()
+                            }))
+                          dispatch.scheduel.fetchedScheduels(scheduels)
+                        }
+                        dispatch.scheduel.scheduelsFetchingFailed()
                  })
                 
             } catch (error) {
                 console.log('\n-----fetchScheduels-----')
                 console.log(error)
+                dispatch.scheduel.scheduelsFetchingFailed()
+
             }             
         },
         async addScheduel({distrubutor,distination},state){

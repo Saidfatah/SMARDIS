@@ -16,6 +16,8 @@ const model ={
         distrubutor: null,
         distrubutorsCount  :0,
         fetch_limit :10,
+        done_fetching_distrubutors : false,
+        distrubutors_first_fetch : false,
         last_visible : null,
         first_fetch :false
     },
@@ -24,7 +26,17 @@ const model ={
             ...state,
             distrubutors :distrubutors,
             distrubutorsCount:distrubutors.length,
+            done_fetching_distrubutors :true,
+            distrubutors_first_fetch :true,
             last_visible
+        }),
+        fetchingDistrubutorsFailed : (state,args)=>({
+            ...state,
+            distrubutors :[],
+            distrubutorsCount:0,
+            done_fetching_distrubutors :true,
+            distrubutors_first_fetch :false,
+            last_visible :null
         }),
         fetchedMoreDistrubutors : (state,{distrubutors,last_visible})=>({
             ...state,
@@ -72,7 +84,8 @@ const model ={
 
              
                 distrubutorsResponse.onSnapshot(res=>{
-                    if(res.docs == undefined) return  
+                    if(res.docs == undefined) dispatch.distrubutor.fetchingDistrubutorsFailed()
+  
                     distrubtors = res.docs.map(doc=>({...doc.data(),id:doc.id}))
                     dispatch.distrubutor.fetcheddistrubutors({
                         distrubutors:distrubtors,
@@ -81,7 +94,9 @@ const model ={
                 })
                  
             } catch (error) {
+                console.log("---------distrubutorsFetching---------")
                 console.log(error)
+                dispatch.distrubutor.fetchingDistrubutorsFailed()
             }
             
         },

@@ -4,17 +4,16 @@ import { connect } from 'react-redux'
 import ClientItem from './ClientItem'
 import Loading from '../../../Common/Loading'
 
-const  Clients=({navigation,clients,fetchMoreClients,fetchClients})=> {
+const  Clients=({navigation,clients,done_fetching_clients,fetchMoreClients,fetchClients})=> {
     useEffect(() => {
       fetchClients()
     }, [])
 
     const handleLoadMore=()=>{
-      console.log('laodmore')
       fetchMoreClients()
   }
 
-  if(clients.length < 1 ) 
+  if(clients.length < 1 && !done_fetching_clients ) 
   return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
       <Loading spacing={50} />   
   </View>
@@ -45,7 +44,8 @@ const  Clients=({navigation,clients,fetchMoreClients,fetchClients})=> {
 
 export default connect(
   state=>({
-     clients : state.client.clients
+     clients : state.client.clients,
+     done_fetching_clients : state.client.done_fetching_clients,
   }),
   dispatch =>({
      fetchClients : dispatch.client.fetchClients,

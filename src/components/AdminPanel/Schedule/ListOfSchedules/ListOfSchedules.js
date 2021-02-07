@@ -9,20 +9,12 @@ const {height}=Dimensions.get('screen')
 const HEIGHT = height- StatusBar.currentHeight
 
 
-export const ListOfSchedules = ({scheduels}) => {
-    const [finishedLoading, setfinishedLoading] = useState(false)
-    useEffect(() => {
-        let mounted =true
-        setTimeout(() => {
-            if(mounted)
-            setfinishedLoading(true)
-        }, 10000);
-        return ()=>mounted=false
-    }, [])
+export const ListOfSchedules = ({scheduels,done_fetching_todays_scheduels}) => {
+ 
 
     const TITLE = scheduels.length >0 ? "les order active" :"ilnya pas de emploi du temps"
 
-    if(scheduels.length <1 && !finishedLoading ) 
+    if(scheduels.length <1 && !done_fetching_todays_scheduels ) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
         <Loading spacing={50} />   
     </View>
@@ -42,7 +34,8 @@ export const ListOfSchedules = ({scheduels}) => {
 
 export default connect(
     state=>({
-        scheduels: state.scheduel.scheduels 
+        scheduels: state.scheduel.scheduels ,
+        done_fetching_todays_scheduels: state.scheduel.done_fetching_todays_scheduels ,
     }),
     null
 )

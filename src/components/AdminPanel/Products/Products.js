@@ -5,17 +5,16 @@ import ProductInfo from '../../Distrubutor/ClientProductsSelection/Products/Prod
 import Loading from '../../Common/Loading'
 
 
-const  Products=({products,navigation,fetchMoreProducts,fetchProducts})=> {
+const  Products=({products,navigation,fetchMoreProducts,done_fetching_products,fetchProducts})=> {
     useEffect(() => {
         fetchProducts()
     }, [])
 
     const handleLoadMore=()=>{
-        console.log('laodmore')
         fetchMoreProducts()
     }
      
-    if(products.length < 1 ) 
+    if(products.length < 1  && !done_fetching_products) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
         <Loading spacing={50} />   
     </View>
@@ -43,7 +42,8 @@ const  Products=({products,navigation,fetchMoreProducts,fetchProducts})=> {
 
 export default connect(
     state=>({
-         products:state.products.products
+         products:state.products.products,
+         done_fetching_products:state.products.done_fetching_products,
     }),
     dispatch=>({
          fetchProducts : dispatch.products.fetchProducts,

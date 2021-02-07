@@ -13,7 +13,7 @@ const  TodaysOrders=({todaysSectors,distrubutor_todays_orders_done_fetching,navi
   return (
     <BackgroundImage  >
       {
-      !distrubutor_todays_orders_done_fetching
+      todaysSectors.length<1 && !distrubutor_todays_orders_done_fetching
       ?<View style={{backgroundColor:'transparent',flex: 1,display:'flex',alignItems:'center'}} >
             <Loading spacing={50} />   
       </View> 

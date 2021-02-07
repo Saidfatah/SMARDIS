@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import { List } from 'react-native-paper';
 import AdminItem from './AdminItem'
 
-export const ManageAdmin = ({navigation,setMaster,admins}) => {
+export const ManageAdmin = ({navigation,done_fetching_admins,setMaster,admins}) => {
     const TITLE = waitingList.length >0  ? "List des admins"  :"List des admins est vide est vide "
 
-    if(admins.length < 1 ) 
+    if(admins.length < 1 && !done_fetching_admins ) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
         <Loading spacing={50} />   
     </View>
@@ -27,7 +27,8 @@ export const ManageAdmin = ({navigation,setMaster,admins}) => {
 
 export default connect(
      state=>({
-         admins : state.auth.admins
+         admins : state.auth.admins,
+         done_fetching_admins : state.auth.done_fetching_admins,
      }),
      dispatch=>({
         setMaster:dispatch.auth.setMaster,
