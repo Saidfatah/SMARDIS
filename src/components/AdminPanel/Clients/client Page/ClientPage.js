@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import {View,Text,ScrollView,StyleSheet,Linking} from 'react-native'
 import { connect } from 'react-redux'
 import Item from '../../../Common/Item'
@@ -9,14 +9,14 @@ import Label from '../../../Common/Label'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 
-//rmove client 
-//update client Link 
-//display info 
 
-export const ClientPage = ({navigation,route,sectors,removeClient}) => {
+
+export const ClientPage = ({navigation,route,sectors,resetIsDone,done_removing_client,removeClient}) => {
+    const [canRemove, setcanRemove] = useState(true)
     const {client} = route.params;
-
-  
+    useEffect(() => {
+        done_removing_client==true && setcanRemove(true) && resetIsDone('done_removing_client')
+    }, [done_removing_client])
 
     if(!client) return <Text>Client nexst pas</Text>
     if(sectors.length<1) return <Text>loading</Text>
@@ -76,7 +76,9 @@ export const ClientPage = ({navigation,route,sectors,removeClient}) => {
                <Button
                 xStyle={{...styles.BtnXstyle}} 
                 color={"RED"} 
+                disabled={!canRemove}
                 clickHandler={e=>{
+                    setcanRemove(false)
                     removeClient({client,admin:0})
                     navigation.goBack()
                 }} 
@@ -109,10 +111,12 @@ export const ClientPage = ({navigation,route,sectors,removeClient}) => {
 
 export default connect(
     state=>({
-       sectors:state.client.sectors
+       sectors:state.sector.sectors,
+       done_removing_client:state.client.done_removing_client,
     }), 
     dispatch =>({
-      removeClient: dispatch.client.removeClient
+      removeClient: dispatch.client.removeClient,
+      resetIsDone: dispatch.client.resetIsDone,
     })
 )(ClientPage)
 

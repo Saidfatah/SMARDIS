@@ -8,20 +8,23 @@ import Button from '../../../Common/Button'
 import Label from '../../../Common/Label'
 import Loading from '../../../Common/Loading'
 
-const Schedule = ({addScheduel,clients,sectors,distrubutors,adminId})=> {
+const Schedule = ({addScheduel,clients,done_adding_scheduel,resetIsDone,sectors,distrubutors,adminId})=> {
+    const [canSubmit, setcanSubmit] = useState(true)
     const [selectedSectorClients, setselectedSectorClients] = useState([])
     const [selectedSector, setselectedSector] = useState(sectors[0])
     const [selectedDistrubutor, setselectedDistrubutor] = useState(distrubutors[0])
     const [orderListOfClients, setorderListOfClients] = useState([])
 
     useEffect(() => {
-        console.log('---Schedule--[first useffect]')
+        done_setting_admin_to_master == true && setcanSubmit(true) && resetIsDone("done_adding_scheduel")
+    }, [done_adding_scheduel])
+
+    useEffect(() => {
          if(sectors.length >0 && clients.length>0 && distrubutors.length>0)
          setselectedSectorClients([...clients].filter(cl=> cl.sectorId == selectedSector.id))
     }, [])
 
     useEffect(() => {
-        console.log('---Schedule--[second useffect]')
          if(sectors.length >0 && clients.length>0 && distrubutors.length>0)
          {
              const sectorClients = [...clients].filter(cl=> cl.sectorId == selectedSector.id)
@@ -38,11 +41,9 @@ const Schedule = ({addScheduel,clients,sectors,distrubutors,adminId})=> {
 
 
     const createNewSchdule=e=>{
-        console.log(orderListOfClients.length>0)
-        console.log({
-            adminId ,selectedDistrubutor, selectedSector
-        })
+         
         if(adminId != undefined && selectedDistrubutor &&  selectedSector && orderListOfClients.length>0 ){
+            setcanSubmit(false)
             addScheduel({
                 distrubutor   :selectedDistrubutor,
                 distination:{
@@ -65,7 +66,7 @@ const Schedule = ({addScheduel,clients,sectors,distrubutors,adminId})=> {
                 <ClientsOrdering sectorClients={selectedSectorClients} setorderListOfClients={setorderListOfClients} />
             </SafeAreaView>
 
-            <Button color={"BLUE"} clickHandler={createNewSchdule}>
+            <Button color={"BLUE"}  disabled={!canSubmit} clickHandler={createNewSchdule}>
                 <Text style={{color:"#fff",textAlign:'center'}}>Ajouter Le trajet</Text>
             </Button>
         </ScrollView>
@@ -79,9 +80,11 @@ export default connect(
        sectors : state.sector.sectors,
        distrubutors : state.distrubutor.distrubutors,
        adminId : state.auth.adminId,
+       done_adding_scheduel : state.scheduel.done_adding_scheduel,
     }),
     dispatch=>({
-        addScheduel:dispatch.scheduel.addScheduel
+        addScheduel:dispatch.scheduel.addScheduel,
+        resetIsDone:dispatch.scheduel.resetIsDone,
     })
 )(Schedule)
 

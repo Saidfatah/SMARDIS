@@ -76,7 +76,6 @@ const  AdminDashBoard=(props)=> {
              title:"Vendeurs",
              subMenu:[
                 {title:"List des Vendeurs",route :"ADMINdistrubutors"},
-                {title:"Ajouter une vendeur",route :"ADMINaddDistrubutor"}
             ]
         },
         {

@@ -30,6 +30,9 @@ const model ={
         authError      : null , 
         registerError  : null , 
         catalogue_url : "NOT_UPLOADED",
+        done_approving_client:false,
+        done_rejecting_client:false,
+        done_setting_admin_to_master:false,
         done_fetching_catalogue:false ,
         done_fetching_waiting_list:false ,
     },
@@ -106,13 +109,23 @@ const model ={
             waitingList_done_first_fetch :true ,
             done_fetching_waiting_list :true,
         }),
-        approvedUser:  (state,waitingList)=>({
+        approvedUser:  (state,args)=>({
             ...state,
             waitingList_count:state.waitingList_count -1 ,
+            done_approving_client:true
         }),
-        rejectedUser:  (state,waitingList)=>({
+        userApproveFailed:  (state,args)=>({
+            ...state,
+            done_approving_client:true
+        }),
+        rejectedUser:  (state,args)=>({
             ...state,
             waitingList_count:state.waitingList_count -1 ,
+            done_rejecting_client:true
+        }),
+        userRejectFailed:  (state,args)=>({
+            ...state,
+            done_rejecting_client:true
         }),
         uploadedCatalogue:  (state,catalogue_url)=>({
             ...state,
@@ -122,6 +135,18 @@ const model ={
             ...state,
             catalogue_url,
             done_fetching_catalogue:true
+        }),
+        setedAdminToMaster:  (state,args)=>({
+            ...state,
+            done_setting_admin_to_master:true
+        }),
+        settingAdminMasterFailed:  (state,args)=>({
+            ...state,
+            done_setting_admin_to_master:true
+        }),
+        reseted:  (state,field)=>({
+            ...state,
+            [field]:false
         }),
     },
     effects: (dispatch)=>({
@@ -258,9 +283,10 @@ const model ={
                                            })
 
                 dispatch.auth.setedAdminToMaster()    
-
+                
             } catch (error) {
                 console.log('----setMaster-----')
+                dispatch.auth.settingAdminMasterFailed()    
                 console.log(error)
             }
         },
@@ -279,6 +305,7 @@ const model ={
             } catch (error) {
                 console.log('----fetchWaitingList-----')
                 console.log(error)
+                dispatch.auth.userApproveFailed()   
             }
         },
         async rejectUser(id,state){
@@ -296,6 +323,7 @@ const model ={
             } catch (error) {
                 console.log('----fetchWaitingList-----')
                 console.log(error)
+                dispatch.auth.userRejectFailed() 
             }
         },
         async fetchAdmins(args,state){
@@ -479,7 +507,11 @@ const model ={
                 console.log(error)
      
             }
+        },
+        resetIsDone(field,state){
+            dispatch.auth.reseted(field)
         }
+
     })
 }
 export default model

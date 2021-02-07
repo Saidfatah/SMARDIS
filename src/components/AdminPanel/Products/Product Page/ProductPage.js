@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React,{useEffect,useState} from 'react'
 import {View,Text,StyleSheet,ScrollView} from 'react-native'
 import ProductInfo from '../../../Distrubutor/ClientProductsSelection/Products/ProductInfo'
 import Item from '../../../Common/Item'
@@ -10,10 +10,14 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import { connect } from 'react-redux'
 
-const ProductPage=({navigation,route,removeProduct})=> {
+const ProductPage=({navigation,route,removeProduct,done_removing_product,resetIsDone})=> {
+    const [canRemove, setcanRemove] = useState(false)
     const {product} = route.params
     //handle update 
     //handle remove 
+    useEffect(() => {
+        done_removing_product == true && setcanRemove(true) && resetIsDone("done_removing_product")
+    }, [done_removing_product])
     useEffect(() => {
         navigation.setParams({PRODUCT_NAME:"product name"})
     }, [])
@@ -34,7 +38,11 @@ const ProductPage=({navigation,route,removeProduct})=> {
                  <Button
                   xStyle={styles.BtnXstyle} 
                   color={"RED"} 
-                  clickHandler={e=>removeProduct({product,navigation})} 
+                  disabled={!canRemove}
+                  clickHandler={e=>{
+                      setcanRemove(false)
+                      removeProduct({product,navigation})
+                    }} 
                   >
                      <Text style={styles.ButtonText}>Supprimer le produit</Text>
                      <Icon name="call" size={25} color="#fff" />
@@ -53,9 +61,12 @@ const ProductPage=({navigation,route,removeProduct})=> {
 }
 
 export default connect(
-     null,
+     state=>({
+        done_removing_product:state.products.done_removing_product
+     }),
      dispatch =>({
-        removeProduct : dispatch.products.removeProduct
+        removeProduct : dispatch.products.removeProduct,
+        resetIsDone : dispatch.products.resetIsDone,
      })
 )(ProductPage)
 

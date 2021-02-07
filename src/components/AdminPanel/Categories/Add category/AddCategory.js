@@ -16,15 +16,18 @@ const ERRORS_INITIAL_CONFIG = {
 const ERRORS_MESSAGES= [
     {id:'REQUIRED',message:'ce champ est obligatoir'}
 ]
-export const AddCategory = ({navigation,route,updateCategory,addCategory,uploadedCategoryImageUri,uploadCategoryImage}) => {
+export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIsDone,done_adding_category,uploadedCategoryImageUri,uploadCategoryImage}) => {
      const [modalVisible, setModalVisible] = useState(false);
      const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
+     const [canSubmit, setcanSubmit] = useState(true)
      const [name, setname] = useState("")
      const [image, setimage] = useState("NO_IMAGE")
      const [categoryToBeUpdated, setcategoryToBeUpdated] = useState(-1)
      const [update, setupdate] = useState(false)
 
-
+    useEffect(() => {
+        done_adding_category == true && setcanSubmit(true) && resetIsDone("done_adding_category")
+    }, [done_adding_category])
     useEffect(() => {
         if(route.params){
             if(route.params.update == undefined) return 
@@ -62,7 +65,7 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory,uploade
     }
     const dispatchAddCategory=()=>{
         if(!validateFields()) return 
-
+        setcanSubmit(false)
         const categoryObj = {name,image}
       
         if(!update) return addCategory({...categoryObj,navigation})
@@ -113,7 +116,8 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory,uploade
         <View style={styles.btns} >
              <Button
               xStyle={{...styles.BtnXstyle,marginRight:16}} 
-              color={"BLUE"} 
+              color={"BLUE"}
+              disabled={!canSubmit} 
               clickHandler={e=>dispatchAddCategory()} 
               >
                  <Text style={styles.ButtonText}>{update?"Modifier":"Enregistrer"}</Text>
@@ -134,11 +138,13 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory,uploade
 export default connect(
     state=>({
         uploadedCategoryImageUri    : state.categories.uploadedCategoryImageUri,
+        done_adding_category    : state.categories.done_adding_category,
     }),
     dispatch=>({
         addCategory    : dispatch.categories.addCategory,
         updateCategory : dispatch.categories.updateCategory,
         uploadCategoryImage : dispatch.categories.uploadCategoryImage,
+        resetIsDone : dispatch.categories.resetIsDone,
     })
     
 )

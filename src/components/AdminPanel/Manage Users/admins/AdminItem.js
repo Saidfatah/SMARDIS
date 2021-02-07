@@ -1,13 +1,18 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import {Text,StyleSheet} from 'react-native'
 import { List } from 'react-native-paper';
 import {colors} from '../../../Common/Colors'
 import Button from '../../../Common/Button'
 
 
-export const AdminItem = ({user,setMaster}) => {
+export const AdminItem = ({user,setMaster,resetIsDone,done_setting_admin_to_master}) => {
+    const [canSubmit, setcanSubmit] = useState(true)
     const [expanded, setExpanded] = useState(false);
     const handlePress = () => setExpanded(!expanded);
+
+    useEffect(() => {
+        done_setting_admin_to_master == true && setcanSubmit(true) && resetIsDone("done_setting_admin_to_master")
+    }, [done_setting_admin_to_master])
     const {name,isMaster,id}=user
     const TYPE = isMaster ? "MASTER":"REGULAIRE"
 

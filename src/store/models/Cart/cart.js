@@ -6,6 +6,7 @@ const model ={
         cartGuests  :[],
         todaysBills : [] , 
         salesCount : 0 ,
+        done_validating_product:false
     },
     reducers:{
         updatedQuantity : (state,cartGuests)=>({
@@ -32,13 +33,22 @@ const model ={
             ...state,
             cartGuests   , 
             todaysBills, 
-            selectedBill : todaysBills[todaysBills.length -1]
+            selectedBill : todaysBills[todaysBills.length -1],
+            done_validating_product:true
+        }),
+        validatingGuestOrderFailed : (state,{cartGuests,todaysBills})=>({
+            ...state,
+            done_validating_product:true
         }),
         fetchedValidatedOrders : (state,validatedOrders)=>({
             ...state,
             validatedOrders : [...validatedOrders]   , 
             validatedOrdersCount : validatedOrders.length ,
             salesCount : validatedOrders.length ,
+        }),
+        reseted:  (state,field)=>({
+            ...state,
+            [field]:false
         }),
         
     },
@@ -167,9 +177,12 @@ const model ={
             } catch (error) {
                 console.log("validate order cart")
                 console.log(error)
+                dispatch.cart.validatingGuestOrderFailed()
             }
         },
-
+        resetIsDone(field,state){
+            dispatch.cart.reseted(field)
+        }
     })
 }
 export default model

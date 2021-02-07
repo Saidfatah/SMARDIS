@@ -15,9 +15,13 @@ import IonIcon from 'react-native-vector-icons/Ionicons'
 //last sector
 //sectors
 //some charts
-export const DistrubutorPage = ({navigation,route,removeDistrubutor}) => {
+export const DistrubutorPage = ({navigation,route,done_removing_distrubutor,removeDistrubutor}) => {
+    const [canRemove, setcanRemove] = useState(initialState)
     const {distrubutor} = route.params;
-   console.log(distrubutor)
+    
+    useEffect(() => {
+        done_removing_distrubutor ==true && setcanRemove(true) && resetIsDone("done_removing_distrubutor")
+    }, [done_removing_distrubutor])
     useEffect(() => {
         navigation.setParams({DISTRUBUTOR_NAME:distrubutor.name})
   
@@ -45,21 +49,14 @@ export const DistrubutorPage = ({navigation,route,removeDistrubutor}) => {
                <Button
                 xStyle={{...styles.BtnXstyle}} 
                 color={"RED"} 
+                disabled={!canRemove}
                 clickHandler={e=>{
+                    setcanRemove(false)
                     removeDistrubutor({distrubutor,admin:0,navigation})
                 }} 
                 >
                      <Text style={styles.ButtonText}>Supprimer Le vendeur</Text>
                      <IonIcon name="trash" size={25} color="#fff" />
-               </Button>
-               
-               <Button
-                xStyle={styles.BtnXstyle} 
-                color={"GREEN"} 
-                clickHandler={e=>navigation.navigate('ADMINupdateDistrubutor',{distrubutor,update:true}) } 
-                >
-                   <Text style={styles.ButtonText}>Modifier le Vendeur</Text>
-                   <Icon name="call" size={25} color="#fff" />
                </Button>
         </View>
     </ScrollView>
@@ -69,9 +66,12 @@ export const DistrubutorPage = ({navigation,route,removeDistrubutor}) => {
  
 
 export default connect(
-    null, 
+    state=>({
+        done_removing_distrubutor:state.distrubutor.done_removing_distrubutor
+    }), 
     dispatch =>({
       removeDistrubutor: dispatch.distrubutor.removeDistrubutor,
+      resetIsDone: dispatch.distrubutor.resetIsDone,
     })
 )(DistrubutorPage)
 

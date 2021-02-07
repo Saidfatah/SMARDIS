@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React from 'react'
 import {View,Text,StyleSheet,FlatList} from 'react-native'
 import { connect } from 'react-redux';
 import Button from '../../Common/Button'

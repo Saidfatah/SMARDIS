@@ -6,8 +6,14 @@ import {colors} from '../Common/Colors'
 import Button from '../Common/Button'
 
 
-const  GuesItems = ({navigation,items,guestId,removeGuestItem,validateGuestOrder,updateQuantity,name,sector})=> {
+const  GuesItems = ({navigation,items,guestId,removeGuestItem,done_validating_product,resetIsDone,validateGuestOrder,updateQuantity,name,sector})=> {
      const [expanded, setExpanded] = useState(true);
+     const [canValidate, setcanValidate] = useState(true)
+
+    useEffect(() => {
+        done_validating_product == true && setcanValidate(true) && resetIsDone("done_validating_product")
+    }, [done_validating_product])
+
      const handlePress = () => setExpanded(!expanded);
 
 
@@ -19,7 +25,8 @@ const  GuesItems = ({navigation,items,guestId,removeGuestItem,validateGuestOrder
                  {
                  items.map((item,i)=><GuestItem  key={i} {...{guestId,updateQuantity,removeGuestItem,item}} />)
                  }
-                 <Button color={"BLUE"} clickHandler={e=>{
+                 <Button color={"BLUE"}  disabled={!canValidate} clickHandler={e=>{
+                     setcanValidate(false)
                      validateGuestOrder({guestId,sector,status:"PAID",navigation})
                      navigation.navigate('DISTRIBUTORvalidtedCommands')
                  }}>

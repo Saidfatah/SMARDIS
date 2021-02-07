@@ -18,6 +18,7 @@ const model ={
         fetch_limit :10,
         done_fetching_distrubutors : false,
         distrubutors_first_fetch : false,
+        done_removing_distrubutor:false,
         last_visible : null,
         first_fetch :false
     },
@@ -48,10 +49,9 @@ const model ={
             ...state,
             distrubutorsCount ,
         }),
-        addeddistrubutor  : (state,distrubutors)=>({
+        addingDistrubutorFailed  : (state,distrubutors)=>({
             ...state,
-            distrubutors :[...distrubutors],
-            distrubutorsCount :state.distrubutorsCount +1
+            done_adding_distrubutor:true
         }),
         updateddistrubutor   : (state,distrubutors)=>({
             ...state,
@@ -64,8 +64,17 @@ const model ={
         removeddistrubutor : (state,distrubutors)=>({
             ...state,
             distrubutors :[...distrubutors],
-            distrubutorsCount :state.distrubutorsCount -1
-        })
+            distrubutorsCount :state.distrubutorsCount -1,
+            done_removing_distrubutor:true
+        }),
+        removingDistrubutorFailed : (state,args)=>({
+            ...state,
+            done_removing_distrubutor:true
+        }),
+        reseted:  (state,field)=>({
+            ...state,
+            [field]:false
+        }),
     },
     effects: (dispatch)=>({
   
@@ -133,36 +142,7 @@ const model ={
             const fetch_limit = state.distrubutor.fetch_limit + 5
             dispatch.distrubutor.incrementedFetchLimit(fetch_limit)
         },
-        async addDistrubutor({name,email,password,phone,city,ref,navigation},state){
-            const distrubutors= [...state.distrubutor.distrubutors]
-            
 
-            //if we still order by name check if name exists 
-            const createAuthResponse= await auth().createUserWithEmailAndPassword(email,password)
-            const id=  createAuthResponse.user.uid
-            const newDitrubutor = user(
-                id ,
-                'DISTRUBUTOR',
-                name,
-                email,
-                phone ,
-                city,{
-                    ref
-                },
-                null
-            )
-            const addResponse= firestore().collection('users').add(newDitrubutor)
-            
-            distrubutors.unshift(newDitrubutor)
-            dispatch.toast.show({
-                type:'success',
-                title:'Ajoute ',
-                message:`Vendeur ${name} est ajouter avec success`
-            })
-            dispatch.distrubutor.addeddistrubutor(distrubutors)
-            navigation.navigate('ADMINdistrubutors')
-         
-        },
         async removeDistrubutor({distrubutor,admin,navigation},state){
             try {
                 const {user_id,name}=distrubutor
@@ -190,6 +170,8 @@ const model ={
             navigation.navigate('ADMINdistrubutors')
             } catch (error) {
                 console.log(error)
+            dispatch.distrubutor.removingDistrubutorFailed(distrubutors)
+
             }
         },
         async updateDistrubutor({user_id,name,city,email,ref,navigation},state){
@@ -211,6 +193,9 @@ const model ={
             })
             dispatch.distrubutor.updateddistrubutor(distrubutors)
             navigation.navigate('ADMINdistrubutors')
+        },
+        resetIsDone(field,state){
+            dispatch.distrubutor.reseted(field)
         }
     })
 }
