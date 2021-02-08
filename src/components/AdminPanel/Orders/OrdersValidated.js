@@ -7,7 +7,7 @@ import DocumentPicker from 'react-native-document-picker';
 const EDP = ExternalDirectoryPath + "/";
 const ESDP = ExternalStorageDirectoryPath + "/";
 const DDP = DocumentDirectoryPath + "/";
-
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 const make_cols = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, (x,i) => XLSX.utils.encode_col(i));
 const make_width = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, () => 60);
 const input = res => res;
@@ -82,7 +82,7 @@ const  OrdersValidated=()=> {
             const res = await DocumentPicker.pick({
                 type: [DocumentPicker.types.allFiles],
             });
-           
+            console.log(res)
             const task =  Storage().ref('catalogue/'+ res.name).putFile(res.fileCopyUri);
            
             task.on('state_changed', 
@@ -98,8 +98,6 @@ const  OrdersValidated=()=> {
                }
             )
             await task 
-          
-             
            
           } catch (err) {
             if (DocumentPicker.isCancel(err)) {
