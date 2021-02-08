@@ -1,4 +1,4 @@
-
+import firestore from '@react-native-firebase/firestore'
 
 
 const FECTH_LIMIT= 10

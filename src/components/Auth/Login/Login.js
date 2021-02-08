@@ -13,8 +13,8 @@ import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import {CheckBox} from 'react-native-elements'
 
 const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePassword,savedPassword})=> {
-    const [username, setusername] = useState("jgnour@admin.com")
-    const [password, setPassword] = useState("123456")
+    const [username, setusername] = useState("said_designer@outlook.com")
+    const [password, setPassword] = useState("00000000")
     const [canSubmit, setcanSubmit] = useState(true)
     const [savePasswordLogin, setsavePasswordLogin] = useState(false)
     const [passwordRequired, setpasswordRequired] = useState(null)
@@ -28,11 +28,12 @@ const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePa
           }
     }, [])
     useEffect(() => {
-          if(authError!= null){
+        console.log({authError})
+          if(authError != null){
             setauthErrorLocal(authError)
             setcanSubmit(true)
           }
-    }, [authError!= null])
+    }, [authError])
     useEffect(() => {
           if(done_Logging){
             setcanSubmit(true)
@@ -43,7 +44,10 @@ const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePa
         if(!canSubmit) return 
          if(password == '') return setpasswordRequired({message:"Inserer votre mote de passe !"})
          if(username == '') return setusernameRequired({message:"Inserer votre numero du Téléphone !"})
-       
+        
+         //reset errors 
+         setauthErrorLocal(null)
+
          login({password,username,savePassword:savePasswordLogin,navigation})
          setcanSubmit(false)
     }

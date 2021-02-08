@@ -7,6 +7,7 @@ import Login       from '../Auth/Login/Login'
 import Authorizer  from '../Auth/Authorizer/Authorizer'
 import WaitingRoom from '../Auth/Register/WaitingRoom'
 import Register    from '../Auth/Register/Register'
+import MyAccount    from '../Auth/Account/MyAccount'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import DrawerContent from './DrawerNavigator/DrawerContent'
 import DistrubutorBillTable   from '../Distrubutor/validatedCommands/BillTable'
@@ -17,7 +18,7 @@ const Navigator =({authenticated,userType})=>{
     return <NavigationContainer >
        <Drawer.Navigator 
        screenOptions={{headerShown:false}} 
-       initialRouteName="EXCEL"
+       initialRouteName="AUTHORIZER"
        drawerContent={props => <DrawerContent {...props} />}
        >
              <Drawer.Screen name="ADMINDashBoard"  component={AdminStackNavigator} />
@@ -26,6 +27,7 @@ const Navigator =({authenticated,userType})=>{
              <Drawer.Screen name="EXCEL" component={OrdersValidated} />
              <Drawer.Screen name="REGISTER" component={Register} />
              <Drawer.Screen name="AUTHORIZER" component={Authorizer} />
+             <Drawer.Screen name="UPDATE_ACCOUNT" component={MyAccount} />
              <Drawer.Screen name="WAIT_ROOM" component={WaitingRoom} />
              <Drawer.Screen 
                 name="BillTable" 

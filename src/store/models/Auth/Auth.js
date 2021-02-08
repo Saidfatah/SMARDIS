@@ -14,6 +14,7 @@ const model ={
         waitingList    : [],
         admins         : [],
         userType       : userTypes[1],
+        userPassword   : null,
         adminId        : 1,
         distrubutorId  : 1,
         user           : null ,
@@ -29,21 +30,24 @@ const model ={
         done_fetching_admins         : false,
         authError      : null , 
         registerError  : null , 
+        updateAccountError   : null , 
         catalogue_url : "NOT_UPLOADED",
         done_approving_client:false,
         done_rejecting_client:false,
         done_setting_admin_to_master:false,
         done_fetching_catalogue:false ,
         done_fetching_waiting_list:false ,
+        done_updating_acount:false ,
     },
     reducers:{
-        checkedAuthentication : (state,{authenticated,user,userType,savePassword,savedPassword})=>({
+        checkedAuthentication : (state,{authenticated,user,userPassword,userType,savePassword,savedPassword})=>({
           ...state,
           authenticated ,
           user,
           userType,
           savePassword  ,
           savedPassword  ,
+          userPassword:savedPassword,
           distrubutorId:user?user.id:null,
           adminId :user ?user.id:null
         }),
@@ -51,7 +55,7 @@ const model ={
             ...state,
             authError :authError
         }),
-        loginSuccess:  (state,{user,userType})=>({
+        loginSuccess:  (state,{user,userType,userPassword})=>({
             ...state,
             done_first_Logging : true,
             distrubutorId : user.id,
@@ -61,6 +65,7 @@ const model ={
             adminId       : user.id,
             userType,
             user,
+            userPassword
         }),
         logedOut:  (state,args)=>({
             ...state,
@@ -148,6 +153,15 @@ const model ={
             ...state,
             [field]:false
         }),
+        updatedAccount:  (state,field)=>({
+            ...state,
+            done_updating_acount:true
+        }),
+        updateAccountFailed:  (state,updateAccountError)=>({
+            ...state,
+            done_updating_acount:true,
+            updateAccountError
+        }),
     },
     effects: (dispatch)=>({
         async checkAuthetication({navigation},state){
@@ -159,11 +173,23 @@ const model ={
                     const savedPassword  = await AsyncStorage.getItem('PASSWORD')
 
                     if(user){      
-                         //get user doc from async storage
+                        //get user doc from async storage
+                        console.log(user)
+                         let userDoc
                          const userjsonValue = await AsyncStorage.getItem('USER')
-                         const userDoc = userjsonValue != null ? JSON.parse(userjsonValue) : null
+                         userDoc = userjsonValue != null ? JSON.parse(userjsonValue) : null
                          const userType      = await AsyncStorage.getItem('USER_TYPE')
-                      
+                       
+
+                        //if somehow user wasn't fetched from async storage let's refetch from firestore
+                        if(userDoc == undefined || userDoc == null){
+                            const userDocResponse =await firestore().collection('users').where('user_id','==',user.uid)
+                            userDocResponse.onSnapshot(res=>{
+                                const docs=res.docs
+                                userDoc={...docs[0].data(),id:docs[0].id}
+                            })
+                        }
+                       
                          dispatch.auth.checkedAuthentication({
                              authenticated:true,
                              user:userDoc,
@@ -173,10 +199,12 @@ const model ={
                          })
 
                          //check if user in approved by admin if not then we redirect them to waitingRoom 
-                         if(userDoc != undefined && userDoc.confirmed =="PENDING") return navigation.navigate("WAIT_ROOM") 
+                         if(userDoc != undefined && userDoc.confirmed =="PENDING") 
+                               return navigation.navigate("WAIT_ROOM") 
 
                          //redirect logged users that are approved to their appropriate Dashboard
-                         if(userDoc != undefined)  navigation.navigate(userType+'DashBoard') 
+                         if(userDoc != undefined) 
+                               navigation.navigate(userType+'DashBoard') 
                     }else{        
                          dispatch.auth.checkedAuthentication({
                              authenticated : false,
@@ -201,39 +229,40 @@ const model ={
                     ON_AUTH_STATE_CHANGED_UNSUBSCRIBE && ON_AUTH_STATE_CHANGED_UNSUBSCRIBE()
 
                     const loginResponse = await auth().signInWithEmailAndPassword(username,password)
+                  
                     if(loginResponse.user){
-                        const userDocs = await firestore()
+                        const userDocResponse= await firestore()
                                               .collection('users')
                                               .where('user_id','==',loginResponse.user.uid)
-                                              .get()
-                                              
-                        if(userDocs.docs.length>0){
-                            const userDoc= userDocs.docs[0]
-                            const user =  {...userDoc.data(),id:userDoc.id}
-
-                            //pressist state to local storage  
-                            //so that when we open app next time we don't have to refetch from firestore
-                            await AsyncStorage.setItem('USER', JSON.stringify(user))
-                            await AsyncStorage.setItem('AUTHENTICATED', JSON.stringify(true))
-                            await AsyncStorage.setItem('USER_TYPE', user.type)
-                            await AsyncStorage.setItem('SAVE_PASSWORD', JSON.stringify(savePassword))
-                            await AsyncStorage.setItem('PASSWORD', password)
-
-                            
-                            dispatch.auth.loginSuccess({user,userType:user.type})
-
-                            //redirect user to their approprate dashboard 
-                            return navigation.navigate(user.type+'DashBoard')   
-                        }
+                                             
+                         userDocResponse.onSnapshot(async res=>{
+                            if(res.docs){
+                                const userDoc= res.docs[0]
+                                const user =  {...userDoc.data(),id:userDoc.id}
+    
+                                //pressist state to local storage  
+                                //so that when we open app next time we don't have to refetch from firestore
+                                await AsyncStorage.setItem('USER', JSON.stringify(user))
+                                await AsyncStorage.setItem('USER_TYPE', user.type)
+                                await AsyncStorage.setItem('SAVE_PASSWORD', JSON.stringify(savePassword))
+                                await AsyncStorage.setItem('PASSWORD', password)
+    
+                                
+                                dispatch.auth.loginSuccess({user,userType:user.type,userPassword:password})
+    
+                                //redirect user to their approprate dashboard 
+                                return navigation.navigate(user.type+'DashBoard')   
+                            }
+                         })                    
+                        
                     }
-                    throw new Error('no data found')
                  
              } catch (error) {
                  let ERROR_MESSAGE = error.message.toString()
-                 console.log('error')
+                 console.log('------Login------')
                  if(ERROR_MESSAGE.indexOf('auth/wrong-password'))
                  {
-                    console.log("\npassword") 
+                    console.log(error) 
                     return dispatch.auth.loginFailed({message:'mote de passe est incorrect'})
                  }
                  if(ERROR_MESSAGE.indexOf('invalid-email'))
@@ -507,8 +536,64 @@ const model ={
      
             }
         },
+        async updateAccount(userInfoObj,state){
+            try {
+                const {password,name,city,phone,type}=userInfoObj
+                const user = state.auth.user
+
+                if(!user) return 
+
+                const   updatedFields={password,name,city,phone}
+                if(type == "ADMIN"){
+                    updatedFields.ACCESS_CODE = userInfoObj.ACCESS_CODE
+                } 
+
+            
+                const id = user.id
+                const updateResponse = await firestore()
+                                            .collection('users')
+                                            .doc(id)
+                                            .update(updatedFields)
+            
+                //check if password was modified then update firestroe auth password
+                const oldPassword = state.auth.userPassword
+                if(password != oldPassword){
+                    const emailCred  = auth.EmailAuthProvider.credential(
+                        auth().currentUser.email, 
+                        oldPassword 
+                     );
+
+                    auth().currentUser.reauthenticateWithCredential(emailCred)
+                    .then(() => {
+                        console.log('updated password')
+                       return  auth().currentUser.updatePassword(password);
+                    })
+                    .catch(error => {
+                          console.log('-----passwordupdate------')
+                          console.log(error)
+                          let ERROR_MESSAGE = error.message.toString()
+                          if(ERROR_MESSAGE.indexOf('auth/wrong-password')>-1)
+                          return  dispatch.auth.updateAccountFailed({id:"WRONG_PASSWORD",message:'failed to update account'})
+
+                          dispatch.auth.updateAccountFailed({id:"UPDATE_PASSWORD_FAILED",message:'failed to update account'})
+                    });
+                }
+                dispatch.auth.updatedAccount()
+             
+            } catch (error) {
+                console.log('-----updateAccount------')
+                console.log(error)
+                
+                dispatch.auth.updateAccountFailed({id:"FAILED",message:'failed to update account'})
+            }
+        },
         resetIsDone(field,state){
-            dispatch.auth.reseted(field)
+           try {
+                console.log(field)
+                dispatch.auth.reseted(field)
+            } catch (error) {
+                console.log("------resetIsDone------")
+            }
         }
 
     })
