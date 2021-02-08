@@ -27,7 +27,7 @@ const  AdminDashBoard=(props)=> {
         fetchOrders ,
         fetchTodaysValideOrders ,
         scheduelsCount ,
-        fetchProductsCount ,
+        fetchProducts ,
         fetchWaitingList,
         fetchAdmins,
         user
@@ -35,7 +35,7 @@ const  AdminDashBoard=(props)=> {
     useEffect(() => {
           fetchOrders()
           fetchTodaysValideOrders("ADMIN")
-          fetchProductsCount()
+          fetchProducts()
           fetchAdmins()
           fetchWaitingList()
           fetchCategories()
@@ -160,6 +160,6 @@ export default connect(
         fetchScheduels : dispatch.scheduel.fetchScheduels,
         fetchTodaysSales : dispatch.scheduel.fetchTodaysSales,
         fetchTodaysValideOrders : dispatch.scheduel.fetchTodaysValideOrders,
-        fetchProductsCount   : dispatch.products.fetchProductsCount,
+        fetchProducts   : dispatch.products.fetchProducts,
     })
 )(AdminDashBoard)

@@ -5,10 +5,10 @@ import Item from '../../Common/Item'
 import Button from '../../Common/Button'
 import Loading from '../../Common/Loading'
 
-const  Distrubutors=({navigation,distrubutors,fetchMoreDistrubutors,done_fetching_distrubutors})=> {
+const  Distrubutors=({navigation,distrubutors,done_fetching_distrubutors})=> {
  
     const handleLoadMore=()=>{
-        fetchMoreDistrubutors()
+      
     }
 
 
@@ -51,9 +51,7 @@ export default connect(
         distrubutors:state.distrubutor.distrubutors,
         done_fetching_distrubutors:state.distrubutor.done_fetching_distrubutors,
     }),
-    dispatch=>({
-        fetchMoreDistrubutors : dispatch.distrubutor.fetchMoreDistrubutors,
-    })
+   null
 )(Distrubutors)
 
 var styles = StyleSheet.create({

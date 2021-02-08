@@ -35,10 +35,6 @@ const model ={
             ...state,
             last_selected_Category
         }),
-        fetchedCategoriesCount : (state,categoriesCount)=>({
-            ...state,
-            categoriesCount
-        }),
         fetchedCategories : (state,categories)=>({
             ...state,
             categories :[...categories],
@@ -132,18 +128,6 @@ const model ={
                 console.log('error')
             }
         },
-        async fetchCategoriesCount(somthing,state){
-            try {
-               const categoriesResponse= await firestore()
-                                                .collection('categories')
-                                                .get()
-                const count = categoriesResponse.docs.length
-                
-                dispatch.categories.fetchedCategoriesCount(count)
-            } catch (error) {
-                console.log(error)
-            }
-        },
         async fetchCategories(somthing,state){
             try {
                 const categories_first_fetch = state.categories.categories_first_fetch
@@ -153,22 +137,17 @@ const model ={
                 const categoriesResponse= await firestore().collection('categories')
                 categoriesResponse.onSnapshot(res=>{
                     const docs =res.docs
-                    const categories = docs.map(doc=>({...doc.data(),id:doc.id}))
-                    dispatch.categories.fetchedCategories(categories)
+                    if(docs){
+                        const categories = docs.map(doc=>({...doc.data(),id:doc.id}))
+                        return dispatch.categories.fetchedCategories(categories)
+                    }
+                    dispatch.categories.categoriesFetchFailed()
                 })
                 
             } catch (error) {
                 console.log("-----fetchCategories-----")
                 console.log(error)
                 dispatch.categories.categoriesFetchFailed()
-            }
-        },
-        async fetchSelectedCategoryProducts(somthing,state){
-            try {
-               
-
-            } catch (error) {
-                console.log(error)
             }
         },
         async addCategory({name,navigation,image},state){

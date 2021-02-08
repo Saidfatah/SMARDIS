@@ -94,12 +94,14 @@ const model ={
                                             //   .get()
                 productsResponse.onSnapshot(res=>{
                     const docs =res.docs
-                    if(!docs) return dispatch.products.productsFetchingFailed()
-                    const products = docs.map(doc=>({...doc.data(), id : doc.id}))
-                    dispatch.products.fetchedProducts({
-                        products,
-                        last_visible_Product:products[products.length -1].ref
-                    })
+                    if(docs){
+                        const products = docs.map(doc=>({...doc.data(), id : doc.id}))
+                        return  dispatch.products.fetchedProducts({
+                             products,
+                             last_visible_Product:products[products.length -1].ref
+                         })
+                    } 
+                    dispatch.products.productsFetchingFailed()
                 })
                 
                  
@@ -110,7 +112,7 @@ const model ={
              }
         },
         async fetchMoreProducts(arg,state){
-            return
+            return 
             try {
                 const last_visible_Product = state.products.last_visible_Product
                 const productsCount        = state.products.productsCount
@@ -140,18 +142,6 @@ const model ={
                 console.log(error)
             }
             
-        },
-        async fetchProductsCount(somthing,state){
-             try {
-                const productsResponse= await firestore()
-                                                 .collection('products')
-                                                 .get()
-                 const count = productsResponse.docs.length
-                 
-                 dispatch.products.fetchedProductsCount(count)
-             } catch (error) {
-                 console.log(error)
-             }
         },
         async addProduct({navigation,name,category,image,ref,price1,price2,price3,price4},state){
              try {

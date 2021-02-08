@@ -359,12 +359,11 @@ const model ={
                                             .where('confirmed','==','PENDING')
 
                  waitingListResponse.onSnapshot(res=>{
-                     let waitingList =[]
                      if(res.docs){
-                          waitingList = res.docs.map(doc=>({...doc.data(),id:doc.id}))
-                        
+                         const waitingList = res.docs.map(doc=>({...doc.data(),id:doc.id}))
+                         return dispatch.auth.fetchedWaitingList(waitingList)
                      }
-                     dispatch.auth.fetchedWaitingList(waitingList)
+                     dispatch.auth.fetchingWaitingListFailed()
                  })      
 
             } catch (error) {
