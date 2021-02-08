@@ -83,11 +83,13 @@ const model ={
                 const clientsResponse= await firestore().collection('sectors')
                 clientsResponse.onSnapshot(res=>{
                     const docs =res.docs
-                    const sectors = docs.map(doc=>({...doc.data(),id:doc.id}))
-                    dispatch.sector.fetchedSectors(sectors)
-                     
+                    if(docs){
+                        const sectors = docs.map(doc=>({...doc.data(),id:doc.id}))
+                        return dispatch.sector.fetchedSectors(sectors)
+                    }
+                    dispatch.sector.sectorsFetchFailed()
                 })
-                } catch (error) {
+            } catch (error) {
                  console.log(error)
                  dispatch.sector.sectorsFetchFailed()
              }
@@ -122,11 +124,10 @@ const model ={
                     })
                 }
                  
-                } catch (error) {
+             } catch (error) {
                  console.log(error)
                  dispatch.sector.sectorsFetchFailed()
              }
-
         },
         async addSector({name,city,navigation},state){
             try {

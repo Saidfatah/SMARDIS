@@ -54,12 +54,8 @@ const DrawerContent=(props)=> {
                              style={{margin:0}}
                              size={20}
                              />
-                            <TouchableOpacity  onPress={() => {navigation.navigate('DISTRIBUTORvalidtedCommands')}}>
-                               <View style={{ 
-                                   display :'flex',
-                                   flexDirection:'row',
-                                   alignItems:'center',
-                                   justifyContent:"space-between",}} >
+                            <TouchableOpacity  onPress={() => {navigation.navigate('UPDATE_ACCOUNT')}}>
+                               <View style={styles.FlexSR} >
                                    <Text style={{color:colors.BLACK}} >Configurer mon compte</Text>
                                 
                                </View>

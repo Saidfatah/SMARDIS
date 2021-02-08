@@ -19,8 +19,17 @@ const sectors=[
     "updateSector"
 ].map(c=>"dispatch.sector."+c)
 
+//deleting functions I no longer need 
+const functions=[
+    "fetchProductsCount",
+    "fetchMoreProducts",
+    "incrementFetchLimit",
+    "fetchCategoriesCount",
+    "fetchSelectedCategoryProducts",
+    "fetchMoreDistrubutors"
+]
 
-findInFiles.find(sectors[3], '../components', '.js$')
+findInFiles.find(functions[0], '../components', '.js$')
     .then(function(results) {
         for (var result in results) {
             var res = results[result];

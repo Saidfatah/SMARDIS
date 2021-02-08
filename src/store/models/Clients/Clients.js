@@ -118,11 +118,12 @@ const model ={
                     if(res.docs){
                         const docs =res.docs
                         const clients = docs.map(doc=>({...doc.data(),id:doc.id}))
-                        dispatch.client.fetchedClients({
+                        return dispatch.client.fetchedClients({
                             clients,
                             last_visible_client : clients[clients.length-1].ref
                         })
                     }
+                    dispatch.client.fetcheClientsFailed()
                 })
                 
 

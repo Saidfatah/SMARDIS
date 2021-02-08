@@ -1,12 +1,4 @@
-//get distrubutors 
-//get tasks 
-//validate orders 
-//send notifcaton to admin 
-import {user} from '../Auth/Schemas/User'
 import firestore from '@react-native-firebase/firestore'
-import auth from '@react-native-firebase/auth'
-
-
 
 
 const FECTH_LIMIT= 10
@@ -84,65 +76,29 @@ const model ={
                 const first_fetch = state.distrubutor.first_fetch
                 if(first_fetch) return
 
- 
-              
-                
                 const distrubutorsResponse= await firestore()
                                         .collection('users')
                                         .where('type','==','DISTRUBUTOR')
 
              
                 distrubutorsResponse.onSnapshot(res=>{
-                    if(res.docs == undefined) dispatch.distrubutor.fetchingDistrubutorsFailed()
-  
-                    distrubtors = res.docs.map(doc=>({...doc.data(),id:doc.id}))
-                    dispatch.distrubutor.fetcheddistrubutors({
-                        distrubutors:distrubtors,
-                        last_visible : distrubtors[distrubtors.length-1].name
-                    })
+                    const docs= res.docs
+                    if(docs){
+                         const distrubtors = res.docs.map(doc=>({...doc.data(),id:doc.id}))
+                         return dispatch.distrubutor.fetcheddistrubutors({
+                                              distrubutors:distrubtors,
+                                              last_visible : distrubtors[distrubtors.length-1].name
+                         })
+                    }
+                    dispatch.distrubutor.fetchingDistrubutorsFailed()
                 })
                  
             } catch (error) {
                 console.log("---------distrubutorsFetching---------")
                 console.log(error)
                 dispatch.distrubutor.fetchingDistrubutorsFailed()
-            }
-            
+            }   
         },
-        async fetchMoreDistrubutors(arg,state){
-            try {
-                return 
-                const last_visible = state.distrubutor.last_visible
-
-                const moreDstrubutorsResponse= await firestore()
-                                        .collection('users')
-                                        .where('type','==','DISTRUBUTOR')
-                                        .orderBy('name',"asc")
-                                        .startAt(last_visible)
-                                        .limit(FECTH_LIMIT)
-                                        .get()
-                                    
-                const docs = moreDstrubutorsResponse.docs
-
-                const PrevDistrubtors =  [...state.distrubutor.distrubutors]
-                PrevDistrubtors.pop()
-                const newDistrubtors  =  docs.map(doc=>({...doc.data(),id:doc.id}))
-               
-                dispatch.distrubutor.fetcheddistrubutors({
-                    distrubutors : [...PrevDistrubtors,...newDistrubtors],
-                    last_visible : newDistrubtors[newDistrubtors.length -1].name
-                })              
-               
-            } catch (error) {
-                console.log(error)
-            }
-            
-        },
-        incrementFetchLimit(arg,state){
-            const fetch_limit = state.distrubutor.fetch_limit + 5
-            dispatch.distrubutor.incrementedFetchLimit(fetch_limit)
-        },
-
         async removeDistrubutor({distrubutor,admin,navigation},state){
             try {
                 const {user_id,name}=distrubutor

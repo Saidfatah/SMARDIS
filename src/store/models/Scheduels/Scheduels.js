@@ -211,7 +211,7 @@ const model ={
                      if(res.docs){
                          const orders=res.docs.map(order=>({...order.data(),id:order.id}))
                          //loop over each order product 
-                            //a sale is each sold product
+                         //a sale is each sold product
                           let sales= []
                           orders.forEach((order,index)=>{
                               const {billRef,sector,distrubutor,client,sale_date,sale_hour}=order
@@ -232,9 +232,10 @@ const model ={
                                  sales.push(sale)
                                });
                           })
-                          dispatch.scheduel.fetchedTodaysSales(sales)
-                        }
-                    })
+                          return dispatch.scheduel.fetchedTodaysSales(sales)
+                     }
+                     dispatch.scheduel.todaysSalesFetchFailed()
+                })
                     
                     
             } catch (error) {
@@ -258,14 +259,13 @@ const model ={
     
                 fetchOrdersReponse.onSnapshot(res=>{
                     const docs= res.docs
-                    try {
-                        if(docs && docs.length){
-                             const orderList = docs.map(doc=>({...doc.data(),orderId:doc.id}))
-                             let lastOrder= orderList[0]
-                             const firstOrder ={...lastOrder}
-                             let started = false
-                             let i = 0
-                             const todaysOrders=orderList.reduce((a,currentOrder)=>{
+                    if(docs){
+                        const orderList = docs.map(doc=>({...doc.data(),orderId:doc.id}))
+                         let lastOrder= orderList[0]
+                         const firstOrder ={...lastOrder}
+                         let started = false
+                         let i = 0
+                         const todaysOrders=orderList.reduce((a,currentOrder)=>{
                                   const arr= [...a]
                                   
                                   if(!started){
@@ -298,16 +298,11 @@ const model ={
                              
                                   return arr
                              }
-                             ,[]) 
-                            
-                             dispatch.scheduel.fetchedTodaysSectors(todaysOrders)
-                        }else{
-                            throw new Error('NO_DOCS')
-                        }
-                    } catch (error) {
-                        console.log("----fetchTodaysSectors catch2------")
-                        dispatch.scheduel.fetchedTodaysSectorsFailed()
+                         ,[]) 
+                        
+                         return dispatch.scheduel.fetchedTodaysSectors(todaysOrders)
                     }
+                    dispatch.scheduel.fetchedTodaysSectorsFailed()
                 })
             } catch (error) {
                 console.log("----fetchTodaysSectors catch1------")
@@ -372,8 +367,9 @@ const model ={
                             sale_hour:order.data().sale_hour.toDate(),
                         }))
 
-                        dispatch.scheduel.fetchedTodaysValideOrders(orders)
+                      return  dispatch.scheduel.fetchedTodaysValideOrders(orders)
                     }
+                    dispatch.scheduel.fetchTodaysValideOrdersFAILED(orders)
                 })
                  
              } catch (error) {
@@ -383,7 +379,7 @@ const model ={
              }
         },
         async fetchDistrubutorTodaysCanceledOrders(arg,state){
-             try {
+            try {
              
                 const todays_canceled_orders_first_fetch = state.scheduel.todays_canceled_orders_first_fetch
                 if(todays_canceled_orders_first_fetch) return
@@ -397,8 +393,6 @@ const model ={
 
       
                 fetchOrdersReponse.onSnapshot(res=>{
-                    console.log('\n fetch cancled orders')
-                    console.log(res.docs.length)
                     if(res.docs){
                         const orders=res.docs.map(order=>({
                             ...order.data(),
@@ -407,7 +401,7 @@ const model ={
                             sale_hour:order.data().sale_hour.toDate(),
                         }))
 
-                        dispatch.scheduel.fetchedDistrubutorTodaysCanceledOrders(orders)
+                        return dispatch.scheduel.fetchedDistrubutorTodaysCanceledOrders(orders)
                     }
                     dispatch.scheduel.distrubutorTodaysCanceledOrdersFetchingFailed()
                 })
@@ -416,7 +410,7 @@ const model ={
                 console.log('\n-----fetchOrders-----')
                 console.log(error)
                 dispatch.scheduel.distrubutorTodaysCanceledOrdersFetchingFailed()
-             }
+            }
         },
         async resetOrder(id,state){
              try {
@@ -426,7 +420,7 @@ const model ={
                       .update({
                           status:'PENDING'
                       })
-               console.log('\nresetedOrder')
+             
                dispatch.scheduel.restedOrder()
                
             } catch (error) {
@@ -461,7 +455,6 @@ const model ={
 
         async fetchScheduels(arg,state){
             try {
-                console.log('-----fetchScheduels-----')
                 const fetchScheduelsReponse = await firestore()
                                                 .collection('scheduels')
 
