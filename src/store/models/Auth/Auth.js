@@ -236,7 +236,7 @@ const model ={
                                               .where('user_id','==',loginResponse.user.uid)
                                              
                          userDocResponse.onSnapshot(async res=>{
-                            if(res.docs){
+                            if(res.docs.length){
                                 const userDoc= res.docs[0]
                                 const user =  {...userDoc.data(),id:userDoc.id}
     

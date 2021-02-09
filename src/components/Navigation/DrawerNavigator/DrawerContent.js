@@ -5,13 +5,13 @@ import {
     DrawerItem
 } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import {colors} from '../../Common/Colors'
 import Badge from '../../Common/Badge'
-import TodaysOrders from '../../Distrubutor/TodaysOrders/TodaysOrders';
-
+import {NavigationAction} from '@react-navigation/native'
 const DrawerContent=(props)=> {
-    const {user,valide_orders_count,logout,navigation,admins_count,waitingList_count,distrubutor_todays_canceled_orders_count}=props
+    const {user,valide_orders_count,logout,navigation,admins_count,waitingList_count,waiting_clients_count,distrubutor_todays_canceled_orders_count}=props
     if(!user || user == null || user == undefined)
     return (
         <View style={{flex:1}}>
@@ -95,7 +95,24 @@ const DrawerContent=(props)=> {
 
                                </View>
                             </TouchableOpacity>
-                        </View>
+                      </View>
+                       <View style={styles.drawerItem}>
+                            <TouchableOpacity style={{flex:1}} onPress={()=>{navigation.navigate('ADMINwaitingClients')}}>
+                               <View style={styles.FlexSR} >
+                                       <Icon 
+                                        name="format-list-bulleted-triangle" 
+                                        color={colors.BLACK}
+                                        style={{margin:0}}
+                                        size={20}
+                                        />
+                                       <View style={styles.FlexSR} >
+                                              <Text style={{color:colors.BLACK}} >List d'attendre des clients</Text>
+                                              <Badge status="success" value={waiting_clients_count} />
+                                       </View>
+
+                               </View>
+                            </TouchableOpacity>
+                      </View>
         
                     </View>
                  </View>
@@ -127,43 +144,54 @@ const DrawerContent=(props)=> {
                     {
                         user.confirmed == "VALIDATED"
                         ? <View style={styles.drawerSection}>
-                            <View style={styles.drawerItem}>
+                           <View style={styles.drawerItem}>
+                            <TouchableOpacity  onPress={() => {navigation.navigate('DISTRIBUTORvalidtedCommands')}}>
+                            <View style={styles.FlexSR} >
                               <Icon 
                                  name="clipboard-check-outline" 
                                  color={colors.BLACK}
                                  style={{margin:0}}
                                  size={20}
                                  />
-                            <TouchableOpacity  onPress={() => {navigation.navigate('DISTRIBUTORvalidtedCommands')}}>
-                               <View style={{ 
-                                   display :'flex',
-                                   flexDirection:'row',
-                                   alignItems:'center',
-                                   justifyContent:"space-between",}} >
+                               <View  style={styles.FlexSR} >
                                    <Text style={{color:colors.BLACK}} >Les command valider </Text>
                                    <Badge status="success" value={valide_orders_count} />
                                </View>
+                            </View>
                             </TouchableOpacity>
                         </View>
-        
-                            <View style={styles.drawerItem}>
-                              <Icon 
-                                 name="clipboard-check-outline" 
-                                 color={colors.BLACK}
-                                 style={{margin:0}}
-                                 size={20}
-                                 />
-                            <TouchableOpacity  onPress={() => {navigation.navigate('DISTRIBUTORcanceledCommands')}}>
-                               <View style={{ 
-                                   display :'flex',
-                                   flexDirection:'row',
-                                   alignItems:'center',
-                                   justifyContent:"space-between",}} >
-                                   <Text style={{color:colors.BLACK}} >Les command anuller </Text>
-                                   <Badge status="error" value={distrubutor_todays_canceled_orders_count} />
-                               </View>
-                            </TouchableOpacity>
-                        </View>
+                           <View style={styles.drawerItem}>
+                                <TouchableOpacity  onPress={() => {navigation.navigate('DISTRIBUTORcanceledCommands')}}>
+                                    <View style={styles.FlexSR}>
+                                      <Icon 
+                                         name="clipboard-check-outline" 
+                                         color={colors.BLACK}
+                                         style={{margin:0}}
+                                         size={20}
+                                         />
+                                       <View style={styles.FlexSR} >
+                                           <Text style={{color:colors.BLACK}} >Les command anuller </Text>
+                                           <Badge status="error" value={distrubutor_todays_canceled_orders_count} />
+                                       </View>
+                                    </View>
+                                 </TouchableOpacity>
+                            </View>
+                           <View style={styles.drawerItem}>
+                                <TouchableOpacity  onPress={() =>{
+                                    navigation.navigate('ADMINDashBoard',{screen:'ADMINaddClient' })
+                                    }}>
+                                    <View style={styles.FlexSR}>
+                                      <IonIcon 
+                                         name="person-add-sharp" 
+                                         color={colors.BLACK}
+                                         style={{margin:0}}
+                                         size={20}
+                                         />
+                                      <Text style={{color:colors.BLACK}} >Ajouter Un Client </Text>
+                                      
+                                    </View>
+                                 </TouchableOpacity>
+                            </View>
                         </View>
                         :null
                     }
@@ -216,6 +244,7 @@ export default connect(
         valide_orders_count : state.scheduel.valide_orders_count,
         distrubutor_todays_canceled_orders_count : state.scheduel.distrubutor_todays_canceled_orders_count,
         waitingList_count : state.auth.waitingList_count,
+        waiting_clients_count : state.client.waiting_clients_count,
     }),
     dispatch=>({
         logout:dispatch.auth.logout

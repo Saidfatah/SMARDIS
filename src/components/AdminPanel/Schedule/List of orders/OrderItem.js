@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import {View,Text,StyleSheet} from 'react-native'
 import { List } from 'react-native-paper';
 import {colors} from '../../../Common/Colors'
@@ -8,24 +8,51 @@ import Button from '../../../Common/Button'
 
 export const OrderItem = ({order,navigation,selectBill,validated}) => {
     const [expanded, setExpanded] = useState(false);
+
     const handlePress = () => setExpanded(!expanded);
-    const { 
-        distrubutor  ,
-        client ,
-        sector,
-        scheduleId,
-        turn ,
-        total ,
-        products,
-        created_at,
-        billRef,
-        status,
-        note  ,
-        sale_date ,
-        sale_hour
-     }=order
+    const { distrubutor ,client ,sector,scheduleId,turn ,total ,products,created_at,billRef,status,note,sale_date ,sale_hour}=order
     
-     
+
+
+        
+
+    // const PickFile=async ()=>{
+    //     try {
+          
+    //         const res = await DocumentPicker.pick({
+    //             type: [DocumentPicker.types.allFiles],
+    //         });
+    //         const uri =res.uri.replace('%3A','/').replace('%2F','/')
+    //         console.log({uri})
+    //         const filePath =await getPathForFirebaseStorage(uri)
+    //         // const destPath = `${RNFS.TemporaryDirectoryPath}/${shortid.generate()}`;
+    //         // await RNFS.cop(selectedDocument.uri, destPath);
+    //         return  console.log(filePath)
+    //         const task =  Storage().ref('catalogue/ctalaogue').putFile();
+           
+    //         task.on('state_changed', 
+    //             sn =>{},
+    //             err=>console.log(err),
+    //             () => {
+    //                console.log('excel uploaded!')
+    //                Storage()
+    //                .ref("catalogue").child("ctalaogue").getDownloadURL()
+    //                .then(url => {
+    //                  console.log('uploaded excel url', url);
+    //                }).catch(err=>console.log(err))
+    //            }
+    //         )
+    //         await task 
+           
+    //       } catch (err) {
+    //           console.log(err)
+    //         if (DocumentPicker.isCancel(err)) {
+    //           // User cancelled the picker, exit any dialogs or menus and move on
+    //         } else {
+    //           throw err;
+    //         }
+    //     }
+    // }
 
     let STATUS ="pase enour"
     if(status =="VALIDATED") STATUS ="valider"
@@ -33,7 +60,8 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
     if(status =="CANCELED") STATUS ="anuller"
     
     const IS_VALIDATED = validated?true : (status =="VALIDATED" ?true:false)
-
+    
+   
     if(IS_VALIDATED)
     return (
         <List.Accordion
@@ -107,7 +135,7 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
                         <Badge value={products.reduce((a,c)=>a+(c.price1*c.quantity),0)} status="primary" /> 
                    </View>
                 </View>
-               
+              
                 <Button 
                  xStyle={{margin:0,borderRadius:12,marginTop:16}} 
                  color={"BLUE"} 
@@ -221,5 +249,6 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center'
     },
+
 })
 

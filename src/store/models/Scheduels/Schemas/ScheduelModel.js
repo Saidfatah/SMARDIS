@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore'
 
-export const scheduleModel=(admin,distrubutor,distination)=>({
+export const scheduleModel=(admin,distrubutor,distination,start_date)=>({
     date:new Date(),
     admin ,
     ordersCompleted:[],
@@ -8,5 +8,6 @@ export const scheduleModel=(admin,distrubutor,distination)=>({
     distrubutor: distrubutor ,
     distrubutorId: distrubutor.id,
     distination: distination,
+    start_date:firestore.Timestamp.fromDate(start_date),
     created_at:firestore.Timestamp.fromDate(new Date())
 })

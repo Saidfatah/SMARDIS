@@ -85,7 +85,6 @@ const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePa
                           placeholder={"Numero du téléphone"}   
                           defaultValue={username} 
                           placeholderTextColor="#fff"
-                          keyboardType="phone-pad"
                           onFocus={e=> setusernameRequired(null)}
                           onChangeText={text=>setusername(text)} 
                       />

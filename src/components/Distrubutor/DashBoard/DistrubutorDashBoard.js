@@ -2,12 +2,13 @@ import React,{useEffect} from 'react'
 import {connect} from 'react-redux'
 import TodaysOrders from '../TodaysOrders/TodaysOrders'
 
-const DistrubutorDashBoard=({route,navigation,fetchTodaysOrders,fetchDistrubutorTodaysCanceledOrders ,fetchDistrubutorTodaysValideOrders,fetchCategories,fetchProducts})=> {
+const DistrubutorDashBoard=({route,navigation,fetchTodaysOrders,fetchSectors,fetchDistrubutorTodaysCanceledOrders ,fetchTodaysValideOrders,fetchCategories,fetchProducts})=> {
     useEffect(() => {
         fetchCategories()
         fetchProducts()
-        fetchTodaysOrders ()
-        fetchDistrubutorTodaysValideOrders()
+        fetchTodaysOrders()
+        fetchSectors()
+        fetchTodaysValideOrders("DISTRUBUTOR")
         fetchDistrubutorTodaysCanceledOrders()
     }, [])
 
@@ -23,7 +24,7 @@ export default connect(
     }),
     dispatch =>({
         fetchTodaysOrders  : dispatch.scheduel.fetchTodaysOrders ,
-        fetchDistrubutorTodaysValideOrders : dispatch.scheduel.fetchDistrubutorTodaysValideOrders,
+        fetchTodaysValideOrders : dispatch.scheduel.fetchTodaysValideOrders,
         fetchDistrubutorTodaysCanceledOrders : dispatch.scheduel.fetchDistrubutorTodaysCanceledOrders,
         fetchClients  : dispatch.client.fetchClients,
         fetchSectors  : dispatch.sector.fetchSectors,

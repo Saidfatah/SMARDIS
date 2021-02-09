@@ -4,6 +4,7 @@ import AdminCatalogue    from '../AdminPanel/Catalogue/Catalogue'
 import AdminAddCategory  from '../AdminPanel/Categories/Add category/AddCategory'
 import AdminCategories  from '../AdminPanel/Categories/Categories'
 import AdminCategoryPage  from '../AdminPanel/Categories/Category page/CategoryPage'
+import ClientsWaitingList    from '../AdminPanel/Clients/Clients waiting list/ClientsWaitingList'
 import AdminClients    from '../AdminPanel/Clients/Clients List/Clients'
 import AdminAddClient    from '../AdminPanel/Clients/Add client/AddClient'
 import AdminClientPage    from '../AdminPanel/Clients/client Page/ClientPage'
@@ -98,6 +99,11 @@ const AdminStackNavigator =()=>{
                 name="ADMINclients" 
                 options={{title:'List des clients'}}
                 component={AdminClients} 
+            />
+             <AdminStack.Screen 
+                name="ADMINwaitingClients" 
+                options={{title:'List dattendre des clients'}}
+                component={ClientsWaitingList} 
             />
              <AdminStack.Screen 
                 name="ADMINclientProfile" 

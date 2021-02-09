@@ -6,12 +6,16 @@ const FETCH_LIMIT=10
 const model ={
     state:{
         clients       :[],
+        waiting_clients :[],
         clients_first_fetch:false,
+        waiting_clients_first_fetch:false,
         done_fetching_clients:false,
+        done_fetching_waiting_clients:false,
         done_adding_client:false,
         done_removing_client:false,
         clientsAdded  : 0 , 
         clientsCount  : 0 ,//to display in admin's dashboard
+        waiting_clients_count  : 0 ,//to display in admin's dashboard
         last_visible_client : null,
     },
     reducers:{
@@ -31,6 +35,20 @@ const model ={
             ...state,
             clients_first_fetch:false,
             done_fetching_clients:true,
+        }),
+        fetchedWaitingClients : (state,clients)=>({
+            ...state,
+            waiting_clients :[...clients],
+            waiting_clients_first_fetch:true,
+            done_fetching_waiting_clients:true,
+            waiting_clients_count:clients.length
+        }),
+        fetcheWaitingClientsFailed : (state,clients)=>({
+            ...state,
+            waiting_clients:[],
+            waiting_clients_first_fetch:false,
+            waiting_clients_count:0,
+            done_fetching_waiting_clients:true,
         }),
         incrementedClientsLimit : (state,{clients,newLimit})=>({
             ...state,
@@ -111,11 +129,11 @@ const model ={
                 //                         .limit(FETCH_LIMIT)
                 const clientsResponse= await firestore()
                                         .collection('clients')
-                                        .orderBy('ref',"asc")
+                                        .where('confirmed','==','VALIDATED')
          
                                         
                 clientsResponse.onSnapshot(res=>{
-                    if(res.docs){
+                    if(res.docs.length){
                         const docs =res.docs
                         const clients = docs.map(doc=>({...doc.data(),id:doc.id}))
                         return dispatch.client.fetchedClients({
@@ -133,10 +151,43 @@ const model ={
             }
            
         },
-        async addClient({name,sectorId,ref,phone,address,city,price,objectif},state){
+        async fetchWaitingClients(arg,state){
             try {
-                const newClient = clientModel(name,sectorId,ref,phone,address,city,price,objectif)
+                const waiting_clients_first_fetch = state.client.waiting_clients_first_fetch
+                if(waiting_clients_first_fetch) return
+ 
+                const clientsResponse= await firestore()
+                                             .collection('clients')
+                                             .where('confirmed',"==","PENDING")
+         
+                                        
+                clientsResponse.onSnapshot(res=>{
+                    if(res.docs){
+                        const docs =res.docs
+                        const clients = docs.map(doc=>({...doc.data(),id:doc.id}))
+                        return dispatch.client.fetchedWaitingClients(clients)
+                    }
+                    dispatch.client.fetcheWaitingClientsFailed()
+                })
+                
 
+            } catch (error) {
+                dispatch.client.fetcheWaitingClientsFailed()
+                console.log(error)
+            }
+           
+        },
+        async addClient({name,sectorId,ref,phone,address,city,price,objectif,navigation},state){
+            try {
+                const USER_TYPE = state.auth.userType;
+                let newClient
+                if(USER_TYPE == "ADMIN"){
+                    newClient = clientModel(name,sectorId,ref,phone,address,city,price,objectif,"VALIDATED")
+                }else{
+                    newClient = clientModel(name,sectorId,ref,phone,address,city,price,objectif,"PENDING")
+                }
+                 
+          
                //firestore
                const addResponse= await firestore().collection('clients').add(newClient)
               
@@ -152,14 +203,15 @@ const model ={
                    message:`le client ${name} est ajouter avec success `
                })
                dispatch.client.addedClient(currentClients)
+               navigation.goBack()
             } catch (error) {
                 dispatch.client.addingClientFailed(currentClients)
                 console.log(error)
             }
         },
-        async updateClient({navigation,id,name,sectorId,phone,address,city,price,objectif},state){
+        async updateClient({navigation,id,name,sectorId,phone,address,city,price,objectif,ref},state){
            try {
-                 const updatedFields= {name,sectorId,phone,address,city,price,objectif}
+                 const updatedFields= {name,sectorId,phone,address,city,price,ref,objectif,confirmed:"VALIDATED"}
                  let   clients =[...state.client.clients]
                  const targetClient = clients.filter(client =>client.id == id)[0]
                  let   targetClientIndex =clients.indexOf(targetClient)

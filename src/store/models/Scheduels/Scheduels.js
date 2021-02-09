@@ -477,12 +477,12 @@ const model ={
 
             }             
         },
-        async addScheduel({distrubutor,distination},state){
+        async addScheduel({distrubutor,distination,start_date},state){
            try {
                 
                 const admin = state.auth.user 
                 //create scheduel doc 
-                const newSchedule = scheduleModel( admin, distrubutor, distination )
+                const newSchedule = scheduleModel( admin, distrubutor, distination ,start_date)
                 const scheduelAddResponse = await firestore()
                                                   .collection('scheduels')
                                                   .add(newSchedule)

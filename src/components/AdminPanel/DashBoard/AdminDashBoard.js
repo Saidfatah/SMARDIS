@@ -30,6 +30,7 @@ const  AdminDashBoard=(props)=> {
         fetchProducts ,
         fetchWaitingList,
         fetchAdmins,
+        fetchWaitingClients,
         user
     }=props
     useEffect(() => {
@@ -42,6 +43,7 @@ const  AdminDashBoard=(props)=> {
           fetchSectors()
           fetchDistrubutors()
           fetchClients()
+          fetchWaitingClients()
           fetchScheduels()
           fetchTodaysSales()
     }, [])
@@ -154,6 +156,7 @@ export default connect(
         fetchAdmins  : dispatch.auth.fetchAdmins,
         fetchSectors  : dispatch.sector.fetchSectors,
         fetchClients  : dispatch.client.fetchClients,
+        fetchWaitingClients  : dispatch.client.fetchWaitingClients,
         fetchCategories  : dispatch.categories.fetchCategories,
         fetchDistrubutors  : dispatch.distrubutor.fetchDistrubutors ,
         fetchOrders : dispatch.scheduel.fetchOrders,

@@ -29,7 +29,7 @@ const functions=[
     "fetchMoreDistrubutors"
 ]
 
-findInFiles.find(functions[0], '../components', '.js$')
+findInFiles.find('clients[clients.length - 1].ref', '../components', '.js$')
     .then(function(results) {
         for (var result in results) {
             var res = results[result];

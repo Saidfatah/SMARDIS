@@ -23,12 +23,13 @@ const ERRORS_MESSAGES= [
     {id:'REQUIRED',message:'ce champ est obligatoir'}
 ]
 const PRICES=[
-    1000,
-    2000,
-    3000
+    "prix1",
+    "prix2",
+    "prix3",
+    "prix4"
 ]
 
-export const AddClient = ({route,navigation,resetIsDone,done_adding_client,updateClient,addClient,sectors}) => {
+export const AddClient = ({route,navigation,userType,resetIsDone,done_adding_client,updateClient,addClient,sectors}) => {
     const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
     const [canSubmit, setcanSubmit] = useState(true)
     const [update, setupdate] = useState(false)
@@ -36,12 +37,12 @@ export const AddClient = ({route,navigation,resetIsDone,done_adding_client,updat
     const [selectedPrice, setselectedPrice] = useState(PRICES[0])
     const [selectedSector, setselectedSector] = useState(sectors[0] || {name:"SECTOR",city:"Ouarzazate",id:-1})
     const [clientData, setclientData] = useState({
-        phone:'0645789541',
-        city:'zzerzer',
-        ref:'zerzer',
-        name:'said fatah',
-        address:'zaea',
-        objectif:9000,
+        phone:'',
+        city:'',
+        ref:'',
+        name:'',
+        address:'',
+        objectif:0,
     })
     
  
@@ -77,7 +78,11 @@ export const AddClient = ({route,navigation,resetIsDone,done_adding_client,updat
          let errorsCount=0
          const {ref,name,phone,address,city,objectif}=clientData
          let errorsTemp = {...errors}
-         if(objectif == 0){
+         if(ref == "" && userType =="ADMIN"){
+             errorsTemp.refREQUIRED =true
+             errorsCount++
+         }
+         if(objectif == 0 && userType =="ADMIN"){
              errorsTemp.objectifREQUIRED =true
              errorsCount++
          }
@@ -95,10 +100,6 @@ export const AddClient = ({route,navigation,resetIsDone,done_adding_client,updat
          }
          if(city == ''){
              errorsTemp.cityREQUIRED =true
-             errorsCount++
-         }
-         if(ref == ''){
-             errorsTemp.refREQUIRED =true
              errorsCount++
          }
          if(selectedSector.id == -1){
@@ -119,7 +120,7 @@ export const AddClient = ({route,navigation,resetIsDone,done_adding_client,updat
         const clientObj = {...clientData}
         clientObj.price= selectedPrice
         clientObj.sectorId= selectedSector.id
-        if(!update) return addClient({...clientObj})
+        if(!update) return addClient({...clientObj,navigation})
         updateClient({...clientObj,id:clientToBeUpdatedId,navigation})
     }
 
@@ -127,15 +128,22 @@ export const AddClient = ({route,navigation,resetIsDone,done_adding_client,updat
     const {ref,name,phone,address,city,objectif}=clientData
     return  <KeyboardAwareScrollView   contentContainerStyle={{ display:'flex',  flexGrow:1 }}  style={styles.container} >
         <View style={{flex:1}} >
-            <Label label="Référence"  mga={16} />
-            <Error trigger={errors.refREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <TextInput style={styles.Input}   
-                    placeholder={"entrer La Référence du client"}   
-                    defaultValue={ref} 
-                    onFocus={e=> resetErrors()}
-                    keyboardType="default"
-                    onChangeText={text=>handelChange('ref')(text)} 
-            />
+            
+            {
+                userType =="ADMIN"
+                ?<View>
+                      <Label label="Référence"  mga={16} />
+                      <Error trigger={errors.refREQUIRED} error={ERRORS_MESSAGES[0].message} />
+                      <TextInput style={styles.Input}   
+                              placeholder={"entrer La Référence du client"}   
+                              defaultValue={ref} 
+                              onFocus={e=> resetErrors()}
+                              keyboardType="default"
+                              onChangeText={text=>handelChange('ref')(text)} 
+                      />
+                </View>
+                :null
+            }
     
             <Label label="Secteurs" mga={16} />
             <Error trigger={errors.secteurREQUIRED} error={ERRORS_MESSAGES[0].message} />
@@ -144,21 +152,28 @@ export const AddClient = ({route,navigation,resetIsDone,done_adding_client,updat
                 setSelected={setselectedSector} 
                 selected={selectedSector}
             />
-    
-            <Label label="Montant objectif DH" mga={16}/>
-            <Error trigger={errors.objectifREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <TextInput style={styles.Input}   
-                    placeholder={"Entrer l'objectif du client"}   
-                    defaultValue={objectif.toString()} 
-                    keyboardType="decimal-pad"
-                    onFocus={e=> resetErrors()}
-                    onChangeText={text=>{
-                        let  value = parseFloat(text)
-                        console.log(value)
-                        if(value == NaN || text.includes('NaN')) value = 0
-                        handelChange('objectif')(value)
-                    }} 
-            />
+           
+           {
+                userType =="ADMIN"
+                ? <View>
+                <Label label="Montant objectif DH" mga={16}/>
+                <Error trigger={errors.objectifREQUIRED} error={ERRORS_MESSAGES[0].message} />
+                <TextInput style={styles.Input}   
+                        placeholder={"Entrer l'objectif du client"}   
+                        defaultValue={objectif.toString()} 
+                        keyboardType="decimal-pad"
+                        onFocus={e=> resetErrors()}
+                        onChangeText={text=>{
+                            let  value = parseFloat(text)
+                            console.log(value)
+                            if(value == NaN || text.includes('NaN')) value = 0
+                            handelChange('objectif')(value)
+                        }} 
+                />
+           </View>
+                :null
+           }
+           
             
             <Label label="Nom Client" mga={16} />
             <Error trigger={errors.nameREQUIRED} error={ERRORS_MESSAGES[0].message} />
@@ -170,14 +185,19 @@ export const AddClient = ({route,navigation,resetIsDone,done_adding_client,updat
                     onChangeText={text=>handelChange('name')(text)} 
             /> 
            
-    
-            <Label label="Prix" />
-            <Error trigger={errors.priceREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <DropDown 
-                data={PRICES.map(p=>({value : p, label :p.toString()}))} 
-                setSelected={setselectedPrice} 
-                selected={selectedPrice}
-            />
+            {
+             userType =="ADMIN"
+             ?  <View>
+                <Label label="Prix" />
+                <Error trigger={errors.priceREQUIRED} error={ERRORS_MESSAGES[0].message} />
+                <DropDown 
+                    data={PRICES.map(p=>({value : p, label :p.toString()}))} 
+                    setSelected={setselectedPrice} 
+                    selected={selectedPrice}
+                />
+            </View>
+            :null
+            }
     
             <Label label="Ville" mga={16} />
             <Error trigger={errors.cityREQUIRED} error={ERRORS_MESSAGES[0].message} />
@@ -201,11 +221,15 @@ export const AddClient = ({route,navigation,resetIsDone,done_adding_client,updat
     
             <Label label="Adresse" mga={16} />
             <Error trigger={errors.addressREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <TextInput style={{...styles.Input,paddingTop:0}}   
+            <TextInput style={{
+                    ...styles.Input,
+                  
+                  }}   
                     placeholder={"Entrer l'addresse"}   
                     defaultValue={address} 
                     keyboardType="default"
                     multiline = {true}
+                    textAlignVertical="top"
                     numberOfLines = {6}
                     onFocus={e=> resetErrors()}
                     onChangeText={text=>handelChange('address')(text)} 
@@ -236,6 +260,7 @@ export const AddClient = ({route,navigation,resetIsDone,done_adding_client,updat
 export default connect(
     state=>({
        sectors : state.sector.sectors,
+       userType : state.auth.userType,
        done_adding_client : state.client.done_adding_client,
     })
     , 
