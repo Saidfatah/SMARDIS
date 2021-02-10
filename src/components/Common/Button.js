@@ -29,7 +29,7 @@ var styles = StyleSheet.create({
     button:{
         // borderBottomColor:'#000',
         margin:8,
-        borderRadius:25,
+        borderRadius:12,
         backgroundColor:'#fff',
         padding:8
    }

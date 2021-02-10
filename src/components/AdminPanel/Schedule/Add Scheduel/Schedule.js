@@ -4,13 +4,17 @@ import { connect } from 'react-redux'
 import ClientsOrdering from './ClientsOrdering'
 import SectorsDropDown from './SectorsDropDown'
 import DistrubutorsDopDown from './DistrubutorsDopDown'
-import Button from '../../../Common/Button'
+import {colors} from '../../../Common/Colors'
 import Label from '../../../Common/Label'
+import Button from '../../../Common/Button'
 import Loading from '../../../Common/Loading'
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from '@react-native-community/datetimepicker';
+import FontistoIcon from 'react-native-vector-icons/Fontisto'
+
 
 const Schedule = ({addScheduel,clients,done_adding_scheduel,resetIsDone,sectors,distrubutors,adminId})=> {
     const [canSubmit, setcanSubmit] = useState(true)
+    const [enableScroll, setenableScroll] = useState(true)
     const [start_date, setstart_date] = useState(new Date())
     const [showDate, setshowDate] = useState(false)
     const [selectedSectorClients, setselectedSectorClients] = useState([])
@@ -59,36 +63,67 @@ const Schedule = ({addScheduel,clients,done_adding_scheduel,resetIsDone,sectors,
             console.log('handle thjis erro  in error flash message')
         }
     }
-    const onChange = (event, selectedDate) => {
+
+
+    const onChangeHnadler = (event, selectedDate) => {
         const currentDate = selectedDate || start_date;
         setshowDate(false)
-        setstart_date(currentDate);
+        console.log(currentDate)
+        if (event.type === 'dismissed') {
+          setstart_date(new Date(0))
+        } 
+        else if(event.type === 'set') {
+          setstart_date(currentDate)
+        }
+        
     };
- 
-    return <ScrollView style={{backgroundColor:'#fff',flex:1}}>
+    const pickerProps = {
+        testID:"dateTimePicker",
+        value:start_date,
+        collapsable:true,
+        mode:"date",
+        placeholder:start_date.toString(),
+        dateFormat:"dayofweek day month",
+        minimumDate:new Date(1950, 0, 1),
+        maximumDate:new Date(2300, 10, 20),
+        is24Hour:true,
+        onChange:onChangeHnadler,
+    }
+  
+    return <ScrollView scrollEnabled={enableScroll} style={{backgroundColor:'#fff',flex:1}}>
         <DistrubutorsDopDown {...{distrubutors,selectedDistrubutor, setselectedDistrubutor}} />
         <SectorsDropDown {...{sectors,selectedSector, setselectedSector}} />
         
         
-        <View>
-        <Button color="LIGHTGREY" clickHandler={setshowDate(true)} > 
-            <Text>Date de debut</Text>
-        </Button>
-         
-         {showDate && (
-           <DateTimePicker
-             testID="dateTimePicker"
-             value={start_date}
-             mode="date"
-             display="default"
-             onChange={onChange}
-           />
-         )}
-        </View>
    
+        <Button 
+        color="WHITE" 
+        clickHandler={e=>setshowDate(true)} 
+        xStyle={{
+            borderColor:colors.BLACK,
+            borderWidth:2,
+            borderRadius:12, 
+        }}
+        > 
+            <View style={{
+                display:'flex',
+                flexDirection:'row',
+                alignItems:'center',
+                justifyContent:'space-between'
+                }} >
+               <Text>{start_date.toLocaleDateString('en-US')||"Date de debut"}</Text>
+               <FontistoIcon 
+                    name="date" 
+                    color={colors.BLACK} 
+                    size={25}
+               />
+            </View>
+        </Button>    
+         { showDate && <DatePicker {...pickerProps} />}
+
         <Label mgl={8} mgb={0} label={"List des clients du secteur "+ selectedSector.name} />
         <SafeAreaView style={{padding: 8,paddingTop:0 }}>
-            <ClientsOrdering sectorClients={selectedSectorClients} setorderListOfClients={setorderListOfClients} />
+            <ClientsOrdering setenableScroll={setenableScroll} sectorClients={selectedSectorClients} setorderListOfClients={setorderListOfClients} />
         </SafeAreaView>
   
         <Button color={"BLUE"}  disabled={!canSubmit} clickHandler={createNewSchdule}>

@@ -4,8 +4,9 @@ import { connect } from 'react-redux'
 import OrderItem from './OrderItem'
 import Loading from '../../../Common/Loading'
 import Button from '../../../Common/Button'
+import {colors} from '../../../Common/Colors'
 import { List } from 'react-native-paper';
-import { Table, Row, Rows, TableWrapper } from 'react-native-table-component';
+import { Table, Row,Cell, Rows, TableWrapper } from 'react-native-table-component';
 import { writeFile, readFile,mkdir,exists, ExternalStorageDirectoryPath } from 'react-native-fs';
 const make_cols = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, (x,i) => XLSX.utils.encode_col(i));
 const make_width = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, () => 60);
@@ -17,24 +18,19 @@ import XLSX from 'xlsx';
 //export excel from here 
 
 export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_fetching_todays_validated_orders}) => {
+    const Header= ["1","Référence","Qu","P.U","Désignation","RéférenceFacetur","Date","RéférenceClient","Vendeur","RéférenceVendeur","Secteur"]
     const [data, setdata] = useState([
-        ["1","RFP","Q","P.U","Des","RFF","D","RFC","v","RFV","S"],
-       
+        Header
     ])
-    const [widthArr, setwidthArr] = useState([90,90,90,90,90,90,90,90,90,90,90])
-    const [cols, setcols] = useState(["_",...make_cols("A1:I10")])
+    const [widthArr, setwidthArr] = useState([90,120,90,90,90,90,90,90,90,90,90])
+    const [cols, setcols] = useState(["_",...make_cols("A1:J10")])
+    const TITLE = valide_orders.length >0 ? "les command valider" :"pas de command valider"
 
     useEffect(() => {
-        //generate cols and rows 
-        //bilref , client,total,note,saledate,saleçhour,status,distrubutor
-       
          if(valide_orders.length <0) return 
-         let dataTemp = [
-             ["1","RFP","Q","P.U","DES","RFF","D","RFC","v","RFV","S"],
-         ]
+         let dataTemp = [Header]
          valide_orders.forEach((order,index1)=>{
              const { distrubutor ,client ,sector,scheduleId,turn ,total ,products,created_at,billRef,status,note,sale_date ,sale_hour}=order
-             console.log(client)
              if(!products || products.length <1)return console.log('no orders')
 
              products.forEach((product,index2)=>{
@@ -62,7 +58,6 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
         <Loading spacing={50} />   
     </View>
-    const TITLE = valide_orders.length >0 ? "les command valider" :"pas de command valider"
 
     const exportFile =async ()=> {
 		try {
@@ -121,22 +116,55 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
             <Text style={{color:'#fff',textAlign:'center'}} >Exporter l'Excel</Text>
         </Button>
         <ScrollView  showsHorizontalScrollIndicator={false}  horizontal={true}>
-	    <View style={{width:900}} >
-            <Table style={styles.table}>
+	    <View style={{width:11*90+30}} >
+            <Table style={styles.table}  borderStyle={{borderWidth: 1, borderColor: colors.LIGHTGREY}}>
                  <TableWrapper>
-                     <Row 
-                     data={cols} 
-                     style={styles.thead} 
-                     textStyle={styles.text} 
-                     widthArr={widthArr}
-                     />
+                     <Row data={cols} style={styles.thead} textStyle={styles.text} widthArr={widthArr}/>
                  </TableWrapper>
-                     <ScrollView  >
-                      
-                         <TableWrapper>
-                                  <Rows  data={data}  style={styles.tr} textStyle={styles.text} widthArr={widthArr}/>
-                         </TableWrapper>
-                     </ScrollView>
+                <ScrollView  >
+                    {/* <TableWrapper  borderStyle={{borderWidth: 1, borderColor: colors.LIGHTGREY}}>
+                      {
+                          data.map((row,index)=><Row
+                             key={index}
+                             data={row}
+                             widthArr={widthArr}
+                             style={[styles.tr, index%2 && {backgroundColor: '#F7F6E7'}]}
+                             textStyle={styles.text}
+                             
+                           />)
+                       }    
+                    </TableWrapper> */}
+                       {
+                          data.map((row,rowIndex)=> (
+                            <TableWrapper key={rowIndex} style={{ flexDirection: 'row'}} borderStyle={{borderWidth: 1, borderColor: colors.LIGHTGREY}}>
+                              {
+                                row.map((cellData, cellIndex) => (
+                                  <Cell 
+                                  key={cellIndex} 
+                                  data={cellData} 
+                                  style={{
+                                      height:40,
+                                      width:cellIndex==1?120:90,
+                                      backgroundColor:cellIndex>0
+                                      ?(rowIndex>0
+                                        ? '#f1f8ff'
+                                        : colors.LIGHTBLUE
+                                        ) 
+                                      :"#fff"
+                                     }}
+                                  textStyle={{
+                                      ...styles.text,
+                                      backgroundColor:
+                                      cellIndex>0 && rowIndex>0
+                                        ? '#f1f8ff'
+                                        : colors.LIGHTBLUE
+                                    }}/>
+                                ))
+                              }
+                            </TableWrapper>
+                          ))  
+                       }   
+                </ScrollView>
             </Table>
         </View>
         </ScrollView>
@@ -179,9 +207,9 @@ const styles = StyleSheet.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5FCFF' },
 	welcome: { fontSize: 20, textAlign: 'center', margin: 10 },
 	instructions: { textAlign: 'center', color: '#333333', marginBottom: 5 },
-	thead: { height: 40, backgroundColor: '#f1f8ff' },
-	tr: { height: 30 ,width:800,backgroundColor:"#fff" },
-	text: { marginLeft: 5 },
+	thead: { height: 40},
+	tr: { height: 40  },
+	text: { marginLeft: 5,textAlign:'center' },
 	table: { width: "100%" }
 })
 
