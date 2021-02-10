@@ -215,10 +215,10 @@ const model ={
                                         .delete()
    
                 //remove category image from storage
-                if(image != "NO_IMAGE"){
+                if(image != "NO_IMAGE" && image.indexOf('categoryImages%2F')>-1){
                     const imageName =  image.split('categoryImages%2F')[1].split("?alt")[0] 
                     if(imageName){
-                           var imageRef = Storage().child('categoryImages/'+imageName);
+                           var imageRef =  Storage().ref('categoryImages').child(imageName);
                            const imageRemove = await imageRef.delete() 
                            console.log('removed image')
                     }

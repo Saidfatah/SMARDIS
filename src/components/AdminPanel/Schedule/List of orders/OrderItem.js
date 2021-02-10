@@ -77,6 +77,18 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
          expanded={expanded}
          onPress={handlePress}>
            <View style={styles.accordionContentWrrapper}>
+              <View style={styles.HFlex} >
+                    <Label label="Client :"  mga={16} />
+                    <View style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
+                              <Text>{client.name}</Text>
+                    </View>
+                </View>
+                <View style={styles.HFlex} >
+                    <Label label="RefClient :"  mga={16} />
+                    <View style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
+                              <Text>{client.ref}</Text>
+                    </View>
+                </View>
                 <View style={styles.HFlex} >
                     <Label label="RefFacteur :"  mga={16} />
                     <View style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
@@ -164,6 +176,18 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
          expanded={expanded}
          onPress={handlePress}>
            <View style={styles.accordionContentWrrapper}>
+                <View style={styles.HFlex} >
+                    <Label label="Client :"  mga={16} />
+                    <View style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
+                              <Text>{client.name}</Text>
+                    </View>
+                </View>
+                <View style={styles.HFlex} >
+                    <Label label="RefClient :"  mga={16} />
+                    <View style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
+                              <Text>{client.ref}</Text>
+                    </View>
+                </View>
                 <View style={styles.HFlex} >
                     <Label label="Status :"  mga={16} />
                     <View style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>

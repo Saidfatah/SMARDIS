@@ -66,7 +66,8 @@ var styles = StyleSheet.create({
     },
     list:{
         padding:16,
-        flex: 1
+        flex: 1,
+        paddingHorizontal:0
     },
     flatList:{ 
         alignItems: 'center',

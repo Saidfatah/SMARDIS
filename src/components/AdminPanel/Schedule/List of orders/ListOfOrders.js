@@ -44,7 +44,7 @@ export default connect(
         done_fetching_todays_orders: state.scheduel.done_fetching_todays_orders ,
     }),
     state=>({
-        selectAbill: state.scheduel.selectBill 
+        selectBill: state.scheduel.selectBill 
     }),
 )
 (ListOfOrders)

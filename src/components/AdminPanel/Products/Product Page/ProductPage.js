@@ -11,7 +11,7 @@ import IonIcon from 'react-native-vector-icons/Ionicons'
 import { connect } from 'react-redux'
 
 const ProductPage=({navigation,route,removeProduct,done_removing_product,resetIsDone})=> {
-    const [canRemove, setcanRemove] = useState(false)
+    const [canRemove, setcanRemove] = useState(true)
     const {product} = route.params
     //handle update 
     //handle remove 

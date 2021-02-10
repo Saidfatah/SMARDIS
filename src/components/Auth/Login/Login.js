@@ -1,5 +1,5 @@
 
-import React,{useEffect,useState} from 'react'
+import React,{useEffect,useState,useCallback} from 'react'
 import {View,Text,TextInput,StyleSheet,TouchableOpacity} from 'react-native'
 import BackgroundImage from '../../Common/BackgroundImage'
 import Logo from '../../Common/Logo'
@@ -11,6 +11,9 @@ import Loading from '../../Common/Loading'
 import { connect } from 'react-redux'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import {CheckBox} from 'react-native-elements'
+import { useFocusEffect } from "@react-navigation/native";
+import { BackHandler ,Alert} from 'react-native';
+
 
 const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePassword,savedPassword})=> {
     const [username, setusername] = useState("said_designer@outlook.com")
@@ -39,7 +42,26 @@ const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePa
             setcanSubmit(true)
           }
     }, [done_Logging])
-
+    useFocusEffect(
+        useCallback(() => {
+          const onBackPress = () => {
+            Alert.alert("Attention!", "Êtes-vous sûr de vouloir quitter?", [
+              {
+                text: "Annuler",
+                onPress: () => null,
+                style: "cancel"
+              },
+              { text: "OUI", onPress: () => BackHandler.exitApp() }
+            ]);
+            return true;
+          };
+        
+          BackHandler.addEventListener("hardwareBackPress", onBackPress);
+        
+          return () =>
+            BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+        
+    }, []));
     const handleLogin=()=>{
         if(!canSubmit) return 
          if(password == '') return setpasswordRequired({message:"Inserer votre mote de passe !"})

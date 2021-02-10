@@ -1,9 +1,10 @@
-import React,{useEffect} from 'react'
+import React,{useEffect,useCallback} from 'react'
 import { ScrollView} from 'react-native'
 import { connect } from 'react-redux'
 import { List } from 'react-native-paper';
 import DashBoardItem from './DashBoardItem'
- 
+import { useFocusEffect } from "@react-navigation/native";
+import { BackHandler ,Alert} from 'react-native';
 
 
 
@@ -50,6 +51,29 @@ const  AdminDashBoard=(props)=> {
     useEffect(() => {
           if(user)  navigation.setParams({ADMIN_NAME:user.name})
     }, [user])
+
+
+    useFocusEffect(
+        useCallback(() => {
+          const onBackPress = () => {
+            Alert.alert("Attention!", "Êtes-vous sûr de vouloir quitter?", [
+              {
+                text: "Annuler",
+                onPress: () => null,
+                style: "cancel"
+              },
+              { text: "OUI", onPress: () => BackHandler.exitApp() }
+            ]);
+            return true;
+          };
+        
+          BackHandler.addEventListener("hardwareBackPress", onBackPress);
+        
+          return () =>
+            BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+        
+    }, []));
+
     const ROUTES =[
         {
              title:"Clients",

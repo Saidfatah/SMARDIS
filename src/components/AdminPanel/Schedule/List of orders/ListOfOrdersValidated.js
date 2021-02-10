@@ -30,7 +30,7 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
          if(valide_orders.length <0) return 
          let dataTemp = [Header]
          valide_orders.forEach((order,index1)=>{
-             const { distrubutor ,client ,sector,scheduleId,turn ,total ,products,created_at,billRef,status,note,sale_date ,sale_hour}=order
+             const { distrubutor ,client ,sector,scheduleId ,total ,products,created_at,billRef,status,note,sale_date ,sale_hour}=order
              if(!products || products.length <1)return console.log('no orders')
 
              products.forEach((product,index2)=>{

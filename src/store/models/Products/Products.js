@@ -22,7 +22,8 @@ const model ={
             products :[...products],
             products_first_fetch:true,
             done_fetching_products:true,
-            last_visible_Product
+            last_visible_Product,
+            productsCount:products.length
         }),
         productsFetchingFailed : (state,{products,last_visible_Product})=>({
             ...state,
@@ -87,14 +88,10 @@ const model ={
 
                  const productsResponse= await firestore()
                                               .collection('products')
-                                              .orderBy('category','desc')
-                                              
-                                            //   .orderBy('ref','desc')
-                                            //   .limit(PRODUCTS_FETCH_LIMIT)
-                                            //   .get()
+                                        
                 productsResponse.onSnapshot(res=>{
                     const docs =res.docs
-                    if(docs){
+                    if(docs.length){
                         const products = docs.map(doc=>({...doc.data(), id : doc.id}))
                         return  dispatch.products.fetchedProducts({
                              products,
@@ -197,22 +194,25 @@ const model ={
                 let products = [...state.products.products]
                 const newProducts  = products.filter(p => p.id != product.id) 
                 const {image}=product
-              
+
+                 //remove product image 
+                 if(image != "NO_IMAGE" && image.indexOf('productImages%2F')>-1){
+                     
+                    const imageName =  (image||"").split('productImages%2F')[1].split("?alt")[0] 
+                    if(imageName){
+                           //check ifimage exists in storage
+                           var imageRef =  Storage().ref('productImages').child(imageName);
+                           const imageRemove = await imageRef.delete() 
+                           console.log('removed image')
+                    }
+                }
                 //remove doc 
                 const distrubutorRef=await firestore()
                 .collection('products')
                 .doc(product.id)
                 .delete()
 
-                //remove product image 
-                if(image != "NO_IMAGE"){
-                     const imageName =  image.split('productImages%2F')[1].split("?alt")[0] 
-                     if(imageName){
-                            var imageRef =  Storage().child('productImages/'+imageName);
-                            const imageRemove = await imageRef.delete() 
-                            console.log('removed image')
-                     }
-                }
+               
 
                  
                 dispatch.toast.show({

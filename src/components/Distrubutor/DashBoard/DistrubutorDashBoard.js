@@ -1,6 +1,8 @@
-import React,{useEffect} from 'react'
+import React,{useEffect,useCallback} from 'react'
 import {connect} from 'react-redux'
 import TodaysOrders from '../TodaysOrders/TodaysOrders'
+import { useFocusEffect } from "@react-navigation/native";
+import { BackHandler ,Alert} from 'react-native';
 
 const DistrubutorDashBoard=({route,navigation,fetchTodaysOrders,fetchSectors,fetchDistrubutorTodaysCanceledOrders ,fetchTodaysValideOrders,fetchCategories,fetchProducts})=> {
     useEffect(() => {
@@ -11,7 +13,26 @@ const DistrubutorDashBoard=({route,navigation,fetchTodaysOrders,fetchSectors,fet
         fetchTodaysValideOrders("DISTRUBUTOR")
         fetchDistrubutorTodaysCanceledOrders()
     }, [])
-
+    useFocusEffect(
+        useCallback(() => {
+          const onBackPress = () => {
+            Alert.alert("Attention!", "Êtes-vous sûr de vouloir quitter?", [
+              {
+                text: "Annuler",
+                onPress: () => null,
+                style: "cancel"
+              },
+              { text: "OUI", onPress: () => BackHandler.exitApp() }
+            ]);
+            return true;
+          };
+        
+          BackHandler.addEventListener("hardwareBackPress", onBackPress);
+        
+          return () =>
+            BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+        
+    }, []));
     return  <TodaysOrders {...{navigation,route}} />
    
 }
