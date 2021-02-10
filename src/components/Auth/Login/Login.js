@@ -129,13 +129,11 @@ const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePa
                      xStyle={styles.BtnXstyle} 
                      color={"WHITE"} 
                      disabled={!canSubmit}
-                     clickHandler={e=>handleLogin()} >
-                     { canSubmit
-                        ? <Text style={styles.ButtonText}>Connexion</Text>
-                        :<View style={{display:'flex',flexDirection:'row',justifyContent:'center'}} >
-                        <Loading  spacing={30} /> 
-                    </View>
-                     }
+                     clickHandler={e=>handleLogin()}
+                     loading={!canSubmit}
+                     loadingSize={30}
+                      >
+                    <Text style={styles.ButtonText}>Connexion</Text>
                  </Button>
             </View>
 

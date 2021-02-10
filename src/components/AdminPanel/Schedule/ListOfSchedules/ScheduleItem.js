@@ -1,14 +1,23 @@
-import React,{useState} from 'react'
-import {View,Text,StyleSheet} from 'react-native'
+import React,{useState,useEffect} from 'react'
+import {View,Text,StyleSheet,Alert} from 'react-native'
 import { List } from 'react-native-paper';
 import {colors} from '../../../Common/Colors'
 import Badge from '../../../Common/Badge'
 import Label from '../../../Common/Label'
+import Button from '../../../Common/Button'
+import {connect} from 'react-redux'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import IonIcon from 'react-native-vector-icons/Ionicons'
 
-export const ScheduleItem = ({scheduel}) => {
+export const ScheduleItem = ({navigation,scheduel,removeScheduel,done_removing_scheduel}) => {
     const [expanded, setExpanded] = useState(false);
+    const [canRemove, setcanRemove] = useState(true)
     const handlePress = () => setExpanded(!expanded);
-    const {admin,distrubutor,distination,status,date} = scheduel
+    const {admin,distrubutor,distination,status,date,start_date} = scheduel
+    
+    useEffect(() => {
+        done_removing_scheduel == true && setcanRemove(true) &&resetIsDone('done_removing_scheduel')
+    }, [done_removing_scheduel])
 
     return (
         <List.Accordion
@@ -33,7 +42,7 @@ export const ScheduleItem = ({scheduel}) => {
                 <View style={styles.HFlex} >
                     <Label label="Date de debut :"  mga={16} />
                     <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
-                              <Text>{date.toLocaleDateString('en-US')}</Text>
+                              <Text>{new Date(start_date).toLocaleDateString('en-US')}</Text>
                     </View>
                 </View>
                 <View style={styles.HFlex} >
@@ -60,13 +69,55 @@ export const ScheduleItem = ({scheduel}) => {
                     }
                     
                 </View>
-           </View>
+          
+                <View style={styles.btns} >
+               <Button
+                xStyle={{...styles.BtnXstyle}} 
+                color={"RED"} 
+                disabled={!canRemove}
+                clickHandler={e=>{
+                    Alert.alert("Suppression!", "Etes-vous sûr que vous voulez supprimer? ", [
+                        {
+                          text: "Annuler",
+                          onPress: () => null,
+                          style: "cancel"
+                        },
+                        { text: "OUI", onPress: () =>{
+                            setcanRemove(false)
+                            removeScheduel(scheduel.id)
+                        }
+                       }
+                      ]);
+                }} 
+                >
+                     <Text style={styles.ButtonText}>Supprimer Le trajet</Text>
+                     <IonIcon name="trash" size={25} color="#fff" />
+               </Button>
+          
+               <Button
+                xStyle={styles.BtnXstyle} 
+                color={"BLUE"} 
+                clickHandler={e=>navigation.navigate('ADMINupdateSchedule',{scheduel,update:true})} 
+                >
+                   <Text style={styles.ButtonText}>Modifier Le Trajet</Text>
+                   <IonIcon name="ios-settings-sharp" size={25} color="#fff" />
+             </Button>
+        </View>
+          </View>
      </List.Accordion>
     )
 }
  
-
-export default  ScheduleItem 
+export default connect(
+    state=>({
+        done_removing_scheduel:state.scheduel.done_removing_scheduel,
+    }),
+    dispatch=>({
+        removeScheduel:dispatch.scheduel.removeScheduel,
+        resetIsDone:dispatch.scheduel.resetIsDone,
+    })
+)(ScheduleItem)
+   
 
 const styles = StyleSheet.create({
     accordionContentWrrapper: {
@@ -108,5 +159,25 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center'
     },
+    btns:{
+        flex:1,
+        display:'flex',
+        marginTop:16,
+        marginBottom:16,
+        justifyContent:'flex-start',
+        alignItems:"flex-start"
+    },
+    BtnXstyle:{
+        margin:0,
+        borderRadius:12,
+        height:50,
+        width:'100%',
+        display:'flex',
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:"space-evenly",
+        marginBottom:8
+    },
+    ButtonText:{color:"#fff",textAlign:'center',fontWeight:'bold'},
 })
 

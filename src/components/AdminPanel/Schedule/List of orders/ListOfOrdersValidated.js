@@ -172,7 +172,7 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
     }
     return (
         <ScrollView style={{flex:1,backgroundColor:'#fff'}} contentContainerStyle={{padding:8}}  > 
-                 <ExceVisualization/>
+                 {valide_orders.length>0 ? <ExceVisualization/> :null }
                  <List.Section title={TITLE}>
                     {
                     valide_orders.map((item,index)=>{

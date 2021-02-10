@@ -12,14 +12,16 @@ import DatePicker from '@react-native-community/datetimepicker';
 import FontistoIcon from 'react-native-vector-icons/Fontisto'
 
 
-const Schedule = ({addScheduel,clients,done_adding_scheduel,resetIsDone,sectors,distrubutors,adminId})=> {
+const Schedule = ({navigation,route,addScheduel,clients,updateScheduel,done_adding_scheduel,resetIsDone,sectors,distrubutors,adminId})=> {
     const [canSubmit, setcanSubmit] = useState(true)
     const [enableScroll, setenableScroll] = useState(true)
+    const [update, setupdate] = useState(false)
+    const [scheduelToBeUpdated, setscheduelToBeUpdated] = useState("")
     const [start_date, setstart_date] = useState(new Date())
     const [showDate, setshowDate] = useState(false)
     const [selectedSectorClients, setselectedSectorClients] = useState([])
     const [selectedSector, setselectedSector] = useState(sectors[0])
-    const [selectedDistrubutor, setselectedDistrubutor] = useState(distrubutors[0])
+    const [selectedDistrubutor, setselectedDistrubutor] = useState(null)
     const [orderListOfClients, setorderListOfClients] = useState([])
 
     useEffect(() => {
@@ -27,17 +29,32 @@ const Schedule = ({addScheduel,clients,done_adding_scheduel,resetIsDone,sectors,
     }, [done_adding_scheduel])
 
     useEffect(() => {
-         if(sectors.length >0 && clients.length>0 && distrubutors.length>0)
+         if(!update && sectors.length >0 && clients.length>0 && distrubutors.length>0)
          setselectedSectorClients([...clients].filter(cl=> cl.sectorId == selectedSector.id))
-    }, [])
 
+         if(route.params){
+           
+            if(route.params.update == undefined) return 
+            const {scheduel}=route.params
+            const { distrubutor,distination ,id}=scheduel
+            setupdate(true)
+            setscheduelToBeUpdated(id)
+           setstart_date(scheduel.start_date)
+            setselectedSectorClients([...distination.clients])
+            setorderListOfClients([...distination.clients])
+            setselectedDistrubutor(distrubutors.filter(d=>d.id == distrubutor.id)[0])
+            setselectedSector(sectors.filter(s=>s.id == distination.sector.id)[0])
+            // return console.log(distrubutor)
+            return console.log(  scheduel.start_date )
+         } 
+    }, [])
+ 
     useEffect(() => {
          if(sectors.length >0 && clients.length>0 && distrubutors.length>0)
          {
              const sectorClients = [...clients].filter(cl=> cl.sectorId == selectedSector.id)
              setselectedSectorClients(sectorClients)
              setorderListOfClients(sectorClients)
-
          }
     }, [selectedSector.id])
     
@@ -51,6 +68,17 @@ const Schedule = ({addScheduel,clients,done_adding_scheduel,resetIsDone,sectors,
          
         if(adminId != undefined && selectedDistrubutor &&  selectedSector && orderListOfClients.length>0 ){
             setcanSubmit(false)
+            
+            if(update) return updateScheduel({ 
+                id:scheduelToBeUpdated,
+                distrubutor   :selectedDistrubutor,
+                distination:{
+                    sector  : selectedSector ,
+                    clients : orderListOfClients 
+                },
+                start_date
+            })
+
             addScheduel({
                 distrubutor   :selectedDistrubutor,
                 distination:{
@@ -70,7 +98,7 @@ const Schedule = ({addScheduel,clients,done_adding_scheduel,resetIsDone,sectors,
         setshowDate(false)
         console.log(currentDate)
         if (event.type === 'dismissed') {
-          setstart_date(new Date(0))
+          setstart_date(start_date)
         } 
         else if(event.type === 'set') {
           setstart_date(currentDate)
@@ -127,7 +155,7 @@ const Schedule = ({addScheduel,clients,done_adding_scheduel,resetIsDone,sectors,
         </SafeAreaView>
   
         <Button color={"BLUE"}  disabled={!canSubmit} clickHandler={createNewSchdule}>
-            <Text style={{color:"#fff",textAlign:'center'}}>Ajouter Le trajet</Text>
+            <Text style={{color:"#fff",textAlign:'center'}}>{update?"Modifier le trajet":"Ajouter Le trajet"}</Text>
         </Button>
     </ScrollView>
  
@@ -144,6 +172,7 @@ export default connect(
     }),
     dispatch=>({
         addScheduel:dispatch.scheduel.addScheduel,
+        updateScheduel:dispatch.scheduel.updateScheduel,
         resetIsDone:dispatch.scheduel.resetIsDone,
     })
 )(Schedule)

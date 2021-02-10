@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {Text,StyleSheet} from 'react-native'
+import {Text,StyleSheet,Alert} from 'react-native'
 import { List } from 'react-native-paper';
 import {colors} from '../../../Common/Colors'
 import Button from '../../../Common/Button'
@@ -33,10 +33,38 @@ export const AdminItem = ({user,setMaster,resetIsDone,done_setting_admin_to_mast
            
       <View style={styles.accordionContentWrrapper} >
       {  !isMaster
-           ?  <Button color="BLUE" clickHandler={()=>setMaster({id,isMaster:true})} >
+           ?  <Button color="BLUE" disabled={!canSubmit} clickHandler={()=>{
+            Alert.alert("Definition!", "Etes-vous sûr que vous voulez definir Master? ", [
+                {
+                  text: "Annuler",
+                  onPress: () => null,
+                  style: "cancel"
+                },
+                { text: "OUI", onPress: () =>{
+                    setMaster({id,isMaster:true})
+                    setcanSubmit(false)
+                }
+               }
+              ]);
+               
+               }} >
                  <Text style={{color:'#fff',fontWeight:'bold'}}>definir  MASTER  </Text>
               </Button>
-           :   <Button color="BLUE" clickHandler={()=>setMaster({id,isMaster:false})} >
+            :  <Button color="BLUE" disabled={!canSubmit} clickHandler={()=>{
+                Alert.alert("Definition!", "Etes-vous sûr que vous voulez definir regulaire? ", [
+                    {
+                      text: "Annuler",
+                      onPress: () => null,
+                      style: "cancel"
+                    },
+                    { text: "OUI", onPress: () =>{
+                        setMaster({id,isMaster:false})
+                        setcanSubmit(false)
+                    }
+                   }
+                  ]);
+              
+               }} >
                  <Text style={{color:'#fff',fontWeight:'bold'}}>definir REGULIARE  </Text>
               </Button>
       }

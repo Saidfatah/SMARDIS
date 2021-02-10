@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react'
-import {View,Text,ScrollView,StyleSheet,TouchableOpacity} from 'react-native'
+import {View,Text,ScrollView,StyleSheet,TouchableOpacity,Alert} from 'react-native'
 import { List } from 'react-native-paper';
 import { connect } from 'react-redux'
 import Button from '../../../Common/Button'
@@ -121,11 +121,22 @@ export const CategoryPage = ({navigation,route,selectedCategoryProducts,resetIsD
                ?<Button
                 xStyle={{...styles.BtnXstyle}} 
                 color={"RED"} 
-                disabled={category.isOther || !canRemove}
+                disabled={!canRemove}
                 clickHandler={e=>{
-                    setcanRemove(false)
-                    removeCategory({category,admin:0,navigation})
-                    navigation.goBack()
+                    Alert.alert("Suppression!", "Etes-vous sûr que vous voulez supprimer? ", [
+                        {
+                          text: "Annuler",
+                          onPress: () => null,
+                          style: "cancel"
+                        },
+                        { text: "OUI", onPress: () =>{
+                            setcanRemove(false)
+                            removeCategory({category,admin:0,navigation})
+                            navigation.goBack()
+                        }
+                       }
+                      ]);
+                    
                 }} 
                 >
                      <Text style={styles.ButtonText}>Supprimer La category</Text>

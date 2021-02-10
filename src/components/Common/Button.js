@@ -1,15 +1,14 @@
 import React from 'react'
 import  {View,StyleSheet,TouchableOpacity} from 'react-native'
 import {colors} from './Colors'
+import Loading from './Loading'
 
-const Button=({children,xStyle,clickHandler,color,disabled})=> {
+const Button=({children,xStyle,clickHandler,color,disabled,loadingSize})=> {
     let  COLOR= '#fff'
   
-    if(color)
-    {
-       COLOR= colors[color]
-    }
-
+    if(color) COLOR= colors[color]
+   
+   
     return  <TouchableOpacity 
          disabled={disabled?true:false}
          style={{
@@ -19,7 +18,11 @@ const Button=({children,xStyle,clickHandler,color,disabled})=> {
          }} 
          onPress={e=>clickHandler()}
          >
-         {children}  
+         {
+         !disabled
+         ?children
+         :<Loading  spacing={loadingSize||30} /> 
+        }  
     </TouchableOpacity>  
 }
 

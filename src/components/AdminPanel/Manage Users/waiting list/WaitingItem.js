@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {View,Text,StyleSheet} from 'react-native'
+import {View,Text,StyleSheet,Alert} from 'react-native'
 import { List } from 'react-native-paper';
 import {colors} from '../../../Common/Colors'
 import Button from '../../../Common/Button'
@@ -38,16 +38,36 @@ export const WaitingItem = ({user,approveUser,rejectUser,resetIsDone,done_reject
           <View style={styles.accordionContentWrrapper} >
           <View style={styles.HFlex} >
               <Button xStyle={styles.xButton} disabled={!canSubmit} color="GREEN" clickHandler={()=>{
-                  approveUser(id)
-                  setcanSubmit(false)
+                   Alert.alert("approbation!", "Etes-vous sûr que vous voulez approver? ", [
+                    {
+                      text: "Annuler",
+                      onPress: () => null,
+                      style: "cancel"
+                    },
+                    { text: "OUI", onPress: () =>{
+                        approveUser(id)
+                        setcanSubmit(false)
+                    }
+                   }
+                  ]);
+                 
                   }} >
                   <Icon style={styles.icon} size={20} name="account-check" />
                   <Text style={styles.text}>Approuver </Text>
               </Button>
               <Button  xStyle={styles.xButton}  disabled={!canSubmit}  color="RED" clickHandler={()=>{
-                  rejectUser(id)
-                  setcanSubmit(false)
-                  
+                      Alert.alert("Rejections!", "Etes-vous sûr que vous voulez rejeter? ", [
+                        {
+                          text: "Annuler",
+                          onPress: () => null,
+                          style: "cancel"
+                        },
+                        { text: "OUI", onPress: () =>{
+                            rejectUser(id)
+                            setcanSubmit(false)
+                        }
+                       }
+                      ]);
                   }} >
                  <Icon style={styles.icon} size={20} name="account-cancel-outline" />
                  <Text style={styles.text}>rejeter  </Text>

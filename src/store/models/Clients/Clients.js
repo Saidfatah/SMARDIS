@@ -98,7 +98,7 @@ const model ={
                                          
                                         
                 moreClientsResponse.onSnapshot(res=>{
-                    if(res.docs){
+                    if(res.docs.length){
                         const docs =res.docs
                         const PrevClients =  [...state.client.clients]
                         PrevClients.pop()
@@ -162,7 +162,7 @@ const model ={
          
                                         
                 clientsResponse.onSnapshot(res=>{
-                    if(res.docs){
+                    if(res.docs.length){
                         const docs =res.docs
                         const clients = docs.map(doc=>({...doc.data(),id:doc.id}))
                         return dispatch.client.fetchedWaitingClients(clients)

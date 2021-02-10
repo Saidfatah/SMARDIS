@@ -3,6 +3,7 @@ import {View,Text,TextInput,StyleSheet} from 'react-native'
 import { connect } from 'react-redux'
 import Label from '../../../Common/Label'
 import Button from '../../../Common/Button'
+import Loading from '../../../Common/Loading'
 import Error from '../../../Common/Error'
 import ImagePicker from '../../../Common/ImagePicker'
 import DropDown from '../../../Common/DropDown'
@@ -280,10 +281,13 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
              <Button
               xStyle={{...styles.BtnXstyle,marginRight:16}} 
               color={"BLUE"} 
+              loadingSize={30}
+              loading={!canSubmit}
               disabled={!canSubmit}
               clickHandler={e=>dispatchAddProduct()} 
               >
                  <Text style={styles.ButtonText}>{update?"Modifier":"Enregistrer"}</Text>
+                 <IonIcon name="trash" size={25} color="#fff" />             
             </Button>
              <Button
               xStyle={styles.BtnXstyle} 

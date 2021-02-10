@@ -1,12 +1,7 @@
 import React,{useEffect,useState} from 'react'
-import {View,Text,StyleSheet,ScrollView} from 'react-native'
+import {View,Text,StyleSheet,ScrollView,Alert} from 'react-native'
 import ProductInfo from '../../../Distrubutor/ClientProductsSelection/Products/ProductInfo'
-import Item from '../../../Common/Item'
 import Button from '../../../Common/Button'
-import {colors} from '../../../Common/Colors'
-import Badge from '../../../Common/Badge'
-import Label from '../../../Common/Label'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import { connect } from 'react-redux'
 
@@ -36,12 +31,24 @@ const ProductPage=({navigation,route,removeProduct,done_removing_product,resetIs
             </View>
             <View style={styles.btns} >
                  <Button
-                  xStyle={styles.BtnXstyle} 
-                  color={"RED"} 
-                  disabled={!canRemove}
-                  clickHandler={e=>{
-                      setcanRemove(false)
-                      removeProduct({product,navigation})
+                   xStyle={styles.BtnXstyle} 
+                   color={"RED"} 
+                   disabled={!canRemove}
+                   loadingSize={30}
+                   clickHandler={e=>{
+                    Alert.alert("Suppression!",  "Etes-vous sûr que vous voulez supprimer? ", [
+                        {
+                          text: "Annuler",
+                          onPress: () => null,
+                          style: "cancel"
+                        },
+                        { text: "OUI", onPress: () =>{
+                            setcanRemove(false)
+                            removeProduct({product,navigation})
+                        }
+                       }
+                      ]);
+                     
                     }} 
                   >
                      <Text style={styles.ButtonText}>Supprimer le produit</Text>

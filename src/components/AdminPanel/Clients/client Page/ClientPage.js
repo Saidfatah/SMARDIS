@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {View,Text,ScrollView,StyleSheet,Linking} from 'react-native'
+import {View,Text,ScrollView,StyleSheet,Linking,Alert} from 'react-native'
 import { connect } from 'react-redux'
 import Item from '../../../Common/Item'
 import Button from '../../../Common/Button'
@@ -78,9 +78,19 @@ export const ClientPage = ({navigation,route,sectors,resetIsDone,done_removing_c
                 color={"RED"} 
                 disabled={!canRemove}
                 clickHandler={e=>{
-                    setcanRemove(false)
-                    removeClient({client,admin:0})
-                    navigation.goBack()
+                    Alert.alert("Suppression!", "Etes-vous sûr que vous voulez supprimer? ", [
+                        {
+                          text: "Annuler",
+                          onPress: () => null,
+                          style: "cancel"
+                        },
+                        { text: "OUI", onPress: () =>{
+                            setcanRemove(false)
+                            removeClient({client,admin:0})
+                            navigation.goBack()
+                        }
+                       }
+                      ]);
                 }} 
                 >
                      <Text style={styles.ButtonText}>Supprimer Le client</Text>

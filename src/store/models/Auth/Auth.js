@@ -365,7 +365,7 @@ const model ={
                                             .where('type','==','ADMIN')
 
                  adminsResponse.onSnapshot(res=>{
-                     if(res.docs){
+                     if(res.docs.length){
                          const admins = res.docs.map(doc=>({...doc.data(),id:doc.id}))
                          return dispatch.auth.fetchedAdmins(admins)
                      }
@@ -388,7 +388,7 @@ const model ={
                                             .where('confirmed','==','PENDING')
 
                  waitingListResponse.onSnapshot(res=>{
-                     if(res.docs){
+                     if(res.docs.lenght){
                          const waitingList = res.docs.map(doc=>({...doc.data(),id:doc.id}))
                          return dispatch.auth.fetchedWaitingList(waitingList)
                      }

@@ -45,10 +45,11 @@ const model ={
         done_fetching_todays_scheduels:false,
         
         done_adding_scheduel:false,
-        done_removing_scheduel:false,
+
 
         done_canceling_order:false,
-        done_resetting_order:false,
+        done_canceling_order:false,
+        done_removing_scheduel:false,
         
         //seclection
         selectedBill : null ,
@@ -101,13 +102,23 @@ const model ={
         }),
         updatedScheduel  : (state,scheduels)=>({
             ...state,
-            scheduels 
+            scheduels ,
+            done_adding_scheduel:true
+        }),
+        updatingScheduelFailed  : (state,scheduels)=>({
+            ...state, 
+            done_adding_scheduel:true
         }),
         removedScheduel  : (state,{scheduels,deletedOrdersCount})=>({
             ...state,
             scheduels ,
             scheduelsCount : state.scheduelsCount -1,
-            ordersCount : state.scheduelsCount -deletedOrdersCount
+            ordersCount : state.scheduelsCount -deletedOrdersCount,
+            done_removing_scheduel:true       
+         }),
+        scheduelRemovingFailed  : (state,args)=>({
+            ...state, 
+            done_removing_scheduel:true       
         }),
         fetchedTodaysSales : (state,todaysSales)=>({
             ...state,
@@ -134,8 +145,8 @@ const model ={
         }),
         fetchTodaysValideOrdersFAILED : (state,orders)=>({
             ...state,
-            valide_orders :orders,
-            valide_orders_count :orders.length || 0,
+            valide_orders :[],
+            valide_orders_count :0,
             todays_validated_orders_first_fetch:false,
             done_fetching_todays_validated_orders:true,
         }),
@@ -208,7 +219,7 @@ const model ={
                                 
 
                  fetchOrdersReponse.onSnapshot(res=>{
-                     if(res.docs){
+                     if(res.docs.length){
                          const orders=res.docs.map(order=>({...order.data(),id:order.id}))
                          //loop over each order product 
                          //a sale is each sold product
@@ -316,7 +327,7 @@ const model ={
       
                 fetchOrdersReponse.onSnapshot(res=>{
            
-                    if(res.docs){
+                    if(res.docs.length){
                         const orders=res.docs.map(order=>({
                             ...order.data(),
                             id:order.id,
@@ -359,7 +370,7 @@ const model ={
                
       
                 fetchOrdersReponse.onSnapshot(res=>{
-                    if(res.docs){
+                    if(res.docs.lenght){
                         const orders=res.docs.map(order=>({
                             ...order.data(),
                             id:order.id,
@@ -369,13 +380,13 @@ const model ={
 
                       return  dispatch.scheduel.fetchedTodaysValideOrders(orders)
                     }
-                    dispatch.scheduel.fetchTodaysValideOrdersFAILED(orders)
+                    dispatch.scheduel.fetchTodaysValideOrdersFAILED()
                 })
                  
              } catch (error) {
                  console.log('\n-----fetchOrders-----')
                  console.log(error)
-                 dispatch.scheduel.fetchTodaysValideOrdersFAILED(orders)
+                 dispatch.scheduel.fetchTodaysValideOrdersFAILED()
              }
         },
         async fetchDistrubutorTodaysCanceledOrders(arg,state){
@@ -393,7 +404,7 @@ const model ={
 
       
                 fetchOrdersReponse.onSnapshot(res=>{
-                    if(res.docs){
+                    if(res.docs.lenght){
                         const orders=res.docs.map(order=>({
                             ...order.data(),
                             id:order.id,
@@ -455,15 +466,15 @@ const model ={
 
         async fetchScheduels(arg,state){
             try {
-                const fetchScheduelsReponse = await firestore()
-                                                .collection('scheduels')
+                const fetchScheduelsReponse = await firestore().collection('scheduels')
 
                  fetchScheduelsReponse.onSnapshot(res=>{
-                     if(res.docs){
-                          const scheduels=res.docs.map(order=>({
-                              ...order.data(),
-                              id:order.id,
-                              date:order.data().date.toDate()
+                     if(res.docs.length){
+                          const scheduels=res.docs.map(scheduel=>({
+                              ...scheduel.data(),
+                              id:scheduel.id,
+                              date:scheduel.data().date.toDate(),
+                              start_date:scheduel.data().start_date.toDate(),
                             }))
                          return  dispatch.scheduel.fetchedScheduels(scheduels)
                       }
@@ -505,17 +516,23 @@ const model ={
                 
                 if(scheduelOrders.length>0){
                      var batch = firestore().batch()
-                     scheduelOrders.forEach((doc) => {
+                 scheduelOrders.forEach((doc) => {
                          var docRef = firestore().collection("orders").doc(); 
                          batch.set(docRef, doc);
-                     });
-                     console.log('\nadded orders list ')  
-                     batch.commit()
+                 });
+                 console.log('\nadded orders list ')  
+                 batch.commit()
+                       
                 }
-
+                    
                 const scheduels= [...state.scheduel.scheduels]
-                scheduels.push(newSchedule)
-                dispatch.scheduel.addedScheduel({scheduels,addedOrdersCount})
+                 scheduels.push(newSchedule)
+                 dispatch.scheduel.addedScheduel({scheduels,addedOrdersCount})
+                 dispatch.toast.show({
+                  type:'success',
+                  title:'Ajoute ',
+                  message:`le trajet  est ajouter avec success `
+                 })
            } catch (error) {
                console.log('\n------[addOrder]------')
                console.log(error)
@@ -523,7 +540,7 @@ const model ={
 
            }
         },
-        async updateScheduel({id,distination,distrubutor},state){
+        async updateScheduel({id,distination,distrubutor,start_date},state){
          try {
              const scheduels = [...state.scheduel.scheduels]
              const targetScheduel= scheduels.filter(scheduel=>scheduel.id == id)[0]
@@ -533,25 +550,33 @@ const model ={
               const scheduelUpdateResponse = await firestore()
                                                 .collection('scheduels')
                                                 .doc(id)
-                                                .update({distination,distrubutor})
+                                                .update({
+                                                    distination,
+                                                    distrubutor,
+                                                    start_date:firestore.Timestamp.fromDate(new Date(start_date))
+                                                })
 
               //update associated orders [turn]
               const associatedOrdersResponse = await firestore()
-                                                .collection('scheduels')
+                                                .collection('orders')
                                                 .where('scheduleId','==',id)
                                                 .get()
               
               //map distination.clients into [{d,turn}] array
               const idTurn = distination.clients.map((cl,index)=>({id:cl.id,turn:index}))                                  
-              associatedOrdersResponse.docs.forEach((order)=>{
-                  const turn = idTurn.filter(cl=>cl.id==order.id)[0].turn
-                  order.ref.update({turn})
-              })
-                                                
+              if(associatedOrdersResponse.docs.length){
+                  console.log('found orders')
+                associatedOrdersResponse.docs.forEach((order)=>{
+                    const turn = idTurn.filter(cl=>cl.id==order.data().client.id)[0].turn
+                    order.ref.update({turn})
+                })
+              }
+                        console.log('updating scheduel')                        
 
               dispatch.scheduel.updatedScheduel(scheduels)
-         } catch (error) {
+            } catch (error) {
              console.log('\n-----updateScheduel-----')
+             dispatch.scheduel.updatingScheduelFailed()
              console.log(error)
          }
         },
@@ -560,7 +585,7 @@ const model ={
              const scheduels = [...state.scheduel.scheduels]
              const targetScheduel= scheduels.filter(scheduel=>scheduel.id == id)[0]
              const targetScheduelIndex= scheduels.indexOf(targetScheduel)
-             scheduels[targetScheduelIndex] = {...targetScheduel,distination,distrubutor}
+             scheduels.splice(targetScheduelIndex,1)
 
               const scheduelDeleteResponse = await firestore()
                                                 .collection('scheduels')
@@ -579,9 +604,10 @@ const model ={
               })
                                                 
               dispatch.scheduel.removedScheduel({scheduels,deletedOrdersCount})
-         } catch (error) {
-             console.log('\n-----updateScheduel-----')
-             console.log(error)
+            } catch (error) {
+                console.log('\n-----updateScheduel-----')
+                console.log(error)
+                dispatch.scheduel.scheduelRemovingFailed()
          }
         },
 

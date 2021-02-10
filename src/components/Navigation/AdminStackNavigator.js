@@ -186,6 +186,11 @@ const AdminStackNavigator =()=>{
                 options={{title:"Emploi du temps"}} 
             />
              <AdminStack.Screen 
+                name="ADMINupdateSchedule" 
+                component={AdminSchedule} 
+                options={{title:"Modfier L'emploi du temps"}} 
+            />
+             <AdminStack.Screen 
                 name="ADMINlistOfScheduleS" 
                 component={AdminListOfSchedules} 
                 options={{title:"List des Emploi du temps"}} 

@@ -5,7 +5,8 @@ const Loading=({spacing})=> {
     return <Image  
     style={{
         width:spacing?spacing:100,
-        height :spacing ?spacing :100
+        height :spacing ?spacing :100,
+        alignSelf:'center'
     }} 
     source={require('../../images/load.gif')} 
     />

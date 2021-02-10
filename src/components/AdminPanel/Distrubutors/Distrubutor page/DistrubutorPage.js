@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react'
-import {View,Text,ScrollView,StyleSheet,TouchableOpacity} from 'react-native'
+import {View,Text,ScrollView,StyleSheet,Alert} from 'react-native'
 import { connect } from 'react-redux'
 import Button from '../../../Common/Button'
 import Item from '../../../Common/Item'
@@ -51,8 +51,18 @@ export const DistrubutorPage = ({navigation,route,done_removing_distrubutor,remo
                 color={"RED"} 
                 disabled={!canRemove}
                 clickHandler={e=>{
-                    setcanRemove(false)
-                    removeDistrubutor({distrubutor,admin:0,navigation})
+                    Alert.alert("Suppression!", "Etes-vous sûr que vous voulez supprimer? ", [
+                        {
+                          text: "Annuler",
+                          onPress: () => null,
+                          style: "cancel"
+                        },
+                        { text: "OUI", onPress: () =>{
+                            setcanRemove(false)
+                            removeDistrubutor({distrubutor,admin:0,navigation})
+                        }
+                       }
+                      ]);
                 }} 
                 >
                      <Text style={styles.ButtonText}>Supprimer Le vendeur</Text>

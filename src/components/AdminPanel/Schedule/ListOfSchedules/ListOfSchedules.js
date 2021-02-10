@@ -9,7 +9,7 @@ const {height}=Dimensions.get('screen')
 const HEIGHT = height- StatusBar.currentHeight
 
 
-export const ListOfSchedules = ({scheduels,done_fetching_todays_scheduels}) => {
+export const ListOfSchedules = ({navigation,scheduels,done_fetching_todays_scheduels}) => {
  
 
     const TITLE = scheduels.length >0 ? "les order active" :"ilnya pas de emploi du temps"
@@ -23,7 +23,7 @@ export const ListOfSchedules = ({scheduels,done_fetching_todays_scheduels}) => {
         <ScrollView  > 
             <View style={{backgroundColor:'#fff',minHeight:HEIGHT, flex:1 ,padding:8}}>
                  <List.Section title={TITLE}>
-                    {scheduels.map((item,i)=> <ScheduleItem scheduel={item} key={i}  />)}
+                    {scheduels.map((item,i)=> <ScheduleItem navigation={navigation} scheduel={item} key={i}  />)}
                  </List.Section>
             </View>
         </ScrollView>
