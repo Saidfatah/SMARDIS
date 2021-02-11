@@ -3,7 +3,7 @@ import  {View,StyleSheet,TouchableOpacity} from 'react-native'
 import {colors} from './Colors'
 import Loading from './Loading'
 
-const Button=({children,xStyle,clickHandler,color,disabled,loadingSize})=> {
+const Button=({children,xStyle,clickHandler,color,disabled,loadingSize,noLoading})=> {
     let  COLOR= '#fff'
   
     if(color) COLOR= colors[color]
@@ -19,7 +19,7 @@ const Button=({children,xStyle,clickHandler,color,disabled,loadingSize})=> {
          onPress={e=>clickHandler()}
          >
          {
-         !disabled
+         !disabled || noLoading
          ?children
          :<Loading  spacing={loadingSize||30} /> 
         }  

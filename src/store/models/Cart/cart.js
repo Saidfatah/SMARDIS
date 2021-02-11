@@ -146,22 +146,37 @@ const model ={
 
                  //set next client turn 
                  dispatch.scheduel.setNextTurn()
+                 
 
   
                  //update order doc ["VALIDATED"]
                  const client = targetGuest
+                 let billRef = client.name.substring(0,4).toUpperCase()+scheduelId 
                  const validateOrderReponse = await firestore()
                   .collection('orders')
                   .doc(orderId)
                   .update({
                         products:[...targetGuest.items],
-                        billRef:client.name.toUpperCase()+scheduelId ,
+                        billRef,
                         status: "VALIDATED",
                         sale_date : firestore.Timestamp.fromDate(new Date()), 
                         sale_hour : firestore.Timestamp.fromDate(new Date()),
                   })
                
-               
+                 //update distrubutor commits 
+                 const currentDistrubutorId = state.auth.distrubutorId
+                 const updateCommitsReponse = await firestore()
+                 .collection('users')
+                 .doc(currentDistrubutorId)
+                 .update({
+                    commits:firestore.FieldValue.arrayUnion({
+                        date : firestore.Timestamp.fromDate(new Date()),
+                        billRef,
+                        number_of_products: targetGuest.items.length,
+                        validated:"VALIDATED"
+                    })
+                 })
+                             
                 
 
                  dispatch.toast.show({

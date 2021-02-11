@@ -6,7 +6,7 @@ import Button from '../../Common/Button'
 const ClientItem=({navigation,client,currentSectorIndex,currentTurn,currentSector,sector })=> {
       const {name,turn,orderId}=client
       const navigateToRoute=(e)=>navigation.navigate('DISTRIBUTORclientDelivery', { clientId:client.id ,client ,sector,orderId });
-
+      console.log({turn,currentTurn})
       return <Item xStyle={{ marginBottom:16}} >
         <View style={{ 
           display:'flex',
@@ -19,6 +19,7 @@ const ClientItem=({navigation,client,currentSectorIndex,currentTurn,currentSecto
             <Button
              xStyle={{flex:1,margin:0,borderRadius:12}} 
              color={"BLUE"} 
+             noLoading={true}
              disabled={turn > currentTurn  ||  currentSector != sector.id
                      ?true
                      :false

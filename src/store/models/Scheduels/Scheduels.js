@@ -258,7 +258,6 @@ const model ={
         },
         async fetchTodaysOrders(arg,state){
             try {
-                console.log('fetching orders')
                 const todays_orders_first_fetch= state.scheduel.todays_orders_first_fetch
                 if(todays_orders_first_fetch) return 
 
@@ -266,12 +265,13 @@ const model ={
 
                 const fetchOrdersReponse = await firestore()
                       .collection('orders')
+                      .orderBy('turn','asc')
                       .where('distrubutorId','==',currentDistrubutorId)
                       .where('status','==','PENDING')
-                  
+            
                 fetchOrdersReponse.onSnapshot(res=>{
-                    const docs= res.docs
-                    if(docs.length){
+                    if(res.docs.length){
+                        const docs= res.docs
                         const orderList = docs.map(doc=>({...doc.data(),orderId:doc.id}))
                          let lastOrder= orderList[0]
                          const firstOrder ={...lastOrder}
@@ -318,6 +318,7 @@ const model ={
                 })
             } catch (error) {
                 console.log("----fetchTodaysSectors catch1------")
+                console.log(error)
                 dispatch.scheduel.fetchedTodaysSectorsFailed()
             }
         },
@@ -365,6 +366,7 @@ const model ={
                           .collection('orders')
                           .where('distrubutorId','==',currentDistrubutorId)
                           .where('status','==','VALIDATED')
+                          
     
                 }
                
