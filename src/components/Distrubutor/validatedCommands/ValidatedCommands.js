@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import {View,Text,ScrollView,StyleSheet} from 'react-native'
 import Item from '../../Common/Item'
@@ -6,11 +6,9 @@ import Button from '../../Common/Button'
 import Loading from '../../Common/Loading'
 import BackgroundImage from '../../Common/BackgroundImage'
 
-const ValidatedCommands=({navigation,valide_orders,done_fetching_todays_validated_orders,fetchTodaysValideOrders,selectBill})=> {
+const ValidatedCommands=({navigation,valide_orders,done_fetching_todays_validated_orders,selectBill})=> {
    
-    useEffect(() => {
-        fetchTodaysValideOrders("DISTRUBUTOR")
-    }, [])
+  
 
     return <BackgroundImage>
         {

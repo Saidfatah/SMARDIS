@@ -137,7 +137,7 @@ const model ={
                 const categoriesResponse= await firestore().collection('categories')
                 categoriesResponse.onSnapshot(res=>{
                     const docs =res.docs
-                    if(docs){
+                    if(docs.length){
                         const categories = docs.map(doc=>({...doc.data(),id:doc.id}))
                         return dispatch.categories.fetchedCategories(categories)
                     }

@@ -83,7 +83,7 @@ const model ={
                 const clientsResponse= await firestore().collection('sectors')
                 clientsResponse.onSnapshot(res=>{
                     const docs =res.docs
-                    if(docs){
+                    if(docs.length){
                         const sectors = docs.map(doc=>({...doc.data(),id:doc.id}))
                         return dispatch.sector.fetchedSectors(sectors)
                     }

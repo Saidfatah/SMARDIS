@@ -26,6 +26,7 @@ export default  GuestItem
 var styles = StyleSheet.create({
     item:{
         marginBottom:8,
+        flex:1,
         display:'flex',
         flexDirection:'row',
         alignItems:'center',

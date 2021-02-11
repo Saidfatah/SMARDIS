@@ -29,14 +29,12 @@ const model ={
             ...state,
             cartGuests :cartGuests
         }),
-        validatedGuestOrder : (state,{cartGuests,todaysBills})=>({
+        validatedGuestOrder : (state,cartGuests)=>({
             ...state,
             cartGuests   , 
-            todaysBills, 
-            selectedBill : todaysBills[todaysBills.length -1],
             done_validating_product:true
         }),
-        validatingGuestOrderFailed : (state,{cartGuests,todaysBills})=>({
+        validatingGuestOrderFailed : (state,args)=>({
             ...state,
             done_validating_product:true
         }),
@@ -137,6 +135,7 @@ const model ={
         async validateGuestOrder({guestId,scheduelId},state){
            try {
              const cartGuests= [...state.cart.cartGuests]
+         
              const targetGuest = cartGuests.filter(g=>g.guestId == guestId)[0]
              if( targetGuest ){
                  const orderId =targetGuest.orderId 
@@ -148,10 +147,9 @@ const model ={
                  //set next client turn 
                  dispatch.scheduel.setNextTurn()
 
-                 //create bill and add it to todaysBills list 
-                 //update order associated to this client 
+  
+                 //update order doc ["VALIDATED"]
                  const client = targetGuest
-                
                  const validateOrderReponse = await firestore()
                   .collection('orders')
                   .doc(orderId)
@@ -171,7 +169,7 @@ const model ={
                     title:'Validation ',
                     message:`La command  est valider avec success `
                 })
-                dispatch.cart.validatedGuestOrder({cartGuests})
+                dispatch.cart.validatedGuestOrder(cartGuests)
   
              }
             } catch (error) {

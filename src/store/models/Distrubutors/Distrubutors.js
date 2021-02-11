@@ -83,7 +83,7 @@ const model ={
              
                 distrubutorsResponse.onSnapshot(res=>{
                     const docs= res.docs
-                    if(docs){
+                    if(docs.length){
                          const distrubtors = res.docs.map(doc=>({...doc.data(),id:doc.id}))
                          return dispatch.distrubutor.fetcheddistrubutors({
                                               distrubutors:distrubtors,
