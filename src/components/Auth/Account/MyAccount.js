@@ -5,6 +5,7 @@ import Label from '../../Common/Label'
 import Button from '../../Common/Button'
 import Error from '../../Common/Error'
 import Loading from '../../Common/Loading'
+import CitiesDropDown from '../../Common/CitiesDropDown'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../Common/Colors'
 
@@ -27,9 +28,9 @@ export const MyAccount = ({navigation,user,userPassword,resetIsDone,done_updatin
      const [userInfo, setuserInfo] = useState(null)
 
     useEffect(() => {
-        console.log(userPassword)
         if(user){
             const {type,city,name,phone}=user
+            console.log(city)
             const userInofObj={type,city,name,phone,password:userPassword}
             if(type =="ADMIN"){
                 const {ACCESS_CODE}=user
@@ -131,7 +132,9 @@ export const MyAccount = ({navigation,user,userPassword,resetIsDone,done_updatin
                     onChangeText={text=> setname(text) } 
             />
 
- 
+            <Label label="Ville"  mga={16} />
+            <Error trigger={errors.cityREQUIRED} error={ERRORS_MESSAGES[0].message} />
+            {city != undefined &&<CitiesDropDown {...{setcity:handelChange('city'),city}} />}
 
             <Label label="Mote de passe"  mga={16} />
             <Error trigger={errors.passwordREQUIRED} error={ERRORS_MESSAGES[0].message} />
@@ -156,15 +159,7 @@ export const MyAccount = ({navigation,user,userPassword,resetIsDone,done_updatin
             />
 
        
-            <Label label="Ville"  mga={16} />
-            <Error trigger={errors.cityREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <TextInput style={styles.Input}   
-                    placeholder={"entrer la ville du vendeur"}   
-                    defaultValue={city} 
-                    onFocus={e=> resetErrors()}
-                    keyboardType="default"
-                    onChangeText={handelChange('city') } 
-            />
+
         </View>
 
         <View style={styles.btns} >

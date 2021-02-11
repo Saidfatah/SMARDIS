@@ -39,7 +39,7 @@ const Schedule = ({navigation,route,addScheduel,clients,updateScheduel,done_addi
             const { distrubutor,distination ,id}=scheduel
             setupdate(true)
             setscheduelToBeUpdated(id)
-           setstart_date(scheduel.start_date)
+            setstart_date(scheduel.start_date)
             setselectedSectorClients([...distination.clients])
             setorderListOfClients([...distination.clients])
             setselectedDistrubutor(distrubutors.filter(d=>d.id == distrubutor.id)[0])

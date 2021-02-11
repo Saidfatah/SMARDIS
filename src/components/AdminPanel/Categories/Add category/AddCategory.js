@@ -89,22 +89,9 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIs
             />
 
 
-            <Label label="Image" mga={16} />
-            <Error trigger={errors.imageREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <Button
-              xStyle={{...styles.BtnXstyle,marginRight:16}} 
-              color={"LIGHTGREY"} 
-              clickHandler={e=>{
-                  if(name == "")return seterrors({...errors,nameREQUIRED:true})
-                  setModalVisible(true)
-                 
-               }} 
-              >
-                 <Text style={styles.ButtonText}>Ajouter Une Image</Text>
-            </Button>
             <ImagePicker {...{
-                setModalVisible,
-                modalVisible,
+                seterrors,
+                errors,
                 model:'CATEGORY',
                 imageUploadHandler:uploadCategoryImage,
                 name

@@ -5,6 +5,7 @@ import Label from '../../../Common/Label'
 import Button from '../../../Common/Button'
 import Error from '../../../Common/Error'
 import DropDown from '../../../Common/DropDown'
+import CitiesDropDown from '../../../Common/CitiesDropDown'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
 
@@ -201,13 +202,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,done_adding_cli
     
             <Label label="Ville" mga={16} />
             <Error trigger={errors.cityREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <TextInput style={styles.Input}   
-                    placeholder={"Entrer Le nom de la ville"}   
-                    defaultValue={city} 
-                    keyboardType="default"
-                    onFocus={e=> resetErrors()}
-                    onChangeText={text=>handelChange('city')(text)} 
-            />
+            <CitiesDropDown {...{setcity:handelChange('city'),city}} />
     
             <Label label="Téléphone" mga={16} />
             <Error trigger={errors.phoneREQUIRED} error={ERRORS_MESSAGES[0].message} />

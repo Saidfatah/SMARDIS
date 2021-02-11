@@ -1,42 +1,52 @@
 import  React,{createRef,useEffect,useState} from 'react'
-import { StyleSheet} from 'react-native'
-import NumericInput from 'react-native-numeric-input'
+import { StyleSheet,Text,TouchableHighlight,View} from 'react-native'
 import {colors} from '../Common/Colors'
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const Quantity=({quantity,guestId,itemId,updateQuantity})=> {
     const [quantityLocal, setquantityLocal] = useState(quantity)
     const ref =createRef()
 
-    useEffect(() => {
-        let mounted = true 
-        if(mounted){
-            ref.current+=1
-            console.log({quantity,mounted})
-            setquantityLocal(quantity)
-        }
+    // useEffect(() => {
+    //     let mounted = true 
+    //     if(mounted){
+    //         ref.current+=1
+    //         console.log({quantity,mounted})
+    //         setquantityLocal(quantity)
+    //     }
        
-        return ()=>mounted = false
-    }, [quantity])
-
-    return <NumericInput 
-            iconStyle={{
-                color:"#fff",
-                borderRadius:25
-            }}
-            iconSize={20}
-            textColor={colors.BLACK}
-            containerStyle={{backgroundColor:colors.RED,borderRadius:12}}
-            borderColor={colors.RED}
-            leftButtonBackgroundColor={"transparent"}
-            rightButtonBackgroundColor={"transparent"}
-            minValue={1}
-            step={1}
-            value={quantityLocal} 
-            onChange={value => {
-                updateQuantity({guestId,itemId,quantity:value  })
-            }} 
-    />
+    //     return ()=>mounted = false
+    // }, [quantity])
+    
+    const onQuanitityChange=(increment)=>(e)=>{
+        console.log(increment)
+       let newQuantity = quantity
+       if(quantity +increment <0) newQuantity=0
+       updateQuantity(newQuantity)
+    }
+    return  <View styles={styles.flex} >
+         <TouchableHighlight onPress={onQuanitityChange(-1)}  >
+             <View style={{
+                 ...styles.btn,
+                 borderTopLeftRadius:12,
+                 borderBottomLeftRadius:12,
+             }} >
+                <Icon nam="minus" color={colors.BLACK} />
+             </View>
+         </TouchableHighlight>
+         <Text style={styles.text} >
+             {quantity}
+         </Text>
+         <TouchableHighlight onPress={onQuanitityChange(1)} >
+             <View style={{
+                 ...styles.btn,
+                 borderTopRightRadius:12,
+                 borderBottomRightRadius:12,
+             }} >
+                <Icon nam="plus" color={colors.BLACK} />
+             </View>
+         </TouchableHighlight>
+    </View>
 }
 
 
@@ -48,5 +58,15 @@ var styles = StyleSheet.create({
         display:'flex',
         flexDirection:'row',
         alignItems:'center'
+   },
+   btn:{
+       backgroundColor:colors.RED,
+       padding:8,
+       display:'flex',
+       justifyContent:'center',
+       alignItems:'center'
+   },
+   text:{
+       fontWeight:'bold'
    }
  });

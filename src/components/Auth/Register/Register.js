@@ -7,6 +7,7 @@ import Button from '../../Common/Button'
 import Error from '../../Common/Error'
 import Label from '../../Common/Label'
 import Logo from '../../Common/Logo'
+import CitiesDropDown from '../../Common/CitiesDropDown'
 import Loading from '../../Common/Loading'
 import { connect } from 'react-redux'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
@@ -228,13 +229,8 @@ const  Register=({navigation,registerError,register})=> {
                       <View style={{width:'100%'}} >
                       <Label label="Ville "  color="#fff"  mga={4} />
                       <Error trigger={errors.cityREQUIRED} error={REQUIRED_FIELD} />
-                      <TextInput style={{...styles.Input}}   
-                          placeholder={"Entrer le nom du votre ville"}   
-                          defaultValue={city} 
-                          placeholderTextColor="#fff"
-                          onFocus={e=> resetErrors()}
-                          onChangeText={handelChange('city')} 
-                      />
+                      <CitiesDropDown {...{setcity:handelChange('city'),city}} />
+
                  </View>
                      <Error trigger={errors.UNKNOWN} error={registerError && registerError.message} />
                       <Button 

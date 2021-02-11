@@ -182,25 +182,13 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
                     onChangeText={text=>handelChange('ref')(text)} 
             /> 
 
-            <Label label="Image" mga={16} />
-            <Error trigger={errors.imageREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <Button
-              xStyle={{...styles.BtnXstyle,marginRight:16}} 
-              color={"LIGHTGREY"} 
-              clickHandler={e=>{
-                  if(name == "")return seterrors({...errors,nameREQUIRED:true})
-                  setModalVisible(true)
-                 
-               }} 
-              >
-                 <Text style={styles.ButtonText}>Ajouter Une Image</Text>
-            </Button>
+          
             <ImagePicker {...{
-                setModalVisible,
-                modalVisible,
                 model:'PRODUCT',
                 imageUploadHandler:uploadProductImage,
-                name
+                name,
+                seterrors,
+                errors
             }}/>
     
 
