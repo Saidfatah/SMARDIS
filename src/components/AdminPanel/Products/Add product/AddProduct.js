@@ -23,6 +23,7 @@ const ERRORS_INITIAL_CONFIG = {
     stockREQUIRED:false,
     imageREQUIRED:false,
     categoryREQUIRED:false,
+    addERROR:false,
 }
 const ERRORS_MESSAGES= [
     {id:'REQUIRED',message:'ce champ est obligatoir'}
@@ -31,8 +32,7 @@ const ERRORS_MESSAGES= [
 
 
 
-export const AddProduct = ({route,navigation,updateProduct,addProduct,categories,done_adding_product,resetIsDone,uploadedProductImageUri,uploadProductImage}) => {
-    const [modalVisible, setModalVisible] = useState(false);
+export const AddProduct = ({route,navigation,updateProduct,product_adding_error,addProduct,categories,done_adding_product,resetIsDone,uploadedProductImageUri,uploadProductImage}) => {
     const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
     const [update, setupdate] = useState(false)
     const [canSubmit, setcanSubmit] = useState(true)
@@ -78,6 +78,9 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
     useEffect(() => {
         if(uploadedProductImageUri != null) handelChange('image')(uploadedProductImageUri)
     }, [uploadedProductImageUri])
+    useEffect(() => {
+        product_adding_error != null && seterrors({...errors,addERROR:true})
+    }, [product_adding_error])
 
     const resetErrors=()=>seterrors({...ERRORS_INITIAL_CONFIG})
     const handelChange=input=>v=>{ setproductData({...productData,[input]:v}) }
@@ -236,35 +239,9 @@ export const AddProduct = ({route,navigation,updateProduct,addProduct,categories
                     onFocus={e=> resetErrors()}
                     onChangeText={handleTextChange('price4')} 
             />
-            
-            
-           
-    
-            {/* <Label label="Prix active" />
-            <Error trigger={errors.activePriceREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <DropDown 
-                data={PRICES.map(p=>({value : p, label :p}))} 
-                setSelected={setactivePrice} 
-                selected={activePrice}
-            /> */}
-{/* 
-            <Label label="Stock" mga={16}/>
-            <Error trigger={errors.stockREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <TextInput style={styles.Input}   
-                    placeholder={"Entrer le stock "}   
-                    defaultValue={stock.toString()} 
-                    keyboardType="decimal-pad"
-                    onFocus={e=> resetErrors()}
-                    onChangeText={text=>{
-                        let  value = parseFloat(text)
-                        if(value == NaN || text.includes('NaN')) value = 0
-                        handelChange('stock')(value)
-                    }} 
-            /> */}
-    
         </View>
 
-
+        <Error trigger={errors.addERROR} error={product_adding_error && product_adding_error.message} />
         <View style={styles.btns} >
              <Button
               xStyle={{...styles.BtnXstyle,marginRight:16}} 
@@ -295,7 +272,8 @@ export default connect(
     state=>({
        categories : state.categories.categories,
        uploadedProductImageUri : state.products.uploadedProductImageUri,
-       done_adding_product:state.products.done_adding_product
+       done_adding_product:state.products.done_adding_product,
+       product_adding_error:state.products.product_adding_error,
     })
     , 
     dispatch=>({

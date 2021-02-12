@@ -15,6 +15,7 @@ const model ={
         last_visible_Product:null,
         done_adding_product:false,
         done_removing_product:false,
+        product_adding_error:null,
     },
     reducers:{
         fetchedProducts : (state,{products,last_visible_Product})=>({
@@ -35,15 +36,18 @@ const model ={
             ...state,
             productsCount  
         }),
+
         addedProduct : (state,products)=>({
             ...state,
             products :[...products],
             productsCount :state.productsCount +1,
-            done_adding_product:true
+            done_adding_product:true,
+            product_adding_error:null
         }),
-        addingProductFailed : (state,products)=>({
+        addingProductFailed : (state,product_adding_error)=>({
             ...state,
-            done_adding_product:true
+            done_adding_product:true,
+            product_adding_error
         }),
         uploadedProductImage : (state,{url,name,productImageUploadState})=>({
             ...state,
@@ -57,14 +61,17 @@ const model ={
             categoryImageUploadState:"STALE",
             uploadedProductImageUri:"NO_IMAGE"
         }),
+
         setedProductCategory : (state,products)=>({
             ...state,
             products :[...products]
         }),
+
         updatedProduct : (state,products)=>({
             ...state,
             products :[...products]
         }),
+
         removedProduct : (state,products)=>({
             ...state,
             products :[...products],
@@ -75,6 +82,7 @@ const model ={
             ...state,
             done_removing_product:true
         }),
+
         reseted:  (state,field)=>({
             ...state,
             [field]:false
@@ -146,7 +154,18 @@ const model ={
                 const newProduct = productModel(name,category,image,price1,ref,price2,price3,price4)
                 
                 //check if ref is already used 
+                const checkRefResponse= firestore()
+                                    .collection('products')
+                                    .where('ref','==',ref)
+                                    .get()
+                if((await checkRefResponse).docs.length) throw Error('REF_USED')                 
                 //check if name is already used 
+                const checkNameResponse= firestore()
+                                    .collection('products')
+                                    .where('name','==',name)
+                                    .get()
+                if((await checkNameResponse).docs.length) throw Error('NAME_USED')                 
+
                 //remove from firestore
                 const addResponse= firestore()
                                   .collection('products')
@@ -162,7 +181,11 @@ const model ={
                 dispatch.products.addedProduct(products)
              } catch (error) {
                  console.log(error)
-                 dispatch.products.addingProductFailed()
+                 if(error.message == "NAME_USED")
+                  return  dispatch.products.addingProductFailed({id:"NAME_USED",message:"le titre du produit est deja utuliser"})
+                 if(error.message == "REF_USED")
+                  return  dispatch.products.addingProductFailed({id:"REF_USED",message:"le référence du produit est deja utuliser"})
+                dispatch.products.addingProductFailed({id:"ADDING_FAILED",message:"ne peut pas ajouter ce produit d'abord"})
              }
         },
         async updateProduct({id,navigation,name,category,image,ref,price1,price2,price3,price4},state){

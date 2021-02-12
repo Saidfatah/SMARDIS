@@ -19,6 +19,7 @@ const ERRORS_INITIAL_CONFIG = {
     secteurREQUIRED:false,
     objectifREQUIRED:false,
     priceREQUIRED:false,
+    addERROR:false
 }
 const ERRORS_MESSAGES= [
     {id:'REQUIRED',message:'ce champ est obligatoir'}
@@ -30,7 +31,7 @@ const PRICES=[
     "prix4"
 ]
 
-export const AddClient = ({route,navigation,userType,resetIsDone,done_adding_client,updateClient,addClient,sectors}) => {
+export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_error,done_adding_client,updateClient,addClient,sectors}) => {
     const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
     const [canSubmit, setcanSubmit] = useState(true)
     const [update, setupdate] = useState(false)
@@ -41,7 +42,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,done_adding_cli
         phone:'',
         city:'',
         ref:'',
-        name:'',
+        name:'Mohsine new',
         address:'',
         objectif:0,
     })
@@ -72,6 +73,10 @@ export const AddClient = ({route,navigation,userType,resetIsDone,done_adding_cli
             // setselectedPrice(PRICES.filter(p=>p == price)[0])
         } 
     }, [])
+    useEffect(() => {
+        client_adding_error != null && seterrors({...errors,addERROR:true})
+    }, [client_adding_error])
+
 
     const resetErrors=()=>seterrors({...ERRORS_INITIAL_CONFIG})
     const handelChange=input=>v=>{ setclientData({...clientData,[input]:v}) }
@@ -149,9 +154,21 @@ export const AddClient = ({route,navigation,userType,resetIsDone,done_adding_cli
             <Label label="Secteurs" mga={16} />
             <Error trigger={errors.secteurREQUIRED} error={ERRORS_MESSAGES[0].message} />
             <DropDown 
-                data={sectors.map(s=>({value : s, label :s.name}))} 
+                data={sectors.map(sector=>({
+                    value:sector,
+                    label:sector.name,
+                    selected: sector.id==selectedSector.id
+                }))}
+                keyExtractor={(item) => item.value.id}
                 setSelected={setselectedSector} 
-                selected={selectedSector}
+                selected={sectors
+                    .filter(s=>s.id == selectedSector.id)
+                    .map(c=>({
+                        label:selectedSector.name,
+                        value:selectedSector
+                    }))[0]
+                }
+
             />
            
            {
@@ -195,6 +212,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,done_adding_cli
                     data={PRICES.map(p=>({value : p, label :p.toString()}))} 
                     setSelected={setselectedPrice} 
                     selected={selectedPrice}
+                    keyExtractor={(item) => item.value}
                 />
             </View>
             :null
@@ -230,6 +248,8 @@ export const AddClient = ({route,navigation,userType,resetIsDone,done_adding_cli
                     onChangeText={text=>handelChange('address')(text)} 
             />
         </View>
+
+        <Error trigger={errors.addERROR} error={client_adding_error && client_adding_error.message} />
         <View style={styles.btns} >
              <Button
               xStyle={{...styles.BtnXstyle,marginRight:16}} 
@@ -257,6 +277,7 @@ export default connect(
        sectors : state.sector.sectors,
        userType : state.auth.userType,
        done_adding_client : state.client.done_adding_client,
+       client_adding_error : state.client.client_adding_error,
     })
     , 
     dispatch=>({

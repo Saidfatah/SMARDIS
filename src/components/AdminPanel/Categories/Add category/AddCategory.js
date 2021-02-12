@@ -12,12 +12,12 @@ import ImagePicker from '../../../Common/ImagePicker'
 const ERRORS_INITIAL_CONFIG = {
     nameREQUIRED:false,
     imageREQUIRED:false,
+    addERROR:false
 }
 const ERRORS_MESSAGES= [
     {id:'REQUIRED',message:'ce champ est obligatoir'}
 ]
-export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIsDone,done_adding_category,uploadedCategoryImageUri,uploadCategoryImage}) => {
-     const [modalVisible, setModalVisible] = useState(false);
+export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIsDone,category_add_error,done_adding_category,uploadedCategoryImageUri,uploadCategoryImage}) => {
      const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
      const [canSubmit, setcanSubmit] = useState(true)
      const [name, setname] = useState("")
@@ -41,8 +41,11 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIs
         } 
     }, [])
     useEffect(() => {
-        if(uploadedCategoryImageUri != null) setimage(uploadedCategoryImageUri)
+        uploadedCategoryImageUri != null && setimage(uploadedCategoryImageUri)
     }, [uploadedCategoryImageUri])
+    useEffect(() => {
+        category_add_error != null && seterrors({...errors,addERROR:true})
+    }, [category_add_error])
 
     const resetErrors=()=>seterrors({...ERRORS_INITIAL_CONFIG})
     const validateFields =()=>{
@@ -99,7 +102,7 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIs
 
             
         </View>
-
+       <Error  trigger={errors.addERROR} error={category_add_error && category_add_error.message} />
         <View style={styles.btns} >
              <Button
               xStyle={{...styles.BtnXstyle,marginRight:16}} 
@@ -126,6 +129,7 @@ export default connect(
     state=>({
         uploadedCategoryImageUri    : state.categories.uploadedCategoryImageUri,
         done_adding_category    : state.categories.done_adding_category,
+        category_add_error    : state.categories.category_add_error,
     }),
     dispatch=>({
         addCategory    : dispatch.categories.addCategory,

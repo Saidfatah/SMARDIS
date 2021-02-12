@@ -1,6 +1,6 @@
-import {categoryModel} from './Schemas/categoryModel'
-import Storage from '@react-native-firebase/storage'
-import firestore from '@react-native-firebase/firestore'
+import {categoryModel} from "./Schemas/categoryModel"
+import Storage from "@react-native-firebase/storage"
+import firestore from "@react-native-firebase/firestore"
 
 
 
@@ -22,6 +22,7 @@ const model ={
         done_adding_category : false,
         done_removing_category : false,
         last_selected_Category:null,
+        category_add_error:null,
     },
     reducers:{
         setedSelectedCategoryProducts : (state,{products,category_has_products,last_selected_Category,selectedCategory})=>({
@@ -51,11 +52,13 @@ const model ={
             ...state,
             categories :[...categories],
             categoriesCount :state.categoriesCount +1,
-            done_adding_category:true
+            done_adding_category:true,
+            category_add_error:null
         }),
-        addingCategoryFailed : (state,args)=>({
+        addingCategoryFailed : (state,category_add_error)=>({
             ...state,
-            done_adding_category:true
+            done_adding_category:true,
+            category_add_error
         }),
         updatedCategory : (state,categories)=>({
             ...state,
@@ -100,8 +103,8 @@ const model ={
                 //value s product
                 //[category:"id",products:[]]
                 const productsResponse= await firestore()
-                                              .collection('products')
-                                              .where('category','==',selectedCategory)
+                                              .collection("products")
+                                              .where("category","==",selectedCategory)
                                               .get()
                       
                  const docs =productsResponse.docs
@@ -125,7 +128,7 @@ const model ={
                 dispatch.categories.selectedCategory(selectedCategory)
 
             } catch (error) {
-                console.log('error')
+                console.log("error")
             }
         },
         async fetchCategories(somthing,state){
@@ -134,7 +137,7 @@ const model ={
 
                 if(categories_first_fetch) return 
 
-                const categoriesResponse= await firestore().collection('categories')
+                const categoriesResponse= await firestore().collection("categories")
                 categoriesResponse.onSnapshot(res=>{
                     const docs =res.docs
                     if(docs.length){
@@ -154,9 +157,18 @@ const model ={
              try {
                 let categories = [...state.categories.categories]
                 const newCategory = categoryModel(name,image)
-                
+
+                //check if name exists
+                const checkNameResponse= await firestore()
+                                  .collection("categories")
+                                  .where("name","==",name)
+                                  .get()
+                if(checkNameResponse.docs.length) throw new Error("NAME_USED")
+
+
+   
                 const addResponse= firestore()
-                                  .collection('categories')
+                                  .collection("categories")
                                   .add(newCategory)
    
    
@@ -164,15 +176,18 @@ const model ={
                 categories.unshift(newCategory)
    
                 dispatch.toast.show({
-                    type:'success',
-                    title:'Ajoute ',
+                    type:"success",
+                    title:"Ajoute ",
                     message:`Category ${name} est ajouter avec success`
                 })
                 dispatch.categories.addedCategory(categories)
-                navigation.navigate('ADMINcategories')
+                navigation.navigate("ADMINcategories")
             } catch (error) {
                 console.log(error)
-                dispatch.categories.addingCategoryFailed()
+                if(error.message == "NAME_USED")
+                  return dispatch.categories.addingCategoryFailed({id:"NAME_USED",message:"le nom du category est deja utuliser"})
+
+               dispatch.categories.addingCategoryFailed({id:"ADD_FAILED",message:"ne peut pas ajouter la category d'abord"})
             }
         },
         async updateCategory({id,name,image,navigation},state){
@@ -188,8 +203,8 @@ const model ={
                                             .update({name,image});
     
                 dispatch.toast.show({
-                   type:'success',
-                   title:'Modification ',
+                   type:"success",
+                   title:"Modification ",
                    message:`Category ${name} est modifier avec success`
                 })
                 dispatch.categories.updatedCategory(categories)
@@ -210,32 +225,32 @@ const model ={
    
                 //remove category  doc
                 const categoryRef=await firestore()
-                                        .collection('categories')
+                                        .collection("categories")
                                         .doc(id)
                                         .delete()
    
                 //remove category image from storage
-                if(image != "NO_IMAGE" && image.indexOf('categoryImages%2F')>-1){
-                    const imageName =  image.split('categoryImages%2F')[1].split("?alt")[0] 
+                if(image != "NO_IMAGE" && image.indexOf("categoryImages%2F")>-1){
+                    const imageName =  image.split("categoryImages%2F")[1].split("?alt")[0] 
                     if(imageName){
-                           var imageRef =  Storage().ref('categoryImages').child(imageName);
+                           var imageRef =  Storage().ref("categoryImages").child(imageName);
                            const imageRemove = await imageRef.delete() 
-                           console.log('removed image')
+                           console.log("removed image")
                     }
                }
                 
-                //set this category's products category to other category 
+                //set this category"s products category to other category 
                 const associatedProductsRef=await firestore()
-                                                 .collection('products')
-                                                 .where('category','==',id)
+                                                 .collection("products")
+                                                 .where("category","==",id)
                                                  .get()
                  associatedProductsRef.docs.forEach(doc => {
                      doc.ref.update({category:OTHER_CATEGORY_ID})
                  });
    
                 dispatch.toast.show({
-                    type:'success',
-                    title:'Supprision ',
+                    type:"success",
+                    title:"Supprision ",
                     message:`Category ${name} est supprimer avec success`
                  })
                 dispatch.categories.removedCategory(categories)
@@ -248,17 +263,17 @@ const model ={
         },
         async uploadCategoryImage({image_uri,name},state){
             try {
-                const task =  Storage().ref('categoryImages/'+name).putFile(image_uri);
+                const task =  Storage().ref("categoryImages/"+name).putFile(image_uri);
                
-                task.on('state_changed', 
+                task.on("state_changed", 
                     sn =>{},
                     err=>console.log(err),
                     () => {
-                       console.log('Photo uploaded!'+name)
+                       console.log("Photo uploaded!"+name)
                        Storage()
                        .ref("categoryImages").child(name).getDownloadURL()
                        .then(url => {
-                         console.log('uploaded image url', url);
+                         console.log("uploaded image url", url);
                          dispatch.categories.uploadedCategoryImage({url,name})
                        }).catch(err=>console.log(err))
                    }

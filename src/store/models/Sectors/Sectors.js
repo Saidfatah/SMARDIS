@@ -17,6 +17,7 @@ const model ={
         visited_Sector_has_clients:false,
         done_fetching_sectors:false,
         done_adding_sector:false,
+        sector_adding_error:null
         // done_removing_sector:false,
     },
     reducers:{
@@ -44,11 +45,13 @@ const model ={
             ...state,
             sectors :[...sectors],
             sectorsCount: state.sectorsCount+1,
-            done_adding_sector:true
+            done_adding_sector:true,
+            sector_adding_error:null
         }),
-        sectorAddFailed  : (state,sectors)=>({
+        sectorAddFailed  : (state,sector_adding_error)=>({
             ...state,
-            done_adding_sector:true
+            done_adding_sector:true,
+            sector_adding_error
         }),
         updatedSector  : (state,sectors)=>({
             ...state,
@@ -133,10 +136,19 @@ const model ={
             try {
                  const sector = sectorModel(name,city)
                  let sectors =[...state.sector.sectors]
+                 
+                 //check if name is already used 
+                 const checkNameResponse= await firestore()
+                 .collection('sectors')
+                 .where('name','==',name)
+                 .get()
+                 if(checkNameResponse.docs.length) throw Error('NAME_USED')   
 
                  const newSector = sectorModel(name,city)
                  //firestore
-                 const addResponse= await firestore().collection('sectors').add(newSector)
+                 const addResponse= await firestore()
+                                          .collection('sectors')
+                                          .add(newSector)
                  
                  //asign doc id then add to redux state
                  sector.id = addResponse.id
@@ -150,8 +162,10 @@ const model ={
                  dispatch.sector.addedSector(sectors)
                  navigation.goBack()
             } catch (error) {
-                dispatch.sector.sectorAddFailed()
                console.log(error) 
+               if(error.message=="NAME_USED")
+                 return dispatch.sector.sectorAddFailed({id:'NAME_USED',message:"le nom du secteur est deja utuliser"})
+               dispatch.sector.sectorAddFailed({id:'ADD_FAILED',message:"ne peut pas ajouter ce secteur d'abord"})
             }
         },
         async updateSector({name,id,city,navigation},state){

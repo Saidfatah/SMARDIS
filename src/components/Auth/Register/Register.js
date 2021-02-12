@@ -16,6 +16,7 @@ import CheckBoxGorup from '../../Common/CheckBoxGorup'
 const ERRORS_INITIAL_CONFIG = {
     ACCESS_CODE_REQUIRED:false,
     ACCESS_CODE_INVALIDE:false,
+    name_USED:false,
     UNKNOWN:false,
     nameREQUIRED:false,
     emailREQUIRED:false,
@@ -52,6 +53,8 @@ const  Register=({navigation,registerError,register})=> {
     useEffect(() => {
         console.log({registerError})
           if(registerError!= null){
+              if(registerError.id == "NAME_USED")
+                 seterrors({...errors,name_USED:true})
               if(registerError.id == "EMAIL_USED")
                  seterrors({...errors,emailUSED:true})
               if(registerError.id == "EMAIL_INVALID")
@@ -153,6 +156,7 @@ const  Register=({navigation,registerError,register})=> {
                       </View>
                       <View style={{width:'100%'}} >
                            <Label label="Nom "  color="#fff"  mga={4} />
+                           <Error trigger={errors.name_USED}    error={registerError && registerError.message} />
                            <Error trigger={errors.nameREQUIRED} error={REQUIRED_FIELD} />
                            <TextInput style={{...styles.Input}}   
                                placeholder={"Inserer votre nom complet"}   

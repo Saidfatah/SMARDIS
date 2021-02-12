@@ -17,6 +17,7 @@ const model ={
         clientsCount  : 0 ,//to display in admin's dashboard
         waiting_clients_count  : 0 ,//to display in admin's dashboard
         last_visible_client : null,
+        client_adding_error : null,
     },
     reducers:{
         fetchedClientsCount : (state,clientsCount)=>({
@@ -61,10 +62,12 @@ const model ={
             clientsCount: state.clientsCount +1,
             clientsAdded: state.clientsAdded +1,
             done_adding_client:true,
+            client_adding_error:null
         }),
-        addingClientFailed   : (state,clients)=>({
+        addingClientFailed   : (state,client_adding_error)=>({
             ...state,
             done_adding_client:true,
+            client_adding_error
         }),
         removedClient : (state,clients)=>({
             ...state,
@@ -186,8 +189,14 @@ const model ={
                 }else{
                     newClient = clientModel(name,sectorId,ref,phone,address,city,price,objectif,"PENDING")
                 }
-                 
-          
+                  
+               //check if name is already used 
+               const checkNameResponse= await firestore()
+               .collection('clients')
+               .where('name','==',name)
+               .get()
+               if(checkNameResponse.docs.length) throw Error('NAME_USED')   
+
                //firestore
                const addResponse= await firestore().collection('clients').add(newClient)
               
@@ -205,8 +214,10 @@ const model ={
                dispatch.client.addedClient(currentClients)
                navigation.goBack()
             } catch (error) {
-                dispatch.client.addingClientFailed(currentClients)
                 console.log(error)
+                if(error.message=="NAME_USED")
+                   return dispatch.client.addingClientFailed({id:'NAME_USED',message:"le nom du client est deja utuliser"})
+                dispatch.client.addingClientFailed({id:'ADD_FAILED',message:"ne peut pas ajouter un client d'abord"})
             }
         },
         async updateClient({navigation,id,name,sectorId,phone,address,city,price,objectif,ref},state){

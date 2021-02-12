@@ -7,12 +7,13 @@ import Error from '../../../Common/Error'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
 
-export const AddSector = ({navigation,route,done_adding_sector,resetIsDone,addSector,updateSector}) => {
+export const AddSector = ({navigation,route,done_adding_sector,sector_adding_error,resetIsDone,addSector,updateSector}) => {
     const [name, setname] = useState("")
     const [city, setcity] = useState("")
     const [canSubmit, setcanSubmit] = useState(true)
     const [update, setupdate] = useState(false)
     const [sectorToBeUpdatedId, setsectorToBeUpdatedId] = useState(null)
+    const [addERROR, setaddERROR] = useState(null)
     const [cityREQUIRED, setcityREQUIRED] = useState(null)
     const [nameREQUIRED, setnameREQUIRED] = useState(null)
  
@@ -30,7 +31,11 @@ export const AddSector = ({navigation,route,done_adding_sector,resetIsDone,addSe
             setsectorToBeUpdatedId(sector.id)
         }
     }, [])
-    
+    useEffect(() => {
+        sector_adding_error != null && setaddERROR(true)
+    }, [sector_adding_error])
+
+
     const dispatchAddSector=()=>{
         if(name == "") return setnameREQUIRED({message:'Le nom du scteur est obligatioir !'})
         if(city == "") return setcityREQUIRED({message:'la ville  est obligatioir !'})
@@ -71,6 +76,7 @@ export const AddSector = ({navigation,route,done_adding_sector,resetIsDone,addSe
                     onChangeText={text=>setcity(text)} 
             />
         </View>
+        <Error trigger={addERROR} error={sector_adding_error && sector_adding_error.message} />
         <View style={styles.btns} >
              <Button
               xStyle={{...styles.BtnXstyle,marginRight:16}} 
@@ -95,7 +101,8 @@ export const AddSector = ({navigation,route,done_adding_sector,resetIsDone,addSe
 
 export default connect(
     state=>({
-        done_adding_sector:state.sector.done_adding_sector
+        done_adding_sector:state.sector.done_adding_sector,
+        sector_adding_error:state.sector.sector_adding_error,
     })
     , 
     dispatch=>({

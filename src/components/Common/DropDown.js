@@ -8,7 +8,7 @@ import {
     Platform,
     TextInput,
     FlatList,
-    YellowBox
+    LogBox
 } from 'react-native';
 
 // Icon
@@ -367,69 +367,70 @@ class DropDownPicker extends React.Component {
     }
 
     componentDidMount() {
-        YellowBox.ignoreWarnings(['VirtualizedLists should never be nested']);
+        LogBox.ignoreAllLogs(true);
     }
 
     render() {
         this.props.controller(this);
 
         // Item
-        const Item = ({ item, index }) => (
-            <View
+        const Item = ({ item, index,key }) => {
+            return <View
+            key={key}
+            onLayout={event => {
+                const layout = event.nativeEvent.layout;
+                this.dropdownCoordinates[index] = layout.y;
+            }}
+        >
+            <TouchableOpacity
                 key={index}
-                onLayout={event => {
-                    const layout = event.nativeEvent.layout;
-                    this.dropdownCoordinates[index] = layout.y;
-                }}
+                onPress={() => this.select(item)}
+                style={[styles.dropDownItem, this.props.itemStyle, (
+                    this.state.choice.value === item.value && this.props.activeItemStyle
+                ), {
+                    opacity: item?.disabled || false === true ? 0.3 : 1,
+                    alignItems: 'center',
+                    ...(
+                        multiple ? {
+                            justifyContent: 'space-between',
+                            ...(this.isSelected(item) && this.props.activeItemStyle)
+                        } : {
+
+                            }
+                    )
+                }]}
+                disabled={item?.disabled || false === true}
             >
-                <TouchableOpacity
-                    key={index}
-                    onPress={() => this.select(item)}
-                    style={[styles.dropDownItem, this.props.itemStyle, (
-                        this.state.choice.value === item.value && this.props.activeItemStyle
-                    ), {
-                        opacity: item?.disabled || false === true ? 0.3 : 1,
-                        alignItems: 'center',
-                        ...(
-                            multiple ? {
-                                justifyContent: 'space-between',
-                                ...(this.isSelected(item) && this.props.activeItemStyle)
-                            } : {
+                <View style={{
+                    flexDirection: this.props.itemStyle?.flexDirection ?? 'row',
+                    ...(this.props.itemStyle.hasOwnProperty('justifyContent') && {
+                        justifyContent: this.props.itemStyle.justifyContent
+                    }),
+                    alignContent: 'center'
+                }}>
+                    {item.icon && item.icon()}
+                    <Text style={[
+                        this.props.labelStyle,
+                        multiple ?
+                            (this.isSelected(item) && this.props.activeLabelStyle) : (this.state.choice.value === item.value && this.props.activeLabelStyle)
+                        , {
+                            ...(item.icon && {
+                                marginHorizontal: 5
+                            })
+                        }]}>
+                        {this.getLabel(item)}
+                    </Text>
+                </View>
 
-                                }
-                        )
-                    }]}
-                    disabled={item?.disabled || false === true}
-                >
-                    <View style={{
-                        flexDirection: this.props.itemStyle?.flexDirection ?? 'row',
-                        ...(this.props.itemStyle.hasOwnProperty('justifyContent') && {
-                            justifyContent: this.props.itemStyle.justifyContent
-                        }),
-                        alignContent: 'center'
-                    }}>
-                        {item.icon && item.icon()}
-                        <Text style={[
-                            this.props.labelStyle,
-                            multiple ?
-                                (this.isSelected(item) && this.props.activeLabelStyle) : (this.state.choice.value === item.value && this.props.activeLabelStyle)
-                            , {
-                                ...(item.icon && {
-                                    marginHorizontal: 5
-                                })
-                            }]}>
-                            {this.getLabel(item)}
-                        </Text>
-                    </View>
-
-                    {
-                        this.state.props.multiple && this.state.choice.findIndex(i => i.label === item.label && i.value === item.value) > -1 && (
-                            this.props.customTickIcon()
-                        )
-                    }
-                </TouchableOpacity>
-            </View>
-        )
+                {
+                    this.state.props.multiple && this.state.choice.findIndex(i => i.label === item.label && i.value === item.value) > -1 && (
+                        this.props.customTickIcon()
+                    )
+                }
+            </TouchableOpacity>
+        </View>
+        }
+       
         const { multiple, disabled } = this.state.props;
         const { placeholder, scrollViewProps, searchTextInputProps } = this.props;
         const isPlaceholderActive = this.state.choice.label === null;
@@ -524,9 +525,9 @@ class DropDownPicker extends React.Component {
                         ?
                         <FlatList style={{width: '100%'}}
                             data={items}
-                            keyExtractor={(item) => item.value}
-                            renderItem={({ item, index }) => (
-                                <Item item={item} index={index} />
+                            keyExtractor={this.props.keyExtractor}
+                            renderItem={({ item, index,key }) => (
+                                <Item item={item} key={key} index={index} />
                             )}
                             nestedScrollEnabled={true}
                             ref={ref => {
@@ -588,6 +589,8 @@ DropDownPicker.defaultProps = {
     onClose: () => { },
     onChangeItem: () => { },
     onChangeList: () => { },
+    keyExtractor: () => { },
+
 };
 
 
@@ -596,12 +599,13 @@ DropDownPicker.defaultProps = {
  
 
 
-const DropDown=({data,selected ,setSelected})=> {
+const DropDown=({data,selected ,setSelected,keyExtractor})=> {
     return <DropDownPicker
-    items={data.map(d=>({value:d,label:d,selected: d=="Ouarzazate"}))}
+    items={data}
     onChangeItem={item =>{
      setSelected(item.value)
     }}
+    keyExtractor={keyExtractor}
     searchable={true}
     labelStyle={{color:colors.BLACK}}
     containerStyle={{height: 40}}

@@ -415,9 +415,14 @@ const model ={
                                    .collection('users')
                                    .doc('v6xM6xIb9lOBPczPiyvK')
                                    .get()
-                const ACCESS_CODE_MASTER = masterAdmin.data().ACCESS_CODE 
-                if(ACCESS_CODE != ACCESS_CODE_MASTER)   
-                    return dispatch.auth.registerFail({id:"ACCESS_CODE_INVALID",message:'Le code est pas valide'})
+
+                //check if name exists
+                const checNameResponse = await firestore()
+                                   .collection('users')
+                                   .where('name','==',name)
+                                   .get()
+
+                if(checNameResponse.docs.length ) throw new Error('NAME_USED')
 
                 //create user in authentication 
                 const createAuthResponse= await auth().createUserWithEmailAndPassword(email,password)
@@ -465,6 +470,11 @@ const model ={
                 let ERROR_MESSAGE = error.message.toString()
                 console.log(error)
                
+                if(ERROR_MESSAGE =="NAME_USED" )
+                {
+                   console.log("\name used ") 
+                   return dispatch.auth.registerFail({id:"NAME_USED",message:'le nom  est déja utuliser'})
+                }
                 if(ERROR_MESSAGE.indexOf("email-already-exists") > -1 || ERROR_MESSAGE.indexOf("email-already-in-use") > -1 )
                 {
                    console.log("\nEmail used ") 
