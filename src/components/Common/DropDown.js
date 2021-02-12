@@ -374,8 +374,8 @@ class DropDownPicker extends React.Component {
         this.props.controller(this);
 
         // Item
-        const Item = ({ item, index,key }) => {
-            return <View
+        const Item = ({ item, index,key }) => (
+             <View
             key={key}
             onLayout={event => {
                 const layout = event.nativeEvent.layout;
@@ -429,8 +429,7 @@ class DropDownPicker extends React.Component {
                 }
             </TouchableOpacity>
         </View>
-        }
-       
+        )
         const { multiple, disabled } = this.state.props;
         const { placeholder, scrollViewProps, searchTextInputProps } = this.props;
         const isPlaceholderActive = this.state.choice.label === null;
