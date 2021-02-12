@@ -17,7 +17,7 @@ const ERRORS_INITIAL_CONFIG = {
 const ERRORS_MESSAGES= [
     {id:'REQUIRED',message:'ce champ est obligatoir'}
 ]
-export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIsDone,category_add_error,done_adding_category,uploadedCategoryImageUri,uploadCategoryImage}) => {
+export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIsDone,category_add_error,done_adding_category}) => {
      const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
      const [canSubmit, setcanSubmit] = useState(true)
      const [name, setname] = useState("")
@@ -41,9 +41,6 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIs
         } 
     }, [])
     useEffect(() => {
-        uploadedCategoryImageUri != null && setimage(uploadedCategoryImageUri)
-    }, [uploadedCategoryImageUri])
-    useEffect(() => {
         category_add_error != null && seterrors({...errors,addERROR:true})
     }, [category_add_error])
 
@@ -55,11 +52,7 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIs
             errorsTemp.nameREQUIRED =true
             errorsCount++
         }
-        if(image == "NO_IMAGE"){
-            errorsTemp.imageREQUIRED =true
-            errorsCount++
-        }
-
+   
         if(errorsCount >0) {
             seterrors(errorsTemp)
             return false
@@ -93,11 +86,9 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIs
 
 
             <ImagePicker {...{
-                seterrors,
                 errors,
-                model:'CATEGORY',
-                imageUploadHandler:uploadCategoryImage,
-                name
+                title:'"image de category"',
+                setImage:setimage,
             }}/>
 
             
@@ -127,14 +118,12 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIs
 
 export default connect(
     state=>({
-        uploadedCategoryImageUri    : state.categories.uploadedCategoryImageUri,
         done_adding_category    : state.categories.done_adding_category,
         category_add_error    : state.categories.category_add_error,
     }),
     dispatch=>({
         addCategory    : dispatch.categories.addCategory,
         updateCategory : dispatch.categories.updateCategory,
-        uploadCategoryImage : dispatch.categories.uploadCategoryImage,
         resetIsDone : dispatch.categories.resetIsDone,
     })
     

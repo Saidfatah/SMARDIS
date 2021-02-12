@@ -10,33 +10,19 @@ import { connect } from 'react-redux';
 const ERRORS_MESSAGES= [
     {id:'REQUIRED',message:'ce champ est obligatoir'}
 ]
-const ImagePicker=({imageUploadHandler,productImageUploadState,categoryImageUploadState,name,model,errors,seterrors})=>{
-    const [uploading, setuploading] = useState(false)
+const ImagePicker=({setImage,title,errors})=>{
     const [imageUri, setimageUri] = useState(null)
     const [modalVisible, setModalVisible] = useState(false);
 
-    useEffect(() => {
-        if(model ==="PRODUCT" && productImageUploadState === "DONE"){ 
-            setuploading(false)
-        }
-        if (model === "CATEGORY" && categoryImageUploadState === "DONE" ){ 
-             setuploading(false)
-        }
-        
-        if(productImageUploadState === "FAILED" || categoryImageUploadState === "FAILED" ){
-             setuploading(false)
-        }
-    }, [productImageUploadState,categoryImageUploadState])
 
-    const uploadImage =(selectedImage)=>{
-          
+
+    const uploadImage =(selectedImage)=>{ 
           const uploadUri = Platform.OS === 'ios' 
           ? selectedImage.replace('file://', '') 
           : selectedImage;
           setimageUri(selectedImage)
-
-          setuploading(true);
-          imageUploadHandler({image_uri:uploadUri,name})      
+ 
+          setImage(uploadUri)      
     }
     const addImageToList=r=>{
         if (r.didCancel) {
@@ -89,7 +75,6 @@ const ImagePicker=({imageUploadHandler,productImageUploadState,categoryImageUplo
               xStyle={{flex:1,margin:0,borderRadius:12,marginRight:16}} 
               color={"LIGHTGREY"} 
               clickHandler={e=>{
-                  if(name == "")return seterrors({...errors,nameREQUIRED:true})
                   setModalVisible(true)
                  
                }} 
@@ -99,15 +84,12 @@ const ImagePicker=({imageUploadHandler,productImageUploadState,categoryImageUplo
         {
             modalVisible
             ?<Modal 
-            title={model=="CATEGORY"?"image de category":"image de produit"}
+            title={title}
             modalVisible={modalVisible} 
-            onClose={()=> setuploading(false)}
             setModalVisible={setModalVisible}
             >
-                 {!uploading ?<ImagePickerButtons />:<View >
-                    <Text>Uploading</Text> 
-                    <Image source={{uri:imageUri}}  style={{width:50,height:50}} />
-                    </View>}
+                <ImagePickerButtons /> 
+                <Image source={{uri:imageUri}}  style={{width:50,height:50}} />     
             </Modal>
             :null
         }

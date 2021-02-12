@@ -9,7 +9,7 @@ import ImagePicker from '../../../Common/ImagePicker'
 import DropDown from '../../../Common/DropDown'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
-
+import IonIcon from 'react-native-vector-icons/Ionicons'
 
 const ERRORS_INITIAL_CONFIG = {
     nameREQUIRED:false,
@@ -32,7 +32,7 @@ const ERRORS_MESSAGES= [
 
 
 
-export const AddProduct = ({route,navigation,updateProduct,product_adding_error,addProduct,categories,done_adding_product,resetIsDone,uploadedProductImageUri,uploadProductImage}) => {
+export const AddProduct = ({route,navigation,updateProduct,product_adding_error,addProduct,categories,done_adding_product,resetIsDone,uploadedProductImageUri}) => {
     const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
     const [update, setupdate] = useState(false)
     const [canSubmit, setcanSubmit] = useState(true)
@@ -76,9 +76,6 @@ export const AddProduct = ({route,navigation,updateProduct,product_adding_error,
         } 
     }, [])
     useEffect(() => {
-        if(uploadedProductImageUri != null) handelChange('image')(uploadedProductImageUri)
-    }, [uploadedProductImageUri])
-    useEffect(() => {
         product_adding_error != null && seterrors({...errors,addERROR:true})
     }, [product_adding_error])
 
@@ -95,10 +92,6 @@ export const AddProduct = ({route,navigation,updateProduct,product_adding_error,
          }
          if(name == ''){
              errorsTemp.nameREQUIRED =true
-             errorsCount++
-         }
-         if(image == 'NO_IMAGE'){
-             errorsTemp.imageREQUIRED =true
              errorsCount++
          }
          if(activePrice == ''){
@@ -187,10 +180,8 @@ export const AddProduct = ({route,navigation,updateProduct,product_adding_error,
 
           
             <ImagePicker {...{
-                model:'PRODUCT',
-                imageUploadHandler:uploadProductImage,
-                name,
-                seterrors,
+                title:'"image de produit"',
+                setImage:handelChange('image'),
                 errors
             }}/>
     
@@ -199,6 +190,7 @@ export const AddProduct = ({route,navigation,updateProduct,product_adding_error,
             <Error trigger={errors.categoryREQUIRED} error={ERRORS_MESSAGES[0].message} />
             <DropDown 
                 data={categories.map(c=>({value : c, label :c.name}))} 
+                keyExtractor={item=>item.name}
                 setSelected={setselectedCategory} 
                 selected={selectedCategory}
             />
@@ -252,7 +244,6 @@ export const AddProduct = ({route,navigation,updateProduct,product_adding_error,
               clickHandler={e=>dispatchAddProduct()} 
               >
                  <Text style={styles.ButtonText}>{update?"Modifier":"Enregistrer"}</Text>
-                 <IonIcon name="trash" size={25} color="#fff" />             
             </Button>
              <Button
               xStyle={styles.BtnXstyle} 
@@ -278,7 +269,6 @@ export default connect(
     , 
     dispatch=>({
         updateProduct : dispatch.products.updateProduct,
-        uploadProductImage: dispatch.products.uploadProductImage,
         addProduct: dispatch.products.addProduct,
         resetIsDone: dispatch.products.resetIsDone,
     })
@@ -296,7 +286,15 @@ var styles = StyleSheet.create({
       borderRadius:12, 
     },
     ButtonText:{color:"#fff",textAlign:'center',fontWeight:'bold'},
-    BtnXstyle:{flex:1,margin:0,borderRadius:12},
+    BtnXstyle:{
+        flex:1,
+        margin:0,
+        borderRadius:12,
+        display:'flex',
+        flexDirection:'row',
+        justifyContent:('center'),
+        alignItems:'center'
+    },
     container:{
         height:'100%',
         padding:8,

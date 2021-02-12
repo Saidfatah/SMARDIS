@@ -3,13 +3,14 @@ import Storage from '@react-native-firebase/storage'
 import firestore from '@react-native-firebase/firestore'
 
 
+
+
+
 const PRODUCTS_FETCH_LIMIT = 8
 const model ={
     state:{
         products         : [],
         productsCount    : 0,
-        productImageUploadState: "STALE" ,//"UPLOADING" || "FAILED"  || "DONE" || "STALE"
-        uploadedProductImageUri : null ,
         products_first_fetch : false,
         done_fetching_products : false,
         last_visible_Product:null,
@@ -49,19 +50,7 @@ const model ={
             done_adding_product:true,
             product_adding_error
         }),
-        uploadedProductImage : (state,{url,name,productImageUploadState})=>({
-            ...state,
-            categoryImageUploadState:"STALE",
-            productImageUploadState:"DONE",
-            uploadedProductImageUri:url
-        }),
-        productImageUploadFailed : (state,args)=>({
-            ...state,
-            productImageUploadState:"FAILED",
-            categoryImageUploadState:"STALE",
-            uploadedProductImageUri:"NO_IMAGE"
-        }),
-
+ 
         setedProductCategory : (state,products)=>({
             ...state,
             products :[...products]
@@ -151,8 +140,7 @@ const model ={
         async addProduct({navigation,name,category,image,ref,price1,price2,price3,price4},state){
              try {
                 let products = [...state.products.products]
-                const newProduct = productModel(name,category,image,price1,ref,price2,price3,price4)
-                
+            
                 //check if ref is already used 
                 const checkRefResponse= firestore()
                                     .collection('products')
@@ -164,9 +152,33 @@ const model ={
                                     .collection('products')
                                     .where('name','==',name)
                                     .get()
-                if((await checkNameResponse).docs.length) throw Error('NAME_USED')                 
+                if((await checkNameResponse).docs.length) throw Error('NAME_USED')      
+                
+                //uploadImage then get the uri and use it in 
+                
+                let imageUri = image
+                if(imageUri != "NO_IMAGE")
+                {
+                    const task =  Storage().ref('productImages/'+name).putFile(imageUri);
+                     task.on('state_changed', 
+                         sn =>{},
+                         err=>console.log(err),
+                         () => {
+                            console.log('Photo uploaded!'+name)
+                            Storage()
+                            .ref("productImages").child(name).getDownloadURL()
+                            .then(url => {
+                              console.log('uploaded image url', url);
+                              imageUri=url
+                            }).catch(err=>console.log(err))
+                        }
+                     )
+                     await task
+                }
 
-                //remove from firestore
+                //add to firestore
+                const newProduct = productModel(name,category,imageUri,price1,ref,price2,price3,price4)
+
                 const addResponse= firestore()
                                   .collection('products')
                                   .add(newProduct)
@@ -250,29 +262,7 @@ const model ={
                  dispatch.products.removingProductFailed()
              }
         },
-        async uploadProductImage({image_uri,name},state){
-            try {
-                const task =  Storage().ref('productImages/'+name).putFile(image_uri);
-               
-                task.on('state_changed', 
-                    sn =>{},
-                    err=>console.log(err),
-                    () => {
-                       console.log('Photo uploaded!'+name)
-                       Storage()
-                       .ref("productImages").child(name).getDownloadURL()
-                       .then(url => {
-                         console.log('uploaded image url', url);
-                         dispatch.products.uploadedProductImage({url,name})
-                       }).catch(err=>console.log(err))
-                   }
-                )
-                await task 
-            } catch (error) {
-                console.log(error)
-                dispatch.products.productImageUploadFailed()
-            }
-        },
+       
         resetIsDone(field,state){
             dispatch.products.reseted(field)
         }

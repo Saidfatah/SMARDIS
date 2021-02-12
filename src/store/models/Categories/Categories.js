@@ -13,8 +13,6 @@ const model ={
         selectedCategory : "0hxbmFxnEtU05QcWbaxv" , 
         categoriesCount  : 0,
 
-        categoryImageUploadState: "STALE" ,//"UPLOADING" || "FAILED"  || "DONE" || "STALE"
-        uploadedCategoryImageUri : null ,
 
         done_fetching_categories : false,
         categories_first_fetch : false,
@@ -73,18 +71,6 @@ const model ={
         removingCategoryFailed : (state,args)=>({
             ...state,
             done_removing_category:true
-        }),
-        uploadedCategoryImage : (state,{url,name,productImageUploadState})=>({
-            ...state,
-            categoryImageUploadState:"DONE",
-            productImageUploadState: "STALE",
-            uploadedCategoryImageUri:url
-        }),
-        categoryImageUploadFailed : (state,args)=>({
-            ...state,
-            categoryImageUploadState:"FAILED",
-            productImageUploadState: "STALE",
-            uploadedCategoryImageUri:"NO_IMAGE"
         }),
         reseted:  (state,field)=>({
             ...state,
@@ -156,8 +142,7 @@ const model ={
         async addCategory({name,navigation,image},state){
              try {
                 let categories = [...state.categories.categories]
-                const newCategory = categoryModel(name,image)
-
+                
                 //check if name exists
                 const checkNameResponse= await firestore()
                                   .collection("categories")
@@ -165,8 +150,28 @@ const model ={
                                   .get()
                 if(checkNameResponse.docs.length) throw new Error("NAME_USED")
 
-
+                //upload image
+                let imageUri = image
+                if(imageUri!="NO_IMAGE"){
+                    const task =  Storage().ref("categoryImages/"+name).putFile(imageUri);
+                     task.on("state_changed", 
+                         sn =>{},
+                         err=>console.log(err),
+                         () => {
+                            console.log("Photo uploaded!"+name)
+                            Storage()
+                            .ref("categoryImages").child(name).getDownloadURL()
+                            .then(url => {
+                              console.log("uploaded image url", url);
+                              imageUri=url
+                            }).catch(err=>console.log(err))
+                        }
+                     )
+                     await task 
+                }
    
+                //add to frestore 
+                const newCategory = categoryModel(name,imageUri)
                 const addResponse= firestore()
                                   .collection("categories")
                                   .add(newCategory)
@@ -260,29 +265,6 @@ const model ={
                  console.log(error)
                  dispatch.categories.removingCategoryFailed()
              }
-        },
-        async uploadCategoryImage({image_uri,name},state){
-            try {
-                const task =  Storage().ref("categoryImages/"+name).putFile(image_uri);
-               
-                task.on("state_changed", 
-                    sn =>{},
-                    err=>console.log(err),
-                    () => {
-                       console.log("Photo uploaded!"+name)
-                       Storage()
-                       .ref("categoryImages").child(name).getDownloadURL()
-                       .then(url => {
-                         console.log("uploaded image url", url);
-                         dispatch.categories.uploadedCategoryImage({url,name})
-                       }).catch(err=>console.log(err))
-                   }
-                )
-                await task 
-            } catch (error) {
-                console.log(error)
-                dispatch.categories.categoryImageUploadFailed()
-            }
         },
         resetIsDone(field,state){
             dispatch.categories.reseted(field)
