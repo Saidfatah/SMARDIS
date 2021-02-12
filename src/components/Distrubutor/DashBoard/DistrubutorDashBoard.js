@@ -10,9 +10,10 @@ const DistrubutorDashBoard=({route,navigation,fetchTodaysOrders,fetchSectors,fet
         fetchProducts()
         fetchTodaysOrders()
         fetchSectors()
-        fetchTodaysValideOrders("DISTRUBUTOR")
         fetchDistrubutorTodaysCanceledOrders()
+        fetchTodaysValideOrders("DISTRUBUTOR")
     }, [])
+    
     useFocusEffect(
         useCallback(() => {
           const onBackPress = () => {

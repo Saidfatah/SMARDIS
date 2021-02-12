@@ -5,6 +5,34 @@ import {orderModel} from './Schemas/OrderModel'
 import {scheduleModel} from './Schemas/ScheduelModel'
 import firestore from '@react-native-firebase/firestore'
 
+const getMonday=(d)=> {
+    d = new Date(d);
+    var day = d.getDay(),
+        diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
+    return new Date(d.setDate(diff));
+  }
+  
+const firstDayOfWeekJs= getMonday(new Date()); // Mon Nov 08 2010
+const today = new Date()
+const tomorrowJs = new Date(today)
+tomorrowJs.setDate(tomorrowJs.getDate() + 1)
+
+const yestradyJs = new Date(today)
+yestradyJs.setDate(yestradyJs.getDate() - 1)
+
+const nextWeekJs = new Date(today)
+yestradyJs.setDate(yestradyJs.getDate() +7)
+
+const yesterydayJsDstrubutor = new Date(today)
+yesterydayJsDstrubutor.setDate(yesterydayJsDstrubutor.getDate() - 1)
+var yesterydayDstrubutor = firestore.Timestamp.fromDate(yesterydayJsDstrubutor);
+
+var weekStart = firestore.Timestamp.fromDate(firstDayOfWeekJs);
+var nextWeek = firestore.Timestamp.fromDate(nextWeekJs);
+var yesterday = firestore.Timestamp.fromDate(new Date());
+var tomorrow = firestore.Timestamp.fromDate(tomorrowJs);
+
+console.log({tomorrow,yesterday})
 
 const model ={
     state:{
@@ -216,6 +244,7 @@ const model ={
                 const fetchOrdersReponse = await firestore()
                                                 .collection('orders')
                                                 .where('status','==',"VALIDATED")
+                                                .where('sale_date','>',yesterday)
                                 
 
                  fetchOrdersReponse.onSnapshot(res=>{
@@ -265,10 +294,14 @@ const model ={
 
                 const fetchOrdersReponse = await firestore()
                       .collection('orders')
-                      .orderBy('turn','asc')
+                      .where('created_at','>',yesterday)
+                      .where('created_at','<',tomorrow)
                       .where('distrubutorId','==',currentDistrubutorId)
                       .where('status','==','PENDING')
-            
+                      .orderBy('created_at','asc')
+                      .orderBy('turn','asc')
+
+                 
                 fetchOrdersReponse.onSnapshot(res=>{
                     if(res.docs.length){
                         const docs= res.docs
@@ -326,7 +359,9 @@ const model ={
              try {
                 const fetchOrdersReponse = await firestore()
                                                  .collection('orders')
-      
+                                                 .where('created_at','<',tomorrow)
+                                                 .where('created_at','>',yesterday)
+
                 fetchOrdersReponse.onSnapshot(res=>{
            
                     if(res.docs.length){
@@ -343,34 +378,42 @@ const model ={
                  
              } catch (error) {
                  console.log('\n-----fetchOrders-----')
-                 dispatch.scheduel.ordersFetchingFailed()
                  console.log(error)
+                 dispatch.scheduel.ordersFetchingFailed()
              }
         },
         async fetchTodaysValideOrders(type,state){
              try {
                
-
+           
                 const  todays_validated_orders_first_fetch = state.scheduel.todays_validated_orders_first_fetch
                 if(todays_validated_orders_first_fetch) return 
                
-                let fetchOrdersReponse 
+                
+
+                let fetchOrdersReponse
+                
                 if(type=="ADMIN"){
+                    console.log(yesterday)
+                    console.log(tomorrow)
                     fetchOrdersReponse = await firestore()
                     .collection('orders')
-                    .where('status','==','VALIDATED')
+                    .where('sale_date', '>', yesterday)
+                    // .where('sale_date', '<', tomorrow)
+                    // .where('sale_date', '<', tomorrow)
+                    // .where('status','==','VALIDATED')
                 }else{
                     const currentDistrubutorId = state.auth.distrubutorId
-                
+                   
                     fetchOrdersReponse = await firestore()
                           .collection('orders')
                           .where('distrubutorId','==',currentDistrubutorId)
                           .where('status','==','VALIDATED')
-                          
-    
+                          .where('sale_date', '>', yesterydayDstrubutor)
+                         
                 }
+           
                
-      
                 fetchOrdersReponse.onSnapshot(res=>{
                     if(res.docs.length){
                         console.log('got validated orders')
@@ -394,21 +437,22 @@ const model ={
         },
         async fetchDistrubutorTodaysCanceledOrders(arg,state){
             try {
-             
                 const todays_canceled_orders_first_fetch = state.scheduel.todays_canceled_orders_first_fetch
                 if(todays_canceled_orders_first_fetch) return
                 
                 const currentDistrubutorId = state.auth.distrubutorId
-
+                
                 const fetchOrdersReponse = await firestore()
-                      .collection('orders')
-                      .where('distrubutorId','==',currentDistrubutorId)
-                      .where('status','==','CANCELED')
-
-      
+                          .collection('orders')
+                          .where('distrubutorId','==',currentDistrubutorId)
+                          .where('status','==','CANCELED')
+                          .where('sale_date', '>', yesterydayDstrubutor)
+             
+              
                 fetchOrdersReponse.onSnapshot(res=>{
-                    if(res.docs.lenght){
-                        const orders=res.docs.map(order=>({
+                    if(res.docs.length){
+                        console.log('GOT CANCELED')
+                       const orders=res.docs.map(order=>({
                             ...order.data(),
                             id:order.id,
                             sale_date:order.data().sale_date.toDate(),
@@ -419,6 +463,7 @@ const model ={
                     }
                     dispatch.scheduel.distrubutorTodaysCanceledOrdersFetchingFailed()
                 })
+
                 
             } catch (error) {
                 console.log('\n-----fetchOrders-----')
@@ -469,7 +514,10 @@ const model ={
 
         async fetchScheduels(arg,state){
             try {
-                const fetchScheduelsReponse = await firestore().collection('scheduels')
+                const fetchScheduelsReponse = await firestore()
+                                                   .collection('scheduels')
+                                                   .where('date','<',nextWeek)
+                                                   .where('date','>=',weekStart)
 
                  fetchScheduelsReponse.onSnapshot(res=>{
                      if(res.docs.length){

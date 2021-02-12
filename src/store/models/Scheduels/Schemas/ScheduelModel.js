@@ -8,6 +8,7 @@ export const scheduleModel=(admin,distrubutor,distination,start_date)=>({
     distrubutor: distrubutor ,
     distrubutorId: distrubutor.id,
     distination: distination,
+    status:'PENDING',
     start_date:firestore.Timestamp.fromDate(new Date(start_date)),
     created_at:firestore.Timestamp.fromDate(new Date())
 })
