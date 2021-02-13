@@ -21,8 +21,7 @@ export const user=( user_id,type,name,email,phone,city,distrubutorAdditional,adm
 
   if(type == "DISTRUBUTOR" ){
     userObj.ref = user_id.substring(0,5)+name.toUpperCase().substring(0,2)
-    userObj.commits = []
-    
+    userObj.commits = []    
   }
 
   return userObj
