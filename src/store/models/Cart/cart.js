@@ -173,7 +173,9 @@ const model ={
                         date : firestore.Timestamp.fromDate(new Date()),
                         billRef,
                         number_of_products: targetGuest.items.length,
-                        validated:"VALIDATED"
+                        validated:"VALIDATED",
+                        client:client.name,
+                        sector:targetGuest.sector.name
                     })
                  })
                              
