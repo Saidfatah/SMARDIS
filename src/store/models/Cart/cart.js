@@ -71,7 +71,7 @@ const model ={
              }
      
         },
-        addCartItem({guest,product,sector},state){
+        addCartItem({guest,product,sector,scheduelId},state){
              const cartGuests= [...state.cart.cartGuests]
              const targetGuest = cartGuests.filter(g=>g.guestId == guest.id)[0]
              if( targetGuest ){
@@ -101,6 +101,7 @@ const model ={
                      sector,
                      guest,
                      guest.orderId,
+                     scheduelId
                      )})
                  dispatch.cart.addedGuest(cartGuests)
              } 
@@ -132,7 +133,7 @@ const model ={
              }
              
         },
-        async validateGuestOrder({guestId,scheduelId},state){
+        async validateGuestOrder({guestId},state){
            try {
              const cartGuests= [...state.cart.cartGuests]
          
@@ -151,7 +152,8 @@ const model ={
   
                  //update order doc ["VALIDATED"]
                  const client = targetGuest
-                 let billRef = client.name.substring(0,4).toUpperCase()+scheduelId 
+                 console.log()
+                 let billRef = client.name.substring(0,4).toUpperCase()+targetGuest.scheduelId.substr(0,5).toUpperCase() 
                  const validateOrderReponse = await firestore()
                   .collection('orders')
                   .doc(orderId)

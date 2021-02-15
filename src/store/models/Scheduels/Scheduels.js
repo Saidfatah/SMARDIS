@@ -323,7 +323,8 @@ const model ={
                                            sector:lastOrder.sector,
                                            scheduleId:lastOrder.scheduleId,
                                            orders:[{
-                                               ...lastOrder,     
+                                               ...lastOrder, 
+                                               scheduelId:lastOrder.scheduleId   
                                            }]
                                        }
                                        arr.push(obj)
@@ -331,14 +332,14 @@ const model ={
                                   }
                              
                                   if(lastOrder.sectorId == currentOrder.sectorId && firstOrder.orderId != currentOrder.orderId){
-                                     arr[i].orders.push({...currentOrder})
+                                     arr[i].orders.push({...currentOrder, scheduelId:currentOrder.scheduleId })
                                   }
                                   else if(lastOrder.sectorId != currentOrder.sectorId && started){
                                       console.log('\nnew sector'+currentOrder.sectorId)
                                     let obj={
                                         sector:currentOrder.sector,
                                         scheduleId:currentOrder.scheduleId,
-                                        orders:[{...currentOrder}]
+                                        orders:[{...currentOrder, scheduelId:currentOrder.scheduleId   }]
                                     }
                                     arr.push(obj)
                                       i++

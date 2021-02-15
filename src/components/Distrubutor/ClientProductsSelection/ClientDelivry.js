@@ -14,7 +14,7 @@ const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetI
     const [selectedProduct, setselectedProduct] = useState(selectedCategoryProducts[0]);
 
 
-    const { clientId ,client,sector,orderId  } = route.params;
+    const { clientId ,client,sector,orderId,scheduelId  } = route.params;
    
     const {name,id}=client
  
@@ -41,7 +41,7 @@ const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetI
              <CategoriesSlider  {...{done_fetching_categories,navigation,handleHeight,categories,selectedCategory,selectCategory}} />
              <Products {...{setIsPanelActive,setselectedProduct,selectedCategoryProducts}} />
         </View>
-             <SwipeAbleProductDetails {...{selectedProduct,sector,isPanelActive,setIsPanelActive,guest:client,client,orderId,addCartItem}}  />
+             <SwipeAbleProductDetails {...{scheduelId,selectedProduct,sector,isPanelActive,setIsPanelActive,guest:client,client,orderId,addCartItem}}  />
              <SwipeAbleCancelOrder {...{
                  navigation,
                  cancelOrder,

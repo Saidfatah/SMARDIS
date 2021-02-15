@@ -35,6 +35,7 @@ const  TodaysOrders=({todaysSectors,distrubutor_todays_orders_done_fetching,navi
                         orderId:order.orderId,
                         currentSectorIndex:index,
                         turn:order.turn,
+                        scheduelId:order.scheduelId,
                         ...order.client,
                         done:false
                      }))}  
