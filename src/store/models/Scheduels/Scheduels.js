@@ -5,14 +5,7 @@ import {orderModel} from './Schemas/OrderModel'
 import {scheduleModel} from './Schemas/ScheduelModel'
 import firestore from '@react-native-firebase/firestore'
 
-const getMonday=(d)=> {
-    d = new Date(d);
-    var day = d.getDay(),
-        diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
-    return new Date(d.setDate(diff));
-  }
-  
-const firstDayOfWeekJs= getMonday(new Date()); // Mon Nov 08 2010
+
 const today = new Date()
 const tomorrowJs = new Date(today)
 tomorrowJs.setHours(23,59,59,999);
@@ -21,7 +14,7 @@ tomorrowJs.setHours(23,59,59,999);
 const yestradyJs = new Date(today)
 yestradyJs.setDate(yestradyJs.getDate() - 1)
 
-const nextWeekJs = new Date(today)
+
 yestradyJs.setDate(yestradyJs.getDate() +7)
 
 const yesterydayJsDstrubutor = new Date(today)
@@ -30,8 +23,14 @@ yesterydayJsDstrubutor.setHours(0,0,0,0);
 
 var yesterydayDstrubutor = firestore.Timestamp.fromDate(yesterydayJsDstrubutor);
 
-var weekStart = firestore.Timestamp.fromDate(firstDayOfWeekJs);
-var nextWeek = firestore.Timestamp.fromDate(nextWeekJs);
+var curr = new Date(today); // get current date
+var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
+var last = first + 6; // last day is the first day + 6
+var firstday = new Date(curr.setDate(first)); // 06-Jul-2014
+var lastday = new Date(curr.setDate(last)); //12-Jul-2014
+
+var weekStart = firestore.Timestamp.fromDate(firstday);
+var nextWeek = firestore.Timestamp.fromDate(lastday);
 var tomorrow = firestore.Timestamp.fromDate(tomorrowJs);
 
 const ysterdayMidnight= new Date();
