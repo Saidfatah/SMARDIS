@@ -239,7 +239,7 @@ const model ={
                             if(res.docs.length){
                                 const userDoc= res.docs[0]
                                 const user =  {...userDoc.data(),id:userDoc.id}
-    
+                                  console.log('got user doc')
                                 //pressist state to local storage  
                                 //so that when we open app next time we don't have to refetch from firestore
                                 await AsyncStorage.setItem('USER', JSON.stringify(user))
@@ -260,6 +260,7 @@ const model ={
              } catch (error) {
                  let ERROR_MESSAGE = error.message.toString()
                  console.log('------Login------')
+                 console.log(error)
                  if(ERROR_MESSAGE.indexOf('auth/wrong-password'))
                  {
                     console.log(error) 

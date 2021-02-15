@@ -1,4 +1,4 @@
-import React  from 'react'
+import React,{useEffect}  from 'react'
 import {View,StyleSheet ,ScrollView} from 'react-native'
 import { connect } from 'react-redux'
 import SectorItem from './SectorItem'
@@ -8,7 +8,9 @@ import { List } from 'react-native-paper';
 
 const  TodaysOrders=({todaysSectors,distrubutor_todays_orders_done_fetching,navigation})=> {
   let TITLE=todaysSectors.length ? " Les mission d'aujourdhui" : " Les aucaun de mission active"
-  
+  useEffect(() => {
+    console.log(distrubutor_todays_orders_done_fetching)
+  }, [distrubutor_todays_orders_done_fetching])
   
   return (
     <BackgroundImage  >

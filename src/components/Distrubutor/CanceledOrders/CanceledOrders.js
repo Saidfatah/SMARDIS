@@ -6,7 +6,7 @@ import Button from '../../Common/Button'
 import Loading from '../../Common/Loading'
 import BackgroundImage from '../../Common/BackgroundImage'
 
-const CanceledOrders=({navigation,distrubutor_todays_canceled_orders,resetIsDone,done_resetting_order,distrubutor_todays_canceled_orders_done_fetching})=> {
+const CanceledOrders=({navigation,resetOrder,distrubutor_todays_canceled_orders,resetIsDone,done_resetting_order,distrubutor_todays_canceled_orders_done_fetching})=> {
     const [canReset, setcanReset] = useState(true)
 
     useEffect(() => {
