@@ -9,7 +9,6 @@ import  SwipeAbleProductDetails from './Products/SwipeAbleProductDetails'
 import SwipeAbleCancelOrder from './SwipeAbleCancelOrder'
 
 const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetIsDone,done_fetching_categories  ,categories,addCartItem,selectedCategory,selectCategory,selectedCategoryProducts})=> {
-    const [clientNameHeight, setclientNameHeight] = useState(0)
     const [isPanelActive, setIsPanelActive] = useState(false);
     const [isCancelPanelActive, setIsCancelPanelActive] = useState(false);
     const [selectedProduct, setselectedProduct] = useState(selectedCategoryProducts[0]);

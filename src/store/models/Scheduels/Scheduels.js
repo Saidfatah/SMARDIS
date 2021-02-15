@@ -15,7 +15,8 @@ const getMonday=(d)=> {
 const firstDayOfWeekJs= getMonday(new Date()); // Mon Nov 08 2010
 const today = new Date()
 const tomorrowJs = new Date(today)
-tomorrowJs.setDate(tomorrowJs.getDate() + 1)
+tomorrowJs.setHours(23,59,59,999);
+ 
 
 const yestradyJs = new Date(today)
 yestradyJs.setDate(yestradyJs.getDate() - 1)
@@ -25,12 +26,17 @@ yestradyJs.setDate(yestradyJs.getDate() +7)
 
 const yesterydayJsDstrubutor = new Date(today)
 yesterydayJsDstrubutor.setDate(yesterydayJsDstrubutor.getDate() - 1)
+yesterydayJsDstrubutor.setHours(0,0,0,0);
+
 var yesterydayDstrubutor = firestore.Timestamp.fromDate(yesterydayJsDstrubutor);
 
 var weekStart = firestore.Timestamp.fromDate(firstDayOfWeekJs);
 var nextWeek = firestore.Timestamp.fromDate(nextWeekJs);
-var yesterday = firestore.Timestamp.fromDate(new Date());
 var tomorrow = firestore.Timestamp.fromDate(tomorrowJs);
+
+const ysterdayMidnight= new Date();
+ysterdayMidnight.setHours(0,0,0,0);
+var yesterday = firestore.Timestamp.fromDate(ysterdayMidnight);
 
 console.log({tomorrow,yesterday})
 
@@ -193,7 +199,7 @@ const model ={
             ...state,
             todaysSectors :[],
             todaysSectorsCount :0,
-            todays_orders_first_fetch:true,
+            todays_orders_first_fetch:false,
             distrubutor_todays_orders_done_fetching:true,
         }),
         setedNextTurn : (state,{currentSector,currentTurn,currentSectorIndex})=>({
@@ -344,7 +350,7 @@ const model ={
                                   return arr
                              }
                          ,[]) 
-                        
+                         console.log('fetched todays orders')
                          return dispatch.scheduel.fetchedTodaysSectors(todaysOrders)
                     }
                     dispatch.scheduel.fetchedTodaysSectorsFailed()
@@ -399,9 +405,9 @@ const model ={
                     fetchOrdersReponse = await firestore()
                     .collection('orders')
                     .where('sale_date', '>', yesterday)
+                    .where('status','==','VALIDATED')
                     // .where('sale_date', '<', tomorrow)
-                    // .where('sale_date', '<', tomorrow)
-                    // .where('status','==','VALIDATED')
+
                 }else{
                     const currentDistrubutorId = state.auth.distrubutorId
                    
@@ -545,6 +551,7 @@ const model ={
                 const admin = state.auth.user 
                 //create scheduel doc 
                 const newSchedule = scheduleModel( admin, distrubutor, distination ,start_date)
+            
                 const scheduelAddResponse = await firestore()
                                                   .collection('scheduels')
                                                   .add(newSchedule)
@@ -560,7 +567,8 @@ const model ={
                         client,
                         distination.sector,
                         distrubutor,
-                        index
+                        index,
+                        start_date
                         )
                     scheduelOrders.push(order)
                 })

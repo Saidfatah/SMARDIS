@@ -65,7 +65,7 @@ const Schedule = ({navigation,route,addScheduel,clients,updateScheduel,done_addi
 
 
     const createNewSchdule=e=>{
-         
+       
         if(adminId != undefined && selectedDistrubutor &&  selectedSector && orderListOfClients.length>0 ){
             setcanSubmit(false)
             
@@ -101,6 +101,7 @@ const Schedule = ({navigation,route,addScheduel,clients,updateScheduel,done_addi
           setstart_date(start_date)
         } 
         else if(event.type === 'set') {
+            console.log(currentDate)
           setstart_date(currentDate)
         }
         

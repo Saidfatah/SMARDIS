@@ -6,7 +6,7 @@ const IMAGE_HEIGHT= (width- (16*4))/4
 
 
 const CategoryItem=({category,selectedCategory,selectCategory})=> {
-    const {id , name, image , count } = category
+    const {id , name, image  } = category
     const isSelected= selectedCategory == id
    
  
@@ -20,7 +20,7 @@ const CategoryItem=({category,selectedCategory,selectCategory})=> {
                     width:isSelected?IMAGE_HEIGHT +5:IMAGE_HEIGHT, 
                     borderWidth:isSelected?3:2
                 }}  
-                    source={{uri:image}} 
+                    source={image !="NO_IMAGE"?{uri:image}:require('../../../images/noImage.jpg')} 
                 />
                 <Text style={{fontWeight:isSelected?'bold':'normal'}} >{name}</Text>
             </View>
