@@ -20,6 +20,7 @@ const model ={
         user           : null ,
         savePassword   : false,
         savedPassword  : null,
+        savedEmail  : null,
         waitingList_count : 0,
         admins_count      : 0,
         done_Logging    : false,
@@ -40,13 +41,14 @@ const model ={
         done_updating_acount:false ,
     },
     reducers:{
-        checkedAuthentication : (state,{authenticated,user,userPassword,userType,savePassword,savedPassword})=>({
+        checkedAuthentication : (state,{authenticated,user,userType,savePassword,savedPassword,savedEmail})=>({
           ...state,
           authenticated ,
           user,
           userType,
           savePassword  ,
           savedPassword  ,
+          savedEmail,
           userPassword:savedPassword,
           distrubutorId:user?user.id:null,
           adminId :user ?user.id:null
@@ -171,7 +173,8 @@ const model ={
                     let savePassword  = await AsyncStorage.getItem('SAVE_PASSWORD')
                     savePassword = JSON.stringify(savePassword)
                     const savedPassword  = await AsyncStorage.getItem('PASSWORD')
-
+                    const savedEmail  = await AsyncStorage.getItem('EMAIL')
+                   console.log({savedEmail})
                     if(user){      
                         //get user doc from async storage
                         console.log(user)
@@ -196,6 +199,7 @@ const model ={
                              userType ,
                              savePassword  ,
                              savedPassword  ,
+                             savedEmail
                          })
 
                          //check if user in approved by admin if not then we redirect them to waitingRoom 
@@ -212,6 +216,7 @@ const model ={
                              userType      : null,
                              savePassword  ,
                              savedPassword  ,
+                             savedEmail
                           })
                          navigation.navigate('LOGIN')
                     }
@@ -246,6 +251,8 @@ const model ={
                                 await AsyncStorage.setItem('USER_TYPE', user.type)
                                 await AsyncStorage.setItem('SAVE_PASSWORD', JSON.stringify(savePassword))
                                 await AsyncStorage.setItem('PASSWORD', password)
+                                console.log({username})
+                                await AsyncStorage.setItem('EMAIL', username)
     
                                 
                                 dispatch.auth.loginSuccess({user,userType:user.type,userPassword:password})
@@ -295,8 +302,10 @@ const model ={
        
                 await AsyncStorage.setItem('SAVE_PASSWORD', (savePassword).toString())
              
-                if(savePassword == false)
+                if(savePassword == false){
                 await AsyncStorage.removeItem('PASSWORD')
+                await AsyncStorage.removeItem('EMAIL')
+               }
          
             } catch (error) {
                 console.log(error)

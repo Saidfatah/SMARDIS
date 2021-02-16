@@ -15,9 +15,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import { BackHandler ,Alert} from 'react-native';
 
 
-const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePassword,savedPassword})=> {
-    const [username, setusername] = useState("said_designer@outlook.com")
-    const [password, setPassword] = useState("00000000")
+const  Login=({navigation,authError,savedEmail,login,done_Logging,toggleSavePassword,savePassword,savedPassword})=> {
+    const [username, setusername] = useState("")
+    const [password, setPassword] = useState("")
     const [canSubmit, setcanSubmit] = useState(true)
     const [savePasswordLogin, setsavePasswordLogin] = useState(false)
     const [passwordRequired, setpasswordRequired] = useState(null)
@@ -25,11 +25,16 @@ const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePa
     const [authErrorLocal, setauthErrorLocal] = useState(null)
 
     useEffect(() => {
-          if(savePassword){
+          if(savePassword == undefined || savePassword == null) return 
+          console.log({savedEmail})
+          if(savePassword.indexOf("true") > -1){
             setsavePasswordLogin(true)
             setPassword(savedPassword)
+            setusername(savedEmail)
+          }else{
+            setsavePasswordLogin(false)
           }
-    }, [])
+    }, [savePassword,savedEmail,savedPassword])
     useEffect(() => {
         console.log({authError})
           if(authError != null){
@@ -38,10 +43,12 @@ const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePa
           }
     }, [authError])
     useEffect(() => {
-          if(done_Logging){
+          if(done_Logging ){
             setcanSubmit(true)
-            setusername('')
-            setPassword('')
+            if(savePassword.indexOf("false") > -1){
+              setusername('')
+              setPassword('')
+            }
           }
     }, [done_Logging])
     useFocusEffect(
@@ -109,7 +116,7 @@ const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePa
                  <View style={{width:'100%'}} >
                       <Label label="Téléphone"  color="#fff"  mga={4} />
                       <TextInput style={{...styles.Input}}   
-                          placeholder={"Numero du téléphone"}   
+                          placeholder={"Insere votre email"}   
                           defaultValue={username} 
                           placeholderTextColor="#fff"
                           onFocus={e=> setusernameRequired(null)}
@@ -120,7 +127,7 @@ const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePa
                  <View style={{width:'100%'}} >
                      <Label label="Mote de passe"  color="#fff" mga={4} />
                      <TextInput style={{...styles.Input}}   
-                         placeholder={"Entrer le mote de passe"}   
+                         placeholder={"Insere votre mote de passe"}   
                          defaultValue={password} 
                          textContentType="password"
                          secureTextEntry={true}
@@ -176,6 +183,7 @@ export default connect(
     state=>({
         authError : state.auth.authError ,
         savedPassword : state.auth.savedPassword ,
+        savedEmail : state.auth.savedEmail ,
         savePassword : state.auth.savePassword ,
         done_Logging : state.auth.done_Logging ,
     }),
