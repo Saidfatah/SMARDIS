@@ -40,6 +40,8 @@ const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePa
     useEffect(() => {
           if(done_Logging){
             setcanSubmit(true)
+            setusername('')
+            setPassword('')
           }
     }, [done_Logging])
     useFocusEffect(
@@ -62,6 +64,9 @@ const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePa
             BackHandler.removeEventListener("hardwareBackPress", onBackPress);
         
     }, []));
+
+
+    
     const handleLogin=()=>{
         if(!canSubmit) return 
          if(password == '') return setpasswordRequired({message:"Inserer votre mote de passe !"})

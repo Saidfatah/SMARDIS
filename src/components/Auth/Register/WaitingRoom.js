@@ -3,7 +3,7 @@ import {View,Text} from 'react-native'
 import BackgroundImage from '../../Common/BackgroundImage'
 import { useFocusEffect } from "@react-navigation/native";
 import { BackHandler ,Alert} from 'react-native';
-
+import Logo from '../../Common/Logo'
 
 const WaitingRoom=({navigation,route})=> {
     useFocusEffect(
@@ -35,6 +35,7 @@ const WaitingRoom=({navigation,route})=> {
                 alignItems:'center',
                 flex:1
                 }} >
+                <Logo width={120} height={120} />
                 <Text style={{color:'#fff'}} >Attender L'approval du L'admin </Text>
             </View>
         </BackgroundImage>
