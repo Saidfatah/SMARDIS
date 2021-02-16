@@ -94,7 +94,7 @@ const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePa
         <KeyboardAwareScrollView   contentContainerStyle={{ display:'flex',  flexGrow:1 }} >
 
         <View style={styles.Logo}>
-             <Logo width={100} height={100}  />
+             <Logo width={120} height={120}  />
         </View>
          <View style={styles.Form}>
        
@@ -154,7 +154,7 @@ const  Login=({navigation,authError,login,done_Logging,toggleSavePassword,savePa
                     setsavePasswordLogin(!savePasswordLogin)
                     toggleSavePassword({savePassword:!savePasswordLogin})
                  }} 
-                title="Enrg more de passe " 
+                title="Enrg mote de passe " 
                 textStyle={{color:colors.WHITE}}
                 checkedColor={colors.WHITE}
                 uncheckedColor={colors.WHITE}

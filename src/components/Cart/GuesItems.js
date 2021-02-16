@@ -16,16 +16,26 @@ const  GuesItems = ({navigation,items,guestId,removeGuestItem,done_validating_pr
      }, [done_validating_product])
 
      const handlePress = () => setExpanded(!expanded);
-
-     const TOTAL= items.reduce((a,c)=>a+(c.price1*c.quantity),0)
-     return (  <List.Accordion
-                 title={<View style={{ flex:1, display:'flex', flexDirection:'row', width : '100%', justifyContent:'space-between'}}>
-                    <Text>{name}</Text>
-                    <Badge status={"success"} value={(TOTAL).toString()+" DH"} textStyle={{ fontSize:14 }} containerStyle={{marginLeft:16}} badgeStyle={{ height:24  }}/>
-                </View>}
-                 titleStyle={{color:colors.BLACK,fontWeight:'bold'}}
-                 expanded={expanded}
-                 onPress={handlePress}>
+    
+     console.log(items[0].priceForClient)
+     const TOTAL= items.reduce((a,c)=>a+(c.priceForClient * c.quantity),0)
+ 
+     const PROPS={
+         title:<View style={{ flex:1, display:'flex', flexDirection:'row', width : '100%', justifyContent:'space-between'}}>
+             <Text>{name}</Text>
+             <Badge 
+                 status={"success"} 
+                 value={(TOTAL).toString()+" DH"} 
+                 textStyle={{ fontSize:14 }} 
+                 containerStyle={{marginLeft:16}} 
+                 badgeStyle={{ height:24  }}
+             />
+          </View>,
+         titleStyle:{color:colors.BLACK,fontWeight:'bold'},
+         expanded:expanded,
+         onPress:handlePress,
+     }
+     return (  <List.Accordion {...PROPS} >
                  {
                  items.map((item,i)=><GuestItem  key={i} {...{guestId,updateQuantity,removeGuestItem,item}} />)
                  }

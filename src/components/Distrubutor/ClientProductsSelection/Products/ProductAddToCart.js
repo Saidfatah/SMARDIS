@@ -5,11 +5,11 @@ import {colors} from '../../../Common/Colors'
  import NumericInput from 'react-native-numeric-input'
 
 
-const ProductAddToCart =({scheduelId,setIsPanelActive,selectedProduct,guest,addCartItem,sector})=> {
+const ProductAddToCart =({scheduelId,setIsPanelActive,selectedProduct,guest,addCartItem,sector,client})=> {
     const [quantity, setquantity] = useState(1)
     const onChangeHandler =(text) =>setquantity(parseInt(text))
     const {price1} = selectedProduct
-
+    const priceForClient =selectedProduct[client.price.replace('x','ce')] || price1
 
     return (
         <View styles={styles.form}>
@@ -26,7 +26,7 @@ const ProductAddToCart =({scheduelId,setIsPanelActive,selectedProduct,guest,addC
                  <Text style={styles.label}>Total en DH</Text>
                  <TextInput 
                     style={styles.input}
-                   value={(quantity*price1).toString()}
+                   value={(priceForClient*quantity).toString()}
                    editable={false}
                    keyboardType="numeric"
                    onChangeText={onChangeHandler} 
@@ -35,7 +35,7 @@ const ProductAddToCart =({scheduelId,setIsPanelActive,selectedProduct,guest,addC
              <Button color={"BLUE"} clickHandler={e=>{
                  addCartItem({
                      guest,
-                     product:{...selectedProduct,quantity},
+                     product:{...selectedProduct,quantity ,priceForClient },
                      sector,
                      scheduelId
                     })

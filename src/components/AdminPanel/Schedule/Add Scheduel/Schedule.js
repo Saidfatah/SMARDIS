@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {View,Text,ScrollView,SafeAreaView} from 'react-native'
+import {View,Text,ScrollView,SafeAreaView,Alert} from 'react-native'
 import { connect } from 'react-redux'
 import ClientsOrdering from './ClientsOrdering'
 import SectorsDropDown from './SectorsDropDown'
@@ -96,12 +96,27 @@ const Schedule = ({navigation,route,addScheduel,clients,updateScheduel,done_addi
     const onChangeHnadler = (event, selectedDate) => {
         const currentDate = selectedDate || start_date;
         setshowDate(false)
-        console.log(currentDate)
-        if (event.type === 'dismissed') {
+        //chechk if date is smaller than todays date 
+        const now = new Date() 
+        const nowString = now.toLocaleDateString('en','USA')
+        const currentString = currentDate.toLocaleDateString('en','USA')
+        const isBeforeToday= (nowString != currentString) &&  now.getTime() > currentDate.getTime()
+        
+        if(isBeforeToday){
+            Alert.alert("Attention!", "la date de debut ne peut pas etre inferior a la date d'aujordhui", [
+                {
+                  text: "Fermer",
+                  onPress: () => null,
+                  style: "cancel"
+                }
+              ]);
+        }
+       
+        // if(now< new Date(currentDate).now())
+        if (event.type === 'dismissed' || isBeforeToday) {
           setstart_date(start_date)
         } 
         else if(event.type === 'set') {
-            console.log(currentDate)
           setstart_date(currentDate)
         }
         

@@ -3,7 +3,7 @@ import {View,StyleSheet,FlatList} from 'react-native'
 import ProductItem from './ProductItem'
 
 
-const Products=({selectedCategoryProducts,setIsPanelActive,setselectedProduct})=> {
+const Products=({selectedCategoryProducts,setIsPanelActive,setselectedProduct,client})=> {
     const [productsList, setproductsList] = useState([])
    
     useEffect(() => {
@@ -22,6 +22,7 @@ const Products=({selectedCategoryProducts,setIsPanelActive,setselectedProduct})=
          showsVerticalScrollIndicator={false}
          renderItem   = {({ item }) =><ProductItem
              product={item}  
+             client={client}
              setIsPanelActive={setIsPanelActive} 
              setselectedProduct={setselectedProduct} 
           />}

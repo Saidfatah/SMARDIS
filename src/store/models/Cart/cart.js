@@ -141,7 +141,11 @@ const model ={
              if( targetGuest ){
                  const orderId =targetGuest.orderId 
                  const tergetGuestIndex =  cartGuests.indexOf(targetGuest)
-            
+
+                 const client   = targetGuest
+                 const  total   =  targetGuest.items.reduce((a,c)=>a+( c.priceForClient * c.quantity ),0) ;
+               
+
                  //modfy cartGuest status to VALIDATED 
                  cartGuests[tergetGuestIndex].status="VALIDATED"
 
@@ -151,15 +155,16 @@ const model ={
 
   
                  //update order doc ["VALIDATED"]
-                 const client = targetGuest
-                 console.log()
-                 let billRef = client.name.substring(0,4).toUpperCase()+targetGuest.scheduelId.substr(0,5).toUpperCase() 
+                 
+
+                 const  billRef = client.name.substring(0,4).toUpperCase()+targetGuest.scheduelId.substr(0,5).toUpperCase() 
                  const validateOrderReponse = await firestore()
                   .collection('orders')
                   .doc(orderId)
                   .update({
                         products:[...targetGuest.items],
                         billRef,
+                        total,
                         status: "VALIDATED",
                         sale_date : firestore.Timestamp.fromDate(new Date()), 
                         sale_hour : firestore.Timestamp.fromDate(new Date()),

@@ -19,7 +19,7 @@ yestradyJs.setDate(yestradyJs.getDate() +7)
 
 const yesterydayJsDstrubutor = new Date(today)
 yesterydayJsDstrubutor.setDate(yesterydayJsDstrubutor.getDate() - 1)
-yesterydayJsDstrubutor.setHours(0,0,0,0);
+yesterydayJsDstrubutor.setHours(23,56,59,999);
 
 var yesterydayDstrubutor = firestore.Timestamp.fromDate(yesterydayJsDstrubutor);
 
@@ -37,7 +37,7 @@ const ysterdayMidnight= new Date();
 ysterdayMidnight.setHours(0,0,0,0);
 var yesterday = firestore.Timestamp.fromDate(ysterdayMidnight);
 
-console.log({tomorrow,yesterday})
+ 
 
 const model ={
     state:{
@@ -400,8 +400,6 @@ const model ={
                 let fetchOrdersReponse
                 
                 if(type=="ADMIN"){
-                    console.log(yesterday)
-                    console.log(tomorrow)
                     fetchOrdersReponse = await firestore()
                     .collection('orders')
                     .where('sale_date', '>', yesterday)

@@ -10,7 +10,7 @@ const  GuestItem = ({item,guestId,removeGuestItem,updateQuantity})=> {
         <Item xStyle={styles.item}>
             <IconButton clickHandler={e=>removeGuestItem({guestId,itemId:item.id})} />
             <Text>{item.name}</Text>
-            <Text>{item.price}</Text>
+            <Text>{item.priceForClient}</Text>
             <Quantity  
                  quantity={item.quantity} 
                  updateQuantity={updateQuantity} 

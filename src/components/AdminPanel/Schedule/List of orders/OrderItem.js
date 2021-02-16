@@ -14,46 +14,6 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
     
 
 
-        
-
-    // const PickFile=async ()=>{
-    //     try {
-          
-    //         const res = await DocumentPicker.pick({
-    //             type: [DocumentPicker.types.allFiles],
-    //         });
-    //         const uri =res.uri.replace('%3A','/').replace('%2F','/')
-    //         console.log({uri})
-    //         const filePath =await getPathForFirebaseStorage(uri)
-    //         // const destPath = `${RNFS.TemporaryDirectoryPath}/${shortid.generate()}`;
-    //         // await RNFS.cop(selectedDocument.uri, destPath);
-    //         return  console.log(filePath)
-    //         const task =  Storage().ref('catalogue/ctalaogue').putFile();
-           
-    //         task.on('state_changed', 
-    //             sn =>{},
-    //             err=>console.log(err),
-    //             () => {
-    //                console.log('excel uploaded!')
-    //                Storage()
-    //                .ref("catalogue").child("ctalaogue").getDownloadURL()
-    //                .then(url => {
-    //                  console.log('uploaded excel url', url);
-    //                }).catch(err=>console.log(err))
-    //            }
-    //         )
-    //         await task 
-           
-    //       } catch (err) {
-    //           console.log(err)
-    //         if (DocumentPicker.isCancel(err)) {
-    //           // User cancelled the picker, exit any dialogs or menus and move on
-    //         } else {
-    //           throw err;
-    //         }
-    //     }
-    // }
-
     let STATUS ="pase enour"
     if(status =="VALIDATED") STATUS ="valider"
     if(status =="PENDING") STATUS ="pase enou"
@@ -121,16 +81,21 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
                     ? <>
                     <Label label="Liste des produits ventes "  mga={16} />
                     <View style={styles.productsWrapper}>
+                          <View style={styles.HFlex} >
+                                 <Label label="Produits :"  mga={16} />
+                                 <View  style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
+                                 <Badge value={products.lenght} status="primary" />
+                                 </View>
+                         </View>
                         {
                          products.map((product,i)=><View key={i} style={styles.orderProducts}>
                                  <Text>{"titre :"+product.name}</Text>
                                  <Text>{"ref :"+product.ref}</Text>
                                  <Text>{"quantity :"+product.quantity}</Text>
-                                 <Text>{"tota :"}</Text>
                                  <View style={styles.HFlex} >
                                    <Label label="Total :"  mga={16} />
                                    <View  style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
-                                   <Badge value={product.price1 * product.quantity} status="primary" />
+                                   <Badge value={product.priceForClient * product.quantity} status="primary" />
                                    </View>
                                 </View>
                                  

@@ -31,7 +31,10 @@ const Navigator =({authenticated,userType})=>{
              <Drawer.Screen name="WAIT_ROOM" component={WaitingRoom} />
              <Drawer.Screen 
                 name="BillTable" 
-                options={{headerTitle:"Bon de command"}}
+                options={{
+                    headerTitle:"Bon de command",
+                    headerShown:true
+                }}
                 component={DistrubutorBillTable} 
              />
        </Drawer.Navigator>

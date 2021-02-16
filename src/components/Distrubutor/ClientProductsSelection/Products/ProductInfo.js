@@ -1,19 +1,22 @@
 import React from 'react'
 import {View,Text,StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
-const ProductInfo=({product,opened})=> {
+const ProductInfo=({product,opened,client})=> {
     const {price1,name,image}=product
-
+    const clientPrice = client.price.replace('x','ce')
+    const PRICE= product[clientPrice] || price1
+    console.log(PRICE)
+    // console.log({clientPrice,PRICE})
     
     let First  = null
     let Second = null
     let Third  = null
     if(!opened){
-        First  =  <Text style={[styles.productText,styles.flexItem]}>{price1}.00 DH</Text> 
+        First  =  <Text style={[styles.productText,styles.flexItem]}>{PRICE}.00 DH</Text> 
         Second =  <Text style={[styles.productText,styles.flexItem]}>{name}</Text> 
         Third  =  <FastImage style={[styles.image]} source={image!='NO_IMAGE'?{uri:image}:require('../../../../images/noImage.jpg')} /> 
     }else{
-        Third  =  <Text style={[styles.productText]}>{price1}.00 DH</Text> 
+        Third  =  <Text style={[styles.productText]}>{PRICE}.00 DH</Text> 
         Second =  <Text style={[styles.productText]}>{name}</Text> 
         First  =  <FastImage style={{...styles.image,height:100, width:100}} source={image!='NO_IMAGE'?{uri:image}:require('../../../../images/noImage.jpg')} /> 
     }

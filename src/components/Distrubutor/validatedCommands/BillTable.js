@@ -5,17 +5,17 @@ import {colors} from '../../Common/Colors'
 import Loading from '../../Common/Loading'
 import Pdf from 'react-native-pdf';
 import PDF   from 'rn-pdf-generator';
-import firestore from '@react-native-firebase/firestore'
+ 
 
 const BillTable=({selectedBill})=> {
     const [uri, seturi] = useState("") 
-
+    
     useEffect(() => {
       let mounted= true 
-       console.log(selectedBill)
+       console.log('generate pdf now')
        if(!selectedBill) return 
-       const {products,sale_date} = selectedBill
-
+       const {products,sale_date,total} = selectedBill
+      
       const HMTL= `<html>
         <head>
           <meta charset="UTF-8">
@@ -88,9 +88,9 @@ const BillTable=({selectedBill})=> {
                        <tr>
                              <td> ${product.ref} </td>
                              <td> ${product.name} </td>
-                             <td> ${product.price1} </td>
+                             <td> ${product.priceForClient} </td>
                              <td> ${product.quantity} </td>
-                             <td class="money" > ${product.quantity * product.price1}</td>
+                             <td class="money" > ${product.quantity * product.priceForClient}</td>
                        </tr>
                      `)
                     }
@@ -98,7 +98,7 @@ const BillTable=({selectedBill})=> {
                     <tr  >
                        <td colspan="3"  style="height: 20px;border:null;" ></td>
                        <td style="font-weight:bolder" >Total</td>
-                       <td  class="money"   >${products.reduce((a,c)=>a+(c.quantity * c.price1),0)}</td>
+                       <td  class="money"   >${total}</td>
                    </tr>
                    </tbody>
                 </table>
@@ -108,7 +108,7 @@ const BillTable=({selectedBill})=> {
 
       PDF.fromHTML(HMTL,'https://localhost:3000')
       .then((data)=>{
-        console.log({data})
+        console.log("got pdf")
         if(mounted) seturi(`data:application/pdf;base64,${data}`)
        })
       .catch(err  => {
@@ -162,9 +162,8 @@ const styles = StyleSheet.create({
     },
     pdf: {
       backgroundColor:'#333',
-      flex:1,
       width:Dimensions.get('window').width,
-      height:'100%'
+      height:'100%',
   }
 });
 

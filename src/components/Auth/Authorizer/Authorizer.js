@@ -9,18 +9,14 @@ import BackgroundImage from '../../Common/BackgroundImage'
 const  Authorizer=({navigation,logout,checkAuthetication})=> {
     useEffect(() => {
     // logout({navigation})
-      
-        checkAuthetication({navigation})
-        //    setTimeout(() => {
-        //    }, 4000);
+           setTimeout(() => {
+                 checkAuthetication({navigation})
+           }, 4000);
        
     }, [])
 
 
     return<BackgroundImage>
-        {/* <TouchableOpacity onPress={e=>addOrdersList()}>
-               <Text>Add distrubutors array</Text>
-        </TouchableOpacity> */}
      <View style={{
         display:'flex',
         justifyContent:'center',
@@ -31,7 +27,7 @@ const  Authorizer=({navigation,logout,checkAuthetication})=> {
          <View style={{
          elevation:12
          }} >
-         <Logo width={100} height={100}  />
+         <Logo width={120} height={120}   />
         </View>
     </View>
     </BackgroundImage>

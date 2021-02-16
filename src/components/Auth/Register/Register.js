@@ -138,7 +138,7 @@ const  Register=({navigation,registerError,register})=> {
     <BackgroundImage>
         <KeyboardAwareScrollView   contentContainerStyle={{ display:'flex',  flexGrow:1 }} >
               <View style={styles.Logo}>
-                   <Logo width={100} height={100}  />
+                   <Logo width={120} height={120}  />
               </View>
              <View style={styles.Form}>            
                  <View style={styles.inputs} >

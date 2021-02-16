@@ -39,9 +39,19 @@ const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetI
         </View>
         <View style={styles.productsPanel} >
              <CategoriesSlider  {...{done_fetching_categories,navigation,handleHeight,categories,selectedCategory,selectCategory}} />
-             <Products {...{setIsPanelActive,setselectedProduct,selectedCategoryProducts}} />
+             <Products {...{setIsPanelActive,setselectedProduct,selectedCategoryProducts,client}} />
         </View>
-             <SwipeAbleProductDetails {...{scheduelId,selectedProduct,sector,isPanelActive,setIsPanelActive,guest:client,client,orderId,addCartItem}}  />
+             <SwipeAbleProductDetails {...{
+                 scheduelId,
+                 selectedProduct,
+                 sector,
+                 isPanelActive,
+                 setIsPanelActive,
+                 guest:client,
+                 client,
+                 orderId,
+                 addCartItem}} 
+                 />
              <SwipeAbleCancelOrder {...{
                  navigation,
                  cancelOrder,

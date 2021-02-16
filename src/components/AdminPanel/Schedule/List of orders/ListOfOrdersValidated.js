@@ -17,11 +17,9 @@ import XLSX from 'xlsx';
 
 //export excel from here 
 
+const Header= ["1","Référence","Qu","P.U","Désignation","RéférenceFacetur","Date","RéférenceClient","Vendeur","RéférenceVendeur","Secteur"]
 export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_fetching_todays_validated_orders}) => {
-    const Header= ["1","Référence","Qu","P.U","Désignation","RéférenceFacetur","Date","RéférenceClient","Vendeur","RéférenceVendeur","Secteur"]
-    const [data, setdata] = useState([
-        Header
-    ])
+    const [data, setdata] = useState([ Header ])
     const [widthArr, setwidthArr] = useState([90,120,90,90,90,90,90,90,90,90,90])
     const [cols, setcols] = useState(["_",...make_cols("A1:J10")])
     const TITLE = valide_orders.length >0 ? "les command valider" :"pas de command valider"
@@ -34,12 +32,12 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
              if(!products || products.length <1)return console.log('no orders')
 
              products.forEach((product,index2)=>{
-                  const {quantity,price1,ref,name} =product
+                  const {quantity,priceForClient,ref,name} =product
                   dataTemp.push([
                       index2+2,
                       ref,
                       quantity,
-                      price1,
+                      priceForClient,
                       name,
                       billRef,
                       sale_date.toLocaleDateString('en-US').toString(),
@@ -83,7 +81,9 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
         }
 
         // //WIRTE TO ExternalStorageDirectoryPath 
-	    const filetoESDP = DirectoryPath+"/"+billRef+".xlsx";
+        const newDate=new Date().toLocaleDateString('en','USA').replace("/",'_').replace("/",'_')
+        console.log(newDate)
+	    const filetoESDP = DirectoryPath+"/"+newDate+".xlsx";
 	    const writeToExternalStorageResponse= await writeFile(filetoESDP, output(wbout), 'ascii')
  
         } catch (error) {
@@ -173,7 +173,7 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
     return (
         <ScrollView style={{flex:1,backgroundColor:'#fff'}} contentContainerStyle={{padding:8}}  > 
                  {valide_orders.length>0 ? <ExceVisualization/> :null }
-                 <List.Section title={TITLE}>
+                 {/* <List.Section title={TITLE}>
                     {
                     valide_orders.map((item,index)=>{
                         return <OrderItem 
@@ -185,7 +185,7 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
                         />
                     })
                     }
-                 </List.Section>
+                 </List.Section> */}
         </ScrollView>
     )
 }
