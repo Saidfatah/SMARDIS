@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import {colors} from '../../Common/Colors'
+import {buttonTexts} from '../../Common/GlobalStrings'
 import Badge from '../../Common/Badge'
 import {NavigationAction} from '@react-navigation/native'
 const DrawerContent=(props)=> {
@@ -126,7 +127,7 @@ const DrawerContent=(props)=> {
                          size={size}
                          />
                      )}
-                     label="Sign Out"
+                     label={buttonTexts.LOGOUT}
                      onPress={() => {logout({navigation})}}
                  />
             </View>
@@ -206,7 +207,7 @@ const DrawerContent=(props)=> {
                          size={size}
                          />
                      )}
-                     label="Sign Out"
+                     label={buttonTexts.LOGOUT}
                      onPress={() => {logout({navigation})}}
                  />
             </View>

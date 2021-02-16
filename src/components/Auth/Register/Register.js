@@ -4,6 +4,7 @@ import {View,Text,TextInput,StyleSheet,TouchableOpacity} from 'react-native'
 import BackgroundImage from '../../Common/BackgroundImage'
 import {colors} from '../../Common/Colors'
 import Button from '../../Common/Button'
+import {buttonTexts,labelsTexts} from '../../Common/GlobalStrings'
 import Error from '../../Common/Error'
 import Label from '../../Common/Label'
 import Logo from '../../Common/Logo'
@@ -39,14 +40,14 @@ const  Register=({navigation,registerError,register})=> {
     const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
     const [canSubmit, setcanSubmit] = useState(true)
     const [type, settype] = useState("DISTRUBUTOR")
-    const [passwordConfirm, setpasswordConfirm] = useState("123456")
+    const [passwordConfirm, setpasswordConfirm] = useState("")
     const [userInfo, setuserInfo] = useState({
-      ACCESS_CODE:"123456",
-      name:"said vendeur",
-      email:"said_said@vendor.com",
-      city:"Ouarzazate",
-      phone :"0625414578" ,
-      password:"123456",   
+      ACCESS_CODE:"",
+      name:"",
+      email:"",
+      city:"",
+      phone :"" ,
+      password:"",   
     })
 
 
@@ -143,7 +144,7 @@ const  Register=({navigation,registerError,register})=> {
              <View style={styles.Form}>            
                  <View style={styles.inputs} >
                       <View style={{width:'100%'}} >
-                           <Label label="Code d'access "  color="#fff"  mga={4} />
+                           <Label label={labelsTexts.ACCESS_CODE}  color="#fff"  mga={4} />
                            <Error trigger={errors.ACCESS_CODE_REQUIRED} error={REQUIRED_FIELD} />
                            <Error trigger={errors.ACCESS_CODE_INVALIDE} error={registerError && registerError.message} />
                            <TextInput style={{...styles.Input}}   
@@ -155,7 +156,7 @@ const  Register=({navigation,registerError,register})=> {
                            />
                       </View>
                       <View style={{width:'100%'}} >
-                           <Label label="Nom "  color="#fff"  mga={4} />
+                           <Label label={labelsTexts.NAME}  color="#fff"  mga={4} />
                            <Error trigger={errors.name_USED}    error={registerError && registerError.message} />
                            <Error trigger={errors.nameREQUIRED} error={REQUIRED_FIELD} />
                            <TextInput style={{...styles.Input}}   
@@ -167,7 +168,7 @@ const  Register=({navigation,registerError,register})=> {
                            />
                       </View>
                       <View style={{width:'100%'}} >
-                          <Label label="Email "  color="#fff"  mga={4} />
+                          <Label label={labelsTexts.EMAIL}  color="#fff"  mga={4} />
                           <Error trigger={errors.emailUSED}     error={registerError && registerError.message} />
                           <Error trigger={errors.emailINVALID}  error={registerError && registerError.message} />
                           <Error trigger={errors.emailREQUIRED} error={REQUIRED_FIELD} />
@@ -180,7 +181,7 @@ const  Register=({navigation,registerError,register})=> {
                           />
                      </View>
                       <View style={{width:'100%'}} >
-                          <Label label="Téléphone "  color="#fff"  mga={4} />
+                          <Label label={labelsTexts.PHONE}  color="#fff"  mga={4} />
                           <Error trigger={errors.phoneREQUIRED}     error={REQUIRED_FIELD} />
                           <TextInput style={{...styles.Input}}   
                               placeholder={"Inserer votre numero du téléphone"}   
@@ -202,7 +203,7 @@ const  Register=({navigation,registerError,register})=> {
                           />
                        </View>
                       <View style={{width:'100%'}} >
-                     <Label label="Mote de passe"  color="#fff" mga={4} />
+                     <Label label={labelsTexts.PASSWORD}  color="#fff" mga={4} />
                      <Error trigger={errors.passwordREQUIRED}  error={REQUIRED_FIELD} />
                      <TextInput style={{...styles.Input}}   
                          placeholder={"Entrer le mote de passe"}   
@@ -216,7 +217,7 @@ const  Register=({navigation,registerError,register})=> {
                      />
                  </View>
                       <View style={{width:'100%'}} >
-                     <Label label="Confirmer le mote de passe"  color="#fff" mga={4} />
+                     <Label label={labelsTexts.PASSWORD_CONFIRM}  color="#fff" mga={4} />
                      <Error trigger={errors.passwordConfirmREQUIRED}  error={REQUIRED_FIELD} />
                      <Error trigger={errors.passwordNotMatch}  error={"le mot de passe ne correspond pas! "} />
                      <TextInput style={{...styles.Input}}   
@@ -231,7 +232,7 @@ const  Register=({navigation,registerError,register})=> {
                      />
                  </View>
                       <View style={{width:'100%'}} >
-                      <Label label="Ville "  color="#fff"  mga={4} />
+                      <Label label={labelsTexts.CITY}  color="#fff"  mga={4} />
                       <Error trigger={errors.cityREQUIRED} error={REQUIRED_FIELD} />
                       <CitiesDropDown {...{setcity:handelChange('city'),city}} />
 
@@ -244,7 +245,7 @@ const  Register=({navigation,registerError,register})=> {
                        clickHandler={e=>handleLogin()} >
                        {
                            canSubmit
-                           ?<Text style={styles.ButtonText}>Inscrire</Text>
+                           ?<Text style={styles.ButtonText}>{buttonTexts.REGISTER}</Text>
                            :<View style={{display:'flex',flexDirection:'row',justifyContent:'center'}} >
                                <Loading  spacing={30} /> 
                            </View>
@@ -258,7 +259,7 @@ const  Register=({navigation,registerError,register})=> {
                           }} >
                           <Text style={{color:'#fff',marginRight:16}}>Vous este deja enrgister ?</Text>
                           <TouchableOpacity onPress={e=>navigation.navigate('LOGIN')} >
-                                 <Text style={{color:'#fff',fontWeight:"bold",padding:16}}>Connecter </Text>
+                                 <Text style={{color:'#fff',fontWeight:"bold",padding:16}}>{buttonTexts.LOGIN_CALL} </Text>
                           </TouchableOpacity>
                       </View>
                  </View>

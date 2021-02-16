@@ -4,10 +4,11 @@ import {View,Text,TextInput,StyleSheet,TouchableOpacity} from 'react-native'
 import BackgroundImage from '../../Common/BackgroundImage'
 import Logo from '../../Common/Logo'
 import {colors} from '../../Common/Colors'
+import {buttonTexts} from '../../Common/GlobalStrings'
 import  Button from '../../Common/Button'
 import  Error from '../../Common/Error'
 import  Label from '../../Common/Label'
-import Loading from '../../Common/Loading'
+
 import { connect } from 'react-redux'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import {CheckBox} from 'react-native-elements'
@@ -145,7 +146,7 @@ const  Login=({navigation,authError,savedEmail,login,done_Logging,toggleSavePass
                      loading={!canSubmit}
                      loadingSize={30}
                       >
-                    <Text style={styles.ButtonText}>Connexion</Text>
+                    <Text style={styles.ButtonText}>{buttonTexts.LOGIN}</Text>
                  </Button>
             </View>
 
@@ -156,7 +157,7 @@ const  Login=({navigation,authError,savedEmail,login,done_Logging,toggleSavePass
                           }} >
                           <Text style={{color:'#fff',marginRight:16}}>vous n'avez pas de compte ?</Text>
                           <TouchableOpacity onPress={e=>navigation.navigate('REGISTER')} >
-                                 <Text style={{color:'#fff',fontWeight:"bold",padding:16}}>s'inscrire  </Text>
+                                 <Text style={{color:'#fff',fontWeight:"bold",padding:16}}>{buttonTexts.REGISTER_CALL} </Text>
                           </TouchableOpacity>
            </View>
              
@@ -166,7 +167,7 @@ const  Login=({navigation,authError,savedEmail,login,done_Logging,toggleSavePass
                     setsavePasswordLogin(!savePasswordLogin)
                     toggleSavePassword({savePassword:!savePasswordLogin})
                  }} 
-                title="Enrg mote de passe " 
+                title={buttonTexts.SAVE_PASSWORD} 
                 textStyle={{color:colors.WHITE}}
                 checkedColor={colors.WHITE}
                 uncheckedColor={colors.WHITE}
