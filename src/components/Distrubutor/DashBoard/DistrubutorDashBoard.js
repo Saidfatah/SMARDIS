@@ -4,12 +4,13 @@ import TodaysOrders from '../TodaysOrders/TodaysOrders'
 import { useFocusEffect } from "@react-navigation/native";
 import { BackHandler ,Alert} from 'react-native';
 
-const DistrubutorDashBoard=({route,navigation,fetchTodaysOrders,fetchSectors,fetchDistrubutorTodaysCanceledOrders ,fetchTodaysValideOrders,fetchCategories,fetchProducts})=> {
+const DistrubutorDashBoard=({route,navigation,fetchCartFromAsyncStorage,fetchTodaysOrders,fetchSectors,fetchDistrubutorTodaysCanceledOrders ,fetchTodaysValideOrders,fetchCategories,fetchProducts})=> {
     useEffect(() => {
         fetchCategories()
         fetchProducts()
         fetchTodaysOrders()
         fetchSectors()
+        fetchCartFromAsyncStorage()
         fetchDistrubutorTodaysCanceledOrders()
         fetchTodaysValideOrders("DISTRUBUTOR")
     }, [])
@@ -54,5 +55,6 @@ export default connect(
         fetchDistrubutors : dispatch.distrubutor.fetchDistrubutors,
         fetchCategories : dispatch.categories.fetchCategories,
         fetchProducts   : dispatch.products.fetchProducts,
+        fetchCartFromAsyncStorage   : dispatch.cart.fetchCartFromAsyncStorage,
     })
 )(DistrubutorDashBoard)

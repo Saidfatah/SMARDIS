@@ -1,18 +1,55 @@
 import React from 'react'
 import {StyleSheet,View,Text,TouchableOpacity} from 'react-native' 
-import {
-    DrawerContentScrollView,
-    DrawerItem
-} from '@react-navigation/drawer';
+import {DrawerContentScrollView,DrawerItem} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import {colors} from '../../Common/Colors'
 import {buttonTexts} from '../../Common/GlobalStrings'
 import Badge from '../../Common/Badge'
-import {NavigationAction} from '@react-navigation/native'
+
+
 const DrawerContent=(props)=> {
-    const {user,valide_orders_count,logout,navigation,admins_count,waitingList_count,waiting_clients_count,distrubutor_todays_canceled_orders_count}=props
+    const {user,valide_orders_count,logout,cartItems,navigation,admins_count,waitingList_count,waiting_clients_count,distrubutor_todays_canceled_orders_count}=props
+  
+    const Link=({route,icon,label,hasBadge,badgeValue,badgeStatus})=>{
+        const IconToUse=()=>{
+            if(!icon ) return null
+            if(icon == "md-cart"){
+                 return <IonIcon name="md-cart" color={colors.BLACK} style={{margin:0}} size={20}/>
+            }
+            if(icon == "account-settings-outline"){
+                 return <Icon name="account-settings-outline" color={colors.BLACK}style={{margin:0}}size={20}/>
+            }
+            if(icon == "format-list-bulleted-triangle"){
+                 return <Icon name="format-list-bulleted-triangle" color={colors.BLACK}style={{margin:0}}size={20}/>
+            }
+            if(icon == "clipboard-check-outline"){
+                 return <Icon name="clipboard-check-outline" color={colors.BLACK}style={{margin:0}}size={20}/>
+            }
+            if(icon == "person-add-sharp"){
+             return <IonIcon  name="person-add-sharp"  color={colors.BLACK} style={{margin:0}} size={20}/>
+            }
+            return null
+        }
+
+        return   <TouchableOpacity  onPress={() =>{navigation.navigate(route)}}>
+             <View style={styles.drawerItem}> 
+                     <IconToUse /> 
+                     {
+                         hasBadge
+                         ?<View style={styles.FlexSR} >
+                              <Text style={{color:colors.BLACK}} >{label}</Text>
+                              <Badge status={badgeStatus} value={badgeValue} />
+                         </View>
+                         : <Text style={{color:colors.BLACK}} >{label}</Text>
+                     }
+            </View>
+         </TouchableOpacity>
+    
+    }
+
+
     if(!user || user == null || user == undefined)
     return (
         <View style={{flex:1}}>
@@ -38,6 +75,7 @@ const DrawerContent=(props)=> {
         </View>
     )
 
+
     const {type} = user
     if(type == "ADMIN")
     return (
@@ -48,73 +86,37 @@ const DrawerContent=(props)=> {
                         <Text>{"Admin ("+user.name+")"}</Text>
                     </View>
                     <View style={styles.drawerSection}>
-                       <View style={styles.drawerItem}>
-                           <Icon 
-                             name="account-settings-outline" 
-                             color={colors.BLACK}
-                             style={{margin:0}}
-                             size={20}
-                             />
-                            <TouchableOpacity  onPress={() => {navigation.navigate('UPDATE_ACCOUNT')}}>
-                               <View style={styles.FlexSR} >
-                                   <Text style={{color:colors.BLACK}} >Configurer mon compte</Text>
-                                
-                               </View>
-                            </TouchableOpacity>
-                        </View>
-                       <View style={styles.drawerItem}>
-                           <TouchableOpacity  style={{flex:1}} onPress={()=>{navigation.navigate('ADMINmanageAdmins')}}>
-                               <View style={styles.FlexSR} >
-                                        <Icon 
-                                       name="format-list-bulleted-triangle" 
-                                       color={colors.BLACK}
-                                       style={{margin:0}}
-                                       size={20}
-                                       />
-                                   
-                                   <View style={styles.FlexSR} >
-                                           <Text style={{color:colors.BLACK}} >Gérer les admins </Text>
-                                              <Badge status="success" value={admins_count} />
-                                       </View>
-                               </View>
-                            </TouchableOpacity>
-                        </View>
-        
-                       <View style={styles.drawerItem}>
-                            <TouchableOpacity style={{flex:1}} onPress={() => {navigation.navigate('ADMINwaitingList')}}>
-                               <View style={styles.FlexSR} >
-                                       <Icon 
-                                        name="format-list-bulleted-triangle" 
-                                        color={colors.BLACK}
-                                        style={{margin:0}}
-                                        size={20}
-                                        />
-                                       <View style={styles.FlexSR} >
-                                              <Text style={{color:colors.BLACK}} >List d'attendre</Text>
-                                              <Badge status="success" value={waitingList_count} />
-                                       </View>
-
-                               </View>
-                            </TouchableOpacity>
-                      </View>
-                       <View style={styles.drawerItem}>
-                            <TouchableOpacity style={{flex:1}} onPress={()=>{navigation.navigate('ADMINwaitingClients')}}>
-                               <View style={styles.FlexSR} >
-                                       <Icon 
-                                        name="format-list-bulleted-triangle" 
-                                        color={colors.BLACK}
-                                        style={{margin:0}}
-                                        size={20}
-                                        />
-                                       <View style={styles.FlexSR} >
-                                              <Text style={{color:colors.BLACK}} >List d'attendre des clients</Text>
-                                              <Badge status="success" value={waiting_clients_count} />
-                                       </View>
-
-                               </View>
-                            </TouchableOpacity>
-                      </View>
-        
+             
+                      <Link 
+                          route={"UPDATE_ACCOUNT"}
+                          icon="account-settings-outline"
+                          label="Configurer mon compte"
+                          hasBadge={false}
+                       />
+                      <Link 
+                          route={"ADMINmanageAdmins"}
+                          icon="format-list-bulleted-triangle"
+                          label="Gérer les admins"
+                          hasBadge={true}
+                          badgeValue={admins_count}
+                          badgeStatus="success"
+                       />
+                      <Link 
+                          route={"ADMINwaitingList"}
+                          icon="format-list-bulleted-triangle"
+                          label="List d'attendre"
+                          hasBadge={true}
+                          badgeValue={waitingList_count}
+                          badgeStatus="success"
+                       />
+                      <Link 
+                          route={"ADMINwaitingClients"}
+                          icon="format-list-bulleted-triangle"
+                          label="List d'attendre des clients"
+                          hasBadge={true}
+                          badgeValue={waiting_clients_count}
+                          badgeStatus="success"
+                       />
                     </View>
                  </View>
             </DrawerContentScrollView>
@@ -145,54 +147,37 @@ const DrawerContent=(props)=> {
                     {
                         user.confirmed == "VALIDATED"
                         ? <View style={styles.drawerSection}>
-                           <View style={styles.drawerItem}>
-                            <TouchableOpacity  onPress={() => {navigation.navigate('DISTRIBUTORvalidtedCommands')}}>
-                            <View style={styles.FlexSR} >
-                              <Icon 
-                                 name="clipboard-check-outline" 
-                                 color={colors.BLACK}
-                                 style={{margin:0}}
-                                 size={20}
-                                 />
-                               <View  style={styles.FlexSR} >
-                                   <Text style={{color:colors.BLACK}} >Les command valider </Text>
-                                   <Badge status="success" value={valide_orders_count} />
-                               </View>
-                            </View>
-                            </TouchableOpacity>
-                        </View>
-                           <View style={styles.drawerItem}>
-                                <TouchableOpacity  onPress={() => {navigation.navigate('DISTRIBUTORcanceledCommands')}}>
-                                    <View style={styles.FlexSR}>
-                                      <Icon 
-                                         name="clipboard-check-outline" 
-                                         color={colors.BLACK}
-                                         style={{margin:0}}
-                                         size={20}
-                                         />
-                                       <View style={styles.FlexSR} >
-                                           <Text style={{color:colors.BLACK}} >Les command anuller </Text>
-                                           <Badge status="error" value={distrubutor_todays_canceled_orders_count} />
-                                       </View>
-                                    </View>
-                                 </TouchableOpacity>
-                            </View>
-                           <View style={styles.drawerItem}>
-                                <TouchableOpacity  onPress={() =>{
-                                    navigation.navigate('ADMINDashBoard',{screen:'ADMINaddClient' })
-                                    }}>
-                                    <View style={styles.FlexSR}>
-                                      <IonIcon 
-                                         name="person-add-sharp" 
-                                         color={colors.BLACK}
-                                         style={{margin:0}}
-                                         size={20}
-                                         />
-                                      <Text style={{color:colors.BLACK}} >Ajouter Un Client </Text>
-                                      
-                                    </View>
-                                 </TouchableOpacity>
-                            </View>
+                           <Link 
+                             route={"DISTRIBUTORcart"}
+                             icon="md-cart"
+                             label="La command active"
+                             hasBadge={true}
+                             badgeValue={cartItems.length}
+                             badgeStatus="success"
+                           />
+                           <Link 
+                             route={"DISTRIBUTORvalidtedCommands"}
+                             icon="clipboard-check-outline"
+                             label="Les commands valider"
+                             hasBadge={true}
+                             badgeValue={valide_orders_count}
+                             badgeStatus="success"
+                           />
+                           <Link 
+                             route={"DISTRIBUTORcanceledCommands"}
+                             icon="clipboard-check-outline"
+                             label="Les commands anuller"
+                             hasBadge={true}
+                             badgeValue={distrubutor_todays_canceled_orders_count}
+                             badgeStatus="error"
+                           />
+                           <Link 
+                             route={"ADMINDashBoard"}
+                             icon="person-add-sharp"
+                             label="Ajouter Un Client"
+                             hasBadge={false}
+                           />
+                       
                         </View>
                         :null
                     }
@@ -213,6 +198,8 @@ const DrawerContent=(props)=> {
             </View>
         </View>
     )
+
+    //if no user is logged we will dsplay drawer with one link witch redirect to an "about" screen , where we can put our license
     return (
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
@@ -246,6 +233,7 @@ export default connect(
         distrubutor_todays_canceled_orders_count : state.scheduel.distrubutor_todays_canceled_orders_count,
         waitingList_count : state.auth.waitingList_count,
         waiting_clients_count : state.client.waiting_clients_count,
+        cartItems : state.cart.cartItems
     }),
     dispatch=>({
         logout:dispatch.auth.logout
@@ -262,7 +250,8 @@ const styles = StyleSheet.create({
         elevation:12,
         backgroundColor:'#fff',
         borderRadius:12,
-        marginBottom:16
+        marginBottom:16,
+        flex:1
     },
     drawerContent: {
       flex: 1,

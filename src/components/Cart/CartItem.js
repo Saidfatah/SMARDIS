@@ -1,14 +1,14 @@
 import React from 'react'
-import {View,Text,StyleSheet} from 'react-native'
+import {Text,StyleSheet} from 'react-native'
 import Item from '../Common/Item'
 import Quantity from './Quantity'
 import IconButton from '../Common/Buttons/IconButtons'
 
 
-const  GuestItem = ({item,guestId,removeGuestItem,updateQuantity})=> {
+const  CartItem = ({item,guestId,removeCartItem,updateQuantity})=> {
     return (
         <Item xStyle={styles.item}>
-            <IconButton clickHandler={e=>removeGuestItem({guestId,itemId:item.id})} />
+            <IconButton clickHandler={e=>removeCartItem({itemId:item.id})} />
             <Text>{item.name}</Text>
             <Text>{item.priceForClient}</Text>
             <Quantity  
@@ -21,7 +21,7 @@ const  GuestItem = ({item,guestId,removeGuestItem,updateQuantity})=> {
     )
 }
 
-export default  GuestItem
+export default  CartItem
 
 var styles = StyleSheet.create({
     item:{

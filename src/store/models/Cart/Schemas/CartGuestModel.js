@@ -1,12 +1,8 @@
-export const cartGuestModel=(id,name,guestId,items,distrubutor,sector,client,orderId,scheduelId)=>({
-    name ,
+export const cartItemModel=(guestId,sector,client,orderId,scheduelId,product)=>({
     guestId ,
-    distrubutor:distrubutor || {name:'abdellah',id},
-    id ,
     sector ,
-    items ,
-    status : "PENDING",
     client , 
     orderId,
-    scheduelId
+    scheduelId,
+    ...product
 })
