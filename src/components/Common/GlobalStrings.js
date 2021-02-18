@@ -1,7 +1,7 @@
 export const buttonTexts = {
     //auth related buttons
     LOGOUT: "logout" , 
-    LOGIN: "connexio" , 
+    LOGIN: "connexion" , 
     REGISTER: "inscrire" , 
     LOGIN_CALL: "Connecter" , 
     REGISTER_CALL: "s'inscrire" , 
