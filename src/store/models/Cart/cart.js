@@ -4,8 +4,6 @@ import firestore from '@react-native-firebase/firestore'
 const model ={
     state:{
         cartGuests  :[],
-        todaysBills : [] , 
-        salesCount : 0 ,
         done_validating_product:false
     },
     reducers:{
@@ -42,7 +40,6 @@ const model ={
             ...state,
             validatedOrders : [...validatedOrders]   , 
             validatedOrdersCount : validatedOrders.length ,
-            salesCount : validatedOrders.length ,
         }),
         reseted:  (state,field)=>({
             ...state,

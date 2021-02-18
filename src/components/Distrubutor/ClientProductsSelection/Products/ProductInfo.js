@@ -3,10 +3,12 @@ import {View,Text,StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
 const ProductInfo=({product,opened,client})=> {
     const {price1,name,image}=product
-    const clientPrice = client.price.replace('x','ce')
-    const PRICE= product[clientPrice] || price1
-    console.log(PRICE)
-    // console.log({clientPrice,PRICE})
+    let PRICE=price1
+    if(client){
+        const clientPrice = client.price.replace('x','ce')
+        PRICE= product[clientPrice] 
+    }
+ 
     
     let First  = null
     let Second = null

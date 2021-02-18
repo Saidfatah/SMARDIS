@@ -4,7 +4,7 @@ import {View,Text,TextInput,StyleSheet,TouchableOpacity} from 'react-native'
 import BackgroundImage from '../../Common/BackgroundImage'
 import Logo from '../../Common/Logo'
 import {colors} from '../../Common/Colors'
-import {buttonTexts} from '../../Common/GlobalStrings'
+import {buttonTexts,labelsTexts} from '../../Common/GlobalStrings'
 import  Button from '../../Common/Button'
 import  Error from '../../Common/Error'
 import  Label from '../../Common/Label'
@@ -115,7 +115,7 @@ const  Login=({navigation,authError,savedEmail,login,done_Logging,toggleSavePass
               
              <View style={styles.inputs} >
                  <View style={{width:'100%'}} >
-                      <Label label="Téléphone"  color="#fff"  mga={4} />
+                      <Label label={labelsTexts.EMAIL}  color="#fff"  mga={4} />
                       <TextInput style={{...styles.Input}}   
                           placeholder={"Insere votre email"}   
                           defaultValue={username} 
@@ -126,7 +126,7 @@ const  Login=({navigation,authError,savedEmail,login,done_Logging,toggleSavePass
                  </View>
      
                  <View style={{width:'100%'}} >
-                     <Label label="Mote de passe"  color="#fff" mga={4} />
+                     <Label label={labelsTexts.PASSWORD}  color="#fff" mga={4} />
                      <TextInput style={{...styles.Input}}   
                          placeholder={"Insere votre mote de passe"}   
                          defaultValue={password} 
@@ -155,7 +155,7 @@ const  Login=({navigation,authError,savedEmail,login,done_Logging,toggleSavePass
                           flexDirection:"row",
                           alignItems:'center',
                           }} >
-                          <Text style={{color:'#fff',marginRight:16}}>vous n'avez pas de compte ?</Text>
+                          <Text style={{color:'#fff',marginRight:16}}>{labelsTexts.DONT_HAVE_ACCOUNT_YET}</Text>
                           <TouchableOpacity onPress={e=>navigation.navigate('REGISTER')} >
                                  <Text style={{color:'#fff',fontWeight:"bold",padding:16}}>{buttonTexts.REGISTER_CALL} </Text>
                           </TouchableOpacity>

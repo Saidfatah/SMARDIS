@@ -3,7 +3,7 @@ import {View,Text,ScrollView,StyleSheet,Linking,Alert} from 'react-native'
 import { connect } from 'react-redux'
 import Item from '../../../Common/Item'
 import Button from '../../../Common/Button'
-import {colors} from '../../../Common/Colors'
+import {buttonTexts} from '../../../Common/GlobalStrings'
 import Badge from '../../../Common/Badge'
 import Label from '../../../Common/Label'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -93,7 +93,7 @@ export const ClientPage = ({navigation,route,sectors,resetIsDone,done_removing_c
                       ]);
                 }} 
                 >
-                     <Text style={styles.ButtonText}>Supprimer Le client</Text>
+                     <Text style={styles.ButtonText}>{buttonTexts.DELETE_CLIENT}</Text>
                      <IonIcon name="trash" size={25} color="#fff" />
                </Button>
                <Button
@@ -101,7 +101,7 @@ export const ClientPage = ({navigation,route,sectors,resetIsDone,done_removing_c
                 color={"GREEN"} 
                 clickHandler={e=>Linking.openURL(`tel:${phone}`)} 
                 >
-                   <Text style={styles.ButtonText}>Appeler Le Client</Text>
+                   <Text style={styles.ButtonText}>{buttonTexts.CALL_CLIENT}</Text>
                    <Icon name="call" size={25} color="#fff" />
              </Button>
                <Button
@@ -109,7 +109,7 @@ export const ClientPage = ({navigation,route,sectors,resetIsDone,done_removing_c
                 color={"BLUE"} 
                 clickHandler={e=>navigation.navigate('ADMINupdateClient',{client,update:true})} 
                 >
-                   <Text style={styles.ButtonText}>Modifier Le Client</Text>
+                   <Text style={styles.ButtonText}>{buttonTexts.UPDATE_CLIENT}</Text>
                    <IonIcon name="ios-settings-sharp" size={25} color="#fff" />
              </Button>
         </View>

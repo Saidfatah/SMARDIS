@@ -16,8 +16,9 @@ const ESDP = ExternalStorageDirectoryPath + "/";
 import XLSX from 'xlsx';
 
 //export excel from here 
-
 const Header= ["1","Référence","Qu","P.U","Désignation","RéférenceFacetur","Date","RéférenceClient","Vendeur","RéférenceVendeur","Secteur"]
+// const Header= ["1","Référence","Qu","P.U","Désignation","RéférenceFacetur","Date","RéférenceClient","Vendeur","RéférenceVendeur","Secteur"]
+
 export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_fetching_todays_validated_orders}) => {
     const [data, setdata] = useState([ Header ])
     const [widthArr, setwidthArr] = useState([90,120,90,90,90,90,90,90,90,90,90])
