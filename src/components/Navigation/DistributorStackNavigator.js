@@ -24,8 +24,8 @@ const CustomHeaderTitle = (props)=>{
    return <Text>Panel des produits</Text>
    
 }
-const CustomHeaderRight = ({cartGuests,navigation})=>{
-   const COUNT=[...cartGuests].filter(cartGuest=>cartGuest.status != "VALIDATED").length || 0
+const CustomHeaderRight = ({cartItems,navigation})=>{
+   const COUNT=cartItems.length || 0
 
 
    return <View style={{marginRight:12,display:'flex',flexDirection:'row'}} >
@@ -58,7 +58,7 @@ const CustomHeaderRight = ({cartGuests,navigation})=>{
        </View>
 }
 
-const DistributorStackNavigator =({cartGuests})=>{
+const DistributorStackNavigator =({cartItems})=>{
     return <DistributorStack.Navigator initialRouteName={'DISTRIBUTORDashBoard'}>
              <DistributorStack.Screen 
                 name="DISTRIBUTORDashBoard" 
@@ -82,7 +82,7 @@ const DistributorStackNavigator =({cartGuests})=>{
                      <CustomHeaderTitle {...{route, navigation}}  />
                   ),
                   headerRight: () => (
-                     <CustomHeaderRight {...{route, navigation}} cartGuests={cartGuests} />
+                     <CustomHeaderRight {...{route, navigation}} cartItems={cartItems} />
                   ),
         
                  })}
@@ -128,7 +128,7 @@ const DistributorStackNavigator =({cartGuests})=>{
 
 export default connect(
    state=>({
-      cartGuests : state.cart.cartGuests
+      cartItems : state.cart.cartItems
    }),
    null
 )(DistributorStackNavigator)

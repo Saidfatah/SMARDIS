@@ -1,12 +1,11 @@
 import React,{useState,useEffect} from 'react'
 import {View,ScrollView,StyleSheet,Text} from 'react-native'
 import { connect } from 'react-redux'
-import OrderItem from './OrderItem'
-import Loading from '../../../Common/Loading'
+import Error from '../../../Common/Error'
 import Button from '../../../Common/Button'
+import Loading from '../../../Common/Loading'
 import {colors} from '../../../Common/Colors'
-import { List } from 'react-native-paper';
-import { Table, Row,Cell, Rows, TableWrapper } from 'react-native-table-component';
+import { Table, Row,Cell, TableWrapper } from 'react-native-table-component';
 import { writeFile, readFile,mkdir,exists, ExternalStorageDirectoryPath } from 'react-native-fs';
 const make_cols = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, (x,i) => XLSX.utils.encode_col(i));
 const make_width = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, () => 60);
@@ -14,13 +13,22 @@ const input = res => res;
 const output = str => str;
 const ESDP = ExternalStorageDirectoryPath + "/";
 import XLSX from 'xlsx';
-
+import Storage,{FirebaseStorageTypes} from '@react-native-firebase/storage'
+import RNFetchBlob from 'rn-fetch-blob'
 //export excel from here 
 const Header= ["1","Référence","Qu","P.U","Désignation","RéférenceFacetur","Date","RéférenceClient","Vendeur","RéférenceVendeur","Secteur"]
 // const Header= ["1","Référence","Qu","P.U","Désignation","RéférenceFacetur","Date","RéférenceClient","Vendeur","RéférenceVendeur","Secteur"]
 
-export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_fetching_todays_validated_orders}) => {
+import DocumentPicker from 'react-native-document-picker';
+
+async function getPathForFirebaseStorage(uri) {
+     const stat = await RNFetchBlob.fs.stat(uri)
+    return stat.path
+}
+
+export const ListOfOrdersValidated = ({navigation,selectBill,show,valide_orders,done_fetching_todays_validated_orders}) => {
     const [data, setdata] = useState([ Header ])
+    const [ExportError, setExportError] = useState(null)
     const [widthArr, setwidthArr] = useState([90,120,90,90,90,90,90,90,90,90,90])
     const [cols, setcols] = useState(["_",...make_cols("A1:J10")])
     const TITLE = valide_orders.length >0 ? "les command valider" :"pas de command valider"
@@ -28,14 +36,16 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
     useEffect(() => {
          if(valide_orders.length <0) return 
          let dataTemp = [Header]
+         let columnCount=1
          valide_orders.forEach((order,index1)=>{
              const { distrubutor ,client ,sector,scheduleId ,total ,products,created_at,billRef,status,note,sale_date ,sale_hour}=order
              if(!products || products.length <1)return console.log('no orders')
 
              products.forEach((product,index2)=>{
+                  columnCount++
                   const {quantity,priceForClient,ref,name} =product
                   dataTemp.push([
-                      index2+2,
+                      columnCount,
                       ref,
                       quantity,
                       priceForClient,
@@ -86,10 +96,15 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
         console.log(newDate)
 	    const filetoESDP = DirectoryPath+"/"+newDate+".xlsx";
 	    const writeToExternalStorageResponse= await writeFile(filetoESDP, output(wbout), 'ascii')
- 
+        show({
+            type:'success',
+            title:'Excel exportation ',
+            message:`le fichier excel a etais exporter avec success`
+        })
         } catch (error) {
             console.log("--------write-------------")
             console.log(error)
+            setExportError(error.message)
         }
 	};
     const importFile=()=> {
@@ -110,12 +125,50 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
             console.log("importFile Error", "Error " + err.message); 
         });
 	}
+    const PickFile=async ()=>{
+        try {      
+            const res = await DocumentPicker.pick({
+                type: [DocumentPicker.types.allFiles],
+            });
+            const fileUri =await getPathForFirebaseStorage(res.uri)
+            const task =  Storage().ref('excel/'+ res.name).putFile(fileUri,{
+                contentType:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              })
+           
+            task.on('state_changed', 
+                sn =>{task.cancel()},
+                err=>console.log(err),
+                () => {
+                   console.log('excel uploaded!'+res.name)
+                   Storage()
+                   .ref("excel").child(res.name).getDownloadURL()
+                   .then(url => {
+                     console.log('uploaded excel url', url);
+                   }).catch(err=>console.log(err))
+               }
+            )
+            await task 
+        
+            
+           
+          } catch (err) {
+            if (DocumentPicker.isCancel(err)) {
+              // User cancelled the picker, exit any dialogs or menus and move on
+            } else {
+              throw err;
+            }
+        }
+    }
 
     const ExceVisualization=()=>{
         return<View>
         <Button color="BLUE" clickHandler={exportFile} >
             <Text style={{color:'#fff',textAlign:'center'}} >Exporter l'Excel</Text>
         </Button>
+        <Button color="BLUE" clickHandler={PickFile} >
+            <Text style={{color:'#fff',textAlign:'center'}} >import file</Text>
+        </Button>
+        <Error trigger={ExportError!= null} error={ ExportError && ExportError} />
         <ScrollView  showsHorizontalScrollIndicator={false}  horizontal={true}>
 	    <View style={{width:11*90+30}} >
             <Table style={styles.table}  borderStyle={{borderWidth: 1, borderColor: colors.LIGHTGREY}}>
@@ -123,18 +176,6 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
                      <Row data={cols} style={styles.thead} textStyle={styles.text} widthArr={widthArr}/>
                  </TableWrapper>
                 <ScrollView  >
-                    {/* <TableWrapper  borderStyle={{borderWidth: 1, borderColor: colors.LIGHTGREY}}>
-                      {
-                          data.map((row,index)=><Row
-                             key={index}
-                             data={row}
-                             widthArr={widthArr}
-                             style={[styles.tr, index%2 && {backgroundColor: '#F7F6E7'}]}
-                             textStyle={styles.text}
-                             
-                           />)
-                       }    
-                    </TableWrapper> */}
                        {
                           data.map((row,rowIndex)=> (
                             <TableWrapper key={rowIndex} style={{ flexDirection: 'row'}} borderStyle={{borderWidth: 1, borderColor: colors.LIGHTGREY}}>
@@ -173,20 +214,12 @@ export const ListOfOrdersValidated = ({navigation,selectBill,valide_orders,done_
     }
     return (
         <ScrollView style={{flex:1,backgroundColor:'#fff'}} contentContainerStyle={{padding:8}}  > 
-                 {valide_orders.length>0 ? <ExceVisualization/> :null }
-                 {/* <List.Section title={TITLE}>
-                    {
-                    valide_orders.map((item,index)=>{
-                        return <OrderItem 
-                        order={item} 
-                        validated={true} 
-                        navigation={navigation} 
-                        selectBill={selectBill}
-                        key={index}  
-                        />
-                    })
-                    }
-                 </List.Section> */}
+                 {
+                 valide_orders.length>0 
+                 ? <ExceVisualization/> 
+                 :null 
+                 }
+
         </ScrollView>
     )
 }
@@ -198,9 +231,10 @@ export default connect(
         valide_orders: state.scheduel.valide_orders ,
         done_fetching_todays_validated_orders: state.scheduel.done_fetching_todays_validated_orders ,
     }),
-    state=>({
-        selectBill: state.scheduel.selectBill 
-    }),
+    dispatch=>({
+        selectBill: dispatch.scheduel.selectBill ,
+        show: dispatch.toast.show ,
+    })
 )
 (ListOfOrdersValidated)
 
