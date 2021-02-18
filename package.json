@@ -32,6 +32,7 @@
     "react-native-drag-sort": "^2.4.2",
     "react-native-elements": "^3.1.0",
     "react-native-fast-image": "^8.3.4",
+    "react-native-fast-svg": "^1.0.3",
     "react-native-file-share-for-android": "^1.0.4",
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "^1.9.0",
@@ -66,6 +67,7 @@
     "find-in-files": "^0.5.0",
     "jest": "^25.1.0",
     "metro-react-native-babel-preset": "^0.59.0",
+    "react-native-svg-app-icon": "^0.2.0",
     "react-test-renderer": "16.13.1"
   },
   "jest": {
