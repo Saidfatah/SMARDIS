@@ -16,7 +16,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { BackHandler ,Alert} from 'react-native';
 
 
-const  Login=({navigation,authError,savedEmail,login,done_Logging,toggleSavePassword,savePassword,savedPassword})=> {
+const  Login=({navigation,authError,savedEmail,login,resetIsDone,done_Logging,toggleSavePassword,savePassword,savedPassword})=> {
     const [username, setusername] = useState("")
     const [password, setPassword] = useState("")
     const [canSubmit, setcanSubmit] = useState(true)
@@ -44,8 +44,10 @@ const  Login=({navigation,authError,savedEmail,login,done_Logging,toggleSavePass
           }
     }, [authError])
     useEffect(() => {
+            console.log({done_Logging})
           if(done_Logging ){
             setcanSubmit(true)
+            resetIsDone("done_Logging")
             if(savePassword.indexOf("false") > -1){
               setusername('')
               setPassword('')
@@ -190,6 +192,7 @@ export default connect(
     }),
     dispatch=>({
        login : dispatch.auth.login,
+       resetIsDone : dispatch.auth.resetIsDone,
        toggleSavePassword : dispatch.auth.toggleSavePassword,
     })
 )(Login)

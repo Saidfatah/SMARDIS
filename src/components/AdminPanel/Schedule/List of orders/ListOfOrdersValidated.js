@@ -6,18 +6,20 @@ import Button from '../../../Common/Button'
 import Loading from '../../../Common/Loading'
 import {colors} from '../../../Common/Colors'
 import { Table, Row,Cell, TableWrapper } from 'react-native-table-component';
-import { writeFile, readFile,mkdir,exists, ExternalStorageDirectoryPath } from 'react-native-fs';
+
+//export excel from here 
+import { writeFile, readFile,mkdir,exists,ExternalDirectoryPath, ExternalStorageDirectoryPath ,DocumentDirectoryPath} from 'react-native-fs';
 const make_cols = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, (x,i) => XLSX.utils.encode_col(i));
 const make_width = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, () => 60);
 const input = res => res;
 const output = str => str;
 const ESDP = ExternalStorageDirectoryPath + "/";
+const DDP = DocumentDirectoryPath + "/";
+const EDP = ExternalDirectoryPath + "/";
 import XLSX from 'xlsx';
-import Storage,{FirebaseStorageTypes} from '@react-native-firebase/storage'
+import Storage from '@react-native-firebase/storage'
 import RNFetchBlob from 'rn-fetch-blob'
-//export excel from here 
 const Header= ["1","Référence","Qu","P.U","Désignation","RéférenceFacetur","Date","RéférenceClient","Vendeur","RéférenceVendeur","Secteur"]
-// const Header= ["1","Référence","Qu","P.U","Désignation","RéférenceFacetur","Date","RéférenceClient","Vendeur","RéférenceVendeur","Secteur"]
 
 import DocumentPicker from 'react-native-document-picker';
 
@@ -84,7 +86,7 @@ export const ListOfOrdersValidated = ({navigation,selectBill,show,valide_orders,
         //create sub directories for each client 
         //CREATE DIRECTORY 
         const    AppFolder      = 'Excels';
-        const    DirectoryPath  = ESDP+AppFolder;
+        const    DirectoryPath  = EDP+AppFolder;
       
         const DirExists= await exists(DirectoryPath)
         if(!DirExists)  {
@@ -93,9 +95,15 @@ export const ListOfOrdersValidated = ({navigation,selectBill,show,valide_orders,
 
         // //WIRTE TO ExternalStorageDirectoryPath 
         const newDate=new Date().toLocaleDateString('en','USA').replace("/",'_').replace("/",'_')
-        console.log(newDate)
-	    const filetoESDP = DirectoryPath+"/"+newDate+".xlsx";
-	    const writeToExternalStorageResponse= await writeFile(filetoESDP, output(wbout), 'ascii')
+
+	    // const filetoESDP = DirectoryPath+"/"+newDate+".xlsx";
+	    // const writeToExternalStorageResponse= await writeFile(filetoESDP, output(wbout), 'ascii')
+
+	    const filetoEDP = DirectoryPath+"/"+newDate+".xlsx";
+	    const writeToExternalDirectoryResponse= await writeFile(filetoEDP, output(wbout), 'ascii')
+
+	    // const filetoDDP = DirectoryPath+"/"+newDate+".xlsx";
+	    // const writeToDocumentDirectory = await writeFile(filetoDDP, output(wbout), 'ascii')
         show({
             type:'success',
             title:'Excel exportation ',

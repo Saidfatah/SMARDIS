@@ -11,6 +11,7 @@ const ERRORS_MESSAGES= [
     {id:'REQUIRED',message:'ce champ est obligatoir'}
 ]
 const ImagePicker=({setImage,title,errors})=>{
+    const [cameraError, setcameraError] = useState(null)
     const [imageUri, setimageUri] = useState(null)
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -48,12 +49,17 @@ const ImagePicker=({setImage,title,errors})=>{
         launchImageLibrary(options,addImageToList)
     }
     const openCamera=e=>{
-          const options ={noData:true}
-          launchCamera(options,addImageToList)
+          try {
+            launchCamera({noData:true,privateDirectory: true },addImageToList)
+          } catch (error) {
+              console.log(error)
+              setcameraError(error.message)
+          }
     }
 
     const ImagePickerButtons=()=>{
         return <View>
+            <Error trigger={cameraError} error={cameraError && cameraError} />
             <TouchableOpacity onPress={()=>openGallery()}>
             <View style={styles.btn}>
                  <Text>Ovrire le gallery</Text>
@@ -70,7 +76,6 @@ const ImagePicker=({setImage,title,errors})=>{
  
     return <View>
             <Label label="Image" mga={16} />
-            <Error trigger={errors.imageREQUIRED} error={ERRORS_MESSAGES[0].message} />
             <Button
               xStyle={{flex:1,margin:0,borderRadius:12,marginRight:16}} 
               color={"LIGHTGREY"} 
