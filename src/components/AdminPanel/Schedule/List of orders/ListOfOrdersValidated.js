@@ -8,16 +8,11 @@ import {colors} from '../../../Common/Colors'
 import { Table, Row,Cell, TableWrapper } from 'react-native-table-component';
 
 //export excel from here 
-import { writeFile, readFile,mkdir,exists,ExternalDirectoryPath, ExternalStorageDirectoryPath ,DocumentDirectoryPath} from 'react-native-fs';
+import { writeFile,mkdir,exists,ExternalDirectoryPath} from 'react-native-fs';
 const make_cols = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, (x,i) => XLSX.utils.encode_col(i));
-const make_width = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, () => 60);
-const input = res => res;
 const output = str => str;
-const ESDP = ExternalStorageDirectoryPath + "/";
-const DDP = DocumentDirectoryPath + "/";
 const EDP = ExternalDirectoryPath + "/";
 import XLSX from 'xlsx';
-import Storage from '@react-native-firebase/storage'
 import RNFetchBlob from 'rn-fetch-blob'
 const Header= ["1","RéférenceFacetur","Date","RéférenceProduit","RéférenceClient","Déségnation","q.u","p.u"]
 
@@ -33,7 +28,6 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
     const [ExportError, setExportError] = useState(null)
     const [widthArr, setwidthArr] = useState([90,120,90,90,90,90,90,90])
     const [cols, setcols] = useState(["_",...make_cols("A1:H8")])
-    const TITLE = valide_orders.length >0 ? "les command valider" :"pas de command valider"
 
     useEffect(() => {
          if(valide_orders.length <0) return 
@@ -115,59 +109,7 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
             setExportError(error.message)
         }
 	};
-    const importFile=()=> {
-		readFile(ESDP +"/Excels"+ billRef+".xlsx", 'ascii').then((res) => {
-            /* parse file */
-            const wb = XLSX.read(input(res), {type:'binary'});
-
-            /* convert first worksheet to AOA */
-            const wsname = wb.SheetNames[0];
-            const ws = wb.Sheets[wsname];
-            const data = XLSX.utils.sheet_to_json(ws, {header:1});
-          
-            /* update state */
-            setdata(data)
-            setcols( make_cols(ws['!ref']))
-            setwidthArr(make_width(ws['!ref']))
-        }).catch((err) => { 
-            console.log("importFile Error", "Error " + err.message); 
-        });
-	}
-    const PickFile=async ()=>{
-        try {      
-            const res = await DocumentPicker.pick({
-                type: [DocumentPicker.types.allFiles],
-            });
-            const fileUri =await getPathForFirebaseStorage(res.uri)
-            const task =  Storage().ref('excel/'+ res.name).putFile(fileUri,{
-                contentType:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-              })
-           
-            task.on('state_changed', 
-                sn =>{task.cancel()},
-                err=>console.log(err),
-                () => {
-                   console.log('excel uploaded!'+res.name)
-                   Storage()
-                   .ref("excel").child(res.name).getDownloadURL()
-                   .then(url => {
-                     console.log('uploaded excel url', url);
-                   }).catch(err=>console.log(err))
-               }
-            )
-            await task 
-        
-            
-           
-          } catch (err) {
-            if (DocumentPicker.isCancel(err)) {
-              // User cancelled the picker, exit any dialogs or menus and move on
-            } else {
-              throw err;
-            }
-        }
-    }
-
+  
     const ExceVisualization=()=>{
         return<View>
         <Button color="BLUE" clickHandler={exportFile} >
