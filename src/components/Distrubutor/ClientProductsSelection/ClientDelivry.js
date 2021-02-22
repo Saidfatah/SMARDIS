@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useMemo} from 'react'
+import React,{useState,useEffect} from 'react'
 import {View,Text,StyleSheet} from 'react-native'
 import CategoriesSlider from './CategoriesSlider'
 import {connect} from 'react-redux'
@@ -8,25 +8,21 @@ import Button from '../../Common/Button'
 import  SwipeAbleProductDetails from './Products/SwipeAbleProductDetails'
 import SwipeAbleCancelOrder from './SwipeAbleCancelOrder'
 
-const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetIsDone,done_fetching_categories  ,categories,addCartItem,selectedCategory,selectCategory,selectedCategoryProducts})=> {
+const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetIsDone,  addCartItem,selectedCategorySubCategories,selectedCategoryProducts})=> {
     const [isPanelActive, setIsPanelActive] = useState(false);
     const [isCancelPanelActive, setIsCancelPanelActive] = useState(false);
     const [selectedProduct, setselectedProduct] = useState(selectedCategoryProducts[0]);
 
 
-    const { clientId ,client,sector,orderId,scheduelId  } = route.params;
+    const {client,sector,orderId,scheduelId  } = route.params;
    
     const {name,id}=client
  
     useEffect(() => {
-        selectCategory("0hxbmFxnEtU05QcWbaxv")
         navigation.setParams({ clientName: name });
     }, [id])
   
-    const handleHeight= (field,value)=>setheights({...heights,[field]:value})
-    
- 
-        return <BackgroundImage  >
+    return <BackgroundImage  >
         <View style={styles.tagParent} >
              <View style={styles.tag} >
                  <Text style={styles.clientName}>{name}</Text>
@@ -38,8 +34,8 @@ const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetI
             </Button>
         </View>
         <View style={styles.productsPanel} >
-             <CategoriesSlider  {...{done_fetching_categories,navigation,handleHeight,categories,selectedCategory,selectCategory}} />
-             <Products {...{setIsPanelActive,setselectedProduct,selectedCategoryProducts,client}} />
+             <CategoriesSlider  {...{navigation}} />
+             <Products {...{setIsPanelActive,setselectedProduct,selectedCategoryProducts,selectedCategorySubCategories,client}} />
         </View>
              <SwipeAbleProductDetails {...{
                  scheduelId,
@@ -67,14 +63,11 @@ const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetI
 
 export default connect(
     state=>({
-        categories       : state.categories.categories,
-        selectedCategory :  state.categories.selectedCategory,
-        done_fetching_categories : state.categories.done_fetching_categories,
         selectedCategoryProducts :  state.categories.selectedCategoryProducts,
+        selectedCategorySubCategories :  state.categories.selectedCategorySubCategories,
         done_canceling_order :  state.categories.done_canceling_order,
     }),
     dispatch=>({
-        selectCategory : dispatch.categories.selectCategory,
         addCartItem : dispatch.cart.addCartItem,
         cancelOrder: dispatch.scheduel.cancelOrder,
         resetIsDone: dispatch.scheduel.resetIsDone,

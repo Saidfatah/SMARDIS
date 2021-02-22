@@ -173,9 +173,6 @@ export const ListOfOrdersValidated = ({navigation,selectBill,show,valide_orders,
         <Button color="BLUE" clickHandler={exportFile} >
             <Text style={{color:'#fff',textAlign:'center'}} >Exporter l'Excel</Text>
         </Button>
-        <Button color="BLUE" clickHandler={PickFile} >
-            <Text style={{color:'#fff',textAlign:'center'}} >import file</Text>
-        </Button>
         <Error trigger={ExportError!= null} error={ ExportError && ExportError} />
         <ScrollView  showsHorizontalScrollIndicator={false}  horizontal={true}>
 	    <View style={{width:11*90+30}} >

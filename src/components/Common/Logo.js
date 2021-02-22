@@ -1,34 +1,8 @@
-import React,{useEffect,useState} from 'react'
-import Image from 'react-native-fast-image'
-import SvgUri from 'react-native-fast-svg';
-// import { SvgFromXml,SvgXml } from 'react-native-svg';
+import React from 'react'
+
 import Svg, {  Path,G ,Stop,LinearGradient} from 'react-native-svg';
 
 const Logo=({width,height})=> {
-    const [svg, setsvg] = useState("")
-// useEffect(async() => {
-//     let mounted =true
-//     SvgFromXml()require('../../images/LOGO.svg')
-//     return ()=>mounted=false
-// }, [input])
-// return   <Image 
-// style={{
-//     width:width || 50,
-//     height : height || 50,
-// }} 
-// resizeMode="contain"
-// source={require('../../images/logo.png')} 
-// />
-//   return <SvgUri
-//     width="200"
-//     height="200"
-//     svgXmlData={SvgFromXml} 
-//   />
-{/* <style>
-{
-  ".prefix__st3,.prefix__st4{display:none;fill:#b5c30a}.prefix__st4{fill:#008ac5}"
-}
-</style> */}
  const SvgCompoennt=(props)=>{
      return <Svg style={{width:100,height:100}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 471.2 507" {...props}>
 
@@ -76,8 +50,7 @@ const Logo=({width,height})=> {
  }
 
   return <SvgCompoennt />
-  return <SvgXml width="150" height="150"  xml={xml}
-  />
+
 }
 
 export default Logo

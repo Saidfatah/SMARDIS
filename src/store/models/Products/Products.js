@@ -137,7 +137,7 @@ const model ={
             }
             
         },
-        async addProduct({navigation,name,category,image,ref,price1,price2,price3,price4},state){
+        async addProduct({navigation,name,category,image,ref,price1,price2,price3,price4,subCategory},state){
              try {
                 let products = [...state.products.products]
             
@@ -177,7 +177,7 @@ const model ={
                 }
 
                 //add to firestore
-                const newProduct = productModel(name,category,imageUri,price1,ref,price2,price3,price4)
+                const newProduct = productModel(name,category,imageUri,price1,ref,price2,price3,price4,subCategory)
 
                 const addResponse= firestore()
                                   .collection('products')

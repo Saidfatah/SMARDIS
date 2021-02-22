@@ -7,7 +7,7 @@ import DocumentPicker from 'react-native-document-picker';
 const EDP = ExternalDirectoryPath + "/";
 const ESDP = ExternalStorageDirectoryPath + "/";
 const DDP = DocumentDirectoryPath + "/";
-import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+
 const make_cols = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, (x,i) => XLSX.utils.encode_col(i));
 const make_width = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, () => 60);
 const input = res => res;

@@ -62,7 +62,7 @@ const DistributorStackNavigator =({cartItems})=>{
     return <DistributorStack.Navigator initialRouteName={'DISTRIBUTORDashBoard'}>
              <DistributorStack.Screen 
                 name="DISTRIBUTORDashBoard" 
-                options={{headerTitle:'DashBoard'}} 
+                options={{headerTitle:'SMARDIS'}} 
                 component={DistrubutorDashBoard} 
             />
              <DistributorStack.Screen 

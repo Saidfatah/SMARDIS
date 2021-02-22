@@ -89,6 +89,7 @@ const AdminStackNavigator =()=>{
             />
              <AdminStack.Screen 
                 name="ADMINcatalogue" 
+                options={{title:"Ajouter un catalogue"}}
                 component={AdminCatalogue} 
             />
              <AdminStack.Screen 
@@ -154,30 +155,37 @@ const AdminStackNavigator =()=>{
             />
              <AdminStack.Screen 
                 name="ADMINproducts" 
+                options={{title:"Les produits"}}
                 component={AdminProducts} 
             />
              <AdminStack.Screen 
                 name="ADMINproductPage" 
+                options={{title:"Page du produit"}}
                 component={AdminProductPage} 
             />
              <AdminStack.Screen 
                 name="ADMINaddProduct" 
+                options={{title:"Ajouter un produit"}}
                 component={AdminAddProduct} 
             />
              <AdminStack.Screen 
                 name="ADMINupdateProduct" 
+                options={{title:"Modifier un produit"}}
                 component={AdminAddProduct} 
             />
              <AdminStack.Screen 
                 name="ADMINordersValidated" 
+                options={{title:"Les commands valider"}}
                 component={AdminOrdersValidated} 
             />
              <AdminStack.Screen 
                 name="ADMINregisterDistrubutor" 
+                options={{title:"Ajouter un distrubutor"}}
                 component={AdminRegisterDistrubutor} 
             />
              <AdminStack.Screen 
                 name="ADMINsales" 
+                options={{title:"Les ventes"}}
                 component={AdminSales} 
             />
              <AdminStack.Screen 

@@ -2,14 +2,14 @@ import React from 'react'
 import {View,StyleSheet,TouchableOpacity} from 'react-native'
 import ProductInfo from './ProductInfo'
 
-const ProductItem=({client,product,setIsPanelActive,setselectedProduct})=> {
+const ProductItem=({client,product,setIsPanelActive,setselectedProduct,isSub})=> {
     
     return  <View style={{...styles.product}}>
         <TouchableOpacity onPress={e=>{
             setIsPanelActive(true)
             setselectedProduct(product)
             }}>
-             <ProductInfo product={product} client={client} opened={false} />
+             <ProductInfo product={product} client={client} isSub={isSub} opened={false} />
         </TouchableOpacity>
     </View>
 }

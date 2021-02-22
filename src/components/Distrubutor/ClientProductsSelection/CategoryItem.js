@@ -5,13 +5,20 @@ const width= Dimensions.get('screen').width
 const IMAGE_HEIGHT= (width- (16*4))/4
 
 
-const CategoryItem=({category,selectedCategory,selectCategory})=> {
+const CategoryItem=({category,selectedCategory,selectCategory,selectSubCategory})=> {
     const {id , name, image  } = category
     const isSelected= selectedCategory == id
    
  
     return (
-        <TouchableOpacity onPress={e=> selectCategory(id)}>
+        <TouchableOpacity onPress={e=> {
+            selectCategory({
+                selectedCategory:id,
+                isSub:category.type=="SUB",
+                fromClientPanel :true
+            })
+            selectSubCategory(id)
+            }}>
             <View style={{...styles.category }}>
                 <FastImage style={{
                     ...styles.image,
