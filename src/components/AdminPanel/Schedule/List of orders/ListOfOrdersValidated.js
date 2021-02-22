@@ -19,7 +19,7 @@ const EDP = ExternalDirectoryPath + "/";
 import XLSX from 'xlsx';
 import Storage from '@react-native-firebase/storage'
 import RNFetchBlob from 'rn-fetch-blob'
-const Header= ["1","Référence","Qu","P.U","Désignation","RéférenceFacetur","Date","RéférenceClient","Vendeur","RéférenceVendeur","Secteur"]
+const Header= ["1","RéférenceFacetur","Date","RéférenceProduit","RéférenceClient","Déségnation","q.u","p.u"]
 
 import DocumentPicker from 'react-native-document-picker';
 
@@ -28,11 +28,11 @@ async function getPathForFirebaseStorage(uri) {
     return stat.path
 }
 
-export const ListOfOrdersValidated = ({navigation,selectBill,show,valide_orders,done_fetching_todays_validated_orders}) => {
+export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_validated_orders}) => {
     const [data, setdata] = useState([ Header ])
     const [ExportError, setExportError] = useState(null)
-    const [widthArr, setwidthArr] = useState([90,120,90,90,90,90,90,90,90,90,90])
-    const [cols, setcols] = useState(["_",...make_cols("A1:J10")])
+    const [widthArr, setwidthArr] = useState([90,120,90,90,90,90,90,90])
+    const [cols, setcols] = useState(["_",...make_cols("A1:H8")])
     const TITLE = valide_orders.length >0 ? "les command valider" :"pas de command valider"
 
     useEffect(() => {
@@ -46,18 +46,18 @@ export const ListOfOrdersValidated = ({navigation,selectBill,show,valide_orders,
              products.forEach((product,index2)=>{
                   columnCount++
                   const {quantity,priceForClient,ref,name} =product
+                //   distrubutor.name,
+                //   distrubutor.ref,
+                //   sector.name,
                   dataTemp.push([
                       columnCount,
-                      ref,
-                      quantity,
-                      priceForClient,
-                      name,
                       billRef,
                       sale_date.toLocaleDateString('en-US').toString(),
+                      ref,
                       client.ref,
-                      distrubutor.name,
-                      distrubutor.ref,
-                      sector.name
+                      name,
+                      quantity,
+                      priceForClient,
                     ])
              })
             
