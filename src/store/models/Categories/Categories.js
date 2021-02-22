@@ -9,10 +9,10 @@ const model ={
     state:{
         categories       : [],
         selected_Categories : [],
+        selectedCategorySubCategories:[],
         selectedCategoryProducts :[],
         selectedCategory : "0hxbmFxnEtU05QcWbaxv" , 
         categoriesCount  : 0,
-
 
         done_fetching_categories : false,
         categories_first_fetch : false,
@@ -72,33 +72,41 @@ const model ={
             ...state,
             done_removing_category:true
         }),
+        selectedSubCategories : (state,{selectedCategorySubCategories})=>({
+            ...state,
+            selectedCategorySubCategories
+        }),
+        selectSubCategoriesFailed : (state,args)=>({
+            ...state,
+            selectedCategorySubCategories:[]
+        }),
         reseted:  (state,field)=>({
             ...state,
             [field]:false
         }),
     },
     effects: (dispatch)=>({
-        async selectCategory(selectedCategory,state){
+         selectCategory({selectedCategory,isSub,fromClientPanel},state){
             try {
-                const last_selected_Category=state.categories.last_selected_Category
-
-                if(selectedCategory == last_selected_Category) return 
-                //get the selcted category products 
-                //use arrya of array of products 
-                //key is category
-                //value s product
-                //[category:"id",products:[]]
-                const productsResponse= await firestore()
-                                              .collection("products")
-                                              .where("category","==",selectedCategory)
-                                              .get()
-                      
-                 const docs =productsResponse.docs
-                 if(docs.length>0)
+                console.log({fromClientPanel})
+                const products = [...state.products.products]
+                let categoryProducts
+                if(fromClientPanel){
+                     categoryProducts =  products.filter(product=>product.category == selectedCategory )
+                }else{
+                    if(!isSub){
+                        categoryProducts =  products.filter(product=>product.category == selectedCategory  &&  product.subCategory == "NOT_DEFINED")
+                    }else{
+                        categoryProducts =  products.filter(product=> product.subCategory == selectedCategory )
+                    }
+                }
+       
+        
+                
+                 if(categoryProducts.length>0)
                  {
-                     const products = docs.map(doc=>({...doc.data(), id : doc.id}))
                      dispatch.categories.setedSelectedCategoryProducts({
-                         products,
+                         products:categoryProducts,
                          category_has_products:true,
                          last_selected_Category : selectedCategory
                         })
@@ -111,10 +119,11 @@ const model ={
                         })
                  }
                 
-                dispatch.categories.selectedCategory(selectedCategory)
+                 dispatch.categories.selectedCategory(selectedCategory)
 
             } catch (error) {
-                console.log("error")
+                console.log("--------selectCategory--------")
+                console.log(error)
             }
         },
         async fetchCategories(somthing,state){
@@ -139,7 +148,7 @@ const model ={
                 dispatch.categories.categoriesFetchFailed()
             }
         },
-        async addCategory({name,navigation,image},state){
+        async addCategory({name,navigation,image,type,parent},state){
              try {
                 let categories = [...state.categories.categories]
                 
@@ -171,7 +180,7 @@ const model ={
                 }
    
                 //add to frestore 
-                const newCategory = categoryModel(name,imageUri)
+                const newCategory = categoryModel(name,imageUri,false,type,parent)
                 const addResponse= firestore()
                                   .collection("categories")
                                   .add(newCategory)
@@ -266,9 +275,24 @@ const model ={
                  dispatch.categories.removingCategoryFailed()
              }
         },
+        selectSubCategory(id,state){
+            try {
+                const categories = state.categories.categories
+                const selectedCategorySubCategories = categories.filter(c=> c.type == "SUB" && c.parent.id == id  )
+                if(selectedCategorySubCategories.length>0){
+                    console.log({selectedCategorySubCategories})
+                   return  dispatch.categories.selectedSubCategories({selectedCategorySubCategories})
+                }
+                dispatch.categories.selectedSubCategories({selectedCategorySubCategories:[]})
+            } catch (error) {
+                console.log("--------selectSubCategory----------")
+                console.log(error)
+                dispatch.categories.selectSubCategoriesFailed()
+            }
+        },
         resetIsDone(field,state){
             dispatch.categories.reseted(field)
-        }
+        },
     })
 }
 export default model

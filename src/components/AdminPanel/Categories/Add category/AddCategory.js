@@ -3,6 +3,8 @@ import {View,Text,TextInput,StyleSheet} from 'react-native'
 import { connect } from 'react-redux'
 import Label from '../../../Common/Label'
 import Button from '../../../Common/Button'
+import CheckBoxGorup from '../../../Common/CheckBoxGorup'
+import DropDown from '../../../Common/DropDown'
 import Error from '../../../Common/Error'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
@@ -17,9 +19,16 @@ const ERRORS_INITIAL_CONFIG = {
 const ERRORS_MESSAGES= [
     {id:'REQUIRED',message:'ce champ est obligatoir'}
 ]
-export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIsDone,category_add_error,done_adding_category}) => {
+const CATEGORY_TYPES=[
+    {value:"PARENT",label:"category"},
+    {value:"SUB",label:"sous category"}
+]
+
+export const AddCategory = ({navigation,route,categories,updateCategory,addCategory,resetIsDone,category_add_error,done_adding_category}) => {
      const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
      const [canSubmit, setcanSubmit] = useState(true)
+     const [selectedCategory, setselectedCategory] = useState(categories[0])
+     const [type, settype] = useState(CATEGORY_TYPES[0].value)
      const [name, setname] = useState("")
      const [image, setimage] = useState("NO_IMAGE")
      const [categoryToBeUpdated, setcategoryToBeUpdated] = useState(-1)
@@ -62,8 +71,15 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIs
     const dispatchAddCategory=()=>{
         if(!validateFields()) return 
         setcanSubmit(false)
-        const categoryObj = {name,image}
-      
+
+        let categoryObj = {name,image,type}
+        if(type =="SUB"){
+            categoryObj.parent={
+                id:selectedCategory.id,
+                name:selectedCategory.name
+            }
+        }
+       
         if(!update) return addCategory({...categoryObj,navigation})
         updateCategory({...categoryObj,id:categoryToBeUpdated,navigation})
     }
@@ -74,16 +90,35 @@ export const AddCategory = ({navigation,route,updateCategory,addCategory,resetIs
         contentContainerStyle={styles.contentContainer}  
         style={styles.container} >  
         <View>
-            <Label label="Titre"  mga={16} />
-            <Error trigger={errors.nameREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <TextInput style={styles.Input}   
+            <View>
+                <Label label="Type"  mga={16} />
+                <Error trigger={errors.nameREQUIRED} error={ERRORS_MESSAGES[0].message} />
+                <TextInput style={styles.Input}   
                     placeholder={"entrer le titre  du category"}   
                     defaultValue={name} 
                     onFocus={e=> resetErrors()}
                     keyboardType="default"
                     onChangeText={text=> setname(text) } 
-            />
-
+                />
+            </View>
+            <View>
+                <CheckBoxGorup 
+                   title="Type :" 
+                   list={[...CATEGORY_TYPES]} 
+                   setSelectedValue={(value)=>settype(value)}
+                />
+                {
+                    type=="SUB"
+                    ?<DropDown 
+                    data={categories.map(c=>({value : c, label :c.name}))} 
+                    keyExtractor={item=>item.name}
+                    setSelected={setselectedCategory} 
+                    selected={selectedCategory}
+                   />
+                    :null
+                }
+            </View>
+            
 
             <ImagePicker {...{
                 errors,
@@ -120,6 +155,7 @@ export default connect(
     state=>({
         done_adding_category    : state.categories.done_adding_category,
         category_add_error    : state.categories.category_add_error,
+        categories    : state.categories.categories,
     }),
     dispatch=>({
         addCategory    : dispatch.categories.addCategory,

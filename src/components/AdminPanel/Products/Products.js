@@ -6,9 +6,6 @@ import Loading from '../../Common/Loading'
 
 
 const  Products=({products,navigation,fetchMoreProducts,done_fetching_products,fetchProducts})=> {
-    // useEffect(() => {
-    //     fetchProducts()
-    // }, [])
 
     const handleLoadMore=()=>{
         // fetchMoreProducts()

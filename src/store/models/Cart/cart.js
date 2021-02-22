@@ -57,7 +57,7 @@ const model ={
         }),
         validatedGuestOrder : (state,cartItems)=>({
             ...state,
-            cartItems   , 
+            cartItems  :[] , 
             done_validating_product:true,
             guest:null,
             status:"VALIDATED"

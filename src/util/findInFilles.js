@@ -29,7 +29,7 @@ const functions=[
     "fetchMoreDistrubutors"
 ]
 
-findInFiles.find('clients[clients.length - 1].ref', '../components', '.js$')
+findInFiles.find('react-native-permissions', '../components', '.js$')
     .then(function(results) {
         for (var result in results) {
             var res = results[result];

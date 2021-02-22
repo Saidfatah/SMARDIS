@@ -65,11 +65,11 @@ const ImagePicker=({setImage,title,errors})=>{
                  <Text>Ovrire le gallery</Text>
             </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>openCamera()}>
+        {/* <TouchableOpacity onPress={()=>openCamera()}>
             <View style={styles.btn}>
                  <Text>Ovrire la camera</Text>
             </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         </View>
     }
     

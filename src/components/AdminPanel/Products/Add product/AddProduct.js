@@ -9,7 +9,6 @@ import ImagePicker from '../../../Common/ImagePicker'
 import DropDown from '../../../Common/DropDown'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
-import IonIcon from 'react-native-vector-icons/Ionicons'
 
 const ERRORS_INITIAL_CONFIG = {
     nameREQUIRED:false,
@@ -32,12 +31,28 @@ const ERRORS_MESSAGES= [
 
 
 
-export const AddProduct = ({route,navigation,updateProduct,product_adding_error,addProduct,categories,done_adding_product,resetIsDone,uploadedProductImageUri}) => {
+export const AddProduct = (props) => {
+    const {
+        route,
+        navigation,
+        updateProduct,
+        product_adding_error,
+        addProduct,
+        selectedCategorySubCategories,
+        selectSubCategory,
+        categories,
+        done_adding_product,
+        resetIsDone
+    }=props
     const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
     const [update, setupdate] = useState(false)
     const [canSubmit, setcanSubmit] = useState(true)
+
     const [productToBeUpdatedId, setproductToBeUpdatedId] = useState(-1)
     const [selectedCategory, setselectedCategory] = useState(categories[0])
+    const [selectedSubCategory, setselectedSubCategory] = useState(selectedCategorySubCategories[0])
+
+    
     // const [activePrice, setactivePrice] = useState(PRICES[0])
     const [productData, setproductData] = useState({
         name   : 'Dove',
@@ -78,6 +93,12 @@ export const AddProduct = ({route,navigation,updateProduct,product_adding_error,
     useEffect(() => {
         product_adding_error != null && seterrors({...errors,addERROR:true})
     }, [product_adding_error])
+    useEffect(() => {
+        console.log("dipsatch [selectedCategorySubCategories]")
+        if(selectedCategory != undefined){
+            selectSubCategory(selectedCategory.id)
+        }
+    }, [selectedCategory])
 
     const resetErrors=()=>seterrors({...ERRORS_INITIAL_CONFIG})
     const handelChange=input=>v=>{ setproductData({...productData,[input]:v}) }
@@ -141,96 +162,128 @@ export const AddProduct = ({route,navigation,updateProduct,product_adding_error,
     }
     const dispatchAddProduct=()=>{
         if(!validateFields()) return 
-        setcanSubmit(false)
+         setcanSubmit(false)
         const productObj = {...productData}
         productObj.category= selectedCategory.id
-        // productObj.activePrice= activePrice
 
+        // productObj.activePrice= activePrice
+        if(selectedCategorySubCategories.length > 0){
+        console.log("has sub category")
+         productObj.subCategory= selectedSubCategory.id
+        }
+     
         if(!update) return addProduct({...productObj,navigation})
         updateProduct({...productObj,id:productToBeUpdatedId,navigation})
     }
 
 
     const {name,ref,price1, price2,price3,price4}=productData
+
     return  <KeyboardAwareScrollView   
-    contentContainerStyle={{ display:'flex',  flexGrow:1 }}  
-    style={styles.container} >
+    contentContainerStyle={{display:'flex',flexGrow:1 }}  
+    style={styles.container} 
+    >
 
         <View style={{flex:1}} >
-            <Label label="Titre " mga={16} />
-            <Error trigger={errors.nameREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <TextInput style={styles.Input}   
-                    placeholder={"Entrer Le titre du produit"}   
-                    defaultValue={name} 
-                    keyboardType="default"
-                    onFocus={e=> resetErrors()}
-                    onChangeText={text=>handelChange('name')(text)} 
-            /> 
+            <View>
+                <Label label="Titre " mga={16} />
+                <Error trigger={errors.nameREQUIRED} error={ERRORS_MESSAGES[0].message} />
+                <TextInput style={styles.Input}   
+                        placeholder={"Entrer Le titre du produit"}   
+                        defaultValue={name} 
+                        keyboardType="default"
+                        onFocus={e=> resetErrors()}
+                        onChangeText={text=>handelChange('name')(text)} 
+                /> 
+            </View>
 
-            <Label label="Référence"  mga={16} />
-            <Error trigger={errors.refREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <TextInput style={styles.Input}   
-                    placeholder={"Entrer Le refrence du produit"}   
-                    defaultValue={ref} 
-                    editable={!update}
-                    keyboardType="default"
-                    onFocus={e=> resetErrors()}
-                    onChangeText={text=>handelChange('ref')(text)} 
-            /> 
+            <View>
+                <Label label="Référence"  mga={16} />
+                <Error trigger={errors.refREQUIRED} error={ERRORS_MESSAGES[0].message} />
+                <TextInput style={styles.Input}   
+                        placeholder={"Entrer Le refrence du produit"}   
+                        defaultValue={ref} 
+                        editable={!update}
+                        keyboardType="default"
+                        onFocus={e=> resetErrors()}
+                        onChangeText={text=>handelChange('ref')(text)} 
+                /> 
+            </View>
 
-          
             <ImagePicker {...{
                 title:'"image de produit"',
                 setImage:handelChange('image'),
                 errors
             }}/>
     
-
-            <Label label="Category" mga={16} />
-            <Error trigger={errors.categoryREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <DropDown 
-                data={categories.map(c=>({value : c, label :c.name}))} 
-                keyExtractor={item=>item.name}
-                setSelected={setselectedCategory} 
-                selected={selectedCategory}
-            />
+            <View>
+                <Label label="Category" mga={16} />
+                <Error trigger={errors.categoryREQUIRED} error={ERRORS_MESSAGES[0].message} />
+                <DropDown 
+                    data={categories.filter(c=>c.type == "MAIN").map(c=>({value : c, label :c.name}))} 
+                    keyExtractor={item=>item.name}
+                    setSelected={setselectedCategory} 
+                    selected={selectedCategory}
+                />
+                {
+                    selectedCategorySubCategories.length > 0
+                    ?<View>
+                        <Label label="Sous Category" mga={16} />
+                        <DropDown 
+                            data={selectedCategorySubCategories.map(c=>({value : c, label :c.name}))} 
+                            keyExtractor={item=>item.name}
+                            setSelected={setselectedSubCategory} 
+                            selected={selectedSubCategory}
+                        />
+                    </View>
+                    :null
+                }
+            </View>
     
-            <Label label="Prix 1" mga={16}/>
-            <Error trigger={errors.price1REQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <TextInput style={styles.Input}   
-                    placeholder={"Entrer le prix1"}   
-                    defaultValue={price1.toString()} 
-                    keyboardType="decimal-pad"
-                    onFocus={e=> resetErrors()}
-                    onChangeText={handleTextChange('price1')} 
-            />
-            <Label label="Prix 2" mga={16}/>
-            <Error trigger={errors.price2REQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <TextInput style={styles.Input}   
-                    placeholder={"Entrer le prix2"}   
-                    defaultValue={price2.toString()} 
-                    keyboardType="decimal-pad"
-                    onFocus={e=> resetErrors()}
-                    onChangeText={handleTextChange('price2')} 
-            />
-            <Label label="Prix 3" mga={16}/>
-            <Error trigger={errors.price3REQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <TextInput style={styles.Input}   
-                    placeholder={"Entrer le prix3"}   
-                    defaultValue={price3.toString()} 
-                    keyboardType="decimal-pad"
-                    onFocus={e=> resetErrors()}
-                    onChangeText={handleTextChange('price3')} 
-            />
-            <Label label="Prix 4" mga={16}/>
-            <Error trigger={errors.price4REQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <TextInput style={styles.Input}   
-                    placeholder={"Entrer le prix4"}   
-                    defaultValue={price4.toString()} 
-                    keyboardType="decimal-pad"
-                    onFocus={e=> resetErrors()}
-                    onChangeText={handleTextChange('price4')} 
-            />
+            <View>
+                <Label label="Prix 1" mga={16}/>
+                <Error trigger={errors.price1REQUIRED} error={ERRORS_MESSAGES[0].message} />
+                <TextInput style={styles.Input}   
+                        placeholder={"Entrer le prix1"}   
+                        defaultValue={price1.toString()} 
+                        keyboardType="decimal-pad"
+                        onFocus={e=> resetErrors()}
+                        onChangeText={handleTextChange('price1')} 
+                />
+            </View>
+            <View>
+                <Label label="Prix 2" mga={16}/>
+                <Error trigger={errors.price2REQUIRED} error={ERRORS_MESSAGES[0].message} />
+                <TextInput style={styles.Input}   
+                        placeholder={"Entrer le prix2"}   
+                        defaultValue={price2.toString()} 
+                        keyboardType="decimal-pad"
+                        onFocus={e=> resetErrors()}
+                        onChangeText={handleTextChange('price2')} 
+                />
+            </View>
+            <View>
+                <Label label="Prix 3" mga={16}/>
+                <Error trigger={errors.price3REQUIRED} error={ERRORS_MESSAGES[0].message} />
+                <TextInput style={styles.Input}   
+                        placeholder={"Entrer le prix3"}   
+                        defaultValue={price3.toString()} 
+                        keyboardType="decimal-pad"
+                        onFocus={e=> resetErrors()}
+                        onChangeText={handleTextChange('price3')} 
+                />
+            </View>
+            <View>
+                <Label label="Prix 4" mga={16}/>
+                <Error trigger={errors.price4REQUIRED} error={ERRORS_MESSAGES[0].message} />
+                <TextInput style={styles.Input}   
+                        placeholder={"Entrer le prix4"}   
+                        defaultValue={price4.toString()} 
+                        keyboardType="decimal-pad"
+                        onFocus={e=> resetErrors()}
+                        onChangeText={handleTextChange('price4')} 
+                />
+            </View>
         </View>
 
         <Error trigger={errors.addERROR} error={product_adding_error && product_adding_error.message} />
@@ -262,15 +315,16 @@ export const AddProduct = ({route,navigation,updateProduct,product_adding_error,
 export default connect(
     state=>({
        categories : state.categories.categories,
-       uploadedProductImageUri : state.products.uploadedProductImageUri,
+       selectedCategorySubCategories : state.categories.selectedCategorySubCategories,
        done_adding_product:state.products.done_adding_product,
        product_adding_error:state.products.product_adding_error,
     })
     , 
     dispatch=>({
         updateProduct : dispatch.products.updateProduct,
-        addProduct: dispatch.products.addProduct,
         resetIsDone: dispatch.products.resetIsDone,
+        addProduct: dispatch.products.addProduct,
+        selectSubCategory: dispatch.categories.selectSubCategory,
     })
 )(AddProduct)
 

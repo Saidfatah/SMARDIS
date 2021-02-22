@@ -1,10 +1,8 @@
 import React from 'react'
-import {View,Text,FlatList,StyleSheet} from 'react-native'
+import {View,FlatList,StyleSheet} from 'react-native'
 import { connect } from 'react-redux'
-import Image from 'react-native-fast-image'
-import Item from '../../Common/Item'
-import Button from '../../Common/Button'
 import Loading from '../../Common/Loading'
+import CategoryItem from './CategoryItem'
 
 const  Categories=({navigation,categories,done_fetching_categories})=> {
 
@@ -18,32 +16,11 @@ const  Categories=({navigation,categories,done_fetching_categories})=> {
     return (
       <View style={{backgroundColor:'#fff'}}  >
         <FlatList 
-           data   = {categories}
+           data   = {categories.filter(category=>category.type=="MAIN")}
            style  = {{...styles.list}}
            contentContainerStyle = {props =>(styles.flatList)}
            showsVerticalScrollIndicator={false}
-           renderItem   = {({ item ,index}) =><Item xStyle={styles.categoryItem}  >
-
-                    <View style={styles.category} >
-                        <Text>{item.name}</Text>
-                        <Image 
-                         style={{height:50,width:50,borderRadius:50,marginLeft:8}}  
-                         source={item.image!="NO_IMAGE"
-                         ?{uri:item.image}
-                         :require('../../../images/noImage.jpg')
-                         }  
-                        />
-                    </View>
-                    <Button
-                      xStyle={{margin:0,borderRadius:12}} 
-                      color={"BLUE"} 
-                      clickHandler={e=>{ navigation.navigate('ADMINcategoryPage',{category:item})}} 
-                      >
-                         <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>Afficher</Text>
-                    </Button>
-
-           </Item>
-           }
+           renderItem   = {({ item ,index}) =><CategoryItem navigation={navigation} category={item} /> }
            keyExtractor = {(item, index) => index.toString()}
         />
       </View>
