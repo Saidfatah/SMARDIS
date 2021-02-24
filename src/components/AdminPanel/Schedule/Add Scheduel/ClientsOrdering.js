@@ -10,7 +10,7 @@ const CHILDREN_WIDTH = width - (SPACING*2)-5-16
 const CHILDREN_HEIGHT = 30
 const CONTAINER_HEIGHT= 200
 
-const ClientsOrdering=({sectorClients,setenableScroll,setorderListOfClients})=> {
+const ClientsOrdering=({sectorClients,dispatch})=> {
     return  <View style={styles.sort}>
             <AutoDragSortableView
               dataSource={sectorClients}
@@ -20,10 +20,10 @@ const ClientsOrdering=({sectorClients,setenableScroll,setorderListOfClients})=> 
               marginChildrenBottom={10}
               marginChildrenTop={10}
               isDragFreely={true}
-              onDragStart={e=>setenableScroll(false)}
-              onDragEnd={e=>setenableScroll(true)}
+              onDragStart={e=> dispatch({id:'SET_SCROLL_ENABLE',value:false})}
+              onDragEnd={e=>dispatch({id:'SET_SCROLL_ENABLE',value:true})}
               onDataChange={orderdData=>{
-                  setorderListOfClients(orderdData)
+                dispatch({id:'SET_ORDERD_LIST_OF_CLIENTS',value:orderdData})
               }}
               keyExtractor={(item,index)=> index}
               renderItem={(item,index)=>{

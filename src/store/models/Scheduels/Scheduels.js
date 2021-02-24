@@ -631,7 +631,7 @@ const model ={
 
            }
         },
-        async updateScheduel({id,distination,distrubutor,start_date},state){
+        async updateScheduel({id,distination,distrubutor,start_date,navigation},state){
          try {
              const scheduels = [...state.scheduel.scheduels]
              const targetScheduel= scheduels.filter(scheduel=>scheduel.id == id)[0]
@@ -656,22 +656,30 @@ const model ={
               //map distination.clients into [{d,turn}] array
               const idTurn = distination.clients.map((cl,index)=>({id:cl.id,turn:index}))                                  
               if(associatedOrdersResponse.docs.length){
-                  console.log('found orders')
                 associatedOrdersResponse.docs.forEach((order)=>{
                     const turn = idTurn.filter(cl=>cl.id==order.data().client.id)[0].turn
-                    order.ref.update({turn})
+                    order.ref.update({ 
+                        turn,
+                        created_at:firestore.Timestamp.fromDate(new Date(start_date)),
+                        start_date:firestore.Timestamp.fromDate(new Date(start_date)),
+                    })
                 })
               }
-                        console.log('updating scheduel')                        
 
               dispatch.scheduel.updatedScheduel(scheduels)
+              dispatch.toast.show({
+                type:'success',
+                title:'Modification ',
+                message:`le trajet  est modifier avec success `
+               })
+               navigation.goBack()
             } catch (error) {
              console.log('\n-----updateScheduel-----')
              dispatch.scheduel.updatingScheduelFailed()
              console.log(error)
          }
         },
-        async removeScheduel(id,state){
+        async removeScheduel({id,navigation},state){
          try {
              const scheduels = [...state.scheduel.scheduels]
              const targetScheduel= scheduels.filter(scheduel=>scheduel.id == id)[0]
@@ -695,6 +703,12 @@ const model ={
               })
                                                 
               dispatch.scheduel.removedScheduel({scheduels,deletedOrdersCount})
+              dispatch.toast.show({
+                type:'success',
+                title:'Supprission ',
+                message:`le trajet  est supprimer avec success `
+               })
+               navigation.goBack()
             } catch (error) {
                 console.log('\n-----updateScheduel-----')
                 console.log(error)

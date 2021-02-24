@@ -15,21 +15,7 @@ const CategoriesSlider=({categories,done_fetching_categories,selectedCategory,se
         selectCategory({selectedCategory:"0hxbmFxnEtU05QcWbaxv",isSub:false,fromClientPanel:true})
         selectSubCategory("0hxbmFxnEtU05QcWbaxv")
     }, [])
-    useEffect(() => {
-        if(!selectedCategory) return
-        const targetCategory= categories.filter(c=>c.id == selectedCategory)[0]
-        const index= categories.indexOf(targetCategory)
-        
-        //get sub categories
-        
-        
-        if(index < 0 || index == undefined || !index) return console.log({index})
-        else ref.current && ref.current.scrollToIndex({
-            index ,
-            animated: true,
-            viewOffset: Dimensions.get('window').width / 2.5,
-        })
-    }, [selectedCategory])
+   
     
     return (
         <View  >

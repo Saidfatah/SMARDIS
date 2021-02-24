@@ -3,7 +3,7 @@ import {View} from 'react-native'
 import Label from '../../../Common/Label'
 import DropDown from '../../../Common/DropDown'
 
-const SectorsDropDown=({sectors,setselectedSector,selectedSector})=> {
+const SectorsDropDown=({sectors,dispatch,selectedSector})=> {
 
     return <View style={{padding:8}}>
             <Label label="List des secteurs" />
@@ -11,7 +11,7 @@ const SectorsDropDown=({sectors,setselectedSector,selectedSector})=> {
             data={sectors.filter(s=>s.name != undefined).map(s=>({value : s, label :s.name}))} 
             keyExtractor={item=>item.value.name}
             defaultValue={selectedSector && selectedSector.name}
-            setSelected={setselectedSector} 
+            setSelected={(value)=>dispatch({type:"SET_SELECTED_SECTOR",value})} 
             selected={selectedSector}
 
              />

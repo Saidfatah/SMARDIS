@@ -84,7 +84,7 @@ export const ScheduleItem = ({navigation,scheduel,removeScheduel,done_removing_s
                         },
                         { text: "OUI", onPress: () =>{
                             setcanRemove(false)
-                            removeScheduel(scheduel.id)
+                            removeScheduel({id:scheduel.id,navigation})
                         }
                        }
                       ]);

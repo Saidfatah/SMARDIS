@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect,useCallback} from 'react'
 import {View,Text,StyleSheet} from 'react-native'
 import CategoriesSlider from './CategoriesSlider'
 import {connect} from 'react-redux'
@@ -36,6 +36,9 @@ const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetI
             BackHandler.removeEventListener("hardwareBackPress", onBackPress);
         
     }, []));
+
+
+    
     return <BackgroundImage  >
         <View style={styles.tagParent} >
              <View style={styles.tag} >
