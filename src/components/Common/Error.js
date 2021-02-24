@@ -11,10 +11,10 @@ const Error=({trigger,error,mgb,mga})=>{
             styles.err,
             {
                 marginBottom : mgb || 0 ,
-                marginTop    : mga || 0
+                marginTop    : mga || 0,
             }
              ]}>
-            <Text style={{color:'#fff',textAlign:'center'}}>{error}</Text>
+            <Text style={{color:'#fff',textAlign:'center',flex:1}}>{error}</Text>
             <Icon name="error" size={25} color="#fff" />
         </View>
 
@@ -25,7 +25,7 @@ export default Error
 
 var styles = StyleSheet.create({
     err:{
-       width:'100%',
+       flex:1,
        flexDirection:'row',
        alignItems:'center',
        justifyContent:'space-between',

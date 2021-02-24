@@ -10,7 +10,9 @@ const DistrubutorsDopDown=({distrubutors,selectedDistrubutor, setselectedDistrub
             <DropDown 
             data={distrubutors.map(d=>({value : d, label :d.name}))} 
             setSelected={setselectedDistrubutor} 
+            keyExtractor={item=>item.value.id}
             selected={selectedDistrubutor}
+            defaultValue={selectedDistrubutor && selectedDistrubutor.name}
              />
         </View>
 

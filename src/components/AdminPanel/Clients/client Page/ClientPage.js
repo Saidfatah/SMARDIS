@@ -66,12 +66,17 @@ export const ClientPage = ({navigation,route,sectors,resetIsDone,done_removing_c
                          <Text> {city} </Text>
                     </View>
             </View>
-            <View style={styles.HFlex} >
+            {
+                sectors && sectors.filter(s=>s.id == sectorId)[0]
+                ?<View style={styles.HFlex} >
                     <Label label="Secteur :"  mga={16} />
                     <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
-                         <Text> {sectors && sectors.filter(s=>s.id == sectorId)[0].name} </Text>
+                         <Text> { sectors.filter(s=>s.id == sectorId)[0].name} </Text>
                     </View>
-            </View>
+               </View>
+                :null
+            }
+            
            <View style={styles.btns} >
                <Button
                 xStyle={{...styles.BtnXstyle}} 

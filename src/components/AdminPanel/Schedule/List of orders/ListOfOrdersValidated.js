@@ -46,7 +46,7 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
                   dataTemp.push([
                       columnCount,
                       billRef,
-                      sale_date.toLocaleDateString('en-US').toString(),
+                      sale_date.toLocaleDateString('en-US').toString().replace("/","").replace("/",""),
                       ref,
                       client.ref,
                       name,

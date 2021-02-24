@@ -18,6 +18,9 @@ const ProductAddToCart =({scheduelId,setIsPanelActive,selectedProduct,guest,addC
                  <NumericInput 
                   iconStyle={{color:colors.BLUE}}
                   iconSize={30}
+                  minValue={0}
+                  step={1}
+                  valueType="real"
                   value={quantity} 
                   onChange={value => setquantity(value)} 
                   />

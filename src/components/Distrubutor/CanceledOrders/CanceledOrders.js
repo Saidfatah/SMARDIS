@@ -40,7 +40,7 @@ const CanceledOrders=({navigation,resetOrder,distrubutor_todays_canceled_orders,
                           disabled={!canReset}
                           clickHandler={e=>{
                               setcanReset(false)
-                              resetOrder(canceledOrder.id) 
+                              resetOrder({id:canceledOrder.id,navigation}) 
                             }} 
                           >
                              <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>Reainstaller</Text>

@@ -8,7 +8,8 @@ import {
     Platform,
     TextInput,
     FlatList,
-    LogBox
+    LogBox,
+    SafeAreaView
 } from 'react-native';
 
 // Icon
@@ -18,7 +19,6 @@ import Feather from 'react-native-vector-icons/Feather'
 class DropDownPicker extends React.Component {
     constructor(props) {
         super(props);
-
         let choice;
         let items = [];
         let defaultValueIndex; // captures index of first defaultValue for initial scrolling
@@ -45,7 +45,7 @@ class DropDownPicker extends React.Component {
         }
 
         this.state = {
-            choice: props.multiple ? items : {
+            choice:{
                 label: choice.label,
                 value: choice.value,
                 icon: choice.icon
@@ -122,18 +122,20 @@ class DropDownPicker extends React.Component {
                 }
             }
         }
-
+    
         return null;
     }
 
     componentDidMount() {
         this.props.controller(this);
+        LogBox.ignoreLogs(['VirtualizedLists should']);
     }
 
     componentDidUpdate() {
         // ScrollView scrollTo() can only be used after the ScrollView is rendered
         // Automatic scrolling to first defaultValue occurs on first render of dropdown ScrollView
         const item = this.props.items[this.state.defaultValueIndex];
+        // if(props.defaultValue)this.select(item)
         const isItemVisible = item && (typeof item.hidden === 'undefined' || item.hidden === false);
         if (this.state.initialScroll && this.state.isVisible && isItemVisible) {
             setTimeout(() => {
@@ -145,6 +147,7 @@ class DropDownPicker extends React.Component {
                 this.setState({ initialScroll: false });
             }, 200);
         }
+        
     }
 
     reset() {
@@ -257,28 +260,10 @@ class DropDownPicker extends React.Component {
         }, () => this.props.onClose());
     }
 
-    selectItem(defaultValue) {
-        if (this.state.props.multiple) {
-            (async () => {
-                for (const value of defaultValue) {
-                    const item = this.props.items.find(item => item.value === value);
-                    if (item) {
-                        await new Promise((resolve, reject) => {
-                            resolve(
-                                this.select(item)
-                            );
-                        });
-                    }
-                }
-            })();
-        } else {
-            const item = this.props.items.find(item => item.value === defaultValue);
-            if (item)
-                this.select(item);
-        }
-    }
+ 
 
     select(item) {
+
         const { multiple } = this.state.props;
         if (!multiple) {
             this.setState({
@@ -351,9 +336,9 @@ class DropDownPicker extends React.Component {
     getLabel(item, selected = false) {
         let len;
         let label;
-
+        
         if (typeof item === 'object') {
-            len = item.label.length;
+            len =   item.label.length;
             label = item.label.substr(0, selected ? this.props.selectedLabelLength : this.props.labelLength);
         } else if (item !== null && typeof item !== 'undefined') {
             len = item.length;
@@ -371,6 +356,8 @@ class DropDownPicker extends React.Component {
     }
 
     render() {
+        LogBox.ignoreLogs(['VirtualizedLists should']);
+
         this.props.controller(this);
 
         // Item
@@ -431,15 +418,16 @@ class DropDownPicker extends React.Component {
         </View>
         )
         const { multiple, disabled } = this.state.props;
-        const { placeholder, scrollViewProps, searchTextInputProps } = this.props;
+        const { placeholder, searchTextInputProps } = this.props;
         const isPlaceholderActive = this.state.choice.label === null;
         const label = isPlaceholderActive ? (placeholder) : this.getLabel(this.state.choice?.label, true);
+        // const label = this.getLabel(this.state.choice?.label, true);
         const placeholderStyle = isPlaceholderActive && this.props.placeholderStyle;
         const opacity = disabled ? 0.5 : 1;
         const items = this.getItems();
 
         return (
-            <View style={[this.props.containerStyle, {
+            <SafeAreaView style={[this.props.containerStyle, {
 
                 ...(Platform.OS !== 'android' && {
                     zIndex: this.props.zIndex
@@ -542,7 +530,7 @@ class DropDownPicker extends React.Component {
                     }
 
                 </View>
-            </View>
+            </SafeAreaView>
         );
     }
 }
@@ -569,12 +557,12 @@ DropDownPicker.defaultProps = {
     zIndex: 5000,
     disabled: false,
     searchable: false,
-    searchablePlaceholder: 'Search for an item',
-    searchableError: () => <Text>Not Found</Text>,
+    searchablePlaceholder: 'chercher',
+    searchableError: () => <Text>aucune result</Text>,
     searchableStyle: {},
     searchablePlaceholderTextColor: 'gray',
     isVisible: false,
-    autoScrollToDefaultValue: false,
+    autoScrollToDefaultValue: true,
     multiple: false,
     multipleText: '%d items have been selected',
     min: 0,
@@ -598,7 +586,8 @@ DropDownPicker.defaultProps = {
  
 
 
-const DropDown=({data,selected ,setSelected,keyExtractor})=> {
+const DropDown=({data,selected ,hidden,setSelected,keyExtractor,placeholder,defaultValue})=> {
+    if(hidden) return null
     return <DropDownPicker
     items={data}
     onChangeItem={item =>{
@@ -606,11 +595,12 @@ const DropDown=({data,selected ,setSelected,keyExtractor})=> {
     }}
     keyExtractor={keyExtractor}
     searchable={true}
+    placeholder={defaultValue || "Selectioner un option"}
     labelStyle={{color:colors.BLACK}}
     containerStyle={{height: 40}}
     style={{  borderColor:colors.BLACK, borderWidth:2,  borderRadius:12, }}
     itemStyle={{justifyContent: 'flex-start' }}
-    dropDownStyle={{  backgroundColor: '#fafafa' }}
+    dropDownMaxHeight={300}
    />
 
 }

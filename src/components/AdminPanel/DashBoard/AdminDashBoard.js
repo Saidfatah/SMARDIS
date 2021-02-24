@@ -34,7 +34,10 @@ const  AdminDashBoard=(props)=> {
         fetchWaitingClients,
         user
     }=props
+
     useEffect(() => {
+           if(user.type =="DISTRUBUTOR") 
+               navigation.navigate('DISTRIBUTORDashBoard')
           fetchOrders()
           fetchTodaysValideOrders("ADMIN")
           fetchProducts()

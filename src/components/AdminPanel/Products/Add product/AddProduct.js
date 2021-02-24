@@ -1,15 +1,14 @@
-import React,{useState,useEffect} from 'react'
-import {View,Text,TextInput,StyleSheet} from 'react-native'
+import React,{useState,useEffect,useCallback} from 'react'
+import {View,Text,TextInput,StyleSheet,TouchableOpacity} from 'react-native'
 import { connect } from 'react-redux'
 import Label from '../../../Common/Label'
 import Button from '../../../Common/Button'
-import Loading from '../../../Common/Loading'
 import Error from '../../../Common/Error'
 import ImagePicker from '../../../Common/ImagePicker'
 import DropDown from '../../../Common/DropDown'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
-
+import Icon from 'react-native-vector-icons/Ionicons';
 const ERRORS_INITIAL_CONFIG = {
     nameREQUIRED:false,
     activePriceREQUIRED:false,
@@ -27,7 +26,7 @@ const ERRORS_INITIAL_CONFIG = {
 const ERRORS_MESSAGES= [
     {id:'REQUIRED',message:'ce champ est obligatoir'}
 ]
-// const PRICES=["price1","price2","price3","price4"]
+import NumericInput from 'react-native-numeric-input'
 
 
 
@@ -47,7 +46,7 @@ export const AddProduct = (props) => {
     const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
     const [update, setupdate] = useState(false)
     const [canSubmit, setcanSubmit] = useState(true)
-
+    const [hasSubCategory, sethasSubCategory] = useState(true)
     const [productToBeUpdatedId, setproductToBeUpdatedId] = useState(-1)
     const [selectedCategory, setselectedCategory] = useState(categories[0])
     const [selectedSubCategory, setselectedSubCategory] = useState(selectedCategorySubCategories[0])
@@ -55,14 +54,15 @@ export const AddProduct = (props) => {
     
     // const [activePrice, setactivePrice] = useState(PRICES[0])
     const [productData, setproductData] = useState({
-        name   : 'Dove',
-        ref    : 'REF',
+        name   : '',
+        ref    : '',
         image  : 'NO_IMAGE',
-        price1 : 90, 
-        price2 : 50 ,
-        price3 : 45 ,
-        price4 : 54 ,
+        price1 : 0, 
+        price2 : 0 ,
+        price3 : 0 ,
+        price4 : 0 ,
         category : null ,
+        subCategory:"NOT_DEFINED"
     })
     
     useEffect(() => {
@@ -91,7 +91,9 @@ export const AddProduct = (props) => {
         } 
     }, [])
     useEffect(() => {
-        product_adding_error != null && seterrors({...errors,addERROR:true})
+        console.log({product_adding_error})
+        setcanSubmit(true)
+        product_adding_error != null && seterrors({...errors,addERROR:true}) &&  resetIsDone("product_adding_error")  
     }, [product_adding_error])
     useEffect(() => {
         console.log("dipsatch [selectedCategorySubCategories]")
@@ -99,6 +101,7 @@ export const AddProduct = (props) => {
             selectSubCategory(selectedCategory.id)
         }
     }, [selectedCategory])
+    
 
     const resetErrors=()=>seterrors({...ERRORS_INITIAL_CONFIG})
     const handelChange=input=>v=>{ setproductData({...productData,[input]:v}) }
@@ -167,17 +170,86 @@ export const AddProduct = (props) => {
         productObj.category= selectedCategory.id
 
         // productObj.activePrice= activePrice
-        if(selectedCategorySubCategories.length > 0){
-        console.log("has sub category")
+        if(selectedCategorySubCategories.length > 0 && hasSubCategory){
          productObj.subCategory= selectedSubCategory.id
         }
      
         if(!update) return addProduct({...productObj,navigation})
         updateProduct({...productObj,id:productToBeUpdatedId,navigation})
+
+        
     }
-
-
+   
+ 
     const {name,ref,price1, price2,price3,price4}=productData
+    
+    const CateorySelection=()=>{
+        return <View>
+        <Label label="Category" mga={16} />
+        <Error trigger={errors.categoryREQUIRED} error={ERRORS_MESSAGES[0].message} />
+        <DropDown 
+            data={categories.filter(c=>c.type == "MAIN").map(c=>({value : c, label :c.name}))} 
+            keyExtractor={item=>item.value.id}
+            defaultValue={selectedCategory && selectedCategory.name}
+            setSelected={setselectedCategory} 
+            selected={selectedCategory}
+        />
+
+          <TouchableOpacity   onPress={()=>sethasSubCategory(!hasSubCategory)}>
+          <View style={styles.planType}>
+              <Icon 
+                   name={hasSubCategory
+                      ?"checkmark-circle"
+                      :"checkmark-circle-outline"} 
+                   size={20} 
+                   color={colors.GREEN} 
+              />
+              <Text> Sous category  </Text>
+          </View>
+         </TouchableOpacity>
+
+         
+          <DropDown 
+              hidden={ selectedCategorySubCategories.length < 1 || !hasSubCategory}
+              data={selectedCategorySubCategories.map(c=>({value : c, label :c.name}))} 
+              keyExtractor={item=>item.value.id}
+              defaultValue={selectedSubCategory && selectedSubCategory.name}
+              setSelected={setselectedSubCategory} 
+              selected={selectedSubCategory}
+          />
+       
+    </View>
+
+    }
+    const Buttons=()=>{
+        return <View>
+             <Error trigger={errors.addERROR} error={product_adding_error && product_adding_error.message} />
+             <View style={styles.btns} >
+                  <Button
+                   xStyle={{...styles.BtnXstyle,marginRight:16}} 
+                   color={"BLUE"} 
+                   loadingSize={30}
+                   loading={!canSubmit}
+                   disabled={!canSubmit}
+                   clickHandler={e=>dispatchAddProduct()} 
+                   >
+                      <Text style={styles.ButtonText}>{update?"Modifier":"Enregistrer"}</Text>
+                 </Button>
+                  <Button
+                   xStyle={styles.BtnXstyle} 
+                   color={"RED"} 
+                   clickHandler={e=>{
+                       navigation.goBack()
+                       seterrors({...errors,addERROR:false})
+                     }} 
+                   >
+                      <Text style={styles.ButtonText}>Annuler</Text>
+                 </Button>
+             </View>
+        </View>
+  }
+
+
 
     return  <KeyboardAwareScrollView   
     contentContainerStyle={{display:'flex',flexGrow:1 }}  
@@ -215,97 +287,92 @@ export const AddProduct = (props) => {
                 setImage:handelChange('image'),
                 errors
             }}/>
-    
-            <View>
-                <Label label="Category" mga={16} />
-                <Error trigger={errors.categoryREQUIRED} error={ERRORS_MESSAGES[0].message} />
-                <DropDown 
-                    data={categories.filter(c=>c.type == "MAIN").map(c=>({value : c, label :c.name}))} 
-                    keyExtractor={item=>item.name}
-                    setSelected={setselectedCategory} 
-                    selected={selectedCategory}
-                />
-                {
-                    selectedCategorySubCategories.length > 0
-                    ?<View>
-                        <Label label="Sous Category" mga={16} />
-                        <DropDown 
-                            data={selectedCategorySubCategories.map(c=>({value : c, label :c.name}))} 
-                            keyExtractor={item=>item.name}
-                            setSelected={setselectedSubCategory} 
-                            selected={selectedSubCategory}
-                        />
-                    </View>
-                    :null
-                }
-            </View>
-    
+            <CateorySelection />
+            
             <View>
                 <Label label="Prix 1" mga={16}/>
                 <Error trigger={errors.price1REQUIRED} error={ERRORS_MESSAGES[0].message} />
-                <TextInput style={styles.Input}   
-                        placeholder={"Entrer le prix1"}   
-                        defaultValue={price1.toString()} 
-                        keyboardType="decimal-pad"
-                        onFocus={e=> resetErrors()}
-                        onChangeText={handleTextChange('price1')} 
-                />
+            
+                 <NumericInput 
+                  iconSize={30}
+                  minValue={0}
+                  step={1}
+                  valueType="real"
+                  value={price1} 
+                  containerStyle={{
+                      borderRadius:12,
+                      borderColor:colors.BLACK,
+                  }}
+                  inputStyle={{
+                      borderColor:colors.BLACK,
+                    }}
+                   iconStyle={{
+                       color:colors.BLACK,
+         
+                    }}
+                   leftButtonBackgroundColor="transparent"
+                   rightButtonBackgroundColor="transparent"
+                  
+                  onChange={handelChange('price1')} 
+                  />
             </View>
             <View>
                 <Label label="Prix 2" mga={16}/>
                 <Error trigger={errors.price2REQUIRED} error={ERRORS_MESSAGES[0].message} />
-                <TextInput style={styles.Input}   
-                        placeholder={"Entrer le prix2"}   
-                        defaultValue={price2.toString()} 
-                        keyboardType="decimal-pad"
-                        onFocus={e=> resetErrors()}
-                        onChangeText={handleTextChange('price2')} 
-                />
+                <NumericInput 
+                  iconSize={30}
+                  minValue={0}
+                  step={1}
+                  valueType="real"
+                  value={price2} 
+                  containerStyle={{  borderRadius:12,  borderColor:colors.BLACK,
+                  }}
+                  inputStyle={{ borderColor:colors.BLACK,  }}
+                   iconStyle={{color:colors.BLACK, }}
+                  leftButtonBackgroundColor="transparent"
+                  rightButtonBackgroundColor="transparent"
+                  onChange={handelChange('price2')} 
+                  />
             </View>
             <View>
                 <Label label="Prix 3" mga={16}/>
                 <Error trigger={errors.price3REQUIRED} error={ERRORS_MESSAGES[0].message} />
-                <TextInput style={styles.Input}   
-                        placeholder={"Entrer le prix3"}   
-                        defaultValue={price3.toString()} 
-                        keyboardType="decimal-pad"
-                        onFocus={e=> resetErrors()}
-                        onChangeText={handleTextChange('price3')} 
-                />
+                <NumericInput 
+                  iconSize={30}
+                  minValue={0}
+                  step={1}
+                  valueType="real"
+                  value={price3} 
+                  containerStyle={{  borderRadius:12,  borderColor:colors.BLACK,
+                  }}
+                  inputStyle={{ borderColor:colors.BLACK,  }}
+                   iconStyle={{color:colors.BLACK, }}
+                  leftButtonBackgroundColor="transparent"
+                  rightButtonBackgroundColor="transparent"
+                  onChange={handelChange('price3')} 
+                  />
             </View>
             <View>
                 <Label label="Prix 4" mga={16}/>
                 <Error trigger={errors.price4REQUIRED} error={ERRORS_MESSAGES[0].message} />
-                <TextInput style={styles.Input}   
-                        placeholder={"Entrer le prix4"}   
-                        defaultValue={price4.toString()} 
-                        keyboardType="decimal-pad"
-                        onFocus={e=> resetErrors()}
-                        onChangeText={handleTextChange('price4')} 
-                />
+                <NumericInput 
+                  iconSize={30}
+                  minValue={0}
+                  step={1}
+                  valueType="real"
+                  value={price4} 
+                  containerStyle={{  borderRadius:12,  borderColor:colors.BLACK,
+                  }}
+                  inputStyle={{ borderColor:colors.BLACK,  }}
+                   iconStyle={{color:colors.BLACK, }}
+                  leftButtonBackgroundColor="transparent"
+                  rightButtonBackgroundColor="transparent"
+                  onChange={handelChange('price4')} 
+                  />
             </View>
         </View>
 
-        <Error trigger={errors.addERROR} error={product_adding_error && product_adding_error.message} />
-        <View style={styles.btns} >
-             <Button
-              xStyle={{...styles.BtnXstyle,marginRight:16}} 
-              color={"BLUE"} 
-              loadingSize={30}
-              loading={!canSubmit}
-              disabled={!canSubmit}
-              clickHandler={e=>dispatchAddProduct()} 
-              >
-                 <Text style={styles.ButtonText}>{update?"Modifier":"Enregistrer"}</Text>
-            </Button>
-             <Button
-              xStyle={styles.BtnXstyle} 
-              color={"RED"} 
-              clickHandler={e=>navigation.goBack()} 
-              >
-                 <Text style={styles.ButtonText}>Annuler</Text>
-            </Button>
-        </View>
+        <Buttons />
 
     </KeyboardAwareScrollView>  
 }
@@ -355,4 +422,12 @@ var styles = StyleSheet.create({
         backgroundColor:'#fff'
     },
     btns:{flex:1,display:'flex',flexDirection:'row',marginTop:16,marginBottom:16,justifyContent:'space-between'}
- });
+    ,planType:{
+        backgroundColor:'#fff',
+        borderRadius:50,
+        flexDirection:'row',
+        padding:4,
+        margin:4,
+    },
+ 
+});

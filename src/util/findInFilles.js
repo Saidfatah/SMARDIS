@@ -29,7 +29,7 @@ const functions=[
     "fetchMoreDistrubutors"
 ]
 
-findInFiles.find('react-native-permissions', '../components', '.js$')
+findInFiles.find('perf_hooks', '../components', '.js$')
     .then(function(results) {
         for (var result in results) {
             var res = results[result];

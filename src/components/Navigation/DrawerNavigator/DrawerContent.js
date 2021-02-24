@@ -172,7 +172,7 @@ const DrawerContent=(props)=> {
                              badgeStatus="error"
                            />
                            <Link 
-                             route={"ADMINDashBoard"}
+                             route={"ADMINaddClient"}
                              icon="person-add-sharp"
                              label="Ajouter Un Client"
                              hasBadge={false}

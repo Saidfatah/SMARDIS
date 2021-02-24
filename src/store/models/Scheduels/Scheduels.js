@@ -50,6 +50,7 @@ const model ={
         distrubutor_todays_canceled_orders :[], 
 
         //counters
+        billRefCounter:0,
         scheduelsCount : 0 ,
         ordersCount : 0 ,
         validatedOrdersCount : 0 ,
@@ -83,6 +84,8 @@ const model ={
         done_canceling_order:false,
         done_canceling_order:false,
         done_removing_scheduel:false,
+
+        schedule_add_error:null,
         
         //seclection
         selectedBill : null ,
@@ -127,11 +130,13 @@ const model ={
             scheduels ,
             scheduelsCount : state.scheduelsCount +1,
             ordersCount : state.scheduelsCount +addedOrdersCount,
-            done_adding_scheduel:true
+            done_adding_scheduel:true,
+            schedule_add_error:null
         }),
-        addingScheduelFailed  : (state,args)=>({
+        addingScheduelFailed  : (state,{schedule_add_error})=>({
             ...state, 
-            done_adding_scheduel:true
+            done_adding_scheduel:true,
+            schedule_add_error
         }),
         updatedScheduel  : (state,scheduels)=>({
             ...state,
@@ -242,6 +247,10 @@ const model ={
             ...state,
             [field]:false
         }),
+        resetedError:  (state,field)=>({
+            ...state,
+            [field]:null
+        }),
     },
     effects: (dispatch)=>({
         async fetchTodaysSales(arg,state){
@@ -296,7 +305,8 @@ const model ={
                 if(todays_orders_first_fetch) return 
 
                 const currentDistrubutorId = state.auth.distrubutorId
-                console.log('-----Distrubutr todays orders-------')
+                
+
                 const fetchOrdersReponse = await firestore()
                       .collection('orders')
                       .where('created_at','>',yesterday)
@@ -475,7 +485,7 @@ const model ={
                 dispatch.scheduel.distrubutorTodaysCanceledOrdersFetchingFailed()
             }
         },
-        async resetOrder(id,state){
+        async resetOrder({id,navigation},state){
              try {
                 const resetOrderReponse = await firestore()
                       .collection('orders')
@@ -485,6 +495,7 @@ const model ={
                       })
              
                dispatch.scheduel.restedOrder()
+               navigation.navigate('DISTRIBUTORDashBoard')
                
             } catch (error) {
                 console.log('\n-----resetOrder-----')
@@ -543,13 +554,35 @@ const model ={
 
             }             
         },
-        async addScheduel({distrubutor,distination,start_date},state){
+        async addScheduel({navigation,distrubutor,distination,start_date},state){
            try {
                 
                 const admin = state.auth.user 
                 //create scheduel doc 
-                const newSchedule = scheduleModel( admin, distrubutor, distination ,start_date)
+                const newSchedule = scheduleModel( admin, distrubutor, distination ,start_date,distination.sector.id)
             
+                //check if there s a scheduel already assigned to same dstrubutor in the same date
+                const starDatePrevNight= new Date(start_date)
+                starDatePrevNight.setHours(0,0,0,0)
+                const starDateNextNight= new Date(start_date)
+                starDateNextNight.setHours(23,59,59,999)
+                console.log({starDatePrevNight,starDateNextNight})
+                const start_date_dayStart = firestore.Timestamp.fromDate(starDatePrevNight)
+                const start_date_dayEnd = firestore.Timestamp.fromDate(starDateNextNight)
+                const scheduelCheckResponse = await firestore()
+                                                   .collection('scheduels')
+                                                   .where('start_date','<',start_date_dayEnd)
+                                                   .where('start_date','>',start_date_dayStart)
+                                                   .where('distrubutorId','==',distrubutor.id)
+                                                   .where('sectorId','==',distination.sector.id)
+                                                   .get()
+                                                                                
+                if(scheduelCheckResponse.docs[0]){
+                    dispatch.scheduel.addingScheduelFailed({schedule_add_error:{id:"ALREACY_ASIGNED",message:"le ce traject est deja assigner a le ditrubuteur ["+ distrubutor.name+"]"}})
+
+                }
+               
+
                 const scheduelAddResponse = await firestore()
                                                   .collection('scheduels')
                                                   .add(newSchedule)
@@ -590,10 +623,11 @@ const model ={
                   title:'Ajoute ',
                   message:`le trajet  est ajouter avec success `
                  })
+                 navigation.navigate("ADMINlistOfScheduleS")
            } catch (error) {
                console.log('\n------[addOrder]------')
                console.log(error)
-               dispatch.scheduel.addingScheduelFailed()
+               dispatch.scheduel.addingScheduelFailed({schedule_add_error:{id:"ADD_FAILED",message:"somthing went wrong!"}})
 
            }
         },
@@ -718,7 +752,10 @@ const model ={
         },
         resetIsDone(field,state){
             dispatch.scheduel.reseted(field)
-        }
+        },
+        resetError(field,state){
+            dispatch.scheduel.resetedError(field)
+        },
     })
 }
 export default model

@@ -7,6 +7,8 @@ import BackgroundImage from '../../Common/BackgroundImage'
 import Button from '../../Common/Button'
 import  SwipeAbleProductDetails from './Products/SwipeAbleProductDetails'
 import SwipeAbleCancelOrder from './SwipeAbleCancelOrder'
+import { BackHandler ,Alert} from 'react-native';
+import { useFocusEffect } from "@react-navigation/native";
 
 const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetIsDone,  addCartItem,selectedCategorySubCategories,selectedCategoryProducts})=> {
     const [isPanelActive, setIsPanelActive] = useState(false);
@@ -21,7 +23,19 @@ const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetI
     useEffect(() => {
         navigation.setParams({ clientName: name });
     }, [id])
-  
+    useFocusEffect(
+        useCallback(() => {
+          const onBackPress = () => {
+            setIsPanelActive(false)
+            return true;
+          };
+        
+          BackHandler.addEventListener("hardwareBackPress", onBackPress);
+        
+          return () =>
+            BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+        
+    }, []));
     return <BackgroundImage  >
         <View style={styles.tagParent} >
              <View style={styles.tag} >

@@ -31,6 +31,7 @@ const model ={
         cartItems  :[],
         guest :null,
         sector:null,
+        
         status : "PENDING",
         scheduelId:null,
         done_validating_product:false
@@ -200,8 +201,20 @@ const model ={
                  
 
   
+
+                 
+                 //get billref counter from fristore
+                 const billRefCounter=await (await firestore().collection('orders').doc('1- - BILL REF COUNTER - -').get()).data().counter
+                 console.log({billRefCounter})
+
+                 
+
+                 //generate billRef with BC000* inital
+                 const billRefCounterArrayed = (++billRefCounter).toString().split('')
+                 let zeros                   = new Array(6-billRefCounterArrayed.length).fill("0",0,arr.length)
+                 const billRef               = [...zeros,...billRefCounterArrayed].reduce((a,c)=>a+c,"BC")
+
                  //update order doc ["VALIDATED"]
-                 const  billRef = "BC"+new Date().getTime()
                  const validateOrderReponse = await firestore()
                   .collection('orders')
                   .doc(orderId)
@@ -216,7 +229,13 @@ const model ={
                         sale_date : firestore.Timestamp.fromDate(new Date()), 
                         sale_hour : firestore.Timestamp.fromDate(new Date()),
                   })
-               
+                  
+                 //increment billref counter in fristore , we waited until here to make sure the billRef get incremented
+                 //only if teh orders validation was successfull
+                 const increment = firestore.FieldValue.increment(1)
+                 await firestore().collection('orders').doc('1- - BILL REF COUNTER - -').update({counter:increment})
+
+
                  //update distrubutor commits 
                  const currentDistrubutorId = state.auth.distrubutorId
                  const updateCommitsReponse = await firestore()
@@ -246,7 +265,7 @@ const model ={
                 deleteCartFromASyncStorage()
 
                 //navigate to valoidated orders screen
-                navigation.navigate('DISTRIBUTORvalidtedCommands')
+                navigation.navigate('DISTRIBUTORDashBoard')
                 }
             } catch (error) {
                 console.log("validate order cart")
