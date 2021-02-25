@@ -14,7 +14,7 @@ const  Categories=({navigation,categories,done_fetching_categories})=> {
 
 
     return (
-      <View style={{backgroundColor:'#fff'}}  >
+      <View style={{backgroundColor:'#fff',flex:1}}  >
         <FlatList 
            data   = {categories.filter(category=>category.type=="MAIN")}
            style  = {{...styles.list}}
@@ -22,6 +22,7 @@ const  Categories=({navigation,categories,done_fetching_categories})=> {
            showsVerticalScrollIndicator={false}
            renderItem   = {({ item ,index}) =><CategoryItem navigation={navigation} category={item} /> }
            keyExtractor = {(item, index) => index.toString()}
+           ListFooterComponent={<View style={{ height: 0, marginBottom: 90 }}></View>}
         />
       </View>
     )
@@ -53,6 +54,7 @@ var styles = StyleSheet.create({
   list:{
       borderColor:'#fff',
       padding:16,
+      flex: 1
   },
   Clientlist:{
       borderColor:'#fff',

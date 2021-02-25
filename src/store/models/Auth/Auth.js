@@ -174,10 +174,10 @@ const model ={
                     savePassword = JSON.stringify(savePassword)
                     const savedPassword  = await AsyncStorage.getItem('PASSWORD')
                     const savedEmail  = await AsyncStorage.getItem('EMAIL')
-                   console.log({savedEmail})
+                  
                     if(user){      
                         //get user doc from async storage
-                        console.log(user)
+                     
                          let userDoc
                          const userjsonValue = await AsyncStorage.getItem('USER')
                          userDoc = userjsonValue != null ? JSON.parse(userjsonValue) : null
@@ -188,6 +188,7 @@ const model ={
                         if(userDoc == undefined || userDoc == null){
                             const userDocResponse =await firestore().collection('users').where('user_id','==',user.uid)
                             userDocResponse.onSnapshot(res=>{
+                                
                                 const docs=res.docs
                                 userDoc={...docs[0].data(),id:docs[0].id}
                             })
@@ -204,11 +205,15 @@ const model ={
 
                          //check if user in approved by admin if not then we redirect them to waitingRoom 
                          if(userDoc != undefined && userDoc.confirmed =="PENDING") 
-                               return navigation.navigate("WAIT_ROOM") 
+                            return navigation.navigate("WAIT_ROOM") 
 
                          //redirect logged users that are approved to their appropriate Dashboard
-                         if(userDoc != undefined) 
-                               navigation.navigate(userType+'DashBoard') 
+                         if(userDoc != undefined){ 
+                             console.log('shoudl redirect ')
+                            return  navigation.navigate(userType+'DashBoard')
+                         }
+                         console.log('not user')
+                        
                     }else{        
                          dispatch.auth.checkedAuthentication({
                              authenticated : false,
