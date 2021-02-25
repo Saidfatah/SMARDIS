@@ -11,7 +11,7 @@ const  Authorizer=({navigation,logout,checkAuthetication})=> {
     // logout({navigation})
            setTimeout(() => {
                  checkAuthetication({navigation})
-           }, 4000);
+           }, 2000);
        
     }, [])
 

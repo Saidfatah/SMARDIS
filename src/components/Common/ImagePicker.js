@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 const ERRORS_MESSAGES= [
     {id:'REQUIRED',message:'ce champ est obligatoir'}
 ]
-const ImagePicker=({setImage,title,errors})=>{
+const ImagePicker=({setImage,title})=>{
     const [cameraError, setcameraError] = useState(null)
     const [imageUri, setimageUri] = useState(null)
     const [modalVisible, setModalVisible] = useState(false);
@@ -23,7 +23,8 @@ const ImagePicker=({setImage,title,errors})=>{
           : selectedImage;
           setimageUri(selectedImage)
  
-          setImage(uploadUri)      
+          setImage(uploadUri)  
+          setModalVisible(false)    
     }
     const addImageToList=r=>{
         if (r.didCancel) {
@@ -77,14 +78,32 @@ const ImagePicker=({setImage,title,errors})=>{
     return <View>
             <Label label="Image" mga={16} />
             <Button
-              xStyle={{flex:1,margin:0,borderRadius:12,marginRight:16}} 
-              color={"LIGHTGREY"} 
+              xStyle={{
+                  flex:1,
+                  margin:0,
+                  borderRadius:12,
+                  marginRight:16,
+                  display:"flex",
+                 flexDirection:"row",
+                 alignItems:'center',
+                 justifyContent:'space-between',
+                 borderColor:"#000",
+                 borderRadius:12,
+                 borderWidth:2
+                }} 
+              color={"WHITE"} 
               clickHandler={e=>{
                   setModalVisible(true)
                  
                }} 
               >
-                 <Text style={styles.ButtonText}>Ajouter Une Image</Text>
+                 <Text  style={styles.ButtonText}>{!imageUri?"Ajouter Une Image":"Changer l'image"}</Text>
+                 {
+                 imageUri
+                 ? <Image source={{uri:imageUri}}  style={{width:50,height:50}} />
+                 :null
+                }
+
             </Button>
         {
             modalVisible

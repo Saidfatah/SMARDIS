@@ -14,7 +14,10 @@ const CheckBoxGroup=({list,selected,setSelectedValue})=> {
 
     const check = (index)=>{
         if(selected && selected==list[index].value) return 
+
         setSelectedValue(list[index].value)
+     
+
         let valuesTemp = [...values]
         valuesTemp = valuesTemp.map(v=>false)
         valuesTemp[index]= true
