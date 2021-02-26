@@ -65,7 +65,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
               ref,
               name,
               address,
-              objectif
+              objectif :objectif.initial
             })
             setupdate(true)
             setclientToBeUpdatedId(client.id)

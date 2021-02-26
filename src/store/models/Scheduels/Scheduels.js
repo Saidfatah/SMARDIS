@@ -38,7 +38,7 @@ ysterdayMidnight.setHours(0,0,0,0);
 var yesterday = firestore.Timestamp.fromDate(ysterdayMidnight);
 
  
-
+const CONFIG_DOC='1 - - CONFIG - -'
 const model ={
     state:{
         //arrays
@@ -48,7 +48,7 @@ const model ={
         todaysSectors :[], 
         valide_orders :[], 
         distrubutor_todays_canceled_orders :[], 
-
+            
         //counters
         billRefCounter:0,
         scheduelsCount : 0 ,
@@ -93,6 +93,7 @@ const model ={
         //control turns in distrubutors todays orders 
         currentTurn   : null ,
         currentSector : null,
+        orderConfig:null,
         currentSectorIndex : 0,
     },
     reducers:{
@@ -189,14 +190,15 @@ const model ={
             done_fetching_todays_validated_orders:true,
         }),
         //used in [DISTRUBUTOR] screens
-        fetchedTodaysSectors : (state,todaysSectors)=>({
+        fetchedTodaysSectors : (state,{todaysOrders,orderConfig})=>({
             ...state,
-            todaysSectors :[...todaysSectors],
-            todaysSectorsCount :todaysSectors.length,
-            currentTurn   :todaysSectors[0].orders[0].turn || 0,
-            currentSector : todaysSectors[0].sector.id,
+            todaysSectors :[...todaysOrders],
+            todaysSectorsCount :todaysOrders.length,
+            currentTurn   :todaysOrders[0].orders[0].turn || 0,
+            currentSector : todaysOrders[0].sector.id,
             todays_orders_first_fetch:true,
             currentSectorIndex:0,
+            orderConfig,
             distrubutor_todays_orders_done_fetching:true,
         }),
         fetchedTodaysSectorsFailed : (state,todaysSectors)=>({
@@ -306,7 +308,7 @@ const model ={
 
                 const currentDistrubutorId = state.auth.distrubutorId
                 
-                console.log({currentDistrubutorId})
+              
                 const fetchOrdersReponse = await firestore()
                       .collection('orders')
                       .where('created_at','>',yesterday)
@@ -316,10 +318,49 @@ const model ={
                       .orderBy('created_at','asc')
                       .orderBy('turn','asc')
 
+                //get orders config doc    
+                let orderConfig
+                const orderConfigResponse = await firestore().collection('orders').doc(CONFIG_DOC)
+                orderConfigResponse.onSnapshot(res=>{
+                    const doc=res.data() 
+                    if(doc){
+                        orderConfig=doc
+                    }
+                })
                  
+                
+                
+
                 fetchOrdersReponse.onSnapshot(res=>{
                     if(res.docs.length){
                         const docs= res.docs
+
+                        //chececk for clients objectifs 
+                        //reset their objectif progress if its the beggning of the month 
+                        //if they have achieved their objectif reward them 
+                        //check if last_mounth != current month 
+                        //if so , then wecheckif progress is >= initial
+                        //f so then the client has achived the goal , andwe should update their price to price.split('e')[1]+1
+                        // price1 =>arr= ["price","1"] => parseInt(arr[1]) +1 => is the new price
+                        const currentMount=new Date().getMonth()
+                        const refrencedClients=docs.map(doc=>({...doc.data().client}))
+                        refrencedClients.forEach(client=>{
+                            const {initial,last_mounth,progress}=client.objectif
+                            if(currentMount > last_mounth ){
+                                 console.log("reset objectif progress")
+                                 console.log( parseInt(client.price.split('x')[1]))
+                                 
+                            }else if(currentMount== last_mounth){
+                                if(progress >= initial){
+                                     console.log("progress accomplished")
+                                     const newPrice= parseInt(client.price.split('x')[1]) +1
+                                     //update client's price 
+                                }else{
+                                    console.log("still behind")
+                                }
+                            }
+                        })
+
                         const orderList = docs.map(doc=>({...doc.data(),orderId:doc.id}))
                          let lastOrder= orderList[0]
                          const firstOrder ={...lastOrder}
@@ -361,7 +402,7 @@ const model ={
                              }
                          ,[]) 
                          console.log('fetched todays orders')
-                         return dispatch.scheduel.fetchedTodaysSectors(todaysOrders)
+                         return dispatch.scheduel.fetchedTodaysSectors({todaysOrders,orderConfig})
                     }
                     dispatch.scheduel.fetchedTodaysSectorsFailed()
                 })

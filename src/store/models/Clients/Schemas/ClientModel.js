@@ -5,7 +5,12 @@ export const clientModel=(name,sectorId,ref,phone,address,city,price,objectif,co
     name,
     price,
     priceType:price.replace('x','ce'),
-    objectif,
+    objectif:{
+        initial:objectif,
+        last_mounth:new Date().getMonth(),
+        progress:-objectif || 0
+
+    },
     address,
     city,
     credit:0,

@@ -29,7 +29,6 @@ const PDFScreen=({uri})=> {
                 source={{uri:uri}}
                 onLoadComplete={(numberOfPages,filePath)=>{
                     setprogress(1)
-                    setmodalVisible(false)
                     console.log(`number of pages: ${numberOfPages}`);
                 }}
                 onPageChanged={(page,numberOfPages)=>{

@@ -26,6 +26,7 @@ const deleteCartFromASyncStorage=async ()=>{
      }
 }
 
+const CONFIG_DOC='1 - - CONFIG - -'
 const model ={
     state:{
         cartItems  :[],
@@ -192,27 +193,19 @@ const model ={
                     const client  = guest
                     const total   = cartItems.reduce((a,c)=>a+( c.priceForClient * c.quantity ),0) ;
                  
-               
-                 // modfy cartGuest status to VALIDATED 
-                 // cartItems[tergetGuestIndex].status="VALIDATED"
-
                  //set next client turn 
                  dispatch.scheduel.setNextTurn()
                  
-
-  
-
                  
                  //get billref counter from fristore
-                 const billRefCounter=await (await firestore().collection('orders').doc('1- - BILL REF COUNTER - -').get()).data().counter
+                 // const billRefCounter=await (await firestore().collection('orders').doc('1- - BILL REF COUNTER - -').get()).data().counter
+                 let billRefCounter=state.scheduel.orderConfig &&  state.scheduel.orderConfig.counter
                  console.log({billRefCounter})
-
-                 
 
                  //generate billRef with BC000* inital
                  const billRefCounterArrayed = (++billRefCounter).toString().split('')
-                 let zeros                   = new Array(6-billRefCounterArrayed.length).fill("0",0,arr.length)
-                 const billRef               = [...zeros,...billRefCounterArrayed].reduce((a,c)=>a+c,"BC")
+                 let   zeros     = new Array(6-billRefCounterArrayed.length).fill("0",0,6-billRefCounterArrayed.length)
+                 const billRef   = [...zeros,...billRefCounterArrayed].reduce((a,c)=>a+c,"BC")
 
                  //update order doc ["VALIDATED"]
                  const validateOrderReponse = await firestore()
@@ -233,7 +226,7 @@ const model ={
                  //increment billref counter in fristore , we waited until here to make sure the billRef get incremented
                  //only if teh orders validation was successfull
                  const increment = firestore.FieldValue.increment(1)
-                 await firestore().collection('orders').doc('1- - BILL REF COUNTER - -').update({counter:increment})
+                 await firestore().collection('orders').doc(CONFIG_DOC).update({counter:increment})
 
 
                  //update distrubutor commits 

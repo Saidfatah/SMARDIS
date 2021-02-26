@@ -26,12 +26,9 @@ const BillTable=({selectedBill})=> {
                   height:100%;
                   display: flex;
                   flex-direction:column;
-                  justify-content: center;
+                  justify-content: start;
               }
-              table{
-                margin-top:2rem;
-                flex:2;
-              }
+             
               thead{
                background-color: ${colors.BLUE};
                color:#fff;
@@ -40,15 +37,14 @@ const BillTable=({selectedBill})=> {
                background-color: ${colors.WHITE};
                color: ${colors.BLACK};
               }
-              h1,th,td{text-align:center}
+              th,td{text-align:center}
               th,td{padding:.5rem}
             
               .bill_header{
                 padding:1rem;
-                flex:1
               }
               .bill_header_title{
-                   font-size:5rem;
+                   font-size:2rem;
                    font-weght:bold
               }
               .bill_header_date{
@@ -61,7 +57,7 @@ const BillTable=({selectedBill})=> {
                 font-weight:bolder
               }
               .logo{
-                width:500
+                width:300
               }
           </style>
         </head>
@@ -69,9 +65,7 @@ const BillTable=({selectedBill})=> {
            <div class="container" >
                 <div class="bill_header">
                     <img class="logo" src="https://firebasestorage.googleapis.com/v0/b/distrubazate.appspot.com/o/SMARDIS.png?alt=media&token=218c7a1f-b9f8-4517-b734-013a4f660971" />
-                   <h1 class="bill_header_title" >BON DE COMMANDE <h1/>
-                   <h1 class="bill_header_date" >${(sale_date).toLocaleDateString('en-US')} <h1/>
-                   <h1 class="bill_header_client" >${selectedBill.client.name} <h1/>
+                   <h1 class="bill_header_title" >BON DE COMMANDE : ${selectedBill.client.name}  ${(sale_date).toLocaleDateString('en-US')} <h1/>
                 </div>
                 <table   border>
                    <thead >

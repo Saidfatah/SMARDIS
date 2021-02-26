@@ -222,7 +222,21 @@ const model ={
         },
         async updateClient({navigation,id,name,sectorId,phone,address,city,price,objectif,ref},state){
            try {
-                 const updatedFields= {name,sectorId,phone,address,city,price,ref,objectif,confirmed:"VALIDATED"}
+                 const updatedFields= {
+                     name,
+                     sectorId,
+                     phone,
+                     address,
+                     city,
+                     price,
+                     ref,
+                     objectif:{
+                         initial:objectif,
+                         progress:-objectif,
+                         last_mounth:new Date().getMonth()
+                     },
+                     confirmed:"VALIDATED"
+                    }
                  let   clients =[...state.client.clients]
                  const targetClient = clients.filter(client =>client.id == id)[0]
                  let   targetClientIndex =clients.indexOf(targetClient)

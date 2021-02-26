@@ -3,8 +3,9 @@ import {View,Text,StyleSheet} from 'react-native'
 import CategoriesSlider from './CategoriesSlider'
 import {connect} from 'react-redux'
 import Products from './Products/Products'
-import BackgroundImage from '../../Common/BackgroundImage'
 import Button from '../../Common/Button'
+import {colors} from '../../Common/Colors'
+import BackgroundImage from '../../Common/BackgroundImage'
 import  SwipeAbleProductDetails from './Products/SwipeAbleProductDetails'
 import SwipeAbleCancelOrder from './SwipeAbleCancelOrder'
 import { BackHandler ,Alert} from 'react-native';
@@ -28,7 +29,7 @@ const ClientDelivry=(props)=> {
 
     const {client,sector,orderId,scheduelId  } = route.params;
    
-    const {name,id}=client
+    const {name,objectif,id}=client
  
     useEffect(() => {
         navigation.setParams({ clientName: name });
@@ -53,6 +54,12 @@ const ClientDelivry=(props)=> {
         <View style={styles.tagParent} >
              <View style={styles.tag} >
                  <Text style={styles.clientName}>{name}</Text>
+                 <Text style={{
+                     ...styles.clientName,
+                     color:objectif.progress>=0?colors.GREEN:colors.RED
+                     }}>
+                         {objectif.progress}DH
+                </Text>
              </View>
              <Button color="RED"  clickHandler={( )=>{
                 setIsCancelPanelActive(true)
