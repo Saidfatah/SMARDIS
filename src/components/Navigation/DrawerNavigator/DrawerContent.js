@@ -27,6 +27,9 @@ const DrawerContent=(props)=> {
             if(icon == "clipboard-check-outline"){
                  return <Icon name="clipboard-check-outline" color={colors.BLACK}style={{margin:0}}size={20}/>
             }
+            if(icon == "file-pdf"){
+                 return <Icon name="file-pdf" color={colors.BLACK}style={{margin:0}}size={20}/>
+            }
             if(icon == "person-add-sharp"){
              return <IonIcon  name="person-add-sharp"  color={colors.BLACK} style={{margin:0}} size={20}/>
             }
@@ -175,6 +178,12 @@ const DrawerContent=(props)=> {
                              route={"ADMINaddClient"}
                              icon="person-add-sharp"
                              label="Ajouter Un Client"
+                             hasBadge={false}
+                           />
+                           <Link 
+                             route={"DISTRIBUTORcatalogue"}
+                             icon="file-pdf"
+                             label="Catalogue"
                              hasBadge={false}
                            />
                        

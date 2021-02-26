@@ -1,9 +1,8 @@
 import React,{useEffect,useState} from 'react'
 import { connect } from 'react-redux'
-import {View,Text,StyleSheet,Dimensions} from 'react-native'
 import {colors} from '../../Common/Colors'
-import Loading from '../../Common/Loading'
-import Pdf from 'react-native-pdf';
+import PDFScreen from '../../Common/PDFScreen'
+ 
 import PDF   from 'rn-pdf-generator';
  
 
@@ -118,34 +117,7 @@ const BillTable=({selectedBill})=> {
       return ()=>mounted=false
     }, [selectedBill])
 
-    if(uri === '')
-    return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
-        <Loading spacing={50} />   
-    </View>
-  
-
-    return (
-        <View style={styles.container}>
-            <Pdf
-                enablePaging={true}
-                horizontal={true}
-                enableAnnotationRendering={true}
-                activityIndicator={true}
-                source={{uri:uri}}
-                onLoadComplete={(numberOfPages,filePath)=>{
-                    console.log(`number of pages: ${numberOfPages}`);
-                }}
-                onPageChanged={(page,numberOfPages)=>{
-                    console.log(`current page: ${page}`);
-                }}
-                onError={(error)=>{
-                    console.log(error);
-                }}
-                style={styles.pdf}/>
-        </View>
-    )
- 
-
+    return <PDFScreen uri={uri} />
 }
 
 export default connect(
@@ -155,15 +127,4 @@ export default connect(
     null
 )(BillTable)
 
-const styles = StyleSheet.create({
-  container: {
-      flex: 1,
-      backgroundColor:'#333'
-    },
-    pdf: {
-      backgroundColor:'#333',
-      width:Dimensions.get('window').width,
-      height:'100%',
-  }
-});
-
+ 
