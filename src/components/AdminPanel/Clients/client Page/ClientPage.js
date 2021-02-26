@@ -22,6 +22,7 @@ export const ClientPage = ({navigation,route,sectors,resetIsDone,done_removing_c
     if(sectors.length<1) return <Text>loading</Text>
 
     const {phone,city,ref,name,address,objectif,price,sectorId}=client
+    const {initial,progress}=objectif
     return (
         <ScrollView contentContainerStyle={{ display:'flex',  flexGrow:1}}  style={styles.clientPage} >
             <View style={styles.HFlex} >
@@ -45,7 +46,13 @@ export const ClientPage = ({navigation,route,sectors,resetIsDone,done_removing_c
             <View style={styles.HFlex} >
                     <Label label="Objectif du client :"  mga={16} />
                     <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
-                         <Badge  status={"success"}  value={ objectif+".00 DH"} />
+                         <Badge  status={"success"}  value={ initial+" DH"} />
+                    </View>
+            </View>
+            <View style={styles.HFlex} >
+                    <Label label="Objectif progress :"  mga={16} />
+                    <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
+                         <Badge  status={"success"}  value={ progress+" DH"} />
                     </View>
             </View>
             <View style={styles.HFlex} >
