@@ -10,7 +10,12 @@ const SwipeAbleProductDetails=({scheduelId,selectedProduct,sector,isPanelActive,
     const [selectedProductPanel, setSelectedProductPanel] = useState(null)
      
     useEffect(() => {
-      setSelectedProductPanel(selectedProduct)
+      if(selectedProduct  ){
+         if(selectedProduct.subs && selectedProduct.subs.length > 0){
+           return setSelectedProductPanel(selectedProduct.subs[0])
+         } 
+         setSelectedProductPanel(selectedProduct)
+      }
     }, [selectedProduct])
     
     const closePanel = () => {
@@ -44,6 +49,7 @@ const SwipeAbleProductDetails=({scheduelId,selectedProduct,sector,isPanelActive,
                data={selectedProduct.subs.map(p=>({value : p, label :p.name}))} 
                keyExtractor={item=>item.value.id }
                setSelected={setSelectedProductPanel} 
+               defaultValue={selectedProductPanel && selectedProductPanel.name}
                selected={selectedProductPanel}
               />
               :null

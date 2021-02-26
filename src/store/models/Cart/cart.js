@@ -221,8 +221,32 @@ const model ={
                         status: "VALIDATED",
                         sale_date : firestore.Timestamp.fromDate(new Date()), 
                         sale_hour : firestore.Timestamp.fromDate(new Date()),
-                  })
+                   })
                   
+                 //check if clients has reached their objectif 
+                 const {objectif,id}=client
+                 const {last_mounth,progress,initial}= objectif
+                 const currentMount= new Date().getMonth()
+                 console.log({currentMount,last_mounth,id})
+                 if(currentMount == last_mounth){
+                    if((progress + total)  >= initial){
+                         console.log("progress accomplished")
+                         const newPrice=  'price'+(parseInt(client.price.split('e')[1]) +1)
+                         //update client's price 
+                         await firestore().collection('clients').doc(id).update({ 
+                             priceType: newPrice
+                         })
+                    }else{
+                         //update clients' objectif progress
+                         console.log('update progress')
+                         await firestore().collection('clients').doc(id).update({objectif:{
+                             initial:initial ,
+                             progress: progress + total,
+                             last_mounth : new Date().getMonth()
+                         }})
+                    }
+                 }
+
                  //increment billref counter in fristore , we waited until here to make sure the billRef get incremented
                  //only if teh orders validation was successfull
                  const increment = firestore.FieldValue.increment(1)
@@ -253,11 +277,7 @@ const model ={
                     message:`La command  est valider avec success `
                 })
                 dispatch.cart.validatedGuestOrder()
-                
-                //set async storage
                 deleteCartFromASyncStorage()
-
-                //navigate to valoidated orders screen
                 navigation.navigate('DISTRIBUTORDashBoard')
                 }
             } catch (error) {

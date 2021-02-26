@@ -331,33 +331,26 @@ const model ={
                 
                 
 
-                fetchOrdersReponse.onSnapshot(res=>{
+                fetchOrdersReponse.onSnapshot(async res=>{
                     if(res.docs.length){
                         const docs= res.docs
 
                         //chececk for clients objectifs 
                         //reset their objectif progress if its the beggning of the month 
-                        //if they have achieved their objectif reward them 
-                        //check if last_mounth != current month 
-                        //if so , then wecheckif progress is >= initial
-                        //f so then the client has achived the goal , andwe should update their price to price.split('e')[1]+1
-                        // price1 =>arr= ["price","1"] => parseInt(arr[1]) +1 => is the new price
                         const currentMount=new Date().getMonth()
                         const refrencedClients=docs.map(doc=>({...doc.data().client}))
-                        refrencedClients.forEach(client=>{
-                            const {initial,last_mounth,progress}=client.objectif
+
+                        refrencedClients.forEach(async client=>{
+                            const {objectif,id} = client
+                            const {initial,last_mounth} = objectif
+
                             if(currentMount > last_mounth ){
-                                 console.log("reset objectif progress")
-                                 console.log( parseInt(client.price.split('x')[1]))
-                                 
-                            }else if(currentMount== last_mounth){
-                                if(progress >= initial){
-                                     console.log("progress accomplished")
-                                     const newPrice= parseInt(client.price.split('x')[1]) +1
-                                     //update client's price 
-                                }else{
-                                    console.log("still behind")
-                                }
+                                console.log("reset objectif progress")
+                                await firestore().collection('clients').doc(id).update({objectif:{
+                                   initial:initial ,
+                                   progress: -initial,
+                                   last_mounth : new Date().getMonth()
+                                }})
                             }
                         })
 
