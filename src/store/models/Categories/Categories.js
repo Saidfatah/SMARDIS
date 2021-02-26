@@ -13,7 +13,7 @@ const model ={
         selectedCategoryProducts :[],
         selectedCategory : "0hxbmFxnEtU05QcWbaxv" , 
         categoriesCount  : 0,
-
+        isSelectedCategorySpecial:false,
         done_fetching_categories : false,
         categories_first_fetch : false,
         category_has_products : false,
@@ -23,12 +23,13 @@ const model ={
         category_add_error:null,
     },
     reducers:{
-        setedSelectedCategoryProducts : (state,{products,category_has_products,last_selected_Category,selectedCategory})=>({
+        setedSelectedCategoryProducts : (state,{isSelectedCategorySpecial,products,category_has_products,last_selected_Category,selectedCategory})=>({
             ...state,
             selectedCategoryProducts :products,
             category_has_products,
             last_selected_Category,
             selectedCategory :last_selected_Category ,
+            isSelectedCategorySpecial
         }),
         selectedCategory : (state,last_selected_Category)=>({
             ...state,
@@ -117,14 +118,15 @@ const model ={
                      dispatch.categories.setedSelectedCategoryProducts({
                          products:categoryProducts,
                          category_has_products:true,
-                         last_selected_Category : selectedCategory
+                         last_selected_Category : selectedCategory,
+                         isSelectedCategorySpecial:categoryIsSpecial
                         })
                  }else{
                      dispatch.categories.setedSelectedCategoryProducts({
                          products:[],
                          category_has_products:false,
-                         last_selected_Category : selectedCategory
-
+                         last_selected_Category : selectedCategory,
+                         isSelectedCategorySpecial:categoryIsSpecial
                         })
                  }
                 

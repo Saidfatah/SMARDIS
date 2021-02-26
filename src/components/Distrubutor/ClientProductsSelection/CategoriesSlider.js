@@ -33,9 +33,17 @@ const CategoriesSlider=({categories,done_fetching_categories,selectedCategory,se
              snapToInterval={IMAGE_HEIGHT}
              showsHorizontalScrollIndicator={false}
              horizontal={true}
-             data   = {categories.filter(category=>category.type =="MAIN")}
+             data   = {categories
+                .filter(category=>category.type =="MAIN")
+                .sort((a, b)=>{
+                    if(a.isSpecial < b.isSpecial) { return -1; }
+                    if(a.isSpecial > b.isSpecial) { return 1; }
+                    return 0;
+                })
+                }
              style  = {{...styles.list}}
              contentContainerStyle = {props =>(styles.flatList)}
+             ListFooterComponent={()=><View style={{marginLeft:20,marginRight:20}} ></View>}
              showsVerticalScrollIndicator={false}
              renderItem   = {({ item }) =><CategoryItem category={item} {...{selectSubCategory,selectedCategory,selectCategory}} />}
              keyExtractor = {(item, index) => index.toString()}

@@ -306,7 +306,7 @@ const model ={
 
                 const currentDistrubutorId = state.auth.distrubutorId
                 
-
+                console.log({currentDistrubutorId})
                 const fetchOrdersReponse = await firestore()
                       .collection('orders')
                       .where('created_at','>',yesterday)

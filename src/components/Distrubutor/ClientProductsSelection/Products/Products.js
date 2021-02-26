@@ -4,27 +4,42 @@ import ProductItem from './ProductItem'
 import _ from 'lodash'
 
 
-const Products=({selectedCategoryProducts,setIsPanelActive,setselectedProduct,client,selectedCategorySubCategories})=> {
+const Products=({isSelectedCategorySpecial,selectedCategoryProducts,setIsPanelActive,setselectedProduct,client,selectedCategorySubCategories})=> {
     const [productsList, setproductsList] = useState([])
   
     useEffect(() => {
         //filter out products with category defined 
         let productsListTemp=selectedCategoryProducts.filter(p=>p.subCategory == "NOT_DEFINED").map(p=>({...p,subs:[]}))
-       
-        const groupedDash= _.groupBy(selectedCategoryProducts.filter(p=>p.subCategory != "NOT_DEFINED"),"subCategory")
-   
-        const SectionListData = Object.keys(groupedDash).map(key=>({
-            title:selectedCategorySubCategories.filter(c=>c.id ==key)[0].name,
-            data:groupedDash[key] 
-        }))
-       
-
-        SectionListData.forEach((group,index)=>{
-            const firstProduct=group.data[0]
-            productsListTemp.push(({...firstProduct,name:group.title,subs:group.data}))
-        })
-
-        setproductsList(productsListTemp)
+        let  groupedDash=[]
+        if(isSelectedCategorySpecial){
+            setproductsList(selectedCategoryProducts.map(sp=>({
+                ...sp,
+                name:sp.name,
+                subs:[]
+            })))
+        }else{
+             groupedDash= _.groupBy(selectedCategoryProducts.filter(p=>p.subCategory != "NOT_DEFINED"),"subCategory")
+             const SectionListData = Object.keys(groupedDash).map(key=>({
+                title:isSelectedCategorySpecial ?"is special":selectedCategorySubCategories.filter(c=>c.id ==key)[0].name,
+                data:groupedDash[key] 
+            }))
+    
+            SectionListData.forEach((group,index)=>{
+                const firstProduct=group.data[0]
+                productsListTemp.push(({
+                    ...firstProduct,
+                    name:group.title,
+                    subs:group.data
+                }))
+            })
+    
+            setproductsList(productsListTemp)
+         }
+      
+        
+      
+     
+        
     }, [selectedCategoryProducts])
  
   
@@ -40,6 +55,7 @@ const Products=({selectedCategoryProducts,setIsPanelActive,setselectedProduct,cl
          contentContainerStyle = {props =>(styles.flatList)}
          showsVerticalScrollIndicator={false}
          renderItem   = {({ item,index }) =><ProductItem
+         index={index}
          product={item}  
          isSub={item.subs.length >0}
          client={client}

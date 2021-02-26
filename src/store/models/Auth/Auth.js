@@ -179,41 +179,48 @@ const model ={
                         //get user doc from async storage
                      
                          let userDoc
-                         const userjsonValue = await AsyncStorage.getItem('USER')
-                         userDoc = userjsonValue != null ? JSON.parse(userjsonValue) : null
-                         const userType      = await AsyncStorage.getItem('USER_TYPE')
+                         let userType
+                        //  const userjsonValue = await AsyncStorage.getItem('USER')
+                        //  userDoc   = userjsonValue != null ? JSON.parse(userjsonValue) : null
+                        //  userType  = userjsonValue != null ? await AsyncStorage.getItem('USER_TYPE') : null
                        
 
                         //if somehow user wasn't fetched from async storage let's refetch from firestore
-                        if(userDoc == undefined || userDoc == null){
+                   
                             const userDocResponse =await firestore().collection('users').where('user_id','==',user.uid)
+
                             userDocResponse.onSnapshot(res=>{
-                                
                                 const docs=res.docs
                                 userDoc={...docs[0].data(),id:docs[0].id}
+                                userType=docs[0].data().type
+
+                                console.log('try getting user doc ' )
+                                dispatch.auth.checkedAuthentication({
+                                    authenticated:true,
+                                    user:userDoc,
+                                    userType ,
+                                    savePassword  ,
+                                    savedPassword  ,
+                                    savedEmail
+                                })
+
+                               if(userType != null){
+                                   //check if user in approved by admin if not then we redirect them to waitingRoom 
+                                   if(userDoc != undefined && userDoc.confirmed =="PENDING") 
+                                      return navigation.navigate("WAIT_ROOM") 
+          
+                                   //redirect logged users that are approved to their appropriate Dashboard
+                                   if(userDoc != undefined){ 
+                                       console.log('shoudl redirect ')
+                                       console.log({userType})
+                                      return  navigation.navigate(userType+'DashBoard')
+                                   }
+                               }
                             })
-                        }
+              
                        
-                         dispatch.auth.checkedAuthentication({
-                             authenticated:true,
-                             user:userDoc,
-                             userType ,
-                             savePassword  ,
-                             savedPassword  ,
-                             savedEmail
-                         })
-
-                         //check if user in approved by admin if not then we redirect them to waitingRoom 
-                         if(userDoc != undefined && userDoc.confirmed =="PENDING") 
-                            return navigation.navigate("WAIT_ROOM") 
-
-                         //redirect logged users that are approved to their appropriate Dashboard
-                         if(userDoc != undefined){ 
-                             console.log('shoudl redirect ')
-                            return  navigation.navigate(userType+'DashBoard')
-                         }
-                         console.log('not user')
-                        
+                        console.log('not user')
+                         
                     }else{        
                          dispatch.auth.checkedAuthentication({
                              authenticated : false,
@@ -239,8 +246,9 @@ const model ={
                     ON_AUTH_STATE_CHANGED_UNSUBSCRIBE && ON_AUTH_STATE_CHANGED_UNSUBSCRIBE()
 
                     const loginResponse = await auth().signInWithEmailAndPassword(username,password)
-                  
+                    
                     if(loginResponse.user){
+                        console.log('login id :'+loginResponse.user.uid)
                         const userDocResponse= await firestore()
                                               .collection('users')
                                               .where('user_id','==',loginResponse.user.uid)
@@ -249,7 +257,7 @@ const model ={
                             if(res.docs.length){
                                 const userDoc= res.docs[0]
                                 const user =  {...userDoc.data(),id:userDoc.id}
-                                  console.log('got user doc')
+                              
                                 //pressist state to local storage  
                                 //so that when we open app next time we don't have to refetch from firestore
                                 await AsyncStorage.setItem('USER', JSON.stringify(user))

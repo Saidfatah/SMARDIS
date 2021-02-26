@@ -1,5 +1,5 @@
 
-import React,{useEffect,useState} from 'react'
+import React,{useEffect,useReducer} from 'react'
 import {View,Text,TextInput,StyleSheet,TouchableOpacity} from 'react-native'
 import BackgroundImage from '../../Common/BackgroundImage'
 import {colors} from '../../Common/Colors'
@@ -31,46 +31,77 @@ const ERRORS_INITIAL_CONFIG = {
     passwordNotMatch:false,
 }
 const REQUIRED_FIELD="ce champ est obligatoir !"
+const initialState=()=>({
+    errors :{...ERRORS_INITIAL_CONFIG},
+    canSubmit :true ,
+    type  :"DISTRUBUTOR",
+    passwordConfirm:"",
+    userInfo:{
+        ACCESS_CODE:"",
+        name:"",
+        email:"",
+        city:"",
+        phone :"" ,
+        password:"",   
+      },
+})
+const reducer=(state,action)=>{
+    switch (action.type) {
+        case "SET_CAN_SUBMIT":
+             return {...state,canSubmit:action.value}
+        break;
+        case "SET_TYPE":
+             return {...state,type:action.value}
+        break;
+        case "SET_USER_INFO":
+             return {...state,userInfo:action.value}
+        break;
+        case "SET_PASSWORD_CONFIRM":
+             return {...state,passwordConfirm:action.value}
+        break;
+        case "SET_ERRORS":
+             return {...state,errors:action.value}
+        break;
+     
+    
+        default: return state
+           
+    }
+}
 
 
 
 
 const  Register=({navigation,registerError,register})=> {
-    
-    const [errors, seterrors] = useState({...ERRORS_INITIAL_CONFIG})
-    const [canSubmit, setcanSubmit] = useState(true)
-    const [type, settype] = useState("DISTRUBUTOR")
-    const [passwordConfirm, setpasswordConfirm] = useState("")
-    const [userInfo, setuserInfo] = useState({
-      ACCESS_CODE:"",
-      name:"",
-      email:"",
-      city:"",
-      phone :"" ,
-      password:"",   
-    })
-
+    const [state, dispatch] = useReducer(reducer, initialState())
+     
+     const {
+        errors ,
+        canSubmit ,
+        type ,
+        passwordConfirm,
+        userInfo
+     }=state
 
     useEffect(() => {
-        console.log({registerError})
           if(registerError!= null){
               if(registerError.id == "NAME_USED")
-                 seterrors({...errors,name_USED:true})
+                 dispatch({id:'SET_ERRORS',value:{...errors,name_USED:true}})
               if(registerError.id == "EMAIL_USED")
-                 seterrors({...errors,emailUSED:true})
+                 dispatch({id:'SET_ERRORS',value:{...errors,emailUSED:true}})
               if(registerError.id == "EMAIL_INVALID")
-                 seterrors({...errors,emailINVALID:true})
+                 dispatch({id:'SET_ERRORS',value:{...errors,emailINVALID:true}})
               if(registerError.id == "ACCESS_CODE_INVALID")
-                 seterrors({...errors,ACCESS_CODE_INVALIDE:true})
+                 dispatch({id:'SET_ERRORS',value:{...errors,ACCESS_CODE_INVALIDE:true}})
               if(registerError.id == "UNKNOWN")
-                 seterrors({...errors,ACCESS_CODE_INVALIDE:true})
+                 dispatch({id:'SET_ERRORS',value:{...errors,UNKNOWN:true}})
         }
-        setcanSubmit(true)
+        dispatch({id:'SET_CAN_SUBMIT',value:true})
     }, [registerError ])
 
 
-    const resetErrors=()=>seterrors({...ERRORS_INITIAL_CONFIG})
-    const handelChange=input=>v=>{ setuserInfo({...userInfo,[input]:v}) }
+    const resetErrors=()=>dispatch({id:'SET_ERRORS',value:{...ERRORS_INITIAL_CONFIG}})
+    const handelChange=input=>v=>dispatch({id:'SET_USER_INFO',value:{...userInfo,[input]:v}}) 
     const validateFields =()=>{
         let errorsCount=0
         const {name,email,city,phone,password,ACCESS_CODE}=userInfo
@@ -120,7 +151,7 @@ const  Register=({navigation,registerError,register})=> {
 
 
         if(errorsCount >0) {
-           seterrors(errorsTemp)
+           dispatch({id:'SET_ERRORS',value:errorsTemp})
            return false
         }
         return true
@@ -130,7 +161,8 @@ const  Register=({navigation,registerError,register})=> {
         
         const obj= {...userInfo,type}
         register(obj)
-        setcanSubmit(false)
+        dispatch({id:'SET_CAN_SUBMIT',value:false})
+
     }
     
  
@@ -168,6 +200,11 @@ const  Register=({navigation,registerError,register})=> {
                            />
                       </View>
                       <View style={{width:'100%'}} >
+                            <Label label={labelsTexts.CITY}  color="#fff"  mga={4} />
+                            <Error trigger={errors.cityREQUIRED} error={REQUIRED_FIELD} />
+                            <CitiesDropDown {...{setcity:handelChange('city'),city}} />
+                      </View>
+                      <View style={{width:'100%'}} >
                           <Label label={labelsTexts.EMAIL}  color="#fff"  mga={4} />
                           <Error trigger={errors.emailUSED}     error={registerError && registerError.message} />
                           <Error trigger={errors.emailINVALID}  error={registerError && registerError.message} />
@@ -199,44 +236,39 @@ const  Register=({navigation,registerError,register})=> {
                             {label:"Vendeur",value:"DISTRUBUTOR"},
                             {label:"Admin",value:"ADMIN"},
                            ]} 
-                             setSelectedValue={(value)=>settype(value)}
+                             setSelectedValue={(value)=> dispatch({id:'SET_TYPE',value}) }
                           />
                        </View>
                       <View style={{width:'100%'}} >
-                     <Label label={labelsTexts.PASSWORD}  color="#fff" mga={4} />
-                     <Error trigger={errors.passwordREQUIRED}  error={REQUIRED_FIELD} />
-                     <TextInput style={{...styles.Input}}   
-                         placeholder={"Entrer le mote de passe"}   
-                         defaultValue={password} 
-                         textContentType="password"
-                         secureTextEntry={true}
-                         placeholderTextColor="#fff"
-                         keyboardType="default"
-                         onFocus={e=> resetErrors()}
-                         onChangeText={handelChange('password')} 
-                     />
-                 </View>
+                            <Label label={labelsTexts.PASSWORD}  color="#fff" mga={4} />
+                            <Error trigger={errors.passwordREQUIRED}  error={REQUIRED_FIELD} />
+                            <TextInput style={{...styles.Input}}   
+                                placeholder={"Entrer le mote de passe"}   
+                                defaultValue={password} 
+                                textContentType="password"
+                                secureTextEntry={true}
+                                placeholderTextColor="#fff"
+                                keyboardType="default"
+                                onFocus={e=> resetErrors()}
+                                onChangeText={handelChange('password')} 
+                            />
+                     </View>
                       <View style={{width:'100%'}} >
-                     <Label label={labelsTexts.PASSWORD_CONFIRM}  color="#fff" mga={4} />
-                     <Error trigger={errors.passwordConfirmREQUIRED}  error={REQUIRED_FIELD} />
-                     <Error trigger={errors.passwordNotMatch}  error={"le mot de passe ne correspond pas! "} />
-                     <TextInput style={{...styles.Input}}   
-                         placeholder={"Entrer le mote de passe"}   
-                         defaultValue={passwordConfirm} 
-                         textContentType="password"
-                         secureTextEntry={true}
-                         placeholderTextColor="#fff"
-                         keyboardType="default"
-                         onFocus={e=> resetErrors()}
-                         onChangeText={text=>setpasswordConfirm(text)} 
-                     />
-                 </View>
-                      <View style={{width:'100%'}} >
-                      <Label label={labelsTexts.CITY}  color="#fff"  mga={4} />
-                      <Error trigger={errors.cityREQUIRED} error={REQUIRED_FIELD} />
-                      <CitiesDropDown {...{setcity:handelChange('city'),city}} />
-
-                 </View>
+                             <Label label={labelsTexts.PASSWORD_CONFIRM}  color="#fff" mga={4} />
+                             <Error trigger={errors.passwordConfirmREQUIRED}  error={REQUIRED_FIELD} />
+                             <Error trigger={errors.passwordNotMatch}  error={"le mot de passe ne correspond pas! "} />
+                             <TextInput style={{...styles.Input}}   
+                                 placeholder={"Entrer le mote de passe"}   
+                                 defaultValue={passwordConfirm} 
+                                 textContentType="password"
+                                 secureTextEntry={true}
+                                 placeholderTextColor="#fff"
+                                 keyboardType="default"
+                                 onFocus={e=> resetErrors()}
+                                 onChangeText={value=>dispatch({id:'SET_PASSWORD_CONFIRM',value})} 
+                             />
+                     </View>
+                      
                      <Error trigger={errors.UNKNOWN} error={registerError && registerError.message} />
                       <Button 
                        xStyle={styles.BtnXstyle} 

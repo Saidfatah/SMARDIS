@@ -10,7 +10,17 @@ import SwipeAbleCancelOrder from './SwipeAbleCancelOrder'
 import { BackHandler ,Alert} from 'react-native';
 import { useFocusEffect } from "@react-navigation/native";
 
-const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetIsDone,  addCartItem,selectedCategorySubCategories,selectedCategoryProducts})=> {
+const ClientDelivry=(props)=> {
+    const { route,
+        isSelectedCategorySpecial,
+        navigation,
+        cancelOrder,
+        done_canceling_order,
+        resetIsDone,
+        addCartItem,
+        selectedCategorySubCategories,
+        selectedCategoryProducts
+    }=props
     const [isPanelActive, setIsPanelActive] = useState(false);
     const [isCancelPanelActive, setIsCancelPanelActive] = useState(false);
     const [selectedProduct, setselectedProduct] = useState(selectedCategoryProducts[0]);
@@ -52,7 +62,7 @@ const ClientDelivry=({ route, navigation,cancelOrder,done_canceling_order,resetI
         </View>
         <View style={styles.productsPanel} >
              <CategoriesSlider  {...{navigation}} />
-             <Products {...{setIsPanelActive,setselectedProduct,selectedCategoryProducts,selectedCategorySubCategories,client}} />
+             <Products {...{isSelectedCategorySpecial,setIsPanelActive,setselectedProduct,selectedCategoryProducts,selectedCategorySubCategories,client}} />
         </View>
              <SwipeAbleProductDetails {...{
                  scheduelId,
@@ -83,6 +93,7 @@ export default connect(
         selectedCategoryProducts :  state.categories.selectedCategoryProducts,
         selectedCategorySubCategories :  state.categories.selectedCategorySubCategories,
         done_canceling_order :  state.categories.done_canceling_order,
+        isSelectedCategorySpecial :  state.categories.isSelectedCategorySpecial,
     }),
     dispatch=>({
         addCartItem : dispatch.cart.addCartItem,
