@@ -1,0 +1,75 @@
+import firestore from '@react-native-firebase/firestore'
+
+const today = new Date()
+const tomorrowJs = new Date(today)
+tomorrowJs.setHours(23,59,59,999);
+ 
+
+const yestradyJs = new Date(today)
+yestradyJs.setDate(yestradyJs.getDate() - 1)
+
+
+yestradyJs.setDate(yestradyJs.getDate() +7)
+
+const yesterydayJsDstrubutor = new Date(today)
+yesterydayJsDstrubutor.setDate(yesterydayJsDstrubutor.getDate() - 1)
+yesterydayJsDstrubutor.setHours(23,56,59,999);
+
+var yesterydayDstrubutor = firestore.Timestamp.fromDate(yesterydayJsDstrubutor);
+
+ 
+const ysterdayMidnight= new Date();
+ysterdayMidnight.setHours(0,0,0,0);
+var yesterday = firestore.Timestamp.fromDate(ysterdayMidnight);
+
+ 
+export default async  (type,state,dispatch)=>{
+    try {
+  
+       const  todays_validated_orders_first_fetch = state.scheduel.todays_validated_orders_first_fetch
+       if(todays_validated_orders_first_fetch) return 
+      
+       
+
+       let fetchOrdersReponse
+       
+       if(type=="ADMIN"){
+           fetchOrdersReponse = await firestore()
+           .collection('orders')
+           .where('sale_date', '>', yesterday)
+           .where('status','==','VALIDATED')
+           // .where('sale_date', '<', tomorrow)
+
+       }else{
+           const currentDistrubutorId = state.auth.distrubutorId
+          
+           fetchOrdersReponse = await firestore()
+                 .collection('orders')
+                 .where('distrubutorId','==',currentDistrubutorId)
+                 .where('status','==','VALIDATED')
+                 .where('sale_date', '>', yesterydayDstrubutor)
+                
+       }
+  
+      
+       fetchOrdersReponse.onSnapshot(res=>{
+           if(res.docs.length){
+               console.log('got validated orders')
+               const orders=res.docs.map(order=>({
+                   ...order.data(),
+                   id:order.id,
+                   sale_date:order.data().sale_date.toDate(),
+                   sale_hour:order.data().sale_hour.toDate(),
+               }))
+
+             return  dispatch.scheduel.fetchedTodaysValideOrders(orders)
+           }
+           dispatch.scheduel.fetchTodaysValideOrdersFAILED()
+       })
+        
+    } catch (error) {
+        console.log('\n-----fetchOrders-----')
+        console.log(error)
+        dispatch.scheduel.fetchTodaysValideOrdersFAILED()
+    }
+}

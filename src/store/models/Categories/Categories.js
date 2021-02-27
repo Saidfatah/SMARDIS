@@ -353,6 +353,7 @@ const model ={
         selectSubCategory(id,state){
             try {
                 const categories = state.categories.categories
+                console.log({id})
                 const selectedCategorySubCategories = categories.filter(c=> c.type == "SUB" && c.parent.id == id  )
                 if(selectedCategorySubCategories.length>0){
                     console.log({selectedCategorySubCategories})
