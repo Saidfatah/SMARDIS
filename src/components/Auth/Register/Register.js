@@ -71,17 +71,16 @@ const reducer=(state,action)=>{
 
 
 
-
 const  Register=({navigation,registerError,register})=> {
     const [state, dispatch] = useReducer(reducer, initialState())
      
-     const {
+    const {
         errors ,
         canSubmit ,
         type ,
         passwordConfirm,
         userInfo
-     }=state
+    }=state
 
     useEffect(() => {
           if(registerError!= null){
