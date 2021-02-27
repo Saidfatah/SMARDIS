@@ -219,14 +219,14 @@ export const AddCategory = (props) => {
         style={styles.container} >  
         <View>
             <View>
-                <Label label="Type"  mga={16} />
+                <Label label="Titre"  mga={16} />
                 <Error trigger={errors.nameREQUIRED} error={ERRORS_MESSAGES[0].message} />
                 <TextInput style={styles.Input}   
                     placeholder={"entrer le titre  du category"}   
                     defaultValue={name} 
                     onFocus={e=> resetErrors()}
                     keyboardType="default"
-                    onChangeText={value=> dispatch({type:'SET_NAME',value}) } 
+                    onChangeText={value=> dispatch({type:'SET_NAME',value:value.trim()}) } 
                 />
             </View>
        

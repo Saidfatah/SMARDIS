@@ -1,13 +1,9 @@
 import firestore from '@react-native-firebase/firestore'
 
 const today = new Date()
-const tomorrowJs = new Date(today)
-tomorrowJs.setHours(23,59,59,999);
  
-
 const yestradyJs = new Date(today)
 yestradyJs.setDate(yestradyJs.getDate() - 1)
-
 
 yestradyJs.setDate(yestradyJs.getDate() +7)
 
@@ -32,23 +28,22 @@ export default async  (type,state,dispatch)=>{
        
 
        let fetchOrdersReponse
-       
+        
        if(type=="ADMIN"){
            fetchOrdersReponse = await firestore()
            .collection('orders')
            .where('sale_date', '>', yesterday)
            .where('status','==','VALIDATED')
            // .where('sale_date', '<', tomorrow)
-
+          console.log('fetch validated orders admin')
        }else{
            const currentDistrubutorId = state.auth.distrubutorId
           
            fetchOrdersReponse = await firestore()
-                 .collection('orders')
-                 .where('distrubutorId','==',currentDistrubutorId)
-                 .where('status','==','VALIDATED')
-                 .where('sale_date', '>', yesterydayDstrubutor)
-                
+           .collection('orders')
+           .where('distrubutorId','==',currentDistrubutorId)
+           .where('status','==','VALIDATED')
+           .where('sale_date', '>', yesterydayDstrubutor)
        }
   
       

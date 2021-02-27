@@ -250,7 +250,7 @@ export const AddProduct = (props) => {
                         defaultValue={name} 
                         keyboardType="default"
                         onFocus={e=> resetErrors()}
-                        onChangeText={text=>handelChange('name')(text)} 
+                        onChangeText={text=>handelChange('name')(text.trim())} 
                 /> 
             </View>
 
@@ -263,7 +263,7 @@ export const AddProduct = (props) => {
                         editable={!update}
                         keyboardType="default"
                         onFocus={e=> resetErrors()}
-                        onChangeText={text=>handelChange('ref')(text)} 
+                        onChangeText={text=>handelChange('ref')(text.trim())} 
                 /> 
             </View>
             
