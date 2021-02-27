@@ -145,7 +145,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
                               defaultValue={ref} 
                               onFocus={e=> resetErrors()}
                               keyboardType="default"
-                              onChangeText={text=>handelChange('ref')(text)} 
+                              onChangeText={text=>handelChange('ref')(text.trim())} 
                       />
                 </View>
                 :null
@@ -200,7 +200,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
                     defaultValue={name} 
                     keyboardType="default"
                     onFocus={e=> resetErrors()}
-                    onChangeText={text=>handelChange('name')(text)} 
+                    onChangeText={text=>handelChange('name')(text.trim())} 
             /> 
            
             {

@@ -10,53 +10,42 @@ import { Table, Row,Cell, TableWrapper } from 'react-native-table-component';
 //export excel from here 
 import { writeFile,mkdir,exists,ExternalDirectoryPath} from 'react-native-fs';
 const make_cols = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, (x,i) => XLSX.utils.encode_col(i));
-const output = str => str;
 const EDP = ExternalDirectoryPath + "/";
 import XLSX from 'xlsx';
-import RNFetchBlob from 'rn-fetch-blob'
 const Header= ["1","RéférenceFacetur","Date","RéférenceProduit","RéférenceClient","Déségnation","q.u","p.u"]
 
-import DocumentPicker from 'react-native-document-picker';
-
-async function getPathForFirebaseStorage(uri) {
-     const stat = await RNFetchBlob.fs.stat(uri)
-    return stat.path
-}
 
 export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_validated_orders}) => {
     const [data, setdata] = useState([ Header ])
     const [ExportError, setExportError] = useState(null)
     const [widthArr, setwidthArr] = useState([90,120,90,90,90,90,90,90])
     const [cols, setcols] = useState(["_",...make_cols("A1:H8")])
+    const [Lines, setLines] = useState([])
 
     useEffect(() => {
          if(valide_orders.length <0) return 
          let dataTemp = [Header]
          let columnCount=1
+         let linesTemp=[]
          valide_orders.forEach((order,index1)=>{
              const { distrubutor ,client ,sector,scheduleId ,total ,products,created_at,billRef,status,note,sale_date ,sale_hour}=order
              if(!products || products.length <1)return console.log('no orders')
-
+           
              products.forEach((product,index2)=>{
                   columnCount++
                   const {quantity,priceForClient,ref,name} =product
-                //   distrubutor.name,
-                //   distrubutor.ref,
-                //   sector.name,
-                  dataTemp.push([
-                      columnCount,
-                      billRef,
-                      sale_date.toLocaleDateString('en-US').toString().replace("/","").replace("/",""),
-                      ref,
-                      client.ref,
-                      name,
-                      quantity,
-                      priceForClient,
-                    ])
+                  const date = sale_date.toLocaleDateString('en-US').toString().replace("/","").replace("/","")
+                  dataTemp.push([columnCount,billRef,date,ref,client.ref,name,quantity,priceForClient ])
+
+                  const line=billRef.trim()+";"+date+";"+ref.trim()+";"+client.ref.trim()+";"+name.trim()+";"+quantity+";"+priceForClient+";"
+                  linesTemp.push(line)
              })
             
         })
-        if(dataTemp.length>1)  setdata([...dataTemp])
+        if(dataTemp.length>1){
+              setdata([...dataTemp])
+              setLines([...linesTemp])
+        }
     }, [valide_orders])
  
     if(valide_orders.length<1 && !done_fetching_todays_validated_orders) 
@@ -66,38 +55,35 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
 
     const exportFile =async ()=> {
 		try {
-            /* convert AOA back to worksheet */
-		const ws = XLSX.utils.aoa_to_sheet(data);
+        /* convert AOA back to worksheet */
+		// const ws = XLSX.utils.aoa_to_sheet(data);
 
 		/* build new workbook */
-		const wb = XLSX.utils.book_new();
-		XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
+		// const wb = XLSX.utils.book_new();
+		// XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
 
-		/* write file */
-		const wbout = XLSX.write(wb, {type:'binary', bookType:"xlsx"});
+		/* write file  xlsx*/
+		// const wbout = XLSX.write(wb, {type:'binary', bookType:"xlsx"});
 
-        //check if directory exsts 
-        //create sub directories for each client 
-        //CREATE DIRECTORY 
+       
+        // build sage import file 
+      
+
+        //check if directory exsts , CREATE DIRECTORY 
         const    AppFolder      = 'Excels';
         const    DirectoryPath  = EDP+AppFolder;
-      
         const DirExists= await exists(DirectoryPath)
         if(!DirExists)  {
             await  mkdir(DirectoryPath);
         }
 
-        // //WIRTE TO ExternalStorageDirectoryPath 
         const newDate=new Date().toLocaleDateString('en','USA').replace("/",'_').replace("/",'_')
-
-	    // const filetoESDP = DirectoryPath+"/"+newDate+".xlsx";
-	    // const writeToExternalStorageResponse= await writeFile(filetoESDP, output(wbout), 'ascii')
-
 	    const filetoEDP = DirectoryPath+"/"+newDate+".xlsx";
-	    const writeToExternalDirectoryResponse= await writeFile(filetoEDP, output(wbout), 'ascii')
 
-	    // const filetoDDP = DirectoryPath+"/"+newDate+".xlsx";
-	    // const writeToDocumentDirectory = await writeFile(filetoDDP, output(wbout), 'ascii')
+        const text=Lines.reduce((a,c)=>a+"\n"+c,"\n")
+  
+	    const writeToExternalDirectoryResponse= await writeFile(filetoEDP,  text , 'utf8')
+
         show({
             type:'success',
             title:'Excel exportation ',
