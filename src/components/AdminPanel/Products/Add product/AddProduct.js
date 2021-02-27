@@ -7,7 +7,7 @@ import Error from '../../../Common/Error'
 import ImagePicker from '../../../Common/ImagePicker'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
- 
+import { InteractionManager } from 'react-native';
 import CategorySelection from './CategorySelection'
 import AutoCompleteCities from './AutoCompleteCities'
 
@@ -117,39 +117,50 @@ export const AddProduct = (props) => {
     }=state
      
     useEffect(() => {
-        if(done_adding_product){
-             dispatch({type:"SET_CAN_SUBMIT",value:true})
-             resetIsDone("done_adding_product")
-        }
+        InteractionManager.runAfterInteractions(() => {
+            if(done_adding_product){
+                 dispatch({type:"SET_CAN_SUBMIT",value:true})
+                 resetIsDone("done_adding_product")
+            }
+        });
     }, [done_adding_product])
     useEffect(() => {
-        if(route.params){
-            if(route.params.update == undefined) return 
-            const {product}=route.params
-            const {id,name,ref,image,stock,price1,regions, price2,price3,price4,category}=product
-            console.log({ price2,price3,price4})
-            navigation.setParams({PRODUCT_NAME: name})
-            
-            dispatch({type:"SET_SELECTED_CITIES",value:regions})
-            dispatch({type:"SET_UPDATE",value:true})
-            dispatch({type:"SET_PRODUCT_DATA",value:{ ...productData,name,ref,image,stock,price1,price2,price3,price4}})
-            dispatch({type:"SET_PRODUCT_TO_BE_UPDATED",value:id})
-            dispatch({type:"SET_SELECTED_CATEGORY",value:categories.filter(c=> category.indexOf(c.id)>-1 )[0]})
-        } 
+        InteractionManager.runAfterInteractions(() => {
+            if(route.params){
+                if(route.params.update == undefined) return 
+                const {product}=route.params
+                const {id,name,ref,image,stock,price1,regions, price2,price3,price4,category}=product
+                console.log({ price2,price3,price4})
+                navigation.setParams({PRODUCT_NAME: name})
+                
+                dispatch({type:"SET_SELECTED_CITIES",value:regions})
+                dispatch({type:"SET_UPDATE",value:true})
+                dispatch({type:"SET_PRODUCT_DATA",value:{ ...productData,name,ref,image,stock,price1,price2,price3,price4}})
+                dispatch({type:"SET_PRODUCT_TO_BE_UPDATED",value:id})
+                dispatch({type:"SET_SELECTED_CATEGORY",value:categories.filter(c=> category.indexOf(c.id)>-1 )[0]})
+            } 
+        });
+   
     }, [])
     useEffect(() => {
-        console.log({product_adding_error})
-        if(product_adding_error){
-            dispatch({type:"SET_ERRORS",value:{...errors,addERROR:true}})
-            resetIsDone("product_adding_error") 
-        }
-        dispatch({type:"SET_CAN_SUBMIT",value:true})
-
+        InteractionManager.runAfterInteractions(() => {
+        
+            console.log({product_adding_error})
+            if(product_adding_error){
+                dispatch({type:"SET_ERRORS",value:{...errors,addERROR:true}})
+                resetIsDone("product_adding_error") 
+            }
+            dispatch({type:"SET_CAN_SUBMIT",value:true})
+        });
+   
     }, [product_adding_error])
     useEffect(() => {
-        if(selectedCategory != undefined){
-            selectSubCategory(selectedCategory.id)
-        }
+        InteractionManager.runAfterInteractions(() => {
+            if(selectedCategory != undefined){
+                selectSubCategory(selectedCategory.id)
+            }
+        });
+       
     }, [selectedCategory])
     
 

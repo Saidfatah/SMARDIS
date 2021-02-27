@@ -1,5 +1,5 @@
 import React,{useEffect,useCallback} from 'react'
-import { ScrollView} from 'react-native'
+import { ScrollView,InteractionManager} from 'react-native'
 import { connect } from 'react-redux'
 import { List } from 'react-native-paper';
 import DashBoardItem from './DashBoardItem'
@@ -36,23 +36,27 @@ const  AdminDashBoard=(props)=> {
     }=props
 
     useEffect(() => {
-           if(user.type =="DISTRUBUTOR") 
-               navigation.navigate('DISTRIBUTORDashBoard')
-          fetchOrders()
-          fetchTodaysValideOrders("ADMIN")
-          fetchProducts()
-          fetchAdmins()
-          fetchWaitingList()
-          fetchCategories()
-          fetchSectors()
-          fetchDistrubutors()
-          fetchClients()
-          fetchWaitingClients()
-          fetchScheduels()
-          fetchTodaysSales()
+        InteractionManager.runAfterInteractions(() => {
+                 if(user.type =="DISTRUBUTOR") 
+                     navigation.navigate('DISTRIBUTORDashBoard')
+                fetchOrders()
+                fetchTodaysValideOrders("ADMIN")
+                fetchProducts()
+                fetchAdmins()
+                fetchWaitingList()
+                fetchCategories()
+                fetchSectors()
+                fetchDistrubutors()
+                fetchClients()
+                fetchWaitingClients()
+                fetchScheduels()
+                fetchTodaysSales()
+       });
     }, [])
     useEffect(() => {
-          if(user)  navigation.setParams({ADMIN_NAME:user.name})
+        InteractionManager.runAfterInteractions(() => {
+            if(user)  navigation.setParams({ADMIN_NAME:user.name})
+       });
     }, [user])
 
 
