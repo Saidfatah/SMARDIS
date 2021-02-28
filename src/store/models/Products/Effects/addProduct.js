@@ -2,9 +2,10 @@ import firestore from '@react-native-firebase/firestore'
 import {productModel} from '../Schemas/productModel'
 import Storage from '@react-native-firebase/storage'
 
+const DISCOUNT_CATEGORY="1111POROMOTION1111"
 export default async  (args,state,dispatch)=>{
     try {
-       const {navigation,name,regions,category,image,ref,price1,price2,price3,price4,subCategory}=args
+       const {navigation,name,regions,category,image,ref,price1,price2,price3,price4,subCategory,discount}=args
        let products = [...state.products.products]
    
        //check if ref is already used 
@@ -21,7 +22,6 @@ export default async  (args,state,dispatch)=>{
        if((await checkNameResponse).docs.length) throw Error('NAME_USED')      
        
        //uploadImage then get the uri and use it in 
-       
        let imageUri = image
        if(imageUri != "NO_IMAGE")
        {
@@ -43,7 +43,15 @@ export default async  (args,state,dispatch)=>{
        }
 
        //add to firestore
-       const newProduct = productModel(name,category,imageUri,price1,ref,price2,price3,price4,subCategory,regions)
+       const CATEGORY=[category]
+       const DISCOUNT= discount>0? (discount/100) : 1
+    
+       //f a discount is applied we add product to discounts category
+       if(DISCOUNT < 1){
+             CATEGORY.push(DISCOUNT_CATEGORY)
+       } 
+
+       const newProduct = productModel(name,category,imageUri,price1,ref,price2,price3,price4,subCategory,regions,DISCOUNT)
 
        const addResponse= firestore()
                          .collection('products')

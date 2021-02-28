@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import {View,Text,TouchableOpacity,StyleSheet} from 'react-native'
 import Label from '../../../Common/Label'
 import Error from '../../../Common/Error'
@@ -16,10 +16,16 @@ const CategorySelection=(props)=>{
         selectedSubCategory,
         selectedCategorySubCategories,
         categories,
-        hasSubCategory
+        hasSubCategory,
+        selectSubCategory
     }=props
 
-    console.log(selectedCategorySubCategories)
+    useEffect(() => {
+        if(selectedCategory != undefined){
+            selectSubCategory(selectedCategory.id)
+        }
+}, [selectedCategory])
+ 
     return <View>
     <Label label="Category" mga={16} />
     <Error trigger={errors.categoryREQUIRED} error={ERRORS_MESSAGES[0].message} />

@@ -8,8 +8,13 @@ import {colors} from '../../../Common/Colors'
 const ProductAddToCart =({scheduelId,setIsPanelActive,selectedProduct,guest,addCartItem,sector,client})=> {
     const [quantity, setquantity] = useState(1)
     const onChangeHandler =(text) =>setquantity(parseInt(text))
-    const {price1} = selectedProduct
-    const priceForClient =selectedProduct[client.price.replace('x','ce')] || price1
+    const {price1,discount} = selectedProduct
+
+    let  priceForClient =(selectedProduct[client.price.replace('x','ce')] || price1)
+    //if discount <1 it means the product has discount 
+    if(discount < 1){
+       priceForClient= priceForClient - (priceForClient *discount)
+    }
 
     return (
         <View styles={styles.form}>

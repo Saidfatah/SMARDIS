@@ -34,10 +34,11 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
              products.forEach((product,index2)=>{
                   columnCount++
                   const {quantity,priceForClient,ref,name} =product
-                  const date = sale_date.toLocaleDateString('en-US').toString().replace("/","").replace("/","")
+                  const date = sale_date.toLocaleDateString('en-US').split('/').reverse().reduce((a,c)=>a+c,"")
                   dataTemp.push([columnCount,billRef,date,ref,client.ref,name,quantity,priceForClient ])
 
                   const line=billRef.trim()+";"+date+";"+ref.trim()+";"+client.ref.trim()+";"+name.trim()+";"+quantity+";"+priceForClient+";"
+                  console.log({date})
                   linesTemp.push(line)
              })
             

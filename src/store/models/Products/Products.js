@@ -74,6 +74,10 @@ const model ={
             ...state,
             [field]:false
         }),
+        resetedError:  (state,field)=>({
+            ...state,
+            [field]:null
+        }),
     },
     effects: (dispatch)=>({
         fetchProducts     : (args,state)=>fetchProducts(args,state,dispatch),
@@ -81,7 +85,8 @@ const model ={
         addProduct        : (args,state)=>addProduct(args,state,dispatch) ,
         updateProduct     : (args,state)=>updateProduct(args,state,dispatch) ,
         removeProduct     : (args,state)=>removeProduct(args,state,dispatch) , 
-        resetIsDone(field,state){ dispatch.products.reseted(field)}
+        resetIsDone(field,state){ dispatch.products.reseted(field)},
+        resetError(field,state){ dispatch.products.resetedError(field)},
     })
 }
 export default model
