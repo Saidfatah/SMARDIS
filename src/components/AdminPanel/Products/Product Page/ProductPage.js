@@ -13,9 +13,6 @@ const ProductPage=({navigation,route,removeProduct,done_removing_product,resetIs
     useEffect(() => {
         done_removing_product == true && setcanRemove(true) && resetIsDone("done_removing_product")
     }, [done_removing_product])
-    useEffect(() => {
-        navigation.setParams({PRODUCT_NAME:"product name"})
-    }, [])
 
     if(product == undefined) return <Text>Error</Text>
 

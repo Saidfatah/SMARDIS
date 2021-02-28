@@ -1,21 +1,13 @@
-import React,{useState,useEffect} from 'react'
-import {TouchableOpacity,Text,View,StyleSheet,Image} from 'react-native'
-import Modal from './Modal'
-import Error from './Error'
+import React,{useState} from 'react'
+import {Text,View,StyleSheet,Image} from 'react-native'
 import Button from './Button'
 import Label from './Label'
-import {launchImageLibrary,launchCamera}  from 'react-native-image-picker'
+import {launchImageLibrary}  from 'react-native-image-picker'
 import { connect } from 'react-redux';
 
-const ERRORS_MESSAGES= [
-    {id:'REQUIRED',message:'ce champ est obligatoir'}
-]
-const ImagePicker=({setImage,title})=>{
-    const [cameraError, setcameraError] = useState(null)
+ 
+const ImagePicker=({setImage,title,image})=>{
     const [imageUri, setimageUri] = useState(null)
-    const [modalVisible, setModalVisible] = useState(false);
-
-
 
     const uploadImage =(selectedImage)=>{ 
           const uploadUri = Platform.OS === 'ios' 
@@ -24,7 +16,6 @@ const ImagePicker=({setImage,title})=>{
           setimageUri(selectedImage)
  
           setImage(uploadUri)  
-          setModalVisible(false)    
     }
     const addImageToList=r=>{
         if (r.didCancel) {
@@ -38,85 +29,49 @@ const ImagePicker=({setImage,title})=>{
         if(r.uri != null )uploadImage(r.uri)
     }
     const openGallery=e=>{
-       
         const options ={
-          title: 'Selectioner une image ',
-           
+           title: 'Selectioner une image ',
            mediaType: 'photo',
-          includeBase64: false,
-          maxHeight: 200,
-          maxWidth: 200,
+           includeBase64: false,
+           maxHeight: 200,
+           maxWidth: 200,
         }
         launchImageLibrary(options,addImageToList)
     }
-    const openCamera=e=>{
-          try {
-            launchCamera({noData:true,privateDirectory: true },addImageToList)
-          } catch (error) {
-              console.log(error)
-              setcameraError(error.message)
-          }
-    }
-
-    const ImagePickerButtons=()=>{
-        return <View>
-            <Error trigger={cameraError} error={cameraError && cameraError} />
-            <TouchableOpacity onPress={()=>openGallery()}>
-            <View style={styles.btn}>
-                 <Text>Ovrire le gallery</Text>
-            </View>
-        </TouchableOpacity>
-        {/* <TouchableOpacity onPress={()=>openCamera()}>
-            <View style={styles.btn}>
-                 <Text>Ovrire la camera</Text>
-            </View>
-        </TouchableOpacity> */}
-        </View>
-    }
     
- 
-    return <View>
+    return <View  >
             <Label label="Image" mga={16} />
             <Button
-              xStyle={{
-                  flex:1,
-                  margin:0,
-                  borderRadius:12,
-                  marginRight:16,
-                  display:"flex",
-                 flexDirection:"row",
-                 alignItems:'center',
-                 justifyContent:'space-between',
-                 borderColor:"#000",
-                 borderRadius:12,
-                 borderWidth:2
-                }} 
+              xStyle={styles.btnXstyle} 
               color={"WHITE"} 
               clickHandler={e=>{
-                  setModalVisible(true)
-                 
+                  openGallery()
                }} 
               >
                  <Text  style={styles.ButtonText}>{!imageUri?"Ajouter Une Image":"Changer l'image"}</Text>
                  {
-                 imageUri
-                 ? <Image source={{uri:imageUri}}  style={{width:50,height:50}} />
+                 imageUri || image 
+                 ? <Image 
+                     source={
+                         image
+                         ?(image != "NO_IMAGE"
+                            ?{uri:image}
+                            :require('../../images/noImage.jpg')
+                          )
+                        :(imageUri != null
+                            ?{uri:imageUri}
+                            :require('../../images/noImage.jpg')
+                         )
+                     }  
+                     style={{
+                         width:40,
+                         height:40,
+                        }} 
+                    />
                  :null
                 }
 
             </Button>
-        {
-            modalVisible
-            ?<Modal 
-            title={title}
-            modalVisible={modalVisible} 
-            setModalVisible={setModalVisible}
-            >
-                <ImagePickerButtons /> 
-                <Image source={{uri:imageUri}}  style={{width:50,height:50}} />     
-            </Modal>
-            :null
-        }
    </View>
 }
 
@@ -138,4 +93,17 @@ var styles = StyleSheet.create({
       justifyContent:'center',
       backgroundColor:'#fff'
   },
+  btnXstyle:{
+    margin:0,
+    borderRadius:12,
+    marginRight:16,
+    display:"flex",
+    flexDirection:"row",
+    alignItems:'center',
+    justifyContent:'space-between',
+    borderColor:"#000",
+    borderRadius:12,
+    borderWidth:2,
+    width:"100%"
+  }
  });

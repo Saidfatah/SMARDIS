@@ -5,7 +5,7 @@ import ProductInfo from '../../Distrubutor/ClientProductsSelection/Products/Prod
 import Loading from '../../Common/Loading'
 
 
-const  Products=({products,navigation,fetchMoreProducts,done_fetching_products,fetchProducts})=> {
+const  Products=({products,navigation,done_fetching_products,fetchProducts})=> {
 
     const handleLoadMore=()=>{
         // fetchMoreProducts()

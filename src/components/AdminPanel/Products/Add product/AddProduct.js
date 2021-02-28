@@ -1,8 +1,9 @@
-import React,{useEffect,useReducer,useState} from 'react'
-import {View,Text,TextInput,StyleSheet,TouchableOpacity} from 'react-native'
+import React,{useEffect,useReducer} from 'react'
+import {View,Text,TextInput,StyleSheet} from 'react-native'
 import { connect } from 'react-redux'
 import Label from '../../../Common/Label'
 import Button from '../../../Common/Button'
+import Loading from '../../../Common/Loading'
 import Error from '../../../Common/Error'
 import ImagePicker from '../../../Common/ImagePicker'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
@@ -10,8 +11,8 @@ import { colors } from '../../../Common/Colors'
 import { InteractionManager } from 'react-native';
 import CategorySelection from './CategorySelection'
 import AutoCompleteCities from './AutoCompleteCities'
-
-import NumericInput from 'react-native-numeric-input'
+import DiscountInput from './DiscountInput'
+import Prices from './Prices'
 
 
 const ERRORS_INITIAL_CONFIG = {
@@ -29,7 +30,7 @@ const ERRORS_INITIAL_CONFIG = {
     addERROR:false,
 }
 const ERRORS_MESSAGES= [
-    {type:'REQUIRED',message:'ce champ est obligatoir'}
+    {type:'REQUIRED',message:'ce champ est obligatoir'},
 ]
 const initialState=(categories,selectedCategorySubCategories)=>({
     errors:{...ERRORS_INITIAL_CONFIG},
@@ -37,9 +38,12 @@ const initialState=(categories,selectedCategorySubCategories)=>({
     canSubmit:true,
     hasSubCategory:false,
     productToBeUpdatedId: -1,
+    hasDiscount:false,
+    discount:0,
     selectedCategory:categories[0],
     selectedSubCategory:selectedCategorySubCategories[0],
     selectedCities:[],
+    add_error:null,
     productData:{
         name   : '',
         ref    : '',
@@ -59,6 +63,12 @@ const reducer=(state,action)=>{
         break;
         case "SET_UPDATE":
              return {...state,update:action.value}
+        break;
+        case "SET_DISCOUNT":
+             return {...state,discount:action.value}
+        break;
+        case "SET_HAS_DISCOUNT":
+             return {...state,hasDiscount:action.value}
         break;
         case "SET_PRODUCT_DATA":
              return {...state,productData:action.value}
@@ -81,13 +91,15 @@ const reducer=(state,action)=>{
         case "SET_ERRORS":
              return {...state,errors:action.value}
         break;
+        case "SET_ADD_ERROR":
+             return {...state,add_error:action.value}
+        break;
         default: return state
            
     }
 }
 
-
-
+ 
 
 export const AddProduct = (props) => {
     const {
@@ -100,7 +112,8 @@ export const AddProduct = (props) => {
         selectSubCategory,
         categories,
         done_adding_product,
-        resetIsDone
+        resetIsDone,
+        resetError
     }=props
     const [state, dispatch] = useReducer(reducer, initialState(categories,selectedCategorySubCategories))
    
@@ -113,55 +126,47 @@ export const AddProduct = (props) => {
         selectedCategory ,
         selectedSubCategory ,
         productData,
-        selectedCities
+        selectedCities,
+        discount,
+        hasDiscount,
+        add_error
     }=state
      
+ 
     useEffect(() => {
-        InteractionManager.runAfterInteractions(() => {
-            if(done_adding_product){
-                 dispatch({type:"SET_CAN_SUBMIT",value:true})
-                 resetIsDone("done_adding_product")
-            }
-        });
-    }, [done_adding_product])
-    useEffect(() => {
-        InteractionManager.runAfterInteractions(() => {
             if(route.params){
                 if(route.params.update == undefined) return 
                 const {product}=route.params
-                const {id,name,ref,image,stock,price1,regions, price2,price3,price4,category}=product
-                console.log({ price2,price3,price4})
+                const {id,name,ref,image,stock,price1,regions,subCategory,discount, price2,price3,price4,category}=product
                 navigation.setParams({PRODUCT_NAME: name})
                 
                 dispatch({type:"SET_SELECTED_CITIES",value:regions})
                 dispatch({type:"SET_UPDATE",value:true})
+                dispatch({type:"SET_DISCOUNT",value:discount<1 ? (discount*100):0})
                 dispatch({type:"SET_PRODUCT_DATA",value:{ ...productData,name,ref,image,stock,price1,price2,price3,price4}})
                 dispatch({type:"SET_PRODUCT_TO_BE_UPDATED",value:id})
-                dispatch({type:"SET_SELECTED_CATEGORY",value:categories.filter(c=> category.indexOf(c.id)>-1 )[0]})
-            } 
-        });
-   
+                // if(subCategory != "NOT_DEFINED"){
+                //     dispatch({value:true,type:"SET_HAS_SUBCATEGORY"})
+                // }
+                dispatch({
+                    type:"SET_SELECTED_CATEGORY",
+                    value:categories.filter(c=> category[0] == c.id   )[0]})
+                } 
     }, [])
     useEffect(() => {
-        InteractionManager.runAfterInteractions(() => {
-        
-            console.log({product_adding_error})
-            if(product_adding_error){
-                dispatch({type:"SET_ERRORS",value:{...errors,addERROR:true}})
-                resetIsDone("product_adding_error") 
+            if(done_adding_product){
+                 dispatch({type:"SET_CAN_SUBMIT",value:true})
+                 resetIsDone("done_adding_product")
+            }
+            if(product_adding_error != null  && product_adding_error != undefined){
+                console.log({product_adding_error})
+                dispatch({type:"SET_ADD_ERROR",value:{...product_adding_error}})
+                resetError("product_adding_error") 
             }
             dispatch({type:"SET_CAN_SUBMIT",value:true})
-        });
-   
-    }, [product_adding_error])
-    useEffect(() => {
-        InteractionManager.runAfterInteractions(() => {
-            if(selectedCategory != undefined){
-                selectSubCategory(selectedCategory.id)
-            }
-        });
-       
-    }, [selectedCategory])
+    }, [done_adding_product,product_adding_error])
+ 
+ 
     
 
     const resetErrors=()=>dispatch({type:"SET_ERRORS",value:{...ERRORS_INITIAL_CONFIG}})
@@ -220,13 +225,16 @@ export const AddProduct = (props) => {
         if(!validateFields()) return 
 
         dispatch({type:"SET_CAN_SUBMIT",value:false})
+        dispatch({type:"SET_ADD_ERROR",value:null})
         const productObj = {...productData,regions:selectedCities}
         productObj.category= selectedCategory.id
+        productObj.discount= discount
 
-        // productObj.activePrice= activePrice
-        if(selectedCategorySubCategories.length > 0 && hasSubCategory){
+ 
+        productObj.subCategory= "NOT_DEFINED"
+        if(selectedCategorySubCategories.length > 0 && hasSubCategory && selectedSubCategory){
          productObj.subCategory= selectedSubCategory.id
-        }
+        } 
      
         if(!update) return addProduct({...productObj,navigation})
         updateProduct({...productObj,id:productToBeUpdatedId,navigation})
@@ -235,8 +243,7 @@ export const AddProduct = (props) => {
     }
    
  
-    const {name,ref,price1, price2,price3,price4}=productData
- 
+    const {name,ref,price1, price2,price3,price4,image}=productData
     return  <KeyboardAwareScrollView   
     contentContainerStyle={{display:'flex',flexGrow:1 }}  
     style={styles.container} 
@@ -267,92 +274,16 @@ export const AddProduct = (props) => {
                 /> 
             </View>
             
-            <ImagePicker {...{title:'"image de produit"',setImage:handelChange('image'),errors}}/>
+            <ImagePicker {...{title:'"image de produit"',setImage:handelChange('image'),image}}/>
             <AutoCompleteCities {...{dispatch,selectedCities}}/>
-            <CategorySelection {...{dispatch,errors,ERRORS_MESSAGES,selectedCategory,selectedSubCategory,selectedCategorySubCategories,categories,hasSubCategory}} />
-            <View>
-               <View>
-                <Label label="Prix 1" mga={16}/>
-                <Error trigger={errors.price1REQUIRED} error={ERRORS_MESSAGES[0].message} />
-            
-                 <NumericInput 
-                  iconSize={30}
-                  minValue={0}
-                  validateOnBlur={true}
-                  step={1}
-                  valueType="real"
-                  value={ price1} 
-                  initValue={ price1} 
-                  containerStyle={{borderRadius:12,borderColor:colors.BLACK,}}
-                  inputStyle={{ borderColor:colors.BLACK,}}
-                  iconStyle={{ color:colors.BLACK, }}
-                  leftButtonBackgroundColor="transparent"
-                  rightButtonBackgroundColor="transparent"
-                  onChange={handelChange('price1')} 
-                  />
-            </View>
-               <View>
-                <Label label="Prix 2" mga={16}/>
-                <Error trigger={errors.price2REQUIRED} error={ERRORS_MESSAGES[0].message} />
-                <NumericInput 
-                  iconSize={30}
-                  minValue={0}
-                  step={1}
-                  valueType="real"
-                  value={price2}
-                  initValue={ price2}  
-                  containerStyle={{  borderRadius:12,  borderColor:colors.BLACK,
-                  }}
-                  inputStyle={{ borderColor:colors.BLACK,  }}
-                   iconStyle={{color:colors.BLACK, }}
-                  leftButtonBackgroundColor="transparent"
-                  rightButtonBackgroundColor="transparent"
-                  onChange={handelChange('price2')} 
-                  />
-            </View>
-               <View>
-                <Label label="Prix 3" mga={16}/>
-                <Error trigger={errors.price3REQUIRED} error={ERRORS_MESSAGES[0].message} />
-                <NumericInput 
-                  iconSize={30}
-                  minValue={0}
-                  step={1}
-                  valueType="real"
-                  value={price3} 
-                  initValue={price3} 
-                  containerStyle={{  borderRadius:12,  borderColor:colors.BLACK,
-                  }}
-                  inputStyle={{ borderColor:colors.BLACK,  }}
-                   iconStyle={{color:colors.BLACK, }}
-                  leftButtonBackgroundColor="transparent"
-                  rightButtonBackgroundColor="transparent"
-                  onChange={handelChange('price3')} 
-                  />
-            </View>
-               <View>
-                <Label label="Prix 4" mga={16}/>
-                <Error trigger={errors.price4REQUIRED} error={ERRORS_MESSAGES[0].message} />
-                <NumericInput 
-                  iconSize={30}
-                  minValue={0}
-                  step={1}
-                  valueType="real"
-                  value={price4} 
-                  initValue={price4} 
-                  containerStyle={{  borderRadius:12,  borderColor:colors.BLACK,
-                  }}
-                  inputStyle={{ borderColor:colors.BLACK,  }}
-                   iconStyle={{color:colors.BLACK, }}
-                  leftButtonBackgroundColor="transparent"
-                  rightButtonBackgroundColor="transparent"
-                  onChange={handelChange('price4')} 
-                  />
-            </View>
-             </View>
+            <CategorySelection {...{selectSubCategory,dispatch,errors,ERRORS_MESSAGES,selectedCategory,selectedSubCategory,selectedCategorySubCategories,categories,hasSubCategory}} />
+            <DiscountInput {...{discount,hasDiscount,dispatch}} />
+            <Prices {...{price1, price2,price3,price4,handelChange,errors,ERRORS_MESSAGES}} />
+          
         </View>
 
-        <View>
-             <Error trigger={errors.addERROR} error={product_adding_error && product_adding_error.message} />
+        <View style={{marginTop:8}}>
+             <Error trigger={add_error} error={add_error && add_error.message} />
              <View style={styles.btns} >
                   <Button
                    xStyle={{...styles.BtnXstyle,marginRight:16}} 
@@ -362,7 +293,12 @@ export const AddProduct = (props) => {
                    disabled={!canSubmit}
                    clickHandler={e=>dispatchAddProduct()} 
                    >
-                      <Text style={styles.ButtonText}>{update?"Modifier":"Enregistrer"}</Text>
+                       {
+                           canSubmit
+                           ? <Text style={styles.ButtonText}>{update?"Modifier":"Enregistrer"}</Text>
+                           :<Loading spacing={25} />
+                       }
+                     
                  </Button>
                   <Button
                    xStyle={styles.BtnXstyle} 
@@ -396,6 +332,7 @@ export default connect(
         resetIsDone: dispatch.products.resetIsDone,
         addProduct: dispatch.products.addProduct,
         selectSubCategory: dispatch.categories.selectSubCategory,
+        resetError: dispatch.products.resetError,
     })
 )(AddProduct)
 

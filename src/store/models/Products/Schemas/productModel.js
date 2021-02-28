@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore'
 
-export const  productModel = (name,category,image,price1,ref,price2,price3,price4,subCategory,regions,stock) =>({
+export const  productModel = (name,category,image,price1,ref,price2,price3,price4,subCategory,regions,discount,stock) =>({
     name ,
     ref:ref || 'P'+name+(new Date().getTime()),
     category :[category] || [],
@@ -12,6 +12,7 @@ export const  productModel = (name,category,image,price1,ref,price2,price3,price
     price4:price4 || 'NOT_DEFINED',
     stock : stock || 99 ,
     soldCount : 0 ,
+    discount:discount||1,
     regions:regions || [],
     created_at:firestore.Timestamp.fromDate(new Date())
 })
