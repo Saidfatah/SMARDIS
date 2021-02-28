@@ -20,6 +20,7 @@ export default async  (arg,state,dispatch)=>{
        fetchOrdersReponse.onSnapshot(res=>{
   
            if(res.docs.length){
+               console.log('got orders')
                const orders=res.docs.map(order=>({
                    ...order.data(),
                    id:order.id,

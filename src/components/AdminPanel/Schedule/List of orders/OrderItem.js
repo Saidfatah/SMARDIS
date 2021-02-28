@@ -15,17 +15,47 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
 
 
     let STATUS ="pase enour"
-    if(status =="VALIDATED") STATUS ="valider"
-    if(status =="PENDING") STATUS ="pase enou"
-    if(status =="CANCELED") STATUS ="anuller"
+    let BADGE_STATUS ="pase enour"
+    if(status =="VALIDATED") {
+        STATUS ="valider"
+        BADGE_STATUS ="success"
+    }
+    if(status =="PENDING") {
+        STATUS ="pase enou"
+        BADGE_STATUS ="warning"
+    }
+    if(status =="CANCELED") {
+        STATUS ="anuller"
+        BADGE_STATUS ="error"
+    }
     
     const IS_VALIDATED = validated?true : (status =="VALIDATED" ?true:false)
     
-   
+    const TITLE=<View style={{
+        flex:1,
+        display:'flex',
+        flexDirection:'row',
+        width : '100%',
+        justifyContent:'space-between',
+        }}>
+        <Text>{`${distrubutor.name} (${sector.name})`}</Text>
+        <Badge
+          status={BADGE_STATUS}
+          value={STATUS}
+           textStyle={{
+             fontSize:14
+           }}
+           containerStyle={{marginLeft:16}}
+           badgeStyle={{ 
+              height:24 ,
+           }}
+        />
+    </View>
+    
     if(IS_VALIDATED)
     return (
         <List.Accordion
-         title={`${distrubutor.name} (${sector.name})` }
+         title={TITLE}
          titleStyle={styles.Title}
          style={{
              ...styles.AcordionHeader,
@@ -61,7 +91,7 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
                               <Text>{STATUS}</Text>
                     </View>
                 </View>
-                <View style={styles.HFlex} >
+                <View   >
                     <Label label="Note :"  mga={16} />
                     <View style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
                               <Text>{note}</Text>
@@ -77,41 +107,24 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
                 
            
                 {
-                    products.length>1
+                    products.length>1 && status=="VALIDATED"
                     ? <>
-                    <Label label="Liste des produits ventes "  mga={16} />
-                    <View style={styles.productsWrapper}>
-                          <View style={styles.HFlex} >
-                                 <Label label="Produits :"  mga={16} />
+                         <View style={styles.HFlex} >
+                                 <Label label="Nombre des produits :"  mga={16} />
                                  <View  style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
-                                 <Badge value={products.lenght} status="primary" />
+                                 <Badge value={products.length} status="primary" />
                                  </View>
                          </View>
-                        {
-                         products.map((product,i)=><View key={i} style={styles.orderProducts}>
-                                 <Text>{"titre :"+product.name}</Text>
-                                 <Text>{"ref :"+product.ref}</Text>
-                                 <Text>{"quantity :"+product.quantity}</Text>
-                                 <View style={styles.HFlex} >
-                                   <Label label="Total :"  mga={16} />
-                                   <View  style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
-                                   <Badge value={product.priceForClient * product.quantity} status="primary" />
-                                   </View>
-                                </View>
-                                 
-                           </View>)
-                        }
-                        
-                    </View>
+                         <View style={styles.HFlex} >
+                           <Label label="Total :"  mga={16} />
+                           <View  style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
+                                <Badge value={products.reduce((a,c)=>a+(c.price1*c.quantity),0)} status="success" /> 
+                           </View>
+                        </View>
                     </>
                     :null
                 }
-                <View style={styles.HFlex} >
-                   <Label label="Total :"  mga={16} />
-                   <View  style={{...styles.FieldItem,marginBottom:0,marginLeft:8}}>
-                        <Badge value={products.reduce((a,c)=>a+(c.price1*c.quantity),0)} status="primary" /> 
-                   </View>
-                </View>
+               
               
                 <Button 
                  xStyle={{margin:0,borderRadius:12,marginTop:16}} 
@@ -129,7 +142,7 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
 
     return (
         <List.Accordion
-         title={`${distrubutor.name} (${sector.name})` }
+         title={TITLE}
          titleStyle={styles.Title}
          style={{
              ...styles.AcordionHeader,
