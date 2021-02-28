@@ -1,8 +1,8 @@
-import {sectorModel} from './Schemas/SectorModel'
 
-
-import firestore from '@react-native-firebase/firestore'
-
+import addSector from './Effects/addSector'
+import fetchSectorClients from './Effects/fetchSectorClients'
+import fetchSectors from './Effects/fetchSectors'
+import updateSector from './Effects/updateSector'
 
 
 const model ={
@@ -78,121 +78,11 @@ const model ={
         // }),
     },
     effects: (dispatch)=>({
-        async fetchSectors(arg,state){
-             try {
-                const sectors_first_fetch = state.sector.sectors_first_fetch
-                if(sectors_first_fetch) return
+        fetchSectors     : (args,state)=>fetchSectors(args,state,dispatch),
+        fetchSectorClients  : (args,state)=>fetchSectorClients(args,state,dispatch),
+        addSector        : (args,state)=>addSector(args,state,dispatch),
+        updateSector     : (args,state)=>updateSector(args,state,dispatch),
 
-                const clientsResponse= await firestore().collection('sectors')
-                clientsResponse.onSnapshot(res=>{
-                    const docs =res.docs
-                    if(docs.length){
-                        const sectors = docs.map(doc=>({...doc.data(),id:doc.id}))
-                        return dispatch.sector.fetchedSectors(sectors)
-                    }
-                    dispatch.sector.sectorsFetchFailed()
-                })
-            } catch (error) {
-                 console.log(error)
-                 dispatch.sector.sectorsFetchFailed()
-             }
-
-        },
-        async fetchSectorClients(id,state){
-             try {
-                 //if we revist sector we don't need to refetch the clients 
-                 //cause they are stiil in memory
-                 //we could make an array with keys being sectors ids and clients field where westore clients
-                 //and we can check if array has an item with key id if so don't fetch 
-                 //if not fetch and add item with key id and values clients 
-
-                const last_visited_sector = state.sector.last_visited_sector
-                
-                if(last_visited_sector == id) return
-
-                const SectorClientsResponse= await firestore().collection('clients').where('sectorId','==',id).get()
-                const docs =SectorClientsResponse.docs
-                const clients = docs.map(doc=>({...doc.data(),id:doc.id}))
-                if(clients.length>0){
-                   dispatch.sector.fetchedSectorClients({
-                       selected_sector_Clients:clients,
-                       last_visited_sector : id,
-                       visited_Sector_has_clients:true
-                   })
-                }else{
-                    dispatch.sector.fetchedSectorClients({
-                        selected_sector_Clients:[],
-                        last_visited_sector : id,
-                        visited_Sector_has_clients:false
-                    })
-                }
-                 
-             } catch (error) {
-                 console.log(error)
-                 dispatch.sector.sectorsFetchFailed()
-             }
-        },
-        async addSector({name,city,navigation},state){
-            try {
-                 const sector = sectorModel(name,city)
-                 let sectors =[...state.sector.sectors]
-                 
-                 //check if name is already used 
-                 const checkNameResponse= await firestore()
-                 .collection('sectors')
-                 .where('name','==',name)
-                 .get()
-                 if(checkNameResponse.docs.length) throw Error('NAME_USED')   
-
-                 const newSector = sectorModel(name,city)
-                 //firestore
-                 const addResponse= await firestore()
-                                          .collection('sectors')
-                                          .add(newSector)
-                 
-                 //asign doc id then add to redux state
-                 sector.id = addResponse.id
-                 sectors.unshift(sector)
-
-                 dispatch.toast.show({
-                     type    : 'success',
-                     title   : 'Ajoute ',
-                     message : `le sector ${name} est ajouter avec success `
-                 })
-                 dispatch.sector.addedSector(sectors)
-                 navigation.goBack()
-            } catch (error) {
-               console.log(error) 
-               if(error.message=="NAME_USED")
-                 return dispatch.sector.sectorAddFailed({id:'NAME_USED',message:"le nom du secteur est deja utuliser"})
-               dispatch.sector.sectorAddFailed({id:'ADD_FAILED',message:"ne peut pas ajouter ce secteur d'abord"})
-            }
-        },
-        async updateSector({name,id,city,navigation},state){
-            try {
-                 let sectors =[...state.sector.sectors]
-                 const tragetSector = sectors.filter(sector =>sector.id == id)[0]
-                 let targetSectorId =sectors.indexOf(tragetSector)
-                 sectors[targetSectorId]= {...tragetSector,name,city}
-                  
-                 const updateResponse= await firestore()
-                                             .collection("sectors")
-                                             .doc(id)
-                                             .update({name,city});
-     
-                 dispatch.toast.show({
-                     type:'success',
-                     title:'Modification ',
-                     message:`le sector ${name} est modifier avec success `
-                 })
-                 dispatch.sector.updatedSector(sectors)
-                 navigation.navigate("ADMINsectors")
-            } catch (error) {
-                console.log(error)
-                dispatch.sector.sectorUpdateFailed()
-
-            }
-        },
         resetIsDone(field,state){
             dispatch.sector.reseted(field)
         }

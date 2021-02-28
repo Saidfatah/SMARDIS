@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React  from 'react'
 import {View,FlatList,StyleSheet} from 'react-native'
 import { connect } from 'react-redux'
 import ClientItem from './ClientItem'
@@ -6,8 +6,7 @@ import Loading from '../../../Common/Loading'
 
 const  Clients=({navigation,clients,done_fetching_clients,fetchMoreClients,fetchClients})=> {
  
-
-    const handleLoadMore=()=>{
+  const handleLoadMore=e=>{
       // fetchMoreClients()
   }
 
@@ -16,24 +15,24 @@ const  Clients=({navigation,clients,done_fetching_clients,fetchMoreClients,fetch
       <Loading spacing={50} />   
   </View>
 
-
+    const renderItem =({ item ,index}) =><ClientItem  
+    key={index}  
+    navigation={navigation} 
+    client={item}  
+    isInTodaysOrders={false}
+    onclick={()=>navigation.navigate('ADMINclientProfile',{client:item})}
+    />
     return (
         <View style={{backgroundColor:'#fff',flex: 1}} >
          <FlatList 
-         data   = {clients}
+         data   = {clients.filter(c=>c.confirmed !="PENDING")}
          style  = {{...styles.list}}
          contentContainerStyle = {props =>(styles.flatList)}
          showsVerticalScrollIndicator={false}
-         onEndReached={e=>handleLoadMore()}
+         onEndReached={handleLoadMore}
          onEndReachedThreshold={0.5}
          ListFooterComponent={<View style={{ height: 0, marginBottom: 90 }}></View>}
-         renderItem   = {({ item ,index}) =><ClientItem  
-              key={index}  
-              navigation={navigation} 
-              client={item}  
-              isInTodaysOrders={false}
-              onclick={()=>navigation.navigate('ADMINclientProfile',{client:item})}
-         />}
+         renderItem   = {renderItem}
          keyExtractor = {(item, index) => index.toString()}
         />
         </View>
