@@ -11,7 +11,7 @@ ysterdayMidnight.setHours(0,0,0,0);
 var yesterday = firestore.Timestamp.fromDate(ysterdayMidnight);
 
  
-const CONFIG_DOC='1 - - CONFIG - -'
+const CONFIG_DOC='0000CONFIG0000'
 
 export default async(arg,state,dispatch)=>{
     try {
@@ -45,12 +45,13 @@ export default async(arg,state,dispatch)=>{
 
         fetchOrdersReponse.onSnapshot(async res=>{
             if(res.docs.length){
-                const docs= res.docs
-
+                // const flteredDocs=  res.docs.filter(doc=> doc.id != CONFIG_DOC)
+                 const flteredDocs=  res.docs  
                 //chececk for clients objectifs 
                 //reset their objectif progress if its the beggning of the month 
+                if(flteredDocs.length <1) return dispatch.scheduel.fetchedTodaysSectorsFailed()
                 const currentMount=new Date().getMonth()
-                const refrencedClients=docs.map(doc=>({...doc.data().client}))
+                const refrencedClients=flteredDocs.map(doc=>({...doc.data().client}))
 
                 refrencedClients.forEach(async client=>{
                     const {objectif,id} = client
@@ -66,7 +67,8 @@ export default async(arg,state,dispatch)=>{
                     }
                 })
 
-                 const orderList = docs.map(doc=>({...doc.data(),orderId:doc.id}))
+                const orderList= flteredDocs.map(doc=>({...doc.data(),orderId:doc.id}))
+                 
                  let lastOrder= orderList[0]
                  const firstOrder ={...lastOrder}
                  let started = false

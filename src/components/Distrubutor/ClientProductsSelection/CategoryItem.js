@@ -10,9 +10,12 @@ const IMAGE_HEIGHT= (width- (16*4))/4
 const CategoryItem=({category,selectedCategory,selectCategory,selectSubCategory})=> {
     const {id , name, image ,isSpecial } = category
     const isSelected= selectedCategory == id
-   
-    const BORDER_COLOR=  isSpecial?colors.GOLD:"#fff"
-    const BORDER_COLOR_SELECTED=  isSpecial?colors.GOLD:colors.BLUE
+
+    const IS_SPECIAL= category.isSpecial || false
+    console.log({IS_SPECIAL,isSpecial:category.isSpecial})
+    
+    const BORDER_COLOR=  IS_SPECIAL?colors.GOLD:"#fff"
+    const BORDER_COLOR_SELECTED=  IS_SPECIAL?colors.GOLD:colors.BLUE
     return (
         <TouchableOpacity onPress={e=> {
             selectCategory({
@@ -24,7 +27,7 @@ const CategoryItem=({category,selectedCategory,selectCategory,selectSubCategory}
             }}>
             <View style={{...styles.category }}>
                 {
-                    isSpecial
+                    IS_SPECIAL
                     ?<Text 
                     style={{
                         position:'absolute',

@@ -1,4 +1,6 @@
 import firestore from '@react-native-firebase/firestore'
+
+const CONFIG_DOC="0000CONFIG0000"
 export default async (arg,state,dispatch)=>{
     try {
         const last_visible_client = state.client.last_visible_client
@@ -15,7 +17,8 @@ export default async (arg,state,dispatch)=>{
                 const docs =res.docs
                 const PrevClients =  [...state.client.clients]
                 PrevClients.pop()
-                const newClients  =  docs.map(doc=>({...doc.data(),id:doc.id}))
+                const maped_data  =  docs.map(doc=>({...doc.data(),id:doc.id}))
+                const newClients  =  maped_data.filter(nclient=> nclient.id != CONFIG_DOC)
                
                 dispatch.client.fetchedClients({
                     clients : [...PrevClients,...newClients],

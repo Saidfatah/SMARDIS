@@ -8,7 +8,8 @@ yesterydayJsDstrubutor.setHours(23,56,59,999);
 
 var yesterydayDstrubutor = firestore.Timestamp.fromDate(yesterydayJsDstrubutor);
 
- 
+const CONFIG_DOC ="1 - - CONFIG - -"
+
 export default async (arg,state,dispatch)=>{
     try {
         const todays_canceled_orders_first_fetch = state.scheduel.todays_canceled_orders_first_fetch
@@ -26,12 +27,13 @@ export default async (arg,state,dispatch)=>{
         fetchOrdersReponse.onSnapshot(res=>{
             if(res.docs.length){
                 console.log('GOT CANCELED')
-               const orders=res.docs.map(order=>({
-                    ...order.data(),
-                    id:order.id,
-                    sale_date:order.data().sale_date.toDate(),
-                    sale_hour:order.data().sale_hour.toDate(),
-                }))
+                const maped_data=res.docs.map(order=>({
+                     ...order.data(),
+                     id:order.id,
+                     sale_date:order.data().sale_date.toDate(),
+                     sale_hour:order.data().sale_hour.toDate(),
+                 }))
+                const orders=maped_data.filter(order=> order.id != CONFIG_DOC)
 
                 return dispatch.scheduel.fetchedDistrubutorTodaysCanceledOrders(orders)
             }

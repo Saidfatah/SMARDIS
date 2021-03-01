@@ -85,22 +85,22 @@ const  Register=({navigation,registerError,register})=> {
     useEffect(() => {
           if(registerError!= null){
               if(registerError.id == "NAME_USED")
-                 dispatch({id:'SET_ERRORS',value:{...errors,name_USED:true}})
+                 dispatch({type:'SET_ERRORS',value:{...errors,name_USED:true}})
               if(registerError.id == "EMAIL_USED")
-                 dispatch({id:'SET_ERRORS',value:{...errors,emailUSED:true}})
+                 dispatch({type:'SET_ERRORS',value:{...errors,emailUSED:true}})
               if(registerError.id == "EMAIL_INVALID")
-                 dispatch({id:'SET_ERRORS',value:{...errors,emailINVALID:true}})
+                 dispatch({type:'SET_ERRORS',value:{...errors,emailINVALID:true}})
               if(registerError.id == "ACCESS_CODE_INVALID")
-                 dispatch({id:'SET_ERRORS',value:{...errors,ACCESS_CODE_INVALIDE:true}})
+                 dispatch({type:'SET_ERRORS',value:{...errors,ACCESS_CODE_INVALIDE:true}})
               if(registerError.id == "UNKNOWN")
-                 dispatch({id:'SET_ERRORS',value:{...errors,UNKNOWN:true}})
-        }
-        dispatch({id:'SET_CAN_SUBMIT',value:true})
+                 dispatch({type:'SET_ERRORS',value:{...errors,UNKNOWN:true}})
+         }
+        dispatch({type:'SET_CAN_SUBMIT',value:true})
     }, [registerError ])
 
 
-    const resetErrors=()=>dispatch({id:'SET_ERRORS',value:{...ERRORS_INITIAL_CONFIG}})
-    const handelChange=input=>v=>dispatch({id:'SET_USER_INFO',value:{...userInfo,[input]:v}}) 
+    const resetErrors=()=>dispatch({type:'SET_ERRORS',value:{...ERRORS_INITIAL_CONFIG}})
+    const handelChange=input=>v=>dispatch({type:'SET_USER_INFO',value:{...userInfo,[input]:v}}) 
     const validateFields =()=>{
         let errorsCount=0
         const {name,email,city,phone,password,ACCESS_CODE}=userInfo
@@ -150,17 +150,18 @@ const  Register=({navigation,registerError,register})=> {
 
 
         if(errorsCount >0) {
-           dispatch({id:'SET_ERRORS',value:errorsTemp})
+           dispatch({type:'SET_ERRORS',value:{...errorsTemp}})
            return false
         }
         return true
     }
-    const handleLogin=()=>{
+    const handleRegister=()=>{
+        console.log(validateFields())
         if(!validateFields() || !canSubmit) return 
         
-        const obj= {...userInfo,type}
-        register(obj)
-        dispatch({id:'SET_CAN_SUBMIT',value:false})
+         const obj= {...userInfo,type}
+         register(obj)
+         dispatch({type:'SET_CAN_SUBMIT',value:false})
 
     }
     
@@ -235,7 +236,7 @@ const  Register=({navigation,registerError,register})=> {
                             {label:"Vendeur",value:"DISTRUBUTOR"},
                             {label:"Admin",value:"ADMIN"},
                            ]} 
-                             setSelectedValue={(value)=> dispatch({id:'SET_TYPE',value}) }
+                             setSelectedValue={(value)=> dispatch({type:'SET_TYPE',value}) }
                           />
                        </View>
                       <View style={{width:'100%'}} >
@@ -264,7 +265,7 @@ const  Register=({navigation,registerError,register})=> {
                                  placeholderTextColor="#fff"
                                  keyboardType="default"
                                  onFocus={e=> resetErrors()}
-                                 onChangeText={value=>dispatch({id:'SET_PASSWORD_CONFIRM',value})} 
+                                 onChangeText={value=>dispatch({type:'SET_PASSWORD_CONFIRM',value})} 
                              />
                      </View>
                       
@@ -273,7 +274,7 @@ const  Register=({navigation,registerError,register})=> {
                        xStyle={styles.BtnXstyle} 
                        color={"WHITE"} 
                        disabled={!canSubmit}
-                       clickHandler={e=>handleLogin()} >
+                       clickHandler={handleRegister} >
                        {
                            canSubmit
                            ?<Text style={styles.ButtonText}>{buttonTexts.REGISTER}</Text>

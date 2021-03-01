@@ -29,21 +29,23 @@ const  AdminDashBoard=(props)=> {
         fetchTodaysValideOrders ,
         scheduelsCount ,
         fetchProducts ,
-        fetchWaitingList,
-        fetchAdmins,
+        // fetchWaitingList,
+        // fetchAdmins,
         fetchWaitingClients,
-        user
+        user,
+        fetchUsers
     }=props
 
     useEffect(() => {
         InteractionManager.runAfterInteractions(() => {
-                 if(user.type =="DISTRUBUTOR") 
+                 if(user && user.type =="DISTRUBUTOR") 
                      navigation.navigate('DISTRIBUTORDashBoard')
                 fetchOrders()
                 fetchTodaysValideOrders("ADMIN")
                 fetchProducts()
-                fetchAdmins()
-                fetchWaitingList()
+                // fetchAdmins()
+                // fetchWaitingList()
+                fetchUsers()
                 fetchCategories()
                 fetchSectors()
                 fetchDistrubutors()
@@ -183,8 +185,9 @@ export default connect(
         valide_orders_count : state.scheduel.valide_orders_count,
     }),
     dispatch =>({
-        fetchWaitingList  : dispatch.auth.fetchWaitingList,
-        fetchAdmins  : dispatch.auth.fetchAdmins,
+        fetchUsers  : dispatch.auth.fetchUsers,
+        // fetchWaitingList  : dispatch.auth.fetchWaitingList,
+        // fetchAdmins  : dispatch.auth.fetchAdmins,
         fetchSectors  : dispatch.sector.fetchSectors,
         fetchClients  : dispatch.client.fetchClients,
         fetchWaitingClients  : dispatch.client.fetchWaitingClients,

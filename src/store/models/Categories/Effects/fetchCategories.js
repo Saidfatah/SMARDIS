@@ -1,5 +1,7 @@
 import firestore from "@react-native-firebase/firestore"
 
+
+const CONFIG_DOC="0000CONFIG0000"
 export default async (somthing,state,dispatch)=>{
     try {
         const categories_first_fetch = state.categories.categories_first_fetch
@@ -10,7 +12,8 @@ export default async (somthing,state,dispatch)=>{
         categoriesResponse.onSnapshot(res=>{
             const docs =res.docs
             if(docs.length){
-                const categories = docs.map(doc=>({...doc.data(),id:doc.id}))
+                const maped_data = docs.map(doc=>({...doc.data(),id:doc.id}))
+                const categories = maped_data.filter(category=> category.id != CONFIG_DOC)
                 return dispatch.categories.fetchedCategories(categories)
             }
             dispatch.categories.categoriesFetchFailed()

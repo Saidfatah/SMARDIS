@@ -14,7 +14,8 @@ const DistrubutorDashBoard=(props)=> {
     fetchDistrubutorTodaysCanceledOrders ,
     fetchTodaysValideOrders,
     fetchCategories,
-    fetchProducts
+    fetchProducts,
+    fetchCatalogue
     }=props
 
     useEffect(() => {
@@ -25,6 +26,7 @@ const DistrubutorDashBoard=(props)=> {
         fetchCartFromAsyncStorage()
         fetchDistrubutorTodaysCanceledOrders()
         fetchTodaysValideOrders("DISTRUBUTOR")
+        fetchCatalogue()
     }, [])
     
     useFocusEffect(
@@ -58,6 +60,7 @@ export default connect(
         distrubutor_todays_valide_orders_count : state.scheduel.distrubutor_todays_valide_orders_count,
     }),
     dispatch =>({
+        fetchCatalogue  : dispatch.auth.fetchCatalogue ,
         fetchTodaysOrders  : dispatch.scheduel.fetchTodaysOrders ,
         fetchTodaysValideOrders : dispatch.scheduel.fetchTodaysValideOrders,
         fetchDistrubutorTodaysCanceledOrders : dispatch.scheduel.fetchDistrubutorTodaysCanceledOrders,

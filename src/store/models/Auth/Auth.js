@@ -12,11 +12,14 @@ import setMaster    from './Effects/setMaster'
 import rejectUser   from './Effects/rejectUser'  
 import fetchAdmins  from './Effects/fetchAdmins'  
 import register     from './Effects/register'  
+import fetchUsers   from './Effects/fetchUsers'  
+import fetchCatalogue   from './Effects/fetchCatalogue'  
 
 const userTypes= ['ADMIN','DISTRIBUTOR']
 const model ={
     state:{
         authenticated  : false,
+        users :[],
         waitingList    : [],
         admins         : [],
         userType       : userTypes[1],
@@ -39,14 +42,51 @@ const model ={
         registerError  : null , 
         updateAccountError   : null , 
         catalogue_url : "NOT_UPLOADED",
+        catalogue : "NOT_UPLOADED",
         done_approving_client:false,
         done_rejecting_client:false,
         done_setting_admin_to_master:false,
         done_fetching_catalogue:false ,
         done_fetching_waiting_list:false ,
         done_updating_acount:false ,
+        
+        //on snapshots refs 
+        on_state_change_snapshot:null ,
+        login_snapshot:null ,
+        register_snapshot:null ,
     },
     reducers:{
+        fetchedCatalogue : (state,{catalogue})=>({
+          ...state,
+          catalogue
+        }),
+        fetchingCatalogueFailed : (state,{catalogue})=>({
+          ...state,
+          catalogue : "NOT_UPLOADED",
+        }),
+        fetchedUsers : (state,{users})=>({
+          ...state,
+          
+          waitingList  : [...users.filter(user=> user.confirmed =="PENDING" )],
+          waitingList_count:users.filter(user=> user.confirmed =="PENDING").length,
+          waitingList_done_first_fetch :true ,
+          done_fetching_waiting_list :true,
+
+          admins  :[...users.filter(user=> user.type =="ADMIN" )],
+          admins_count:users.filter(user=> user.type =="ADMIN" ).length,
+          admins_done_first_fetch :true,
+          done_fetching_admins :true,
+          users   :[...users],
+        }),
+        fetchingUsersFailed : (state,{users})=>({
+          ...state,
+          admins:[],
+          admins_count:0,
+          admins_done_first_fetch :false,
+          done_fetching_admins :true,
+          waitingList_done_first_fetch :true ,
+          done_fetching_waiting_list :true,
+        }),
         checkedAuthentication : (state,{authenticated,user,userType,savePassword,savedPassword,savedEmail})=>({
           ...state,
           authenticated ,
@@ -170,6 +210,10 @@ const model ={
             done_updating_acount:true,
             updateAccountError
         }),
+        setedSnapshotListnerRef:  (state,{field,ref})=>({
+            ...state,
+            [field]:ref
+        }),
     },
     effects: (dispatch)=>({
         approveUser    : (args,state)=>approveUser(args,state,dispatch),
@@ -178,6 +222,7 @@ const model ={
         setMaster      : (args,state)=>setMaster(args,state,dispatch),
         rejectUser     : (args,state)=>rejectUser(args,state,dispatch),
         fetchAdmins    : (args,state)=>fetchAdmins(args,state,dispatch),
+        fetchUsers    : (args,state)=>fetchUsers(args,state,dispatch),
         register       : (args,state)=>register(args,state,dispatch),
         toggleSavePassword    : (args,state)=>toggleSavePassword(args,state,dispatch),
         checkAuthetication    : (args,state)=>checkAuthetication(args,state,dispatch),
@@ -185,6 +230,7 @@ const model ={
         uploadCatalogue  : (args,state)=>uploadCatalogue(args,state,dispatch),
         loadCatalogue    : (args,state)=>loadCatalogue(args,state,dispatch),
         updateAccount    : (args,state)=>updateAccount(args,state,dispatch),
+        fetchCatalogue    : (args,state)=>fetchCatalogue(args,state,dispatch),
     
         resetIsDone(field,state){
            try {

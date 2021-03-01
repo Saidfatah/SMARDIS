@@ -1,12 +1,11 @@
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-let   ON_AUTH_STATE_CHANGED_UNSUBSCRIBE = null
 
 export default async (args,state,dispatch)=>{
     try {
         const {navigation}= args 
-        ON_AUTH_STATE_CHANGED_UNSUBSCRIBE = auth().onAuthStateChanged(async user=>{
+        const ON_AUTH_STATE_CHANGED_UNSUBSCRIBE = auth().onAuthStateChanged(async user=>{
 
             let savePassword  = await AsyncStorage.getItem('SAVE_PASSWORD')
             savePassword = JSON.stringify(savePassword)
@@ -71,6 +70,7 @@ export default async (args,state,dispatch)=>{
                  navigation.navigate('LOGIN')
             }
        })
+       dispatch.auth.setedSnapshotListnerRef({field:"on_state_change_snapshot",ref:ON_AUTH_STATE_CHANGED_UNSUBSCRIBE})
         
     } catch (error) {
         console.log("\n-------HECKOUT AUTH ERROR ----------")

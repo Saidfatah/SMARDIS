@@ -1,5 +1,6 @@
 import firestore from '@react-native-firebase/firestore'
 
+const CONFIG_DOC="000CONFIG000"
 export default async(args,state,dispatch)=>{
     try {
        const products_first_fetch = state.products.products_first_fetch
@@ -22,7 +23,11 @@ export default async(args,state,dispatch)=>{
        productsResponse.onSnapshot(res=>{
            const docs =res.docs
            if(docs.length){
-               const products = docs.map(doc=>({...doc.data(), id : doc.id}))
+               const maped_data = docs.map(doc=>({...doc.data(), id : doc.id}))
+               const products = maped_data.filter(p=>p.id != CONFIG_DOC)
+
+               if(products.length <1) return  dispatch.products.productsFetchingFailed()
+               
                return  dispatch.products.fetchedProducts({
                     products,
                     last_visible_Product:products[products.length -1].ref

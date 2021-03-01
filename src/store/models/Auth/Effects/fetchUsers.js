@@ -6,20 +6,21 @@ export default async (args,state,dispatch)=>{
          const admins_done_first_fetch = state.auth.admins_done_first_fetch
          if(admins_done_first_fetch) return 
 
-         const adminsResponse =firestore().collection('users').where('type','==','ADMIN')
+         const adminsResponse =firestore().collection('users')
 
          adminsResponse.onSnapshot(res=>{
              if(res.docs.length){
                  const maped_data = res.docs.map(doc=>({...doc.data(),id:doc.id}))
-                 const admins=maped_data.filter(admin=> admin.id != CONFIG_DOC)
-                 return dispatch.auth.fetchedAdmins(admins)
+                 const users=maped_data.filter(user=> user.id != CONFIG_DOC)
+                  if(users.length < 1) return  dispatch.auth.fetchingUsersFailed()
+                 return dispatch.auth.fetchedUsers({users})
              }
-             dispatch.auth.fetchingAdminsFailed()
+             dispatch.auth.fetchingUsersFailed()
          })      
 
     } catch (error) {
         console.log('----fetchWaitingList-----')
         console.log(error)
-        dispatch.auth.fetchingAdminsFailed()
+        dispatch.auth.fetchingUsersFailed()
     }
 }

@@ -12,22 +12,28 @@ var weekStart = firestore.Timestamp.fromDate(firstday);
 var nextWeek = firestore.Timestamp.fromDate(lastday);
  
  
-
+const CONFIG_DOC ="0000CONFIG0000"
 export default async (arg,state,dispatch)=>{
     try {
-        const fetchScheduelsReponse = await firestore()
-                                           .collection('scheduels')
-                                           .where('date','<',nextWeek)
-                                           .where('date','>=',weekStart)
+        console.log('fetchScheduelsReponse')
+        const fetchScheduelsReponse =  firestore()
+                                      .collection('scheduels')
+                                      .where('date','>=',weekStart)
+                                      //   .where('date','<',nextWeek)
 
          fetchScheduelsReponse.onSnapshot(res=>{
              if(res.docs.length){
-                  const scheduels=res.docs.map(scheduel=>({
+                 console.log('got scheduels')
+                  const maped_data=res.docs.map(scheduel=>({
                       ...scheduel.data(),
                       id:scheduel.id,
                       date:scheduel.data().date.toDate(),
                       start_date:scheduel.data().start_date.toDate(),
                     }))
+
+                  const scheduels= maped_data.filter(scheduel=> scheduel.id != CONFIG_DOC)
+                  console.log({scheduels})
+                  if(scheduels.length <1) return dispatch.scheduel.scheduelsFetchingFailed()
                  return  dispatch.scheduel.fetchedScheduels(scheduels)
               }
            dispatch.scheduel.scheduelsFetchingFailed()

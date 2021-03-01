@@ -18,4 +18,4 @@ export default async (args,state,dispatch)=>{
         dispatch.auth.settingAdminMasterFailed()    
         console.log(error)
     }
-},
+}

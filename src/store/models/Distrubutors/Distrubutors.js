@@ -1,3 +1,7 @@
+import fetchDistrubutors from './Effects/fetchDistrubutors'
+import removeDistrubutor from './Effects/removeDistrubutor'
+import updateDistrubutor from './Effects/updateDistrubutor'
+
 const model ={
     state:{
         distrubutors  :[],

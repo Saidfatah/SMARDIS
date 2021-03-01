@@ -16,7 +16,18 @@ import { useFocusEffect } from "@react-navigation/native";
 import { BackHandler ,Alert} from 'react-native';
 
 
-const  Login=({navigation,authError,savedEmail,login,resetIsDone,done_Logging,toggleSavePassword,savePassword,savedPassword})=> {
+const  Login=(props)=> {
+   const {
+     navigation,
+     authError,
+     savedEmail,
+     login,
+     resetIsDone,
+     done_Logging,
+     toggleSavePassword,
+     savePassword,
+     savedPassword
+    }=props
     const [username, setusername] = useState("")
     const [password, setPassword] = useState("")
     const [canSubmit, setcanSubmit] = useState(true)
@@ -28,7 +39,7 @@ const  Login=({navigation,authError,savedEmail,login,resetIsDone,done_Logging,to
     useEffect(() => {
           if(savePassword == undefined || savePassword == null) return 
           console.log({savedEmail})
-          if(savePassword.indexOf("true") > -1){
+          if(savePassword && savePassword.indexOf("true") > -1){
             setsavePasswordLogin(true)
             setPassword(savedPassword)
             setusername(savedEmail)
@@ -47,8 +58,7 @@ const  Login=({navigation,authError,savedEmail,login,resetIsDone,done_Logging,to
             console.log({done_Logging})
           if(done_Logging ){
             setcanSubmit(true)
-            resetIsDone("done_Logging")
-            if(savePassword.indexOf("false") > -1){
+            if(savePassword && savePassword.indexOf("false") > -1){
               setusername('')
               setPassword('')
             }
@@ -90,15 +100,10 @@ const  Login=({navigation,authError,savedEmail,login,resetIsDone,done_Logging,to
     }
     
     const Errors = ()=>{
-         if(passwordRequired != null)
-           return <Error trigger={passwordRequired != null}  error={passwordRequired.message} />
-       
-         if(usernameRequired != null)
-           return <Error trigger={usernameRequired != null}  error={usernameRequired.message} />
-       
-         if(authErrorLocal != null)
-           return <Error trigger={authErrorLocal != null}  error={authErrorLocal.message} />
-       
+         const message= "Adresse e-mail ou mot de passe invalide"
+         if(authErrorLocal != null || usernameRequired != null || passwordRequired != null ){
+           return <Error trigger={authErrorLocal != null}  error={message} />
+         }
        
         return <View />
     }

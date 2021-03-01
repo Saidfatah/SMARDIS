@@ -14,7 +14,7 @@ const  Sectors=({navigation,sectors,done_fetching_sectors})=> {
         <Loading spacing={50} />   
     </View>
 
-
+    console.log(sectors[0])
 
     return (
         <View style={{backgroundColor:'#fff',flex: 1}} >
@@ -25,13 +25,7 @@ const  Sectors=({navigation,sectors,done_fetching_sectors})=> {
          showsVerticalScrollIndicator={false}
          ListFooterComponent={<View style={{ height: 0, marginBottom: 90 }}></View>}
          renderItem   = {({ item ,index}) =><Item key={index} xStyle={{ marginBottom:16}} >
-         <View style={{ 
-           display:'flex',
-           flexDirection:'row-reverse' ,
-           justifyContent:'space-between',
-           alignItems:'center',
-           paddingLeft:16
-           }}>
+         <View style={styles.FH}>
              <Text style={{flex:1,fontWeight:'bold',textAlign:'right'}}>{item.name}</Text>
              <Button
               xStyle={{flex:1,margin:0,borderRadius:12}} 
@@ -74,7 +68,14 @@ var styles = StyleSheet.create({
        fontSize:20,
        marginTop:16,
        color:'#fff'
-    }
+    },
+    FH:{ 
+        display:'flex',
+        flexDirection:'row-reverse' ,
+        justifyContent:'space-between',
+        alignItems:'center',
+        paddingLeft:16
+        }
   });
   
   

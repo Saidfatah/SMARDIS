@@ -4,6 +4,7 @@ import firestore from '@react-native-firebase/firestore'
 const ysterdayMidnight= new Date();
 ysterdayMidnight.setHours(0,0,0,0);
 var yesterday = firestore.Timestamp.fromDate(ysterdayMidnight);
+const CONFIG_DOC ="1 - - CONFIG - -"
 
 export default async (arg,state,dispatch)=>{
     try {
@@ -15,7 +16,8 @@ export default async (arg,state,dispatch)=>{
 
          fetchOrdersReponse.onSnapshot(res=>{
              if(res.docs.length){
-                 const orders=res.docs.map(order=>({...order.data(),id:order.id}))
+                 const maped_data=res.docs.map(order=>({...order.data(),id:order.id}))
+                 const orders=maped_data.filter(order => order.id != CONFIG_DOC)
                  //loop over each order product 
                  //a sale is each sold product
                   let sales= []

@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React from 'react'
 import {View,Text,FlatList,StyleSheet,TouchableOpacity} from 'react-native'
 import { connect } from 'react-redux'
 import ProductInfo from '../../Distrubutor/ClientProductsSelection/Products/ProductInfo'
@@ -20,11 +20,11 @@ const  Products=({products,navigation,done_fetching_products,fetchProducts})=> {
     return <View style={{backgroundColor:'#fff',flex: 1}} > 
          <FlatList 
          data   = {products}
+         ListEmptyComponent={()=><Text style={{padding:8}} >aucune produit trouve</Text>}
          style  = {{...styles.list}}
          contentContainerStyle = {props =>(styles.flatList)}
          showsVerticalScrollIndicator={false}
          onEndReached={e=>handleLoadMore()}
-         onEndReachedThreshold={products.length-2/products.length}
          ListFooterComponent={<View style={{ height: 0, marginBottom: 90 }}></View>}
          renderItem   = {({ item ,index}) =><View style={styles.product}>
               <TouchableOpacity onPress={e=>{ navigation.navigate('ADMINproductPage',{product:item})}}>

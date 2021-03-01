@@ -13,8 +13,7 @@ export default async  (args,state,dispatch)=>{
     products[targetProductIndex] = {...targetProduct,targetProduct,name,category,image,price1,price2,price3,price4}
     
 
-    const DISCOUNT= discount>0? (discount/100) : 1
- 
+     
     //remove previous man category 
     //don't emove special categories
     let CATEGORY=[]
@@ -27,15 +26,15 @@ export default async  (args,state,dispatch)=>{
     }
 
     //if we have applied a discount the product gets added to discountes category
-    const hasDscountCategory = CATEGORY.indexOf(DISCOUNT_CATEGORY)
-    if(DISCOUNT < 1){
+    const hasDiscountCategory = CATEGORY.indexOf(DISCOUNT_CATEGORY)
+    if(dscount > 0){
        //but check if it hasn't already been added , maybe admin changed discount from .5 to .3 
-       if( hasDscountCategory < 0){
+       if( hasDiscountCategory < 0){
            CATEGORY.push(DISCOUNT_CATEGORY)
        }
     }else{
         //check f product had been in discount category , but admin changed discount to 1 
-        if( hasDscountCategory > -1){
+        if( hasDiscountCategory > -1){
             CATEGORY =[...CATEGORY].filter(c=>c!=DISCOUNT_CATEGORY)
         }
     }
@@ -53,7 +52,7 @@ export default async  (args,state,dispatch)=>{
                                     price2,
                                     price3,
                                     price4,
-                                    discount:discount||1
+                                    discount:discount||0
                                 });
  
  

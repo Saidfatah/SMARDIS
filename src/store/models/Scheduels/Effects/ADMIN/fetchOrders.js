@@ -9,7 +9,8 @@ const tomorrowJs = new Date(today)
 tomorrowJs.setHours(23,59,59,999);
 
 var tomorrow = firestore.Timestamp.fromDate(tomorrowJs);
- 
+
+const CONFIG_DOC ="1 - - CONFIG - -"
 export default async  (arg,state,dispatch)=>{
     try {
        const fetchOrdersReponse = await firestore()
@@ -21,12 +22,13 @@ export default async  (arg,state,dispatch)=>{
   
            if(res.docs.length){
                console.log('got orders')
-               const orders=res.docs.map(order=>({
+               const maped_data=res.docs.map(order=>({
                    ...order.data(),
                    id:order.id,
                    sale_date:order.data().sale_date.toDate(),
                    sale_hour:order.data().sale_hour.toDate(),
                }))
+              const orders=maped_data.filter(order=>order.id != CONFIG_DOC)
               return  dispatch.scheduel.fetchedOrders(orders)
            }
            dispatch.scheduel.ordersFetchingFailed()

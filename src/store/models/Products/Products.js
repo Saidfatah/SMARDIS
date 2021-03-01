@@ -25,7 +25,7 @@ const model ={
             last_visible_Product,
             productsCount:products.length
         }),
-        productsFetchingFailed : (state,{products,last_visible_Product})=>({
+        productsFetchingFailed : (state,args)=>({
             ...state,
             products :[],
             products_first_fetch:false,

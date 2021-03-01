@@ -8,8 +8,8 @@ export default async (userObj,state,dispatch)=>{
     try {
         //unsubscribe to onAuthStateChanged because otherwise it'll try to take controll as soon as we create userAccount 
         //in Authentication  hence preventing us from creating user doc in users collection 
-        ON_AUTH_STATE_CHANGED_UNSUBSCRIBE && ON_AUTH_STATE_CHANGED_UNSUBSCRIBE()
- 
+        const on_state_change_snapshot = state.auth.on_state_change_snapshot
+        on_state_change_snapshot && on_state_change_snapshot()
             
         const {type,name,email,phone,additional,password,ACCESS_CODE ,city} = userObj
         

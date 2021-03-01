@@ -18,4 +18,4 @@ export default async (args,state,dispatch)=>{
         console.log(error)
 
     }
-},
+}

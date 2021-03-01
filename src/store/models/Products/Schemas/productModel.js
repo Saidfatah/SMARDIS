@@ -12,7 +12,7 @@ export const  productModel = (name,category,image,price1,ref,price2,price3,price
     price4:price4 || 'NOT_DEFINED',
     stock : stock || 99 ,
     soldCount : 0 ,
-    discount:discount||1,
+    discount:discount||0,
     regions:regions || [],
     created_at:firestore.Timestamp.fromDate(new Date())
 })

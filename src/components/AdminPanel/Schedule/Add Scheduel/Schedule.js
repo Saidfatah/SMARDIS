@@ -18,7 +18,7 @@ import FontistoIcon from 'react-native-vector-icons/Fontisto'
 const initalState=(sectors,start_date)=>({
     canSubmit:true,
     enableScroll:true,
-    update:true,
+    update:false,
     scheduelToBeUpdated:"",
     start_date ,
     showDate:false,
@@ -113,6 +113,7 @@ const Schedule = (props)=> {
 
         if(schedule_add_error){
            seterror({...schedule_add_error}) 
+           
            dispatch({type:"SET_ERROR",value:schedule_add_error}) 
            resetError('schedule_add_error')
         }
@@ -168,12 +169,12 @@ const Schedule = (props)=> {
     const createNewSchdule=e=>{
         
         if(!selectedDistrubutor) 
-           return seterror({id:"DISTRUBUTOR",message:"ce champ est obligatoire"})
+           return dispatch({type:"SET_ERROR",value:{id:"DISTRUBUTOR",message:"ce champe est obligatoire"}})
         if(adminId != undefined && selectedDistrubutor &&  selectedSector && orderListOfClients.length>0 ){
             // setcanSubmit(false)
             // seterror(null)
             dispatch({type:"SET_CAN_SUBMIT",value:false}) 
-            dispatch({type:"SET_ERROR",value:true}) 
+            dispatch({type:"SET_ERROR",value:null}) 
 
             if(update) return updateScheduel({ 
                 id:scheduelToBeUpdated,
@@ -285,7 +286,11 @@ const Schedule = (props)=> {
         
         <Error mga={8} trigger={error && error.id =="ALREACY_ASIGNED"} error={error && error.message} />
         <Button color={"BLUE"}  padding={0} disabled={!canSubmit} clickHandler={createNewSchdule}>
-            <Text style={{color:"#fff",textAlign:'center'}}>{update?"Modifier le trajet":"Ajouter Le trajet"}</Text>
+           {
+               canSubmit 
+               ? <Text style={{color:"#fff",textAlign:'center'}}>{update?"Modifier le trajet":"Ajouter Le trajet"}</Text>
+               :<Loading  spacing={30} />
+           }
         </Button>
     </ScrollView>
  

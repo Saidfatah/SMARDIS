@@ -29,7 +29,7 @@ const functions=[
     "fetchMoreDistrubutors"
 ]
 
-findInFiles.find('perf_hooks', '../components', '.js$')
+findInFiles.find('products[products.length - 1]', '../components', '.js$')
     .then(function(results) {
         for (var result in results) {
             var res = results[result];

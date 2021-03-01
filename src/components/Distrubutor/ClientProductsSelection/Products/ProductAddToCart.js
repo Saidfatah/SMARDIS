@@ -12,8 +12,8 @@ const ProductAddToCart =({scheduelId,setIsPanelActive,selectedProduct,guest,addC
 
     let  priceForClient =(selectedProduct[client.price.replace('x','ce')] || price1)
     //if discount <1 it means the product has discount 
-    if(discount < 1){
-       priceForClient= priceForClient - (priceForClient *discount)
+    if(discount > 0){
+       priceForClient= discount
     }
 
     return (

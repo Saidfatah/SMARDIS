@@ -18,7 +18,7 @@ const ysterdayMidnight= new Date();
 ysterdayMidnight.setHours(0,0,0,0);
 var yesterday = firestore.Timestamp.fromDate(ysterdayMidnight);
 
- 
+const CONFIG_DOC ="1 - - CONFIG - -"
 export default async  (type,state,dispatch)=>{
     try {
   
@@ -49,13 +49,14 @@ export default async  (type,state,dispatch)=>{
       
        fetchOrdersReponse.onSnapshot(res=>{
            if(res.docs.length){
-               console.log('got validated orders')
-               const orders=res.docs.map(order=>({
-                   ...order.data(),
-                   id:order.id,
-                   sale_date:order.data().sale_date.toDate(),
-                   sale_hour:order.data().sale_hour.toDate(),
-               }))
+            console.log('got validated orders')
+            const maped_data=res.docs.map(order=>({
+                ...order.data(),
+                id:order.id,
+                sale_date:order.data().sale_date.toDate(),
+                sale_hour:order.data().sale_hour.toDate(),
+            }))
+            const orders= maped_data.filter(order => order.id != CONFIG_DOC)
 
              return  dispatch.scheduel.fetchedTodaysValideOrders(orders)
            }

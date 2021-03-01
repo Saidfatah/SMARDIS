@@ -16,18 +16,19 @@ export default async (args,state,dispatch)=>{
                                     .update({name,image});
 
 
-       
-         if(selectedProducts.length>0){
-                 console.log('selectedProducts:'+selectedProducts.length)
-                const categoryProductsIds = products.filter(p=>p.category.indexOf(id)>-1).map(p=>p.id)
-             
-                if(categoryProductsIds.length >0){
+         console.log({selectedProducts})
+        
+         console.log('selectedProducts:'+selectedProducts.length)
+         const categoryProductsIds = products.filter(p=>p.category.indexOf(id)>-1).map(p=>p.id)
+         
+         if(categoryProductsIds.length >0){
                     //selectedProducts =>[id,id,id,id] basically list of product ids 
                     //check if we have selected products from the update screen 
                     const newlySelected  = selectedProducts.filter(selectedProductId=> categoryProductsIds.indexOf(selectedProductId)<0 )
                     const unSelected= categoryProductsIds.filter(categoryProductId=> selectedProducts.indexOf(categoryProductId)<0 )
                   
-                  
+                   console.log({unSelected})
+                   console.log({newlySelected})
                    //I'm updating category for only newly selected because if  just did update for all selected
                    //products we might add category d two times to a product 
                     newlySelected.forEach(async productId => {
@@ -48,7 +49,7 @@ export default async (args,state,dispatch)=>{
                                  category:firestore.FieldValue.arrayRemove(id)
                              })
                     });
-                }else if(categoryProductsIds.length <1){
+         }else if(categoryProductsIds.length <1){
                     selectedProducts.forEach(async productId => {
                         const updateProductResponse= await firestore()
                              .collection("products")
@@ -57,8 +58,8 @@ export default async (args,state,dispatch)=>{
                                  category:firestore.FieldValue.arrayUnion(id)
                              })
                     });
-                }
          }
+    
 
 
         dispatch.toast.show({

@@ -5,8 +5,8 @@ export default (args,state,dispatch)=>{
 
         const categories= [...state.categories.categories]
         const targetCategory= categories.filter(c=>c.id == selectedCategory)[0]
-        const categoryIsSpecial= targetCategory.isSpecial
-
+        const categoryIsSpecial=targetCategory && targetCategory.isSpecial
+         console.log(products)
         let categoryProducts
         if(fromClientPanel){
              categoryProducts =  products.filter(product=>product.category.indexOf(selectedCategory) > -1 )

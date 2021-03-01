@@ -12,12 +12,13 @@ export default async (id,state,dispatch)=>{
        
        if(last_visited_sector == id) return
 
-       const SectorClientsResponse= await firestore().collection('clients').where('sectorId','==',id).get()
-       const docs =SectorClientsResponse.docs
-       const clients = docs.map(doc=>({...doc.data(),id:doc.id}))
-       if(clients.length>0){
+       //    const SectorClientsResponse= await firestore().collection('clients').where('sectorId','==',id).get()
+       const clients = [...state.clients.clients]
+       const sectorClients = clients.filter(client=> client.sectorId == id)
+       
+       if(sectorClients.length>0){
           dispatch.sector.fetchedSectorClients({
-              selected_sector_Clients:clients,
+              selected_sector_Clients:sectorClients,
               last_visited_sector : id,
               visited_Sector_has_clients:true
           })

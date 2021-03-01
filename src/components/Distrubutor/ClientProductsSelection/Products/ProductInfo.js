@@ -8,45 +8,28 @@ const ProductInfo=({product,opened,client,isSub})=> {
     const {price1,name,image,discount}=product
  
     let PRICE=price1  
-    if(discount <1){
-       PRICE=price1 - (price1 *discount)
+    if(discount > 0  ){
+       PRICE= discount 
     }
     if(client){
         const clientPrice = client.price.replace('x','ce')
         PRICE=  product[clientPrice]
-        if(discount <1){
-            PRICE=product[clientPrice] -(product[clientPrice] *discount)
+        if(discount > 0 ){
+            PRICE= discount 
         }
     }
     
-    const Pirce=<View style={{
-        flex:1,
-        display:'flex',
-        flexDirection:'row',
-        justifyContent:'flex-start',
-        alignItems:'center'
-    }} >
-            {
-                !isSub
-                ? <Text style={[styles.productText]}>{PRICE}.00 DH</Text> 
-                :null
-            }
-            {
-                discount <1
-                ? <Text style={{marginLeft:8,color:colors.GREEN, fontSize:20,fontStyle:"italic",fontWeight:"bold"}}>{"-"+discount*100+"%"}</Text>
-                :null
-            }
-    </View>
+     
     
     let First  = null
     let Second = null
     let Third  = null
     if(!opened){
-        First  =   Pirce
-        Second =  <Text style={[styles.productText,styles.flexItem]}>{name}</Text> 
+        First  =   <Text style={[styles.productText]}>{PRICE}.00 DH</Text>
+        Second =  <Text style={[styles.productText,styles.flexItem,{textAlign:'center'}]}>{name}</Text> 
         Third  =  <FastImage style={[styles.image]} source={image!='NO_IMAGE'?{uri:image}:require('../../../../images/noImage.jpg')} /> 
     }else{
-        Third  =  Pirce
+        Third  =  <Text style={[styles.productText]}>{PRICE}.00 DH</Text>
         Second =  <Text style={[styles.productText]}>{name}</Text> 
         First  =  <FastImage style={{...styles.image,height:100, width:100}} source={image!='NO_IMAGE'?{uri:image}:require('../../../../images/noImage.jpg')} /> 
     }

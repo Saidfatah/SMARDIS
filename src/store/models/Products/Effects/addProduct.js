@@ -44,14 +44,13 @@ export default async  (args,state,dispatch)=>{
 
        //add to firestore
        const CATEGORY=[category]
-       const DISCOUNT= discount>0? (discount/100) : 1
-    
-       //f a discount is applied we add product to discounts category
-       if(DISCOUNT < 1){
+       
+       //if a discount is applied we add product to discounts category
+       if(discount >0){
              CATEGORY.push(DISCOUNT_CATEGORY)
        } 
 
-       const newProduct = productModel(name,category,imageUri,price1,ref,price2,price3,price4,subCategory,regions,DISCOUNT)
+       const newProduct = productModel(name,category,imageUri,price1,ref,price2,price3,price4,subCategory,regions,discount)
 
        const addResponse= firestore()
                          .collection('products')
