@@ -18,8 +18,12 @@ export default async (args,state,dispatch)=>{
           
           //get billref counter from fristore
           // const billRefCounter=await (await firestore().collection('orders').doc('1- - BILL REF COUNTER - -').get()).data().counter
-          let billRefCounter=state.scheduel.orderConfig &&  state.scheduel.orderConfig.counter
-
+          let billRefCounter 
+          const orderConfig =state.scheduel.orderConfig
+          if(orderConfig){
+            billRefCounter=  orderConfig.counter
+          }
+         
           //generate billRef with BC000* inital
           const billRefCounterArrayed = (++billRefCounter).toString().split('')
           let   zeros     = new Array(6-billRefCounterArrayed.length).fill("0",0,6-billRefCounterArrayed.length)

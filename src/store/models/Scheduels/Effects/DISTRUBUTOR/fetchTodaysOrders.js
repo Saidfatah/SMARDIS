@@ -11,7 +11,7 @@ ysterdayMidnight.setHours(0,0,0,0);
 var yesterday = firestore.Timestamp.fromDate(ysterdayMidnight);
 
  
-const CONFIG_DOC='0000CONFIG0000'
+const CONFIG_DOC='1 - - CONFIG - -'
 
 export default async(arg,state,dispatch)=>{
     try {
@@ -31,12 +31,11 @@ export default async(arg,state,dispatch)=>{
               .orderBy('turn','asc')
 
         //get orders config doc    
-        let orderConfig
         const orderConfigResponse = await firestore().collection('orders').doc(CONFIG_DOC)
         orderConfigResponse.onSnapshot(res=>{
             const doc=res.data() 
             if(doc){
-                orderConfig=doc
+                dispatch.scheduel.fetchedOrderConfig({orderConfig:doc})
             }
         })
          
@@ -109,7 +108,7 @@ export default async(arg,state,dispatch)=>{
                      }
                  ,[]) 
                  console.log('fetched todays orders')
-                 return dispatch.scheduel.fetchedTodaysSectors({todaysOrders,orderConfig})
+                 return dispatch.scheduel.fetchedTodaysSectors({todaysOrders})
             }
             dispatch.scheduel.fetchedTodaysSectorsFailed()
         })

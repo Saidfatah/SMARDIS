@@ -12,7 +12,6 @@ const CategoryItem=({category,selectedCategory,selectCategory,selectSubCategory}
     const isSelected= selectedCategory == id
 
     const IS_SPECIAL= category.isSpecial || false
-    console.log({IS_SPECIAL,isSpecial:category.isSpecial})
     
     const BORDER_COLOR=  IS_SPECIAL?colors.GOLD:"#fff"
     const BORDER_COLOR_SELECTED=  IS_SPECIAL?colors.GOLD:colors.BLUE

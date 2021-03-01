@@ -171,7 +171,7 @@ const model ={
             done_fetching_todays_validated_orders:true,
         }),
         //used in [DISTRUBUTOR] screens
-        fetchedTodaysSectors : (state,{todaysOrders,orderConfig})=>({
+        fetchedTodaysSectors : (state,{todaysOrders})=>({
             ...state,
             todaysSectors :[...todaysOrders],
             todaysSectorsCount :todaysOrders.length,
@@ -179,8 +179,11 @@ const model ={
             currentSector : todaysOrders[0].sector.id,
             todays_orders_first_fetch:true,
             currentSectorIndex:0,
-            orderConfig,
             distrubutor_todays_orders_done_fetching:true,
+        }),
+        fetchedOrderConfig : (state,{orderConfig})=>({
+            ...state,
+            orderConfig
         }),
         fetchedTodaysSectorsFailed : (state,todaysSectors)=>({
             ...state,

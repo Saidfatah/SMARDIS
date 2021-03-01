@@ -12,7 +12,7 @@ import Badge from '../../Common/Badge'
 const DrawerContent=(props)=> {
     const {user,valide_orders_count,logout,cartItems,navigation,admins_count,waitingList_count,waiting_clients_count,distrubutor_todays_canceled_orders_count}=props
   
-    const Link=({route,icon,label,hasBadge,badgeValue,badgeStatus})=>{
+    const Link=({route,icon,label,hasBadge,badgeValue,badgeStatus,parentStack})=>{
         const IconToUse=()=>{
             if(!icon ) return null
             if(icon == "md-cart"){
@@ -35,8 +35,15 @@ const DrawerContent=(props)=> {
             }
             return null
         }
+        
+        const naviagetToRoute=(e)=>{
+            if(parentStack){
+               return  navigation.navigate(parentStack, { screen: route });
+            }
+            navigation.navigate(route)
+        }
 
-        return   <TouchableOpacity  onPress={() =>{navigation.navigate(route)}}>
+        return   <TouchableOpacity  onPress={naviagetToRoute}>
              <View style={styles.drawerItem}> 
                      <IconToUse /> 
                      {
@@ -176,6 +183,7 @@ const DrawerContent=(props)=> {
                            />
                            <Link 
                              route={"ADMINaddClient"}
+                             parentStack={"ADMINDashBoard"}
                              icon="person-add-sharp"
                              label="Ajouter Un Client"
                              hasBadge={false}

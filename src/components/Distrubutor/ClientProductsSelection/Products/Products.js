@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {View,StyleSheet,FlatList} from 'react-native'
+import {View,StyleSheet,FlatList,Text} from 'react-native'
 import ProductItem from './ProductItem'
 import _ from 'lodash'
 
@@ -51,6 +51,8 @@ const Products=({isSelectedCategorySpecial,selectedCategoryProducts,setIsPanelAc
         <FlatList 
          decelerationRate={'fast'}
          data   = {productsList}
+         ListEmptyComponent={()=><Text 
+            style={{padding:16,textAlign:"center"}} >Aucune produit</Text>}
          style  = {styles.list}
          contentContainerStyle = {props =>(styles.flatList)}
          showsVerticalScrollIndicator={false}

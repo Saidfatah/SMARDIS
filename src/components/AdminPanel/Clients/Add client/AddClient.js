@@ -8,6 +8,7 @@ import DropDown from '../../../Common/DropDown'
 import CitiesDropDown from '../../../Common/CitiesDropDown'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
+import CitiesCheckbox from '../../../Common/CitiesCheckbox'
 
 
 const ERRORS_INITIAL_CONFIG = {
@@ -40,7 +41,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
     const [selectedSector, setselectedSector] = useState(sectors[0] || {name:"SECTOR",city:"Ouarzazate",id:-1})
     const [clientData, setclientData] = useState({
         phone:'',
-        city:'',
+        city:'Ouarzazate',
         ref:'',
         name:'Mohsine new',
         address:'',
@@ -221,7 +222,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
             <Label label="Ville" mga={16} />
             <Error trigger={errors.cityREQUIRED} error={ERRORS_MESSAGES[0].message} />
             <CitiesDropDown {...{setcity:handelChange('city'),city}} />
-    
+            
             <Label label="Téléphone" mga={16} />
             <Error trigger={errors.phoneREQUIRED} error={ERRORS_MESSAGES[0].message} />
             <TextInput style={styles.Input}   

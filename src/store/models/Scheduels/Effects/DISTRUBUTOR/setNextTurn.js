@@ -8,6 +8,8 @@ export default (args,state,dispatch)=>{
        const currentSectorIndex= todaysSectors.indexOf(currentSectorObj)
 
        //check if these is a client left in sector 
+       if(!currentSectorObj)  return 
+       
        const clientLeft = currentSectorObj.orders.filter(order=>order.turn > currentTurn)[0]
        if(clientLeft){
            currentTurn=clientLeft.turn

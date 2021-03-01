@@ -4,7 +4,7 @@ import {StyleSheet,TouchableOpacity,View,Text} from 'react-native'
 import {colors} from './Colors'
 
 
-const CheckBoxGroup=({list,selected,setSelectedValue})=> {
+const CheckBoxGroup=({list,selected,setSelectedValue,isMulti})=> {
     const [values, setvalues] = useState([])
 
     useEffect(() => {
@@ -15,12 +15,22 @@ const CheckBoxGroup=({list,selected,setSelectedValue})=> {
     const check = (index)=>{
         if(selected && selected==list[index].value) return 
 
-        setSelectedValue(list[index].value)
-     
-
         let valuesTemp = [...values]
-        valuesTemp = valuesTemp.map(v=>false)
-        valuesTemp[index]= true
+        if(!isMulti){
+            setSelectedValue(list[index].value)
+        }else{
+            const valuesIds=valuesTemp.map((v,i)=>i)
+            console.log({valuesIds})
+            setSelectedValue([...list.filter((_,i)=>valuesIds.indexOf(i)>-1 ).map(item=>item.value)])
+        }
+
+        
+        if(!isMulti){
+            valuesTemp = valuesTemp.map(v=>false)
+            valuesTemp[index]= true
+        }else{
+           valuesTemp[index]= !valuesTemp[index]
+        }
         
        setvalues([...valuesTemp])
     }

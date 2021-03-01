@@ -1,3 +1,5 @@
+import firestore from '@react-native-firebase/firestore'
+
 export default  async (args,state,dispatch)=>{
     try {
         const {orderId,note,navigation}=args
