@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useReducer} from 'react'
+import React,{useEffect,useReducer} from 'react'
 import {View,Text,ScrollView,SafeAreaView,Alert} from 'react-native'
 import { connect } from 'react-redux'
 import ClientsOrdering from './ClientsOrdering'
@@ -25,7 +25,7 @@ const initalState=(sectors,start_date)=>({
     selectedSectorClients:[],
     selectedSector:sectors[0],
     selectedDistrubutor:null,
-    orderListOfClients:null,
+    orderListOfClients:[],
     error:null,
 })
 const reducer=(state,action)=>{
@@ -119,47 +119,61 @@ const Schedule = (props)=> {
         }
     }, [schedule_add_error])
 
-    useEffect(() => {
-         if(!update && sectors.length >0 && clients.length>0 && distrubutors.length>0)
-         dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value:[...clients].filter(cl=> cl.sectorId == selectedSector.id)}) 
-        //  setselectedSectorClients()
-
-         if(route.params){
-           
-            if(route.params.update == undefined) return 
-            const {scheduel}=route.params
-            const { distrubutor,distination ,id}=scheduel
-            dispatch({type:"SET_UPDATE",value:true}) 
-            dispatch({type:"SET_SCHEDUEL_TO_UPDATE",value:id}) 
-            dispatch({type:"SET_START_DATE",value:scheduel.start_date}) 
-            dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value:distination.clients}) 
-            dispatch({type:"SET_ORDERD_LIST_OF_CLIENTS",value:distination.clients}) 
-            dispatch({type:"SET_SELECTED_DISTRUBUTOR",value:distrubutors.filter(d=>d.id == distrubutor.id)[0]}) 
-            dispatch({type:"SET_SELECTED_SECTOR",value:sectors.filter(s=>s.id == distination.sector.id)[0]}) 
-
-            // setupdate(true)
-            // setscheduelToBeUpdated(id)
-            // setstart_date(scheduel.start_date)
-            // setselectedSectorClients([...distination.clients])
-            // setorderListOfClients([...distination.clients])
-            // setselectedDistrubutor(distrubutors.filter(d=>d.id == distrubutor.id)[0])
-            // setselectedSector(sectors.filter(s=>s.id == distination.sector.id)[0])
-           
-         } 
-    }, [])
+  
  
     useEffect(() => {
          if(sectors.length >0 && clients.length>0 && distrubutors.length>0)
          {
-             const sectorClients = [...clients].filter(cl=> cl.sectorId == selectedSector.id)
-             dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value:sectorClients}) 
-             dispatch({type:"SET_ORDERD_LIST_OF_CLIENTS",value:sectorClients}) 
+             if(!update){
+                const sectorClients = [...clients].filter(cl=> cl.sectorId == selectedSector.id)
+                dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value:sectorClients}) 
+                console.log({update})
+               dispatch({type:"SET_ORDERD_LIST_OF_CLIENTS",value:sectorClients}) 
+             }
              
-            //  setselectedSectorClients(sectorClients)
-            //  setorderListOfClients(sectorClients)
          }
     }, [selectedSector.id])
     
+    useEffect(() => {
+        if(orderListOfClients &&orderListOfClients.length){
+
+        }
+    }, [orderListOfClients])
+    useEffect(() => {
+        if(!update && sectors.length >0 && clients.length>0 && distrubutors.length>0)
+         {
+             console.log('noy update')
+            dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value:[...clients].filter(cl=> cl.sectorId == selectedSector.id)})
+         }
+       //  setselectedSectorClients()
+
+        if(route.params){
+          
+           if(route.params.update == undefined) return 
+           const {scheduel}=route.params
+           const { distrubutor,distination ,id}=scheduel
+           dispatch({type:"SET_UPDATE",value:true}) 
+           dispatch({type:"SET_SCHEDUEL_TO_UPDATE",value:id}) 
+           dispatch({type:"SET_START_DATE",value:new Date(scheduel.start_date)}) 
+           dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value:distination.clients}) 
+           console.log("-------orderd list from db --------")
+           console.log(distination.clients.map(c=>c.id))
+           dispatch({type:"SET_ORDERD_LIST_OF_CLIENTS",value:distination.clients}) 
+           dispatch({type:"SET_SELECTED_DISTRUBUTOR",value:distrubutors.filter(d=>d.id == distrubutor.id)[0]}) 
+           dispatch({type:"SET_SELECTED_SECTOR",value:sectors.filter(s=>s.id == distination.sector.id)[0]}) 
+
+           // setupdate(true)
+           // setscheduelToBeUpdated(id)
+           // setstart_date(scheduel.start_date)
+           // setselectedSectorClients([...distination.clients])
+           // setorderListOfClients([...distination.clients])
+           // setselectedDistrubutor(distrubutors.filter(d=>d.id == distrubutor.id)[0])
+           // setselectedSector(sectors.filter(s=>s.id == distination.sector.id)[0])
+          
+        } 
+   }, [])
+
+
     if(clients.length < 1 || sectors.length <1 || distrubutors.length <1 ) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
         <Loading spacing={50} />   
@@ -171,8 +185,6 @@ const Schedule = (props)=> {
         if(!selectedDistrubutor) 
            return dispatch({type:"SET_ERROR",value:{id:"DISTRUBUTOR",message:"ce champe est obligatoire"}})
         if(adminId != undefined && selectedDistrubutor &&  selectedSector && orderListOfClients.length>0 ){
-            // setcanSubmit(false)
-            // seterror(null)
             dispatch({type:"SET_CAN_SUBMIT",value:false}) 
             dispatch({type:"SET_ERROR",value:null}) 
 

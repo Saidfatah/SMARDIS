@@ -32,7 +32,11 @@ const model ={
             clients_first_fetch:true,
             done_fetching_clients:true,
             clientsCount:clients.length,
-            last_visible_client
+            last_visible_client,
+            waiting_clients :[...clients].filter(c=>c.confirmed != "VALIDATED"),
+            waiting_clients_first_fetch:true,
+            done_fetching_waiting_clients:true,
+            waiting_clients_count:[...clients].filter(c=>c.confirmed != "VALIDATED").length
         }),
         fetcheClientsFailed : (state,clients)=>({
             ...state,
@@ -41,10 +45,8 @@ const model ={
         }),
         fetchedWaitingClients : (state,clients)=>({
             ...state,
-            waiting_clients :[...clients],
-            waiting_clients_first_fetch:true,
-            done_fetching_waiting_clients:true,
-            waiting_clients_count:clients.length
+            // waiting_clients :[...clients],
+            
         }),
         fetcheWaitingClientsFailed : (state,clients)=>({
             ...state,

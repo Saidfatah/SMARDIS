@@ -6,19 +6,24 @@ import Badge from '../../../Common/Badge'
 import Label from '../../../Common/Label'
 import Button from '../../../Common/Button'
 import {connect} from 'react-redux'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 
 export const ScheduleItem = ({navigation,scheduel,removeScheduel,done_removing_scheduel}) => {
     const [expanded, setExpanded] = useState(false);
     const [canRemove, setcanRemove] = useState(true)
     const handlePress = () => setExpanded(!expanded);
-    const {admin,distrubutor,distination,status,date,start_date} = scheduel
+    const {admin,distrubutor,distination,status,start_date} = scheduel
     
+  
+    console.log(new Date(start_date).toLocaleDateString())
     useEffect(() => {
         done_removing_scheduel == true && setcanRemove(true) &&resetIsDone('done_removing_scheduel')
     }, [done_removing_scheduel])
 
+    const navigateToModify=()=>{
+         delete scheduel.date
+         navigation.navigate('ADMINupdateSchedule',{scheduel,update:true})
+    }
     return (
         <List.Accordion
          title={`${distrubutor.name} (${distination.sector.name})` }
@@ -42,7 +47,7 @@ export const ScheduleItem = ({navigation,scheduel,removeScheduel,done_removing_s
                 <View style={styles.HFlex} >
                     <Label label="Date de debut :"  mga={16} />
                     <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
-                              <Text>{new Date(start_date).toLocaleDateString('en-US')}</Text>
+                              <Text>{new Date(start_date).toISOString()}</Text>
                     </View>
                 </View>
                 <View style={styles.HFlex} >
@@ -97,7 +102,7 @@ export const ScheduleItem = ({navigation,scheduel,removeScheduel,done_removing_s
                <Button
                 xStyle={styles.BtnXstyle} 
                 color={"BLUE"} 
-                clickHandler={e=>navigation.navigate('ADMINupdateSchedule',{scheduel,update:true})} 
+                clickHandler={navigateToModify} 
                 >
                    <Text style={styles.ButtonText}>Modifier Le Trajet</Text>
                    <IonIcon name="ios-settings-sharp" size={25} color="#fff" />
@@ -148,11 +153,13 @@ const styles = StyleSheet.create({
         borderRadius:12,
         marginRight:8,
         marginBottom:8,
+        justifyContent:"space-between"
+
     },
     clientsItemsWrapper: {
         display:'flex',
-        flexDirection:'row',
-        flexWrap:'wrap'
+        flexDirection:'column',
+        justifyContent:'flex-start'
     },
     HFlex: {
         display:'flex',

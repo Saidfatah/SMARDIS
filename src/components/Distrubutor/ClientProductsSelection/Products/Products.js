@@ -23,9 +23,15 @@ const Products=({isSelectedCategorySpecial,selectedCategoryProducts,setIsPanelAc
                 title:isSelectedCategorySpecial ?"is special":selectedCategorySubCategories.filter(c=>c.id ==key)[0].name,
                 data:groupedDash[key] 
             }))
-    
+            
+            console.log("--------------------------group----------------------")
+            console.log({groupedDash})
+            console.log("--------------------------group----------------------")
+
             SectionListData.forEach((group,index)=>{
                 const firstProduct=group.data[0]
+                 console.log({groupName:group.title})
+
                 productsListTemp.push(({
                     ...firstProduct,
                     name:group.title,

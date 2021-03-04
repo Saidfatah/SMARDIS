@@ -14,7 +14,7 @@ import {
 
 // Icon
 import Feather from 'react-native-vector-icons/Feather'
- 
+import ModalDropdown from 'react-native-modal-dropdown';
 
 class DropDownPicker extends React.Component {
     constructor(props) {
@@ -586,15 +586,18 @@ DropDownPicker.defaultProps = {
  
 
 
-const DropDown=({data,selected ,hidden,setSelected,keyExtractor,placeholder,defaultValue})=> {
+const DropDown=({data,selected ,hidden,setSelected,keyExtractor,placeholder,defaultValue,searchable})=> {
     if(hidden) return null
+
+    //  return <ModalDropdown options={['option 1', 'option 2']}/>
     return <DropDownPicker
     items={data}
     onChangeItem={item =>{
      setSelected(item.value)
     }}
+    // defaultValue={data &&data.length && data[5].value }
     keyExtractor={keyExtractor}
-    searchable={true}
+    searchable={searchable ||true}
     placeholder={defaultValue || "Selectioner un option"}
     labelStyle={{color:colors.BLACK}}
     containerStyle={{height: 40}}

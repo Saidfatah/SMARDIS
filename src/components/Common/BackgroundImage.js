@@ -3,7 +3,7 @@ import { ImageBackground} from 'react-native'
 
 const BackgroundImage=({children})=> {
     return (
-        <ImageBackground  source={require('../../images/blueGradiant.jpeg')} style={{width: '100%', height: '100%',padding:0}}>
+        <ImageBackground imageStyle={{flex:1}}  source={require('../../images/blueGradiant.jpeg')} style={{width: '100%', height: '100%',padding:0}}>
          {children}
         </ImageBackground>
     )

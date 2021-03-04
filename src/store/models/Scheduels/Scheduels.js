@@ -58,6 +58,9 @@ const model ={
 
         todays_scheduels_first_fetch:false,
         done_fetching_todays_scheduels:false,
+
+        fetch_orders_first_fetch:false,
+        // done_fetching_fetch_orders:false,
         
         done_adding_scheduel:false,
 
@@ -65,6 +68,12 @@ const model ={
         done_canceling_order:false,
         done_canceling_order:false,
         done_removing_scheduel:false,
+
+        //snapshots refrences 
+        todays_orders_ref:null,
+        validated_commands_ref:null,
+        canceled_commands_ref:null,
+        fetch_scheduels_ref:null,
 
         schedule_add_error:null,
         
@@ -79,12 +88,13 @@ const model ={
     },
     reducers:{
         //todays sales [ADMIN] screens
-        fetchedScheduels : (state,scheduels)=>({
+        fetchedScheduels : (state,{scheduels,fetch_scheduels_ref})=>({
             ...state,
             scheduels ,
             scheduelsCount: scheduels.length,
             todays_scheduels_first_fetch:true,
             done_fetching_todays_scheduels:true,
+            fetch_scheduels_ref
         }),
         scheduelsFetchingFailed : (state,args)=>({
             ...state,
@@ -97,7 +107,7 @@ const model ={
             ...state,
             orders ,
             ordersCount: orders.length,
-            todays_orders_first_fetch:true,
+            fetch_orders_first_fetch:true,
             done_fetching_todays_orders:true,
         }),
         ordersFetchingFailed : (state,args)=>({
@@ -109,9 +119,9 @@ const model ={
         }),
         addedScheduel  : (state,{scheduels,addedOrdersCount})=>({
             ...state,
-            scheduels ,
-            scheduelsCount : state.scheduelsCount +1,
-            ordersCount : state.scheduelsCount +addedOrdersCount,
+            // scheduels ,
+            // scheduelsCount : state.scheduelsCount +1,
+            // ordersCount : state.ordersCount +addedOrdersCount,
             done_adding_scheduel:true,
             schedule_add_error:null
         }),
@@ -132,7 +142,7 @@ const model ={
         removedScheduel  : (state,{scheduels,deletedOrdersCount})=>({
             ...state,
             scheduels ,
-            scheduelsCount : state.scheduelsCount -1,
+            scheduelsCount :state.scheduelsCoun>1? state.scheduelsCount -1:0,
             ordersCount : state.scheduelsCount -deletedOrdersCount,
             done_removing_scheduel:true       
          }),
@@ -156,12 +166,13 @@ const model ={
         }),
         
         //used in both [ADMIN,DISTRUBUTOR]$   
-        fetchedTodaysValideOrders : (state,orders)=>({
+        fetchedTodaysValideOrders : (state,{orders,validated_commands_ref})=>({
             ...state,
             valide_orders :orders,
             valide_orders_count :orders.length || 0,
             todays_validated_orders_first_fetch:true,
             done_fetching_todays_validated_orders:true,
+            validated_commands_ref
         }),
         fetchTodaysValideOrdersFAILED : (state,orders)=>({
             ...state,
@@ -171,7 +182,7 @@ const model ={
             done_fetching_todays_validated_orders:true,
         }),
         //used in [DISTRUBUTOR] screens
-        fetchedTodaysSectors : (state,{todaysOrders})=>({
+        fetchedTodaysSectors : (state,{todaysOrders,todays_orders_ref})=>({
             ...state,
             todaysSectors :[...todaysOrders],
             todaysSectorsCount :todaysOrders.length,
@@ -180,6 +191,7 @@ const model ={
             todays_orders_first_fetch:true,
             currentSectorIndex:0,
             distrubutor_todays_orders_done_fetching:true,
+            todays_orders_ref
         }),
         fetchedOrderConfig : (state,{orderConfig})=>({
             ...state,
@@ -207,12 +219,13 @@ const model ={
             selectedBill 
         }),
      
-        fetchedDistrubutorTodaysCanceledOrders : (state,orders)=>({
+        fetchedDistrubutorTodaysCanceledOrders : (state,{orders,canceled_commands_ref})=>({
             ...state,
             distrubutor_todays_canceled_orders :orders,
             distrubutor_todays_canceled_orders_count :orders.length,
             distrubutor_todays_canceled_orders_done_fetching: true ,
             todays_canceled_orders_first_fetch:true,
+            canceled_commands_ref
         }),
         distrubutorTodaysCanceledOrdersFetchingFailed : (state,orders)=>({
             ...state,

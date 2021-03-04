@@ -20,17 +20,28 @@ export default async  (args,state,dispatch)=>{
                            .where('name','==',name)
                            .get()
        if((await checkNameResponse).docs.length) throw Error('NAME_USED')      
+      
        
+         
+        const CATEGORY=[category]
+      
+        //if a discount is applied we add product to discounts category
+        if(discount >0){
+              CATEGORY.push(DISCOUNT_CATEGORY)
+        } 
+
        //uploadImage then get the uri and use it in 
        let imageUri = image
+      
        if(imageUri != "NO_IMAGE")
        {
            const task =  Storage().ref('productImages/'+name).putFile(imageUri);
             task.on('state_changed', 
                 sn =>{},
-                err=>console.log(err),
+                err=>{
+                    console.log(err)
+                },
                 () => {
-                   console.log('Photo uploaded!'+name)
                    Storage()
                    .ref("productImages").child(name).getDownloadURL()
                    .then(url => {
@@ -39,31 +50,32 @@ export default async  (args,state,dispatch)=>{
                    }).catch(err=>console.log(err))
                }
             )
-            await task
+           await task
+           const newProduct = productModel(name,CATEGORY,imageUri,price1,ref,price2,price3,price4,subCategory,regions,discount)
+
+           const addResponse= firestore()
+                             .collection('products')
+                             .add(newProduct)
+       }else{
+              const newProduct = productModel(name,CATEGORY,"NO_IMAGE",price1,ref,price2,price3,price4,subCategory,regions,discount)
+
+              const addResponse= firestore()
+                          .collection('products')
+                          .add(newProduct)
        }
-
-       //add to firestore
-       const CATEGORY=[category]
-       
-       //if a discount is applied we add product to discounts category
-       if(discount >0){
-             CATEGORY.push(DISCOUNT_CATEGORY)
-       } 
-
-       const newProduct = productModel(name,category,imageUri,price1,ref,price2,price3,price4,subCategory,regions,discount)
-
-       const addResponse= firestore()
-                         .collection('products')
-                         .add(newProduct)
       
-       products.push(newProduct)
+     
+     
+     
+      
+     
        dispatch.toast.show({
            type:'success',
            title:'Ajoute ',
            message:`Produit ${name} est ajouter avec success`
        })
        navigation.navigate('ADMINproducts')
-       dispatch.products.addedProduct(products)
+       dispatch.products.addedProduct([])
     } catch (error) {
         console.log(error)
         if(error.message == "NAME_USED")

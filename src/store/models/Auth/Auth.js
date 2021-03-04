@@ -19,6 +19,7 @@ const userTypes= ['ADMIN','DISTRIBUTOR']
 const model ={
     state:{
         authenticated  : false,
+        has_logged_once  : false,
         users :[],
         waitingList    : [],
         admins         : [],
@@ -113,7 +114,8 @@ const model ={
             adminId       : user.id,
             userType,
             user,
-            userPassword
+            userPassword,
+            has_logged_once:true,
         }),
         logedOut:  (state,args)=>({
             ...state,

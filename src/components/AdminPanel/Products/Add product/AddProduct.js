@@ -20,8 +20,6 @@ const ERRORS_INITIAL_CONFIG = {
     activePriceREQUIRED:false,
     price1REQUIRED:false,
     price2REQUIRED:false,
-    price3REQUIRED:false,
-    price4REQUIRED:false,
     activePriceREQUIRED:false,
     refREQUIRED:false,
     stockREQUIRED:false,
@@ -142,7 +140,7 @@ export const AddProduct = (props) => {
                 
                 dispatch({type:"SET_SELECTED_CITIES",value:regions})
                 dispatch({type:"SET_UPDATE",value:true})
-                dispatch({type:"SET_DISCOUNT",value:discount<1 ? (discount*100):0})
+                dispatch({type:"SET_DISCOUNT",value:discount >0 ? discount:0})
                 dispatch({type:"SET_PRODUCT_DATA",value:{ ...productData,name,ref,image,stock,price1,price2,price3,price4}})
                 dispatch({type:"SET_PRODUCT_TO_BE_UPDATED",value:id})
                 // if(subCategory != "NOT_DEFINED"){
@@ -194,14 +192,6 @@ export const AddProduct = (props) => {
          }
          if(price2 == 0){
              errorsTemp.price2REQUIRED =true
-             errorsCount++
-         }
-         if(price3 == 0){
-             errorsTemp.price3REQUIRED =true
-             errorsCount++
-         }
-         if(price4 == 0){
-             errorsTemp.price4REQUIRED =true
              errorsCount++
          }
          if(ref == ''){

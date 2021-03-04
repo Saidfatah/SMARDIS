@@ -51,6 +51,7 @@ const SwipeAbleProductDetails=({scheduelId,selectedProduct,sector,isPanelActive,
                setSelected={setSelectedProductPanel} 
                defaultValue={selectedProductPanel && selectedProductPanel.name}
                selected={selectedProductPanel}
+               searchable={false}
               />
               :null
            }

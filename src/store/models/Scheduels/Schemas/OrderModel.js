@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore'
 
-export const orderModel=(scheduleId,client,sector,distrubutor,turn,start_date)=>({
+export const orderModel=(scheduleId,client,sector,distrubutor,turn,start_date,region)=>({
     distrubutor  ,
     client ,
     sector,
@@ -10,6 +10,7 @@ export const orderModel=(scheduleId,client,sector,distrubutor,turn,start_date)=>
     turn ,//0,1,2,3,4 depends on what the admin has chosen  
     total : 0,
     products:[],
+    region:region||[],
     billRef:"Aucune",//updated from dirtubtor cart on validating command 
     status: "PENDING",//update from distrubutor cart 
     note : "Aucune", // if sale is canceled distrubutor needs to provide a note 

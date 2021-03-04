@@ -10,11 +10,17 @@ export default async (id,state,dispatch)=>{
 
        const last_visited_sector = state.sector.last_visited_sector
        
+       console.log({id})
        if(last_visited_sector == id) return
 
        //    const SectorClientsResponse= await firestore().collection('clients').where('sectorId','==',id).get()
-       const clients = [...state.clients.clients]
-       const sectorClients = clients.filter(client=> client.sectorId == id)
+       const clients = [...state.client.clients]
+       const sectorClients = clients
+       .sort(function(a, b){
+        if(a.name < b.name) { return -1; }
+        if(a.name > b.name) { return 1; }
+        return 0;
+       }).filter(client=> client.sectorId == id)
        
        if(sectorClients.length>0){
           dispatch.sector.fetchedSectorClients({

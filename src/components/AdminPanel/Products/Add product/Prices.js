@@ -49,7 +49,6 @@ const Prices=({price1, price2,price3,price4,handelChange,ERRORS_MESSAGES,errors}
      </View>
         <View>
          <Label label="Prix 3" mga={16}/>
-         <Error trigger={errors.price3REQUIRED} error={ERRORS_MESSAGES[0].message} />
          <NumericInput 
            iconSize={30}
            minValue={0}
@@ -68,7 +67,6 @@ const Prices=({price1, price2,price3,price4,handelChange,ERRORS_MESSAGES,errors}
      </View>
         <View>
          <Label label="Prix 4" mga={16}/>
-         <Error trigger={errors.price4REQUIRED} error={ERRORS_MESSAGES[0].message} />
          <NumericInput 
            iconSize={30}
            minValue={0}

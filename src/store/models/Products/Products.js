@@ -38,8 +38,8 @@ const model ={
 
         addedProduct : (state,products)=>({
             ...state,
-            products :[...products],
-            productsCount :state.productsCount +1,
+            // products :[...products],
+            // productsCount :state.productsCount +1,
             done_adding_product:true,
             product_adding_error:null
         }),
@@ -56,13 +56,13 @@ const model ={
 
         updatedProduct : (state,products)=>({
             ...state,
-            products :[...products]
+            // products :[...products]
         }),
 
         removedProduct : (state,products)=>({
             ...state,
-            products :[...products],
-            productsCount :state.productsCount -1,
+            // products :[...products],
+            // productsCount :state.productsCount >1 ?state.productsCount -1:0,
             done_removing_product:true
         }),
         removingProductFailed : (state,args)=>({

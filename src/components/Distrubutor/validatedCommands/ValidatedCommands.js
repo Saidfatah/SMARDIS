@@ -10,13 +10,17 @@ const ValidatedCommands=({navigation,valide_orders,done_fetching_todays_validate
    
   
 
-    return <BackgroundImage>
+    return <BackgroundImage  >
         {
             valide_orders.length<1  && !done_fetching_todays_validated_orders
             ?<View style={{backgroundColor:'transparent',flex: 1,display:'flex',alignItems:'center'}} >
             <Loading spacing={50} />   
             </View> 
-            :<ScrollView  style={{flex:1}} contentContainerStyle={{ flex:1, padding:8,paddingTop:32}} >
+            :<ScrollView  
+            style={{flex:1}} 
+            contentContainerStyle={{  padding:8,paddingTop:32}}
+             >
+                <View>
                 {
                     valide_orders.map((bill,index) => <Item xStyle={styles.xstyle} key={index}>
                     <View style={styles.item}>
@@ -38,6 +42,7 @@ const ValidatedCommands=({navigation,valide_orders,done_fetching_todays_validate
                      </View>
                  </Item>)
                 }
+                </View>
             </ScrollView>
         }
     </BackgroundImage>

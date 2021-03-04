@@ -8,7 +8,7 @@ import DropDown from '../../../Common/DropDown'
 import CitiesDropDown from '../../../Common/CitiesDropDown'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
-import CitiesCheckbox from '../../../Common/CitiesCheckbox'
+import NumericInput from 'react-native-numeric-input'
 
 
 const ERRORS_INITIAL_CONFIG = {
@@ -38,12 +38,12 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
     const [update, setupdate] = useState(false)
     const [clientToBeUpdatedId, setclientToBeUpdatedId] = useState(-1)
     const [selectedPrice, setselectedPrice] = useState(PRICES[0])
-    const [selectedSector, setselectedSector] = useState(sectors[0] || {name:"SECTOR",city:"Ouarzazate",id:-1})
+    const [selectedSector, setselectedSector] = useState(sectors[0])
     const [clientData, setclientData] = useState({
         phone:'',
-        city:'Ouarzazate',
+        city:'',
         ref:'',
-        name:'Mohsine new',
+        name:'',
         address:'',
         objectif:0,
     })
@@ -56,7 +56,8 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
         if(route.params){
             if(route.params.update == undefined) return 
             const {client}=route.params
-            const {phone,city,ref,name,address,objectif,price,sectorId }=client
+            const {phone,city,ref,name,address,objectif,price,sectorId,id }=client
+            console.log({sectorId,id:client.id})
             navigation.setParams({CLIENT_NAME:client.name})
             setclientData({
              ...clientData,
@@ -70,15 +71,19 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
             })
             setupdate(true)
             setclientToBeUpdatedId(client.id)
-            setselectedSector(sectors.filter(s=>s.id == sectorId)[0])
-            // setselectedPrice(PRICES.filter(p=>p == price)[0])
+            console.log('set selected sector on start ')
+            const targetsector = sectors.filter(s=>s.id == sectorId)[0]
+            setselectedSector(targetsector)
+           setselectedPrice(PRICES.filter(p=>p == price)[0])
         } 
     }, [])
     useEffect(() => {
         client_adding_error != null && seterrors({...errors,addERROR:true})
     }, [client_adding_error])
 
-
+    useEffect(() => {
+        console.log(selectedSector)
+    }, [selectedSector])
     const resetErrors=()=>seterrors({...ERRORS_INITIAL_CONFIG})
     const handelChange=input=>v=>{ setclientData({...clientData,[input]:v}) }
     const validateFields =()=>{
@@ -131,8 +136,82 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
         updateClient({...clientObj,id:clientToBeUpdatedId,navigation})
     }
 
-
+     
     const {ref,name,phone,address,city,objectif}=clientData
+    const Sectors=()=>{
+       return <View>
+           <Label label="Secteurs" mga={16} />
+       <Error trigger={errors.secteurREQUIRED} error={ERRORS_MESSAGES[0].message} />
+       <DropDown 
+           data={sectors.map(sector=>({
+               value:sector,
+               label:sector.name,
+               selected: sector.id==selectedSector.id
+           }))}
+           keyExtractor={(item) => item.value.id}
+           setSelected={setselectedSector} 
+           selected={selectedSector}
+           defaultValue={selectedSector.name}
+       />
+       </View>
+
+    }
+    const Price= ()=>{
+        return <View>
+            {
+             userType =="ADMIN"
+             ?  <View>
+                <Label label="Prix" />
+                <Error trigger={errors.priceREQUIRED} error={ERRORS_MESSAGES[0].message} />
+                <DropDown 
+                    data={PRICES.map(p=>({value : p, label :p.toString()}))} 
+                    setSelected={setselectedPrice} 
+                    selected={selectedPrice}
+                    defaultValue={selectedPrice}
+                    keyExtractor={(item) => item.value}
+                />
+            </View>
+            :null
+            }
+        </View>
+    }
+    const Objectif =()=>{
+        return <View>
+            {
+                userType =="ADMIN"
+                ? <View>
+                <Label label="Montant objectif DH" mga={16}/>
+                <Error trigger={errors.objectifREQUIRED} error={ERRORS_MESSAGES[0].message} />
+                <NumericInput 
+                 iconSize={30}
+                 minValue={0}
+                 step={1}
+                 valueType="real"
+                 value={objectif} 
+                 initValue={objectif} 
+                 containerStyle={{  
+                     borderRadius:12,  
+                     borderColor:colors.BLACK,
+                 }}
+                 inputStyle={{ borderColor:colors.BLACK }}
+                 iconStyle={{color:colors.BLACK, }}
+                 leftButtonBackgroundColor="transparent"
+                 rightButtonBackgroundColor="transparent"
+                 onChange={value=>handelChange('objectif')(value)} 
+                 />
+           
+           </View>
+                :null
+           }
+        </View>
+    }
+    const Cities =()=>{
+        return <View>
+            <Label label="Ville" mga={16} />
+            <Error trigger={errors.cityREQUIRED} error={ERRORS_MESSAGES[0].message} />
+            <CitiesDropDown {...{setcity:handelChange('city'),city}} />
+        </View>
+    }
     return  <KeyboardAwareScrollView   contentContainerStyle={{ display:'flex',  flexGrow:1 }}  style={styles.container} >
         <View style={{flex:1}} >
             
@@ -152,46 +231,9 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
                 :null
             }
     
-            <Label label="Secteurs" mga={16} />
-            <Error trigger={errors.secteurREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <DropDown 
-                data={sectors.map(sector=>({
-                    value:sector,
-                    label:sector.name,
-                    selected: sector.id==selectedSector.id
-                }))}
-                keyExtractor={(item) => item.value.id}
-                setSelected={setselectedSector} 
-                selected={sectors
-                    .filter(s=>s.id == selectedSector.id)
-                    .map(c=>({
-                        label:selectedSector.name,
-                        value:selectedSector
-                    }))[0]
-                }
-
-            />
+            <Sectors />
            
-           {
-                userType =="ADMIN"
-                ? <View>
-                <Label label="Montant objectif DH" mga={16}/>
-                <Error trigger={errors.objectifREQUIRED} error={ERRORS_MESSAGES[0].message} />
-                <TextInput style={styles.Input}   
-                        placeholder={"Entrer l'objectif du client"}   
-                        defaultValue={objectif.toString()} 
-                        keyboardType="decimal-pad"
-                        onFocus={e=> resetErrors()}
-                        onChangeText={text=>{
-                            let  value = parseFloat(text)
-                            console.log(value)
-                            if(value == NaN || text.includes('NaN')) value = 0
-                            handelChange('objectif')(value)
-                        }} 
-                />
-           </View>
-                :null
-           }
+            <Objectif />
            
             
             <Label label="Nom Client" mga={16} />
@@ -204,24 +246,9 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
                     onChangeText={text=>handelChange('name')(text.trim())} 
             /> 
            
-            {
-             userType =="ADMIN"
-             ?  <View>
-                <Label label="Prix" />
-                <Error trigger={errors.priceREQUIRED} error={ERRORS_MESSAGES[0].message} />
-                <DropDown 
-                    data={PRICES.map(p=>({value : p, label :p.toString()}))} 
-                    setSelected={setselectedPrice} 
-                    selected={selectedPrice}
-                    keyExtractor={(item) => item.value}
-                />
-            </View>
-            :null
-            }
+            {/* <Price /> */}
     
-            <Label label="Ville" mga={16} />
-            <Error trigger={errors.cityREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <CitiesDropDown {...{setcity:handelChange('city'),city}} />
+            {/* <Cities /> */}
             
             <Label label="Téléphone" mga={16} />
             <Error trigger={errors.phoneREQUIRED} error={ERRORS_MESSAGES[0].message} />

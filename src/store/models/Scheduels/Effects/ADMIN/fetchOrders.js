@@ -13,13 +13,15 @@ var tomorrow = firestore.Timestamp.fromDate(tomorrowJs);
 const CONFIG_DOC ="1 - - CONFIG - -"
 export default async  (arg,state,dispatch)=>{
     try {
-       const fetchOrdersReponse = await firestore()
+
+        const fetch_orders_first_fetch = state.scheduel.fetch_orders_first_fetch
+        if(fetch_orders_first_fetch == true ) return 
+        const fetchOrdersReponse = await firestore()
                                         .collection('orders')
                                         .where('created_at','<',tomorrow)
                                         .where('created_at','>',yesterday)
 
        fetchOrdersReponse.onSnapshot(res=>{
-  
            if(res.docs.length){
                console.log('got orders')
                const maped_data=res.docs.map(order=>({

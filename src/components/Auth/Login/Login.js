@@ -23,6 +23,7 @@ const  Login=(props)=> {
      savedEmail,
      login,
      resetIsDone,
+     has_logged_once,
      done_Logging,
      toggleSavePassword,
      savePassword,
@@ -53,17 +54,22 @@ const  Login=(props)=> {
             setauthErrorLocal(authError)
             setcanSubmit(true)
           }
+          setcanSubmit(true)
     }, [authError])
     useEffect(() => {
-            console.log({done_Logging})
           if(done_Logging ){
-            setcanSubmit(true)
             if(savePassword && savePassword.indexOf("false") > -1){
               setusername('')
               setPassword('')
             }
+            // resetIsDone("done_Logging")
           }
+          setcanSubmit(true)
     }, [done_Logging])
+    useEffect(() => {
+          if(has_logged_once == true) setcanSubmit(true)
+         
+    }, [has_logged_once])
     useFocusEffect(
         useCallback(() => {
           const onBackPress = () => {
@@ -94,7 +100,7 @@ const  Login=(props)=> {
         
          //reset errors 
          setauthErrorLocal(null)
-
+         resetIsDone('has_logged_once')
          login({password,username,savePassword:savePasswordLogin,navigation})
          setcanSubmit(false)
     }
@@ -128,7 +134,7 @@ const  Login=(props)=> {
                           defaultValue={username} 
                           placeholderTextColor="#fff"
                           onFocus={e=> setusernameRequired(null)}
-                          onChangeText={text=>setusername(text)} 
+                          onChangeText={text=>setusername(text.replace(/\s/g, ''))} 
                       />
                  </View>
      
@@ -194,6 +200,7 @@ export default connect(
         savedEmail : state.auth.savedEmail ,
         savePassword : state.auth.savePassword ,
         done_Logging : state.auth.done_Logging ,
+        has_logged_once : state.auth.has_logged_once ,
     }),
     dispatch=>({
        login : dispatch.auth.login,

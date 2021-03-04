@@ -20,10 +20,10 @@ const ClientsOrdering=({sectorClients,dispatch})=> {
               marginChildrenBottom={10}
               marginChildrenTop={10}
               isDragFreely={true}
-              onDragStart={e=> dispatch({id:'SET_SCROLL_ENABLE',value:false})}
-              onDragEnd={e=>dispatch({id:'SET_SCROLL_ENABLE',value:true})}
+              onDragStart={e=> dispatch({type:'SET_SCROLL_ENABLE',value:false})}
+              onDragEnd={e=>dispatch({type:'SET_SCROLL_ENABLE',value:true})}
               onDataChange={orderdData=>{
-                dispatch({id:'SET_ORDERD_LIST_OF_CLIENTS',value:orderdData})
+                dispatch({type:'SET_ORDERD_LIST_OF_CLIENTS',value:orderdData})
               }}
               keyExtractor={(item,index)=> index}
               renderItem={(item,index)=>{

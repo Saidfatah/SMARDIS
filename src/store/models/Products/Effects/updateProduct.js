@@ -10,7 +10,6 @@ export default async  (args,state,dispatch)=>{
     const targetProduct= products.filter(p=>p.ref == ref)[0]
     const targetProductCategories=targetProduct.category
     const targetProductIndex= products.indexOf(targetProduct)
-    products[targetProductIndex] = {...targetProduct,targetProduct,name,category,image,price1,price2,price3,price4}
     
 
      
@@ -27,7 +26,7 @@ export default async  (args,state,dispatch)=>{
 
     //if we have applied a discount the product gets added to discountes category
     const hasDiscountCategory = CATEGORY.indexOf(DISCOUNT_CATEGORY)
-    if(dscount > 0){
+    if(discount > 0){
        //but check if it hasn't already been added , maybe admin changed discount from .5 to .3 
        if( hasDiscountCategory < 0){
            CATEGORY.push(DISCOUNT_CATEGORY)
@@ -39,22 +38,81 @@ export default async  (args,state,dispatch)=>{
         }
     }
  
+    
 
+  if(image !="NO_IMAGE" ){
+
+        if( image.toString().indexOf("productImages%") < 0){
+          const task =  Storage().ref('productImages/'+name).putFile(image);
+          task.on('state_changed', 
+              sn =>{},
+              err=>{
+                  console.log(err)
+              },
+               async () => {
+                 Storage()
+                 .ref("productImages").child(name).getDownloadURL()
+                 .then(async url => {
+                   console.log('uploaded image url', url);
+                   const updateResponse= await firestore()
+                   .collection("products")
+                   .doc(id)
+                   .update({
+                       regions,
+                       name,
+                       category:CATEGORY,
+                       image:url||"NO_IMAGE",
+                       price1,
+                       price2,
+                       price3,
+                       price4,
+                       discount:discount||0
+                   });
+                 }).catch(err=>console.log(err))
+             }
+          )
+         await task
+        }else{
+            const updateResponse= await firestore()
+            .collection("products")
+            .doc(id)
+            .update({
+                regions,
+                name,
+                category:CATEGORY,
+                image,
+                price1,
+                price2,
+                price3,
+                price4,
+                discount:discount||0
+            });
+        }
+  }else{
     const updateResponse= await firestore()
-                                .collection("products")
-                                .doc(id)
-                                .update({
-                                    regions,
-                                    name,
-                                    category:CATEGORY,
-                                    image,
-                                    price1,
-                                    price2,
-                                    price3,
-                                    price4,
-                                    discount:discount||0
-                                });
+    .collection("products")
+    .doc(id)
+    .update({
+        regions,
+        name,
+        category:CATEGORY,
+        image,
+        price1,
+        price2,
+        price3,
+        price4,
+        discount:discount||0
+    }); 
+     
+  }
+  
+
+
+
+
+  
  
+   products[targetProductIndex] = {...targetProduct,targetProduct,name, category:CATEGORY,image,price1,price2,price3,price4}
  
     dispatch.toast.show({
         type:'success',

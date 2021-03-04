@@ -190,8 +190,9 @@ export const AddCategory = (props) => {
     }
   
     const Buttons=()=>{
-        return <View style={styles.btns} >
+        return <View>
         <Error  trigger={errors.addERROR} error={category_add_error && category_add_error.message} />
+        <View style={styles.btns} >
 
         <Button
          xStyle={{...styles.BtnXstyle,marginRight:16}} 
@@ -209,6 +210,7 @@ export const AddCategory = (props) => {
             <Text style={styles.ButtonText}>Annuler</Text>
        </Button>
    </View>
+        </View>
     }
    
 

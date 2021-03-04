@@ -24,7 +24,7 @@ export default async (arg,state,dispatch)=>{
                   .where('sale_date', '>', yesterydayDstrubutor)
      
       
-        fetchOrdersReponse.onSnapshot(res=>{
+        const canceled_commands_ref = fetchOrdersReponse.onSnapshot(res=>{
             if(res.docs.length){
                 console.log('GOT CANCELED')
                 const maped_data=res.docs.map(order=>({
@@ -35,7 +35,7 @@ export default async (arg,state,dispatch)=>{
                  }))
                 const orders=maped_data.filter(order=> order.id != CONFIG_DOC)
 
-                return dispatch.scheduel.fetchedDistrubutorTodaysCanceledOrders(orders)
+                return dispatch.scheduel.fetchedDistrubutorTodaysCanceledOrders({orders,canceled_commands_ref})
             }
             dispatch.scheduel.distrubutorTodaysCanceledOrdersFetchingFailed()
         })

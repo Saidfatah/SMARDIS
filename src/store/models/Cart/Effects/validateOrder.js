@@ -36,6 +36,7 @@ export default async (args,state,dispatch)=>{
            .update({
                  products:[...cartItems.map(item=>{
                      delete item.orderId
+                     delete item.client
                      return item 
                  })],
                  billRef,
@@ -46,17 +47,18 @@ export default async (args,state,dispatch)=>{
             })
            
           //check if clients has reached their objectif 
-          const {objectif,id}=client
+          const {objectif,id,name}=client
           const {last_mounth,progress,initial}= objectif
           const currentMount= new Date().getMonth()
           if(currentMount == last_mounth){
              if((progress + total)  >= initial){
-                  console.log("progress accomplished")
-                  const newPrice=  'price'+(parseInt(client.price.split('e')[1]) +1)
-                  //update client's price 
-                  await firestore().collection('clients').doc(id).update({ 
-                      priceType: newPrice
-                  })
+               //might wanna do somthing 
+            //    dispatch.toast.show({
+            //     type:'success',
+            //     title:'Objectif   ',
+            //     message:`le client ${name} a completer son objectif`
+            //    })
+
              }else{
                   //update clients' objectif progress
                   console.log('update progress')
@@ -96,7 +98,7 @@ export default async (args,state,dispatch)=>{
              type:'success',
              title:'Validation ',
              message:`La command  est valider avec success `
-         })
+          })
          dispatch.cart.validatedGuestOrder()
          deleteCartFromASyncStorage()
          navigation.navigate('DISTRIBUTORDashBoard')

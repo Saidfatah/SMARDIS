@@ -8,7 +8,7 @@ export default async (id,state,dispatch)=>{
                                    .collection('users')
                                    .doc(id)
                                    .update({
-                                       confirmed : "APPROVED"
+                                       confirmed : "VALIDATED"
                                    })
 
         dispatch.auth.approvedUser()    

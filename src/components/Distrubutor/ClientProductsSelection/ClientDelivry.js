@@ -8,8 +8,10 @@ import {colors} from '../../Common/Colors'
 import BackgroundImage from '../../Common/BackgroundImage'
 import  SwipeAbleProductDetails from './Products/SwipeAbleProductDetails'
 import SwipeAbleCancelOrder from './SwipeAbleCancelOrder'
-import { BackHandler ,Alert} from 'react-native';
+import { BackHandler } from 'react-native';
 import { useFocusEffect } from "@react-navigation/native";
+import FOndationIcon from 'react-native-vector-icons/Foundation'
+
 
 const ClientDelivry=(props)=> {
     const { route,
@@ -49,29 +51,35 @@ const ClientDelivry=(props)=> {
     }, []));
 
 
-    
-    return <BackgroundImage  >
-        <View style={styles.tagParent} >
-             <View style={styles.tag} >
-                 <Text style={styles.clientName}>{name}</Text>
+    const Header=()=>{
+        const COLOR= objectif.progress>=0 ? colors.GREEN : colors.RED
+        return <View style={styles.tagParent} >
+        <View style={styles.tag} >
+            <Text style={styles.clientName}>{name}</Text>
+            <View style={styles.FH} >
+                <FOndationIcon name="target" color={COLOR} size={20} />
                  <Text style={{
                      ...styles.clientName,
-                     color:objectif.progress>=0?colors.GREEN:colors.RED
+                     color:COLOR
                      }}>
-                         {objectif.progress}DH
+                         {objectif.progress >=0 ?"+"+objectif.progress :objectif.progress }DH
                 </Text>
-             </View>
-             <Button color="RED"  clickHandler={( )=>{
-                setIsCancelPanelActive(true)
-            }} >
-              <Text style={{color:'#fff'}} >Annuler la command </Text>
-            </Button>
+            </View>
         </View>
+        <Button color="RED"  clickHandler={( )=>{
+           setIsCancelPanelActive(true)
+       }} >
+         <Text style={{color:'#fff'}} >Annuler la command </Text>
+       </Button>
+   </View>
+    }
+    return <BackgroundImage  >
+       <Header />
         <View style={styles.productsPanel} >
              <CategoriesSlider  {...{navigation}} />
              <Products {...{isSelectedCategorySpecial,setIsPanelActive,setselectedProduct,selectedCategoryProducts,selectedCategorySubCategories,client}} />
         </View>
-             <SwipeAbleProductDetails {...{
+        <SwipeAbleProductDetails {...{
                  scheduelId,
                  selectedProduct,
                  sector,
@@ -80,9 +88,9 @@ const ClientDelivry=(props)=> {
                  guest:client,
                  client,
                  orderId,
-                 addCartItem}} 
-                 />
-             <SwipeAbleCancelOrder {...{
+            addCartItem}} 
+            />
+        <SwipeAbleCancelOrder {...{
                  navigation,
                  cancelOrder,
                  orderId,
@@ -90,7 +98,7 @@ const ClientDelivry=(props)=> {
                  resetIsDone,
                  isPanelActive:isCancelPanelActive,
                  setIsPanelActive :setIsCancelPanelActive
-                 }}  />
+            }}  />
     </BackgroundImage> 
   
 }
@@ -111,6 +119,12 @@ export default connect(
 
 
 var styles = StyleSheet.create({
+  FH:{
+        display:'flex',
+        alignItems:'center',
+        flexDirection:'row',
+        justifyContent:"flex-start",
+  },
   tagParent:{
         display:'flex',
         alignItems:'center',

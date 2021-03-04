@@ -4,6 +4,7 @@ import ProductInfo from './ProductInfo'
 
 const ProductItem=({index,client,product,setIsPanelActive,setselectedProduct,isSub})=> {
     
+    console.log({isSub})
     return  <View style={{
         ...styles.product,
         borderTopColor:'#000',

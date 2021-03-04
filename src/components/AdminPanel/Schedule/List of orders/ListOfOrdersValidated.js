@@ -34,10 +34,30 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
              products.forEach((product,index2)=>{
                   columnCount++
                   const {quantity,priceForClient,ref,name} =product
-                  const date = sale_date.toLocaleDateString('en-US').split('/').reverse().reduce((a,c)=>a+c,"")
+
+                  const dateString=sale_date.toLocaleDateString('en-US')
+                  const dateParts=dateString.split('/').reduce((a,c)=>{
+                         let length= c.length
+                         const datePart= parseInt(c)
+                         let ds
+                         if(datePart>9 && length <3){
+                             ds = datePart.toString()
+                         }else if(datePart<10 && length <3){
+                             ds ="0"+datePart.toString()
+                         }
+                       
+                         if(length>3){
+                             ds=c.substr(2,2)
+                         } 
+
+                      return [...a,ds] 
+                  },[]) 
+                  const date=dateParts[1]+dateParts[0]+dateParts[2]
+
+
                   dataTemp.push([columnCount,billRef,date,ref,client.ref,name,quantity,priceForClient ])
 
-                  const line=billRef.trim()+";"+date+";"+ref.trim()+";"+client.ref.trim()+";"+name.trim()+";"+quantity+";"+priceForClient+";"
+                  const line="1;"+billRef.trim()+";"+date+";"+ref.trim()+";"+client.ref.trim()+";"+name.trim()+";"+quantity+";"+priceForClient+";"
                   console.log({date})
                   linesTemp.push(line)
              })
@@ -79,7 +99,7 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
         }
 
         const newDate=new Date().toLocaleDateString('en','USA').replace("/",'_').replace("/",'_')
-	    const filetoEDP = DirectoryPath+"/"+newDate+".xlsx";
+	    const filetoEDP = DirectoryPath+"/"+newDate+".txt";
 
         const text=Lines.reduce((a,c)=>a+"\n"+c,"\n")
   

@@ -12,7 +12,13 @@ export default async (arg,state,dispatch)=>{
            const docs =res.docs
            if(docs.length){
                const maped_data = docs.map(doc=>({...doc.data(),id:doc.id}))
-               const sectors = maped_data.filter(doc=>doc.id != CONFIG_DOC)
+               const sectors = maped_data
+               .sort(function(a, b){
+                if(a.name < b.name) { return -1; }
+                if(a.name > b.name) { return 1; }
+                return 0;
+               })
+               .filter(doc=>doc.id != CONFIG_DOC)
                
                return dispatch.sector.fetchedSectors(sectors)
            }

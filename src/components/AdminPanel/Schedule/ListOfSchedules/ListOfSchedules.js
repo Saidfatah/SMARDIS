@@ -11,7 +11,7 @@ const HEIGHT = height- StatusBar.currentHeight
 
 export const ListOfSchedules = ({navigation,scheduels,done_fetching_todays_scheduels}) => {
  
-
+    console.log(scheduels)
     const TITLE = scheduels.length >0 ? "les order active" :"ilnya pas de emploi du temps"
 
     if(scheduels.length <1 && !done_fetching_todays_scheduels ) 

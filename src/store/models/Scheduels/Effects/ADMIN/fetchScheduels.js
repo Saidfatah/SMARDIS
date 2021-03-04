@@ -1,43 +1,51 @@
 import firestore from '@react-native-firebase/firestore'
 
-const today = new Date()
  
-var curr = new Date(today); // get current date
-var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
-var last = first + 6; // last day is the first day + 6
-var firstday = new Date(curr.setDate(first)); // 06-Jul-2014
-var lastday = new Date(curr.setDate(last)); //12-Jul-2014
+ 
+function startOfWeek(date)
+  {
+    var diff = date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1);
+  
+    return new Date(date.setDate(diff));
+ 
+  }
+//get first day of week and last day of the current  week 
+var firstday =startOfWeek(new Date())
+var lastday = new Date()
+lastday.setDate(firstday.getDate()+6); 
 
 var weekStart = firestore.Timestamp.fromDate(firstday);
 var nextWeek = firestore.Timestamp.fromDate(lastday);
- 
- 
+
 const CONFIG_DOC ="0000CONFIG0000"
+
 export default async (arg,state,dispatch)=>{
     try {
+        const admin_city= state.auth.user.city
         console.log('fetchScheduelsReponse')
+        console.log({admin_city})
         const fetchScheduelsReponse =  firestore()
                                       .collection('scheduels')
+                                      .where('region',"array-contains",admin_city)
                                       .where('date','>=',weekStart)
-                                      //   .where('date','<',nextWeek)
+                                      .where('date','<',nextWeek)
 
-         fetchScheduelsReponse.onSnapshot(res=>{
-             if(res.docs.length){
-                 console.log('got scheduels')
-                  const maped_data=res.docs.map(scheduel=>({
-                      ...scheduel.data(),
-                      id:scheduel.id,
-                      date:scheduel.data().date.toDate(),
-                      start_date:scheduel.data().start_date.toDate(),
-                    }))
+           return await fetchScheduelsReponse.get()
+          const fetch_scheduels_ref =fetchScheduelsReponse.onSnapshot(res=>{
+              if(res.docs.length){
+                   const scheduels=res.docs.map(scheduel=>({
+                       ...scheduel.data(),
+                       id:scheduel.id,
+                       date:scheduel.data().date.toDate(),
+                       start_date:scheduel.data().start_date.toDate(),
+                     }))
 
-                  const scheduels= maped_data.filter(scheduel=> scheduel.id != CONFIG_DOC)
-                  console.log({scheduels})
-                  if(scheduels.length <1) return dispatch.scheduel.scheduelsFetchingFailed()
-                 return  dispatch.scheduel.fetchedScheduels(scheduels)
-              }
-           dispatch.scheduel.scheduelsFetchingFailed()
-         })
+               
+                   if(scheduels.length <1) return dispatch.scheduel.scheduelsFetchingFailed()
+                  return  dispatch.scheduel.fetchedScheduels({scheduels,fetch_scheduels_ref})
+               }
+            dispatch.scheduel.scheduelsFetchingFailed()
+          })
         
     } catch (error) {
         console.log('\n-----fetchScheduels-----')

@@ -8,21 +8,29 @@ export default async (args,state,dispatch)=>{
         const targetScheduelIndex= scheduels.indexOf(targetScheduel)
         scheduels.splice(targetScheduelIndex,1)
 
-         const scheduelDeleteResponse = await firestore()
-                                           .collection('scheduels')
-                                           .doc(id)
-                                           .delete()
+      const scheduelDeleteResponse = await firestore()
+                                        .collection('scheduels')
+                                        .doc(id)
+                                        .delete()
 
-         //remove associated orders
+        //get scheduel associated orders 
          const associatedOrdersResponse = await firestore()
-                                           .collection('scheduels')
+                                           .collection('orders')
                                            .where('scheduleId','==',id)
                                            .get()
 
          const deletedOrdersCount = associatedOrdersResponse.docs.length
+        
+         //remove associated orders 
+        //  const batch = firestore().batch;
+         console.log({deletedOrdersCount})
          associatedOrdersResponse.docs.forEach((order)=>{
              order.ref.delete()
+            //  batch().delete(ref);
          })
+        //  console.log({bacthcount:batch.length})
+        //  const delteBatchResponse= await batch().commit();
+
                                            
          dispatch.scheduel.removedScheduel({scheduels,deletedOrdersCount})
          dispatch.toast.show({

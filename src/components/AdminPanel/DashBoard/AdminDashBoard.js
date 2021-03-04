@@ -41,7 +41,7 @@ const  AdminDashBoard=(props)=> {
                  if(user && user.type =="DISTRUBUTOR") 
                      navigation.navigate('DISTRIBUTORDashBoard')
                 fetchOrders()
-                fetchTodaysValideOrders("ADMIN")
+               
                 fetchProducts()
                 // fetchAdmins()
                 // fetchWaitingList()
@@ -52,7 +52,8 @@ const  AdminDashBoard=(props)=> {
                 fetchClients()
                 fetchWaitingClients()
                 fetchScheduels()
-                fetchTodaysSales()
+                fetchTodaysSales() 
+                fetchTodaysValideOrders("ADMIN")
        });
     }, [])
     useEffect(() => {
@@ -141,13 +142,6 @@ const  AdminDashBoard=(props)=> {
              title:"Commande valider",
              subMenu:[
                 {title:"List des commandes valider",  route :"ADMINordersValidated"},
-            ]
-        },
-        {
-             route :"ADMINcatalogue",
-             title:"Ajouter Catalogue",
-             subMenu:[
-                {title:"Ajouter Catalogue",  route :"ADMINcatalogue"},
             ]
         }
     ]

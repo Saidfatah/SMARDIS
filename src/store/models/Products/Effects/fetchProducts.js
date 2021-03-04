@@ -16,15 +16,21 @@ export default async(args,state,dispatch)=>{
                                     .collection('products')
                                     .where('regions','array-contains',distrubutorCity)
         }else{
-            productsResponse= await firestore()
-                                   .collection('products')
+            productsResponse= await firestore().collection('products')
         }
                                
        productsResponse.onSnapshot(res=>{
            const docs =res.docs
            if(docs.length){
+               console.log("refecth"+docs.length)
                const maped_data = docs.map(doc=>({...doc.data(), id : doc.id}))
-               const products = maped_data.filter(p=>p.id != CONFIG_DOC)
+               const products = maped_data
+               .sort(function(a, b){
+                if(a.name < b.name) { return -1; }
+                if(a.name > b.name) { return 1; }
+                return 0;
+               })
+               .filter(p=>p.id != CONFIG_DOC)
 
                if(products.length <1) return  dispatch.products.productsFetchingFailed()
                

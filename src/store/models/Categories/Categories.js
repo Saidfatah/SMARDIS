@@ -68,7 +68,7 @@ const model ={
         removedCategory : (state,categories)=>({
             ...state,
             categories :[... categories],
-            categoriesCount :state.categoriesCount -1,
+            categoriesCount :state.categoriesCount>1?state.categoriesCount -1:0,
             done_removing_category:true
         }),
         removingCategoryFailed : (state,args)=>({

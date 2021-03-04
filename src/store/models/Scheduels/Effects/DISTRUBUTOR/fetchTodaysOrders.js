@@ -20,7 +20,8 @@ export default async(arg,state,dispatch)=>{
         console.log('fetch todays orders')
         const currentDistrubutorId = state.auth.distrubutorId
         
-      
+        
+        console.log({currentDistrubutorId})
         const fetchOrdersReponse = await firestore()
               .collection('orders')
               .where('created_at','>',yesterday)
@@ -42,7 +43,7 @@ export default async(arg,state,dispatch)=>{
         
         
 
-        fetchOrdersReponse.onSnapshot(async res=>{
+        const todays_orders_ref=fetchOrdersReponse.onSnapshot(async res=>{
             if(res.docs.length){
                 // const flteredDocs=  res.docs.filter(doc=> doc.id != CONFIG_DOC)
                  const flteredDocs=  res.docs  
@@ -108,7 +109,7 @@ export default async(arg,state,dispatch)=>{
                      }
                  ,[]) 
                  console.log('fetched todays orders')
-                 return dispatch.scheduel.fetchedTodaysSectors({todaysOrders})
+                 return dispatch.scheduel.fetchedTodaysSectors({todaysOrders,todays_orders_ref})
             }
             dispatch.scheduel.fetchedTodaysSectorsFailed()
         })
