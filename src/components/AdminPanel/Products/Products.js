@@ -1,15 +1,11 @@
-import React from 'react'
-import {View,Text,FlatList,StyleSheet,TouchableOpacity} from 'react-native'
+import React,{useMemo,memo} from 'react'
+import {View,Text,FlatList,StyleSheet} from 'react-native'
 import { connect } from 'react-redux'
-import ProductInfo from '../../Distrubutor/ClientProductsSelection/Products/ProductInfo'
 import Loading from '../../Common/Loading'
+import ProductItem from './ProductItem'
+ 
+const  Products=memo(({products,navigation,done_fetching_products})=> {
 
-
-const  Products=({products,navigation,done_fetching_products,fetchProducts})=> {
-
-    const handleLoadMore=()=>{
-        // fetchMoreProducts()
-    }
      
     if(products.length < 1  && !done_fetching_products) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
@@ -17,50 +13,43 @@ const  Products=({products,navigation,done_fetching_products,fetchProducts})=> {
     </View>
 
 
-    return <View style={{backgroundColor:'#fff',flex: 1}} > 
-         <FlatList 
-         data   = {products}
-         ListEmptyComponent={()=><Text style={{padding:8}} >aucune produit trouve</Text>}
-         style  = {{...styles.list}}
-         contentContainerStyle = {props =>(styles.flatList)}
-         showsVerticalScrollIndicator={false}
-         onEndReached={e=>handleLoadMore()}
-         ListFooterComponent={<View style={{ height: 0, marginBottom: 90 }}></View>}
-         renderItem   = {({ item ,index}) =><View style={styles.product}>
-              <TouchableOpacity onPress={e=>{ navigation.navigate('ADMINproductPage',{product:item})}}>
-                  <ProductInfo   key={index}   product={item} opened={false} />
-              </TouchableOpacity>
-         </View>
-         }
-         keyExtractor = {(item, index) => index.toString()}
-        />
-    </View>
-}
+    
+    const renderItem=({ item ,index})=>{
+        return <ProductItem  item={item}  navigation={navigation}   />
+    }
+    const keyExtractor = (item, index) => index.toString() 
+    const FoterItem=()=>{
+        return <View style={{ height: 0, marginBottom: 90 }}></View>
+    }
+    const ListEmptyComponent=()=><Text style={{padding:8}} >aucune produit trouve</Text>
+   
+    console.log("-------Products-------")
+   
+    return  <View style={{backgroundColor:'#fff',flex: 1}} > 
+        <FlatList 
+        data   = {products}
+        ListEmptyComponent={ListEmptyComponent}
+        style  = {{...styles.list}}
+        contentContainerStyle = {props =>(styles.flatList)}
+        showsVerticalScrollIndicator={false}
+        ListFooterComponent={FoterItem}
+        renderItem   = {renderItem}
+        keyExtractor = {keyExtractor}
+        initialNumToRender={12}
+       />
+    </View> 
+   
+})
 
 export default connect(
     state=>({
          products:state.products.products,
          done_fetching_products:state.products.done_fetching_products,
     }),
-    dispatch=>({
-         fetchProducts : dispatch.products.fetchProducts,
-         fetchMoreProducts : dispatch.products.fetchMoreProducts
-    })
+    null
 )(Products)
 
 var styles = StyleSheet.create({
-    product:{
-        display:'flex',
-        flexDirection:'column',
-        alignItems:'center',
-        width:'100%',
-        borderColor:'#fff',
-        borderBottomColor:'#000',
-        borderBottomWidth:1,
-        paddingTop:8,
-        paddingBottom:8,
-        flex: 1,
-    },
     list:{
         padding:16,
         flex: 1,
@@ -71,10 +60,6 @@ var styles = StyleSheet.create({
          justifyContent: 'center', 
          flex:1
     },
-    title:{
-       fontSize:20,
-       marginTop:16,
-       color:'#fff'
-    }
+ 
   });
   

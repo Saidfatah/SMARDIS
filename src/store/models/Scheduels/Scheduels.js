@@ -31,6 +31,7 @@ const model ={
         distrubutor_todays_canceled_orders :[], 
             
         //counters
+        addCounter:0,
         billRefCounter:0,
         scheduelsCount : 0 ,
         ordersCount : 0 ,
@@ -119,6 +120,7 @@ const model ={
         }),
         addedScheduel  : (state,{scheduels,addedOrdersCount})=>({
             ...state,
+            addCounter:state.addCounter+1,
             // scheduels ,
             // scheduelsCount : state.scheduelsCount +1,
             // ordersCount : state.ordersCount +addedOrdersCount,
@@ -141,10 +143,7 @@ const model ={
         }),
         removedScheduel  : (state,{scheduels,deletedOrdersCount})=>({
             ...state,
-            scheduels ,
-            scheduelsCount :state.scheduelsCoun>1? state.scheduelsCount -1:0,
-            ordersCount : state.scheduelsCount -deletedOrdersCount,
-            done_removing_scheduel:true       
+         
          }),
         scheduelRemovingFailed  : (state,args)=>({
             ...state, 

@@ -160,7 +160,7 @@ const DrawerContent=(props)=> {
                            <Link 
                              route={"DISTRIBUTORcart"}
                              icon="md-cart"
-                             label="La command active"
+                             label="Le panier"
                              hasBadge={true}
                              badgeValue={cartItems.length}
                              badgeStatus="success"

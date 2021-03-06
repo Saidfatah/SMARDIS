@@ -597,7 +597,7 @@ const DropDown=({data,selected ,hidden,setSelected,keyExtractor,placeholder,defa
     }}
     // defaultValue={data &&data.length && data[5].value }
     keyExtractor={keyExtractor}
-    searchable={searchable ||true}
+    searchable={searchable != undefined?searchable: true}
     placeholder={defaultValue || "Selectioner un option"}
     labelStyle={{color:colors.BLACK}}
     containerStyle={{height: 40}}

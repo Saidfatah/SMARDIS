@@ -16,12 +16,15 @@ export default async  (arg,state,dispatch)=>{
 
         const fetch_orders_first_fetch = state.scheduel.fetch_orders_first_fetch
         if(fetch_orders_first_fetch == true ) return 
+       
+        const admin_city= state.auth.user.city
         const fetchOrdersReponse = await firestore()
                                         .collection('orders')
                                         .where('created_at','<',tomorrow)
                                         .where('created_at','>',yesterday)
-
-       fetchOrdersReponse.onSnapshot(res=>{
+                                        .where('region','array-contains',admin_city)
+      
+         fetchOrdersReponse.onSnapshot(res=>{
            if(res.docs.length){
                console.log('got orders')
                const maped_data=res.docs.map(order=>({

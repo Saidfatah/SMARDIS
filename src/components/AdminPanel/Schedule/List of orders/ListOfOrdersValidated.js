@@ -76,21 +76,7 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
 
     const exportFile =async ()=> {
 		try {
-        /* convert AOA back to worksheet */
-		// const ws = XLSX.utils.aoa_to_sheet(data);
-
-		/* build new workbook */
-		// const wb = XLSX.utils.book_new();
-		// XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
-
-		/* write file  xlsx*/
-		// const wbout = XLSX.write(wb, {type:'binary', bookType:"xlsx"});
-
-       
-        // build sage import file 
-      
-
-        //check if directory exsts , CREATE DIRECTORY 
+ 
         const    AppFolder      = 'Excels';
         const    DirectoryPath  = EDP+AppFolder;
         const DirExists= await exists(DirectoryPath)
@@ -120,7 +106,7 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
     const ExceVisualization=()=>{
         return<View>
         <Button color="BLUE" clickHandler={exportFile} >
-            <Text style={{color:'#fff',textAlign:'center'}} >Exporter l'Excel</Text>
+            <Text style={{color:'#fff',textAlign:'center'}} >Exporter Le text</Text>
         </Button>
         <Error trigger={ExportError!= null} error={ ExportError && ExportError} />
         <ScrollView  showsHorizontalScrollIndicator={false}  horizontal={true}>

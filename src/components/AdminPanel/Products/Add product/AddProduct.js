@@ -10,7 +10,7 @@ import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
 import { InteractionManager } from 'react-native';
 import CategorySelection from './CategorySelection'
-import AutoCompleteCities from './AutoCompleteCities'
+import CitiesCheckBox from '../../../Common/CitiesCheckBox'
 import DiscountInput from './DiscountInput'
 import Prices from './Prices'
 
@@ -40,7 +40,7 @@ const initialState=(categories,selectedCategorySubCategories)=>({
     discount:0,
     selectedCategory:categories[0],
     selectedSubCategory:selectedCategorySubCategories[0],
-    selectedCities:[],
+    selectedCities:["Ouarzazate"],
     add_error:null,
     productData:{
         name   : '',
@@ -164,7 +164,9 @@ export const AddProduct = (props) => {
             dispatch({type:"SET_CAN_SUBMIT",value:true})
     }, [done_adding_product,product_adding_error])
  
- 
+   useEffect(() => {
+       console.log(selectedCities)
+   }, [selectedCities])
     
 
     const resetErrors=()=>dispatch({type:"SET_ERRORS",value:{...ERRORS_INITIAL_CONFIG}})
@@ -265,7 +267,15 @@ export const AddProduct = (props) => {
             </View>
             
             <ImagePicker {...{title:'"image de produit"',setImage:handelChange('image'),image}}/>
-            <AutoCompleteCities {...{dispatch,selectedCities}}/>
+               <CitiesCheckBox 
+              setSelected={handelChange('city')} 
+              isMultiple={true}
+              selected={selectedCities}
+              data={["Ouarzazate","Zagora","Marrakech"].map(c=>({
+                  value:c,
+                  checked:selectedCities.indexOf(c)>=0
+                }))}
+              />  
             <CategorySelection {...{selectSubCategory,dispatch,errors,ERRORS_MESSAGES,selectedCategory,selectedSubCategory,selectedCategorySubCategories,categories,hasSubCategory}} />
             <DiscountInput {...{discount,hasDiscount,dispatch}} />
             <Prices {...{price1, price2,price3,price4,handelChange,errors,ERRORS_MESSAGES}} />

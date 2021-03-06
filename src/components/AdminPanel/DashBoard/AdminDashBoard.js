@@ -10,7 +10,6 @@ import { BackHandler ,Alert} from 'react-native';
 
 const  AdminDashBoard=(props)=> {
     const {
-        fetchTodaysSales,
         fetchCategories,
         navigation,
         sectorsCount ,
@@ -29,8 +28,6 @@ const  AdminDashBoard=(props)=> {
         fetchTodaysValideOrders ,
         scheduelsCount ,
         fetchProducts ,
-        // fetchWaitingList,
-        // fetchAdmins,
         fetchWaitingClients,
         user,
         fetchUsers
@@ -43,8 +40,7 @@ const  AdminDashBoard=(props)=> {
                 fetchOrders()
                
                 fetchProducts()
-                // fetchAdmins()
-                // fetchWaitingList()
+                fetchTodaysValideOrders("ADMIN")
                 fetchUsers()
                 fetchCategories()
                 fetchSectors()
@@ -52,8 +48,7 @@ const  AdminDashBoard=(props)=> {
                 fetchClients()
                 fetchWaitingClients()
                 fetchScheduels()
-                fetchTodaysSales() 
-                fetchTodaysValideOrders("ADMIN")
+          
        });
     }, [])
     useEffect(() => {
@@ -180,8 +175,6 @@ export default connect(
     }),
     dispatch =>({
         fetchUsers  : dispatch.auth.fetchUsers,
-        // fetchWaitingList  : dispatch.auth.fetchWaitingList,
-        // fetchAdmins  : dispatch.auth.fetchAdmins,
         fetchSectors  : dispatch.sector.fetchSectors,
         fetchClients  : dispatch.client.fetchClients,
         fetchWaitingClients  : dispatch.client.fetchWaitingClients,
@@ -189,7 +182,6 @@ export default connect(
         fetchDistrubutors  : dispatch.distrubutor.fetchDistrubutors ,
         fetchOrders : dispatch.scheduel.fetchOrders,
         fetchScheduels : dispatch.scheduel.fetchScheduels,
-        fetchTodaysSales : dispatch.scheduel.fetchTodaysSales,
         fetchTodaysValideOrders : dispatch.scheduel.fetchTodaysValideOrders,
         fetchProducts   : dispatch.products.fetchProducts,
     })

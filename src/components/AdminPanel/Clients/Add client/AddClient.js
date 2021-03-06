@@ -1,15 +1,14 @@
 import React,{useState,useEffect} from 'react'
-import {View,Text,TextInput,StyleSheet} from 'react-native'
+import {View,Text,TextInput,StyleSheet,TouchableOpacity} from 'react-native'
 import { connect } from 'react-redux'
 import Label from '../../../Common/Label'
 import Button from '../../../Common/Button'
+import CitiesCheckBox from '../../../Common/CitiesCheckBox'
 import Error from '../../../Common/Error'
 import DropDown from '../../../Common/DropDown'
-import CitiesDropDown from '../../../Common/CitiesDropDown'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
 import NumericInput from 'react-native-numeric-input'
-
 
 const ERRORS_INITIAL_CONFIG = {
     phoneREQUIRED:false,
@@ -41,7 +40,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
     const [selectedSector, setselectedSector] = useState(sectors[0])
     const [clientData, setclientData] = useState({
         phone:'',
-        city:'',
+        city:'Ouarzazate',
         ref:'',
         name:'',
         address:'',
@@ -53,6 +52,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
         done_adding_client==true &&  setcanSubmit(done_adding_client) && resetIsDone('done_adding_client')
     }, [done_adding_client])
     useEffect(() => {
+
         if(route.params){
             if(route.params.update == undefined) return 
             const {client}=route.params
@@ -81,9 +81,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
         client_adding_error != null && seterrors({...errors,addERROR:true})
     }, [client_adding_error])
 
-    useEffect(() => {
-        console.log(selectedSector)
-    }, [selectedSector])
+  
     const resetErrors=()=>seterrors({...ERRORS_INITIAL_CONFIG})
     const handelChange=input=>v=>{ setclientData({...clientData,[input]:v}) }
     const validateFields =()=>{
@@ -209,9 +207,16 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
         return <View>
             <Label label="Ville" mga={16} />
             <Error trigger={errors.cityREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            <CitiesDropDown {...{setcity:handelChange('city'),city}} />
+           <CitiesCheckBox 
+           setSelected={handelChange('city')} 
+           selected={city}
+           data={["Ouarzazate","Zagora","Marakesh"].map(c=>({value:c,checked:c==city}))}
+           />  
+
+            {/* <CitiesDropDown {...{setcity:handelChange('city'),city}} /> */}
         </View>
     }
+    
     return  <KeyboardAwareScrollView   contentContainerStyle={{ display:'flex',  flexGrow:1 }}  style={styles.container} >
         <View style={{flex:1}} >
             
@@ -234,7 +239,8 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
             <Sectors />
            
             <Objectif />
-           
+
+            
             
             <Label label="Nom Client" mga={16} />
             <Error trigger={errors.nameREQUIRED} error={ERRORS_MESSAGES[0].message} />
@@ -246,9 +252,9 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
                     onChangeText={text=>handelChange('name')(text.trim())} 
             /> 
            
-            {/* <Price /> */}
+            <Price />
     
-            {/* <Cities /> */}
+            <Cities />
             
             <Label label="Téléphone" mga={16} />
             <Error trigger={errors.phoneREQUIRED} error={ERRORS_MESSAGES[0].message} />

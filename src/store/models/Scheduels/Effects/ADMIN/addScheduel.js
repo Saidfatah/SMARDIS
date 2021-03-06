@@ -17,8 +17,7 @@ export default async (args,state,dispatch)=>{
          //this will be used in order to be filterd with when fetching validated commands from admin
          const CITY=admin.city
        
-         //create scheduel doc 
-         const newSchedule = scheduleModel( admin, distrubutor, distination ,start_date,distination.sector.id,[CITY])
+       
      
          //check if there s a scheduel already assigned to same dstrubutor in the same date
          const starDatePrevNight= new Date(start_date)
@@ -37,11 +36,12 @@ export default async (args,state,dispatch)=>{
                                             .get()
                                                                          
          if(scheduelCheckResponse.docs[0]){
-             dispatch.scheduel.addingScheduelFailed({schedule_add_error:{id:"ALREACY_ASIGNED",message:"le ce traject est deja assigner a le ditrubuteur ["+ distrubutor.name+"]"}})
+            return  dispatch.scheduel.addingScheduelFailed({schedule_add_error:{id:"ALREACY_ASIGNED",message:"le ce traject est deja assigner a le vendeur ["+ distrubutor.name+"]"}})
 
          }
         
-
+         //create scheduel doc 
+         const newSchedule = scheduleModel( admin, distrubutor, distination ,start_date,distination.sector.id,[CITY])
          const scheduelAddResponse = await firestore()
                                            .collection('scheduels')
                                            .add(newSchedule)
@@ -50,15 +50,21 @@ export default async (args,state,dispatch)=>{
          const scheduelOrders=[]
          //map schduel clients to individual orders and add them to orders collection
          const addedOrdersCount=distination.clients.length
-
+        
+         const addCounter=state.scheduel.addCounter
+         console.log({addCounter})
          distination.clients.forEach((client,index)=>{
+             const newDate=new Date(start_date)
+             const prevMinutes= newDate.getMinutes()
+             newDate.setMinutes(prevMinutes+addCounter)
+             
              const order= orderModel(
                  scheduelAddResponse.id,
                  client,
                  distination.sector,
                  distrubutor,
                  index,
-                 start_date,
+                 newDate,
                  [CITY]
                  )
              scheduelOrders.push(order)

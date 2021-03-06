@@ -30,22 +30,22 @@ export default async (arg,state,dispatch)=>{
                                       .where('date','>=',weekStart)
                                       .where('date','<',nextWeek)
 
-           return await fetchScheduelsReponse.get()
-          const fetch_scheduels_ref =fetchScheduelsReponse.onSnapshot(res=>{
-              if(res.docs.length){
-                   const scheduels=res.docs.map(scheduel=>({
-                       ...scheduel.data(),
-                       id:scheduel.id,
-                       date:scheduel.data().date.toDate(),
-                       start_date:scheduel.data().start_date.toDate(),
-                     }))
+ 
+        const fetch_scheduels_ref =fetchScheduelsReponse.onSnapshot(res=>{
+            if(res.docs.length){
+                 const scheduels=res.docs.map(scheduel=>({
+                     ...scheduel.data(),
+                     id:scheduel.id,
+                     date:scheduel.data().date.toDate(),
+                     start_date:scheduel.data().start_date.toDate(),
+                   }))
 
-               
-                   if(scheduels.length <1) return dispatch.scheduel.scheduelsFetchingFailed()
-                  return  dispatch.scheduel.fetchedScheduels({scheduels,fetch_scheduels_ref})
-               }
-            dispatch.scheduel.scheduelsFetchingFailed()
-          })
+             
+                 if(scheduels.length <1) return dispatch.scheduel.scheduelsFetchingFailed()
+                return  dispatch.scheduel.fetchedScheduels({scheduels,fetch_scheduels_ref})
+             }
+          dispatch.scheduel.scheduelsFetchingFailed()
+        })
         
     } catch (error) {
         console.log('\n-----fetchScheduels-----')

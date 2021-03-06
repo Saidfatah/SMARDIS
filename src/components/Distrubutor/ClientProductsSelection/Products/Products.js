@@ -24,9 +24,6 @@ const Products=({isSelectedCategorySpecial,selectedCategoryProducts,setIsPanelAc
                 data:groupedDash[key] 
             }))
             
-            console.log("--------------------------group----------------------")
-            console.log({groupedDash})
-            console.log("--------------------------group----------------------")
 
             SectionListData.forEach((group,index)=>{
                 const firstProduct=group.data[0]

@@ -25,6 +25,7 @@
     "lodash": "^4.17.21",
     "nanoid": "^3.1.20",
     "native-base": "^2.15.2",
+    "parse-json": "^5.2.0",
     "perf_hooks": "0.0.1",
     "react": "16.13.1",
     "react-native": "0.63.4",

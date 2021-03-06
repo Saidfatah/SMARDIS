@@ -27,23 +27,37 @@ const initalState=(sectors,start_date)=>({
     selectedDistrubutor:null,
     orderListOfClients:[],
     error:null,
+    is_newly_picked_time:true
 })
 const reducer=(state,action)=>{
        switch (action.type) {
            case "SET_CAN_SUBMIT":
-                return {...state,canSubmit:action.value}
+                return {
+                    ...state,
+                    canSubmit:action.value,
+                    is_newly_picked_time: action.value ==false
+                    ?false
+                    :state.is_newly_picked_time
+                }
            break;
            case "SET_SCROLL_ENABLE":
                 return {...state,enableScroll:action.value}
            break;
            case "SET_UPDATE":
-                return {...state,update:action.value}
+                return {
+                    ...state,
+                    update:action.value,
+                }
            break;
            case "SET_SCHEDUEL_TO_UPDATE":
                 return {...state,scheduelToBeUpdated:action.value}
            break;
            case "SET_START_DATE":
-                return {...state,start_date:action.value}
+                return {
+                    ...state,
+                    start_date:action.value,
+                    is_newly_picked_time:true
+                }
            break;
            case "SET_SHOW_DATE":
                 return {...state,showDate:action.value}
@@ -99,6 +113,7 @@ const Schedule = (props)=> {
         selectedDistrubutor,
         orderListOfClients,
         error,
+        is_newly_picked_time
     }=state
 
     useEffect(() => {
@@ -112,15 +127,10 @@ const Schedule = (props)=> {
         dispatch({type:"SET_CAN_SUBMIT",value:true}) 
 
         if(schedule_add_error){
-           seterror({...schedule_add_error}) 
-           
            dispatch({type:"SET_ERROR",value:schedule_add_error}) 
            resetError('schedule_add_error')
         }
     }, [schedule_add_error])
-
-  
- 
     useEffect(() => {
          if(sectors.length >0 && clients.length>0 && distrubutors.length>0)
          {
@@ -133,19 +143,11 @@ const Schedule = (props)=> {
              
          }
     }, [selectedSector.id])
-    
-    useEffect(() => {
-        if(orderListOfClients &&orderListOfClients.length){
-
-        }
-    }, [orderListOfClients])
     useEffect(() => {
         if(!update && sectors.length >0 && clients.length>0 && distrubutors.length>0)
          {
-             console.log('noy update')
             dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value:[...clients].filter(cl=> cl.sectorId == selectedSector.id)})
          }
-       //  setselectedSectorClients()
 
         if(route.params){
           
@@ -172,7 +174,10 @@ const Schedule = (props)=> {
           
         } 
    }, [])
-
+   
+   useEffect(() => {
+      console.log({is_newly_picked_time})
+   }, [is_newly_picked_time])
 
     if(clients.length < 1 || sectors.length <1 || distrubutors.length <1 ) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
@@ -181,9 +186,11 @@ const Schedule = (props)=> {
 
 
     const createNewSchdule=e=>{
-        
+        if(!is_newly_picked_time)
+           return dispatch({type:"SET_ERROR",value:{id:"TIME_PICKER",message:"ile faut resigner la date"}})
+      
         if(!selectedDistrubutor) 
-           return dispatch({type:"SET_ERROR",value:{id:"DISTRUBUTOR",message:"ce champe est obligatoire"}})
+        return dispatch({type:"SET_ERROR",value:{id:"DISTRUBUTOR",message:"ce champe est obligatoire"}})
         if(adminId != undefined && selectedDistrubutor &&  selectedSector && orderListOfClients.length>0 ){
             dispatch({type:"SET_CAN_SUBMIT",value:false}) 
             dispatch({type:"SET_ERROR",value:null}) 
@@ -208,6 +215,7 @@ const Schedule = (props)=> {
                 start_date,
                 navigation
             })
+            
         }
     }
 
@@ -239,7 +247,7 @@ const Schedule = (props)=> {
 
         }else if(event.type === 'set') {
         //   setstart_date(currentDate)
-        dispatch({type:"SET_START_DATE",value:currentDate}) 
+              dispatch({type:"SET_START_DATE",value:currentDate}) 
         }
         
     };
@@ -288,9 +296,12 @@ const Schedule = (props)=> {
         
         <DistrubutorsDopDown {...{distrubutors,selectedDistrubutor, dispatch}} />
         <Error mga={8} trigger={error && error.id =="DISTRUBUTOR"} error={error && error.message} />
+
         <SectorsDropDown {...{sectors,selectedSector, dispatch}} />
+
         <DatePickerFactored/>
-        
+        <Error mga={8} trigger={error && error.id =="TIME_PICKER"} error={error && error.message} />
+
         <Label mgl={8} mgb={0} label={"List des clients du secteur "+ selectedSector.name} />
         <SafeAreaView style={{paddingTop:0 }}>
             <ClientsOrdering   sectorClients={selectedSectorClients} dispatch={dispatch} />

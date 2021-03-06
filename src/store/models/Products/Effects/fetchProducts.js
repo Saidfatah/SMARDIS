@@ -11,7 +11,8 @@ export default async(args,state,dispatch)=>{
         let productsResponse
         if(userType == "DISTRUBUTOR"){
             const distrubutorCity= state.auth.user.city.toLowerCase()
-   
+            console.log({distrubutorCity})
+            
             productsResponse= await firestore()
                                     .collection('products')
                                     .where('regions','array-contains',distrubutorCity)
@@ -22,7 +23,7 @@ export default async(args,state,dispatch)=>{
        productsResponse.onSnapshot(res=>{
            const docs =res.docs
            if(docs.length){
-               console.log("refecth"+docs.length)
+               console.log("products fetched :"+docs.length)
                const maped_data = docs.map(doc=>({...doc.data(), id : doc.id}))
                const products = maped_data
                .sort(function(a, b){

@@ -10,7 +10,7 @@ import  SwipeAbleProductDetails from './Products/SwipeAbleProductDetails'
 import SwipeAbleCancelOrder from './SwipeAbleCancelOrder'
 import { BackHandler } from 'react-native';
 import { useFocusEffect } from "@react-navigation/native";
-import FOndationIcon from 'react-native-vector-icons/Foundation'
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 
 const ClientDelivry=(props)=> {
@@ -57,7 +57,7 @@ const ClientDelivry=(props)=> {
         <View style={styles.tag} >
             <Text style={styles.clientName}>{name}</Text>
             <View style={styles.FH} >
-                <FOndationIcon name="target" color={COLOR} size={20} />
+                <MaterialCommunityIcon name="bullseye-arrow" color={colors.WHITE} size={25} />
                  <Text style={{
                      ...styles.clientName,
                      color:COLOR
@@ -66,7 +66,7 @@ const ClientDelivry=(props)=> {
                 </Text>
             </View>
         </View>
-        <Button color="RED"  clickHandler={( )=>{
+        <Button color="RED"  clickHandler={()=>{
            setIsCancelPanelActive(true)
        }} >
          <Text style={{color:'#fff'}} >Annuler la command </Text>
@@ -123,7 +123,7 @@ var styles = StyleSheet.create({
         display:'flex',
         alignItems:'center',
         flexDirection:'row',
-        justifyContent:"flex-start",
+        justifyContent:"center",
   },
   tagParent:{
         display:'flex',

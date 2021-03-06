@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useRef} from 'react'
 import {View,Text,StyleSheet} from 'react-native'
 import FastImage from 'react-native-fast-image'
 
@@ -6,22 +6,21 @@ import FastImage from 'react-native-fast-image'
 
 const ProductInfo=({product,opened,client,isSub})=> {
     const {price1,name,image,discount}=product
-    
-    
-
+  
     let PRICE = parseFloat(price1).toFixed(2)
     if(discount > 0  ){
        PRICE = parseFloat(discount).toFixed(2)
     }
     if(client){
         const clientPrice = client.price.replace('x','ce')
+        console.log({clientPrice})
         PRICE= parseFloat(product[clientPrice]).toFixed(2)
         if(discount > 0 ){
             parseFloat(discount).toFixed(2)
         }
     }
+
     
-     
     
     let First  = null
     let Second = null

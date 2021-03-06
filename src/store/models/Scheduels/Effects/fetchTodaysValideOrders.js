@@ -62,6 +62,29 @@ export default async  (type,state,dispatch)=>{
              sale_hour:order.data().sale_hour.toDate(),
          }))
          const orders= maped_data.filter(order => order.id != CONFIG_DOC)
+          
+         //get sales 
+         let sales= []
+         orders.forEach((order,index)=>{
+                 const {billRef,sector,distrubutor,client,sale_date,sale_hour}=order
+                  order.products.forEach(product => {
+                   //  const total = product.quantity * product[client.price.replace('x','ce')]
+                    const total = product.quantity * product.price1
+                    const sale= {
+                       billRef,
+                       sector,
+                       distrubutor,
+                       client,
+                       product,
+                       sale_date:sale_date ,
+                       sale_hour:sale_hour ,
+                       quantity:product.quantity,
+                       total  
+                    }
+                    sales.push(sale)
+                  });
+             })
+            dispatch.scheduel.fetchedTodaysSales(sales)
 
           return  dispatch.scheduel.fetchedTodaysValideOrders({orders,validated_commands_ref})
         }

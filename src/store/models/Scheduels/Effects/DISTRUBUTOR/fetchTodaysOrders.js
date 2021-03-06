@@ -1,5 +1,5 @@
 import firestore from '@react-native-firebase/firestore'
-
+import _ from 'lodash'
 const today = new Date()
 const tomorrowJs = new Date(today)
 tomorrowJs.setHours(23,59,59,999);
@@ -17,7 +17,6 @@ export default async(arg,state,dispatch)=>{
     try {
         const todays_orders_first_fetch= state.scheduel.todays_orders_first_fetch
         if(todays_orders_first_fetch) return 
-        console.log('fetch todays orders')
         const currentDistrubutorId = state.auth.distrubutorId
         
         
@@ -29,7 +28,7 @@ export default async(arg,state,dispatch)=>{
               .where('distrubutorId','==',currentDistrubutorId)
               .where('status','==','PENDING')
               .orderBy('created_at','asc')
-              .orderBy('turn','asc')
+             
 
         //get orders config doc    
         const orderConfigResponse = await firestore().collection('orders').doc(CONFIG_DOC)
@@ -47,6 +46,7 @@ export default async(arg,state,dispatch)=>{
             if(res.docs.length){
                 // const flteredDocs=  res.docs.filter(doc=> doc.id != CONFIG_DOC)
                  const flteredDocs=  res.docs  
+
                 //chececk for clients objectifs 
                 //reset their objectif progress if its the beggning of the month 
                 if(flteredDocs.length <1) return dispatch.scheduel.fetchedTodaysSectorsFailed()
@@ -66,49 +66,21 @@ export default async(arg,state,dispatch)=>{
                         }})
                     }
                 })
-
+       
                 const orderList= flteredDocs.map(doc=>({...doc.data(),orderId:doc.id}))
+                const ordersnamessectors= orderList.map(o=>({sector:o.sector.name,turn:o.turn}))
+                console.log(ordersnamessectors)
                  
-                 let lastOrder= orderList[0]
-                 const firstOrder ={...lastOrder}
-                 let started = false
-                 let i = 0
-                 const todaysOrders=orderList.reduce((a,currentOrder)=>{
-                          const arr= [...a]
-                          
-                          if(!started){
-                               let obj={
-                                   sector:lastOrder.sector,
-                                   scheduleId:lastOrder.scheduleId,
-                                   orders:[{
-                                       ...lastOrder, 
-                                       scheduelId:lastOrder.scheduleId   
-                                   }]
-                               }
-                               arr.push(obj)
-                              started=true
-                          }
-                     
-                          if(lastOrder.sectorId == currentOrder.sectorId && firstOrder.orderId != currentOrder.orderId){
-                             arr[i].orders.push({...currentOrder, scheduelId:currentOrder.scheduleId })
-                          }
-                          else if(lastOrder.sectorId != currentOrder.sectorId && started){
-                              console.log('\nnew sector'+currentOrder.sectorId)
-                            let obj={
-                                sector:currentOrder.sector,
-                                scheduleId:currentOrder.scheduleId,
-                                orders:[{...currentOrder, scheduelId:currentOrder.scheduleId   }]
-                            }
-                            arr.push(obj)
-                              i++
-                          }
-                     
-                          lastOrder={...currentOrder}
-                     
-                          return arr
-                     }
-                 ,[]) 
-                 console.log('fetched todays orders')
+                const groupBySector=_.groupBy(orderList,"sectorId")
+            
+                 const todaysOrders = Object.keys(groupBySector).map(key=>({
+                    sector:groupBySector[key][0].sector,
+                    scheduleId:groupBySector[key][0].scheduleId,
+                    orders:[...groupBySector[key].sort((a,b)=>a-b).map(o=>({...o,scheduelId:o.scheduleId  })) ]
+                }))
+              
+              
+            
                  return dispatch.scheduel.fetchedTodaysSectors({todaysOrders,todays_orders_ref})
             }
             dispatch.scheduel.fetchedTodaysSectorsFailed()

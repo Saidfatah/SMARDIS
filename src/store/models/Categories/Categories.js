@@ -42,7 +42,7 @@ const model ={
             categories :[...categories],
             products_first_fetch :true,
             done_fetching_categories : true,
-            categoriesCount: categories.length
+            categoriesCount: categories.filter(c=>c.parent == null).length
         }),
         categoriesFetchFailed : (state,categories)=>({
             ...state,
