@@ -15,7 +15,7 @@ import XLSX from 'xlsx';
 const Header= ["1","RéférenceFacetur","Date","RéférenceProduit","RéférenceClient","Déségnation","q.u","p.u"]
 
 
-export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_validated_orders}) => {
+export const ListOfOrdersValidated = ({exportOrders,show,valide_orders,done_fetching_todays_validated_orders}) => {
     const [data, setdata] = useState([ Header ])
     const [ExportError, setExportError] = useState(null)
     const [widthArr, setwidthArr] = useState([90,120,90,90,90,90,90,90])
@@ -57,13 +57,14 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
 
                   dataTemp.push([columnCount,billRef,date,ref,client.ref,name,quantity,priceForClient ])
 
-                  const line="1;"+billRef.trim()+";"+date+";"+ref.trim()+";"+client.ref.trim()+";"+name.trim()+";"+quantity+";"+priceForClient+";"
+                  const line="1;"+billRef.trim()+";"+date+";"+ref.trim()+";"+client.ref.trim()+";\u200E"+name.trim()+"\u200E;"+quantity+";"+priceForClient+";"
                   console.log({date})
                   linesTemp.push(line)
              })
             
         })
         if(dataTemp.length>1){
+            console.log(linesTemp[0])
               setdata([...dataTemp])
               setLines([...linesTemp])
         }
@@ -83,14 +84,31 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
         if(!DirExists)  {
             await  mkdir(DirectoryPath);
         }
-
+        //DATE FOLDER
         const newDate=new Date().toLocaleDateString('en','USA').replace("/",'_').replace("/",'_')
-	    const filetoEDP = DirectoryPath+"/"+newDate+".txt";
+        const dateDirectory  =DirectoryPath+"/"+newDate;
+        const DirExistsDate= await exists(dateDirectory)
+        if(!DirExistsDate)  {
+            await  mkdir(dateDirectory);
+        } 
+
+        //hour director
+        const currentDaTE = new Date()
+        const time = currentDaTE.getHours()+"_"+currentDaTE.getMinutes()
+        const timeDirectory  =dateDirectory+"/"+time;
+        const DirExistsTime= await exists(timeDirectory)
+        console.log(timeDirectory)
+        if(!DirExistsTime)  {
+            await  mkdir(timeDirectory);
+        }
+
+ 
+	    const filetoEDP = timeDirectory+"/"+newDate+"_"+time+".txt";
 
         const text=Lines.reduce((a,c)=>a+"\n"+c,"\n")
   
 	    const writeToExternalDirectoryResponse= await writeFile(filetoEDP,  text , 'utf8')
-
+        exportOrders()
         show({
             type:'success',
             title:'Excel exportation ',
@@ -172,7 +190,7 @@ export default connect(
         done_fetching_todays_validated_orders: state.scheduel.done_fetching_todays_validated_orders ,
     }),
     dispatch=>({
-        selectBill: dispatch.scheduel.selectBill ,
+        exportOrders: dispatch.scheduel.exportOrders ,
         show: dispatch.toast.show ,
     })
 )

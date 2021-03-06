@@ -8,13 +8,12 @@ import Error from '../../../Common/Error'
 import ImagePicker from '../../../Common/ImagePicker'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../../Common/Colors'
-import { InteractionManager } from 'react-native';
 import CategorySelection from './CategorySelection'
 import CitiesCheckBox from '../../../Common/CitiesCheckBox'
 import DiscountInput from './DiscountInput'
 import Prices from './Prices'
 
-
+const CITIES=["ouarzazate","zagora","marrakech"]
 const ERRORS_INITIAL_CONFIG = {
     nameREQUIRED:false,
     activePriceREQUIRED:false,
@@ -38,9 +37,9 @@ const initialState=(categories,selectedCategorySubCategories)=>({
     productToBeUpdatedId: -1,
     hasDiscount:false,
     discount:0,
-    selectedCategory:categories[0],
+    selectedCategory:categories[1],
     selectedSubCategory:selectedCategorySubCategories[0],
-    selectedCities:["Ouarzazate"],
+    selectedCities:[],
     add_error:null,
     productData:{
         name   : '',
@@ -102,6 +101,7 @@ const reducer=(state,action)=>{
 export const AddProduct = (props) => {
     const {
         route,
+        user,
         navigation,
         updateProduct,
         product_adding_error,
@@ -163,11 +163,9 @@ export const AddProduct = (props) => {
             }
             dispatch({type:"SET_CAN_SUBMIT",value:true})
     }, [done_adding_product,product_adding_error])
- 
-   useEffect(() => {
-       console.log(selectedCities)
-   }, [selectedCities])
-    
+     useEffect(() => {
+         if(!update)dispatch({type:"SET_SELECTED_CITIES",value:[user.city.toLowerCase()]})
+     }, [user])
 
     const resetErrors=()=>dispatch({type:"SET_ERRORS",value:{...ERRORS_INITIAL_CONFIG}})
     const handelChange=input=>v=>{dispatch({type:"SET_PRODUCT_DATA",value:{...productData,[input]:v}}) }
@@ -267,15 +265,21 @@ export const AddProduct = (props) => {
             </View>
             
             <ImagePicker {...{title:'"image de produit"',setImage:handelChange('image'),image}}/>
-               <CitiesCheckBox 
-              setSelected={handelChange('city')} 
-              isMultiple={true}
-              selected={selectedCities}
-              data={["Ouarzazate","Zagora","Marrakech"].map(c=>({
-                  value:c,
-                  checked:selectedCities.indexOf(c)>=0
-                }))}
-              />  
+          
+           <Label label="Les regions du produit " mga={16} />
+            {
+                selectedCities.length
+                ?<CitiesCheckBox 
+                setSelected={(value)=>dispatch({type:"SET_SELECTED_CITIES",value})} 
+                isMultiple={true}
+                selected={selectedCities}
+                data={CITIES.map((c,i)=>({
+                    value:c,
+                    checked:  selectedCities.indexOf(c)>=0
+                  }))}
+               />  
+               :null
+            }
             <CategorySelection {...{selectSubCategory,dispatch,errors,ERRORS_MESSAGES,selectedCategory,selectedSubCategory,selectedCategorySubCategories,categories,hasSubCategory}} />
             <DiscountInput {...{discount,hasDiscount,dispatch}} />
             <Prices {...{price1, price2,price3,price4,handelChange,errors,ERRORS_MESSAGES}} />
@@ -325,6 +329,7 @@ export default connect(
        selectedCategorySubCategories : state.categories.selectedCategorySubCategories,
        done_adding_product:state.products.done_adding_product,
        product_adding_error:state.products.product_adding_error,
+       user:state.auth.user,
     })
     , 
     dispatch=>({

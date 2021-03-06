@@ -28,7 +28,6 @@ const BillTable=({selectedBill})=> {
                   flex-direction:column;
                   justify-content: start;
               }
-             
               thead{
                background-color: ${colors.BLUE};
                color:#fff;
@@ -42,9 +41,12 @@ const BillTable=({selectedBill})=> {
             
               .bill_header{
                 padding:1rem;
+                display:flex;
+                align-items:center;
+                align-items:center
               }
               .bill_header_title{
-                   font-size:2rem;
+                   font-size:1.5rem;
                    font-weght:bold
               }
               .bill_header_date{
@@ -57,7 +59,9 @@ const BillTable=({selectedBill})=> {
                 font-weight:bolder
               }
               .logo{
-                width:300
+                width:250;
+                margin-right:1rem
+
               }
           </style>
         </head>

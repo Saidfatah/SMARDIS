@@ -7,17 +7,21 @@ import {colors} from './Colors'
 const CitiesCheckBox=({setSelected,selected,data,isMultiple})=>{
     const [values, setvalues] = useState([...data])
  
-    
     const check = (index)=>{
         let tempValue
         const selectedCity = values[index].value
         const selectedCityChecked = values[index].checked
         let checkedVluesTemp=[...values]
         if(isMultiple){
-               
+                const checkedCount = values.filter(c=>c.checked).length
+                if(checkedCount<2 ){
+                    const activeCheckedIndex=values.indexOf(values.filter(c=>c.checked)[0])
+                    if(activeCheckedIndex == index)return
+                } 
+
                 tempValue = [...selected]
-                if( i >=0){
-                    tempValue.splice(i,1)
+                if(selectedCityChecked){
+                    tempValue.splice(index,1)
                 }else{
                     tempValue.push(selectedCity)
                 }
@@ -27,7 +31,6 @@ const CitiesCheckBox=({setSelected,selected,data,isMultiple})=>{
             checkedVluesTemp=[...values.map((city,i)=>({...city,checked:i == index}))]
             tempValue = selectedCity
         }
-        console.log({tempValue,selectedCity})
 
         setSelected(tempValue)
         setvalues([...checkedVluesTemp])

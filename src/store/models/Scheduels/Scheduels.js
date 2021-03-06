@@ -5,6 +5,7 @@ import fetchScheduels from './Effects/ADMIN/fetchScheduels'
 import addScheduel from './Effects/ADMIN/addScheduel'
 import updateScheduel from './Effects/ADMIN/updateScheduel'
 import removeScheduel from './Effects/ADMIN/removeScheduel'
+import exportOrders from './Effects/ADMIN/exportOrders'
 
 import fetchTodaysSales from './Effects/ADMIN/fetchTodaysSales'
 import fetchTodaysValideOrders from './Effects/fetchTodaysValideOrders'
@@ -264,6 +265,7 @@ const model ={
         removeScheduel   : (args,state)=> removeScheduel(args,state,dispatch),
         setNextTurn      : (args,state)=> setNextTurn(args,state,dispatch),
         cancelOrder      : (args,state)=> cancelOrder(args,state,dispatch),
+        exportOrders      : (args,state)=> exportOrders(args,state,dispatch),
  
         resetIsDone(field,state){  dispatch.scheduel.reseted(field) },
         resetError(field,state){dispatch.scheduel.resetedError(field)},
