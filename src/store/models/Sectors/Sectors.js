@@ -3,6 +3,7 @@ import addSector from './Effects/addSector'
 import fetchSectorClients from './Effects/fetchSectorClients'
 import fetchSectors from './Effects/fetchSectors'
 import updateSector from './Effects/updateSector'
+import removedSector from './Effects/removeSector'
 
 
 const model ={
@@ -66,12 +67,12 @@ const model ={
             ...state,
             [field]:false
         }),
-        // removedSector  : (state,sector)=>({
-        //     ...state,
-        //     sectors :[...state.sectors].filter(s=>!s.id==sector.id),
-        //     sectorsCount: state.sectorsCount-1,
-        //     done_removing_sector :true
-        // }),
+         removedSector  : (state,args)=>({
+             ...state,
+            //  sectors :[...state.sectors].filter(s=>!s.id==sector.id),
+            //  sectorsCount: state.sectorsCount-1,
+            //  done_removing_sector :true
+         }),
         // removingSectorFailed  : (state,sector)=>({
         //     ...state,
         //     done_removing_sector :true
@@ -82,6 +83,7 @@ const model ={
         fetchSectorClients  : (args,state)=>fetchSectorClients(args,state,dispatch),
         addSector        : (args,state)=>addSector(args,state,dispatch),
         updateSector     : (args,state)=>updateSector(args,state,dispatch),
+        removedSector     : (args,state)=>removedSector(args,state,dispatch),
 
         resetIsDone(field,state){
             dispatch.sector.reseted(field)

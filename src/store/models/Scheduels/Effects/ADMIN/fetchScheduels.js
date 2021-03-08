@@ -12,8 +12,9 @@ function startOfWeek(date)
 //get first day of week and last day of the current  week 
 var firstday =startOfWeek(new Date())
 var lastday = new Date()
-lastday.setDate(firstday.getDate()+6); 
+lastday.setDate(firstday.getDate()+7); 
 
+console.log({lastday})
 var weekStart = firestore.Timestamp.fromDate(firstday);
 var nextWeek = firestore.Timestamp.fromDate(lastday);
 
@@ -28,9 +29,9 @@ export default async (arg,state,dispatch)=>{
                                       .collection('scheduels')
                                       .where('region',"array-contains",admin_city)
                                       .where('date','>=',weekStart)
-                                      .where('date','<',nextWeek)
+                                      .where('date','<=',nextWeek)
 
- 
+        await  fetchScheduelsReponse.get()
         const fetch_scheduels_ref =fetchScheduelsReponse.onSnapshot(res=>{
             if(res.docs.length){
                  const scheduels=res.docs.map(scheduel=>({

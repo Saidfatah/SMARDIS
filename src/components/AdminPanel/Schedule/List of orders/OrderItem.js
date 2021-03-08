@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState} from 'react'
 import {View,Text,StyleSheet} from 'react-native'
 import { List } from 'react-native-paper';
 import {colors} from '../../../Common/Colors'
@@ -10,18 +10,18 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
     const [expanded, setExpanded] = useState(false);
 
     const handlePress = () => setExpanded(!expanded);
-    const { distrubutor ,client ,sector,scheduleId,turn ,total ,products,created_at,billRef,status,note,sale_date ,sale_hour}=order
+    const { distrubutor ,client ,sector,products,billRef,status,note}=order
     
+ 
 
-
-    let STATUS ="pase enour"
-    let BADGE_STATUS ="pase enour"
+    let STATUS ="pas encore"
+    let BADGE_STATUS ="warning"
     if(status =="VALIDATED") {
         STATUS ="valider"
         BADGE_STATUS ="success"
     }
     if(status =="PENDING") {
-        STATUS ="pase enou"
+        STATUS ="pas encore "
         BADGE_STATUS ="warning"
     }
     if(status =="CANCELED") {
@@ -29,33 +29,27 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
         BADGE_STATUS ="error"
     }
     
+   
+
     const IS_VALIDATED = validated?true : (status =="VALIDATED" ?true:false)
-    
-    const TITLE=<View style={{
-        flex:1,
-        display:'flex',
-        flexDirection:'row',
-        width : '100%',
-        justifyContent:'space-between',
-        }}>
-        <Text>{`${distrubutor.name} (${sector.name})`}</Text>
+    const title_title=`${distrubutor.name} (${sector.name}/${client.name})`
+    const TITLE=<View style={styles.title}>
+        <Text>{title_title}</Text>
         <Badge
-          status={BADGE_STATUS}
-          value={STATUS}
-           textStyle={{
-             fontSize:14
-           }}
+           status={BADGE_STATUS}
+           value={STATUS}
+           textStyle={{ fontSize:14 }}
            containerStyle={{marginLeft:16}}
-           badgeStyle={{ 
-              height:24 ,
-           }}
+           badgeStyle={{  height:24 }}
         />
     </View>
     
+   
+   
     if(IS_VALIDATED)
     return (
         <List.Accordion
-         title={TITLE}
+         title={title_title}
          titleStyle={styles.Title}
          style={{
              ...styles.AcordionHeader,
@@ -142,7 +136,7 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
 
     return (
         <List.Accordion
-         title={TITLE}
+         title={title_title}
          titleStyle={styles.Title}
          style={{
              ...styles.AcordionHeader,
@@ -210,6 +204,12 @@ const styles = StyleSheet.create({
     Title: {
         color:colors.BLACK,
         fontWeight:'bold'
+    },
+    title:{
+        flex:1,
+        display:'flex',
+        justifyContent:'space-between',
+        alignItems:'flex-start'
     },
     productItem: {
         display:'flex',

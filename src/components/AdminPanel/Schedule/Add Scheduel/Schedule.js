@@ -1,5 +1,5 @@
 import React,{useEffect,useReducer} from 'react'
-import {View,Text,ScrollView,SafeAreaView,Alert} from 'react-native'
+import {View,Text,SafeAreaView,Alert} from 'react-native'
 import { connect } from 'react-redux'
 import ClientsOrdering from './ClientsOrdering'
 import SectorsDropDown from './SectorsDropDown'
@@ -27,7 +27,8 @@ const initalState=(sectors,start_date)=>({
     selectedDistrubutor:null,
     orderListOfClients:[],
     error:null,
-    is_newly_picked_time:true
+    is_newly_picked_time:true,
+    orderedClients:false
 })
 const reducer=(state,action)=>{
        switch (action.type) {
@@ -72,7 +73,16 @@ const reducer=(state,action)=>{
                 return {...state,selectedDistrubutor:action.value}
            break;
            case "SET_ORDERD_LIST_OF_CLIENTS":
-                return {...state,orderListOfClients:action.value}
+                return {
+                    ...state,
+                    orderListOfClients:action.value,
+                }
+           break;
+           case "SET_ORDERD_CLIENTS":
+                return {
+                    ...state,
+                    orderedClients:true,
+                }
            break;
            case "SET_ERROR":
                 return {...state,error:action.value}
@@ -95,15 +105,16 @@ const Schedule = (props)=> {
         resetError,
         sectors,
         distrubutors,
-        adminId
+        adminId,
+        updateClientsOrderInSector
     }=props
     const [state, dispatch] = useReducer(reducer, initalState(sectors,new Date()))
+    
 
-     if(!sectors.length || !clients.length || !distrubutors.length ) return <Loading />
+    if(!sectors.length || !clients.length || !distrubutors.length ) return <Loading />
 
      const {
         canSubmit ,
-        enableScroll,
         update,
         scheduelToBeUpdated ,
         start_date  ,
@@ -113,7 +124,8 @@ const Schedule = (props)=> {
         selectedDistrubutor,
         orderListOfClients,
         error,
-        is_newly_picked_time
+        is_newly_picked_time,
+        orderedClients
     }=state
 
     useEffect(() => {
@@ -134,19 +146,34 @@ const Schedule = (props)=> {
     useEffect(() => {
          if(sectors.length >0 && clients.length>0 && distrubutors.length>0)
          {
+             console.log(selectedSector.id)
              if(!update){
-                const sectorClients = [...clients].filter(cl=> cl.sectorId == selectedSector.id)
-                dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value:sectorClients}) 
-                console.log({update})
-               dispatch({type:"SET_ORDERD_LIST_OF_CLIENTS",value:sectorClients}) 
+                 const sectorClients = [...clients]
+                                      .filter(cl=> cl.sectorId == selectedSector.id)
+                                      .sort((a,b)=>{
+                                        if (a.order_in_sector < b.order_in_sector) { return -1; }
+                                        if (a.order_in_sector > b.order_in_sector) { return 1; }
+                                        return 0;
+                                     })
+                 console.log("sector name:"+sectorClients[0].name)                   
+                 dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value:sectorClients}) 
+                 dispatch({type:"SET_ORDERD_LIST_OF_CLIENTS",value:sectorClients}) 
              }
-             
+            //  VAMmXBr96rx1muOPIuyS
          }
     }, [selectedSector.id])
     useEffect(() => {
         if(!update && sectors.length >0 && clients.length>0 && distrubutors.length>0)
          {
-            dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value:[...clients].filter(cl=> cl.sectorId == selectedSector.id)})
+             const clientsOrderd=[...clients]
+                      .filter(cl=> cl.sectorId == selectedSector.id)
+                      .sort((a,b)=>{
+                        if (a.order_in_sector < b.order_in_sector) { return -1; }
+                        if (a.order_in_sector > b.order_in_sector) { return 1; }
+                        return 0;
+                     })
+
+            dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value:clientsOrderd})
          }
 
         if(route.params){
@@ -194,7 +221,10 @@ const Schedule = (props)=> {
         if(adminId != undefined && selectedDistrubutor &&  selectedSector && orderListOfClients.length>0 ){
             dispatch({type:"SET_CAN_SUBMIT",value:false}) 
             dispatch({type:"SET_ERROR",value:null}) 
-
+            if(orderedClients){
+                const clientsOrderd=orderListOfClients.map((client,index)=>({id:client.id,order:index}))
+                updateClientsOrderInSector({clientsOrderd})
+            }
             if(update) return updateScheduel({ 
                 id:scheduelToBeUpdated,
                 distrubutor   :selectedDistrubutor,
@@ -215,7 +245,9 @@ const Schedule = (props)=> {
                 start_date,
                 navigation
             })
+
             
+ 
         }
     }
 
@@ -292,7 +324,7 @@ const Schedule = (props)=> {
          { showDate && <DatePicker {...pickerProps} />}
         </View>
     }
-    return <ScrollView scrollEnabled={enableScroll} contentContainerStyle={{padding:8}} style={{backgroundColor:'#fff',flex:1}}>
+    return <View   style={{backgroundColor:'#fff',flex:1}}>
         
         <DistrubutorsDopDown {...{distrubutors,selectedDistrubutor, dispatch}} />
         <Error mga={8} trigger={error && error.id =="DISTRUBUTOR"} error={error && error.message} />
@@ -302,10 +334,16 @@ const Schedule = (props)=> {
         <DatePickerFactored/>
         <Error mga={8} trigger={error && error.id =="TIME_PICKER"} error={error && error.message} />
 
-        <Label mgl={8} mgb={0} label={"List des clients du secteur "+ selectedSector.name} />
-        <SafeAreaView style={{paddingTop:0 }}>
-            <ClientsOrdering   sectorClients={selectedSectorClients} dispatch={dispatch} />
-        </SafeAreaView>
+      
+        <View style={{padding:8,flex:1}} >
+        <Label mgl={8} mga={8} mgb={0} label={"List des clients du secteur "+ selectedSector.name} />
+            <ClientsOrdering   
+                dispatch={dispatch} 
+                Data={[...selectedSectorClients]}
+                setData={value=>dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value}) }
+            />
+        </View>
+   
         
         <Error mga={8} trigger={error && error.id =="ALREACY_ASIGNED"} error={error && error.message} />
         <Button color={"BLUE"}  padding={0} disabled={!canSubmit} clickHandler={createNewSchdule}>
@@ -315,7 +353,7 @@ const Schedule = (props)=> {
                :<Loading  spacing={30} />
            }
         </Button>
-    </ScrollView>
+    </View>
  
 
 }
@@ -334,6 +372,7 @@ export default connect(
         updateScheduel:dispatch.scheduel.updateScheduel,
         resetIsDone:dispatch.scheduel.resetIsDone,
         resetError:dispatch.scheduel.resetError,
+        updateClientsOrderInSector:dispatch.client.updateClientsOrderInSector
     })
 )(Schedule)
 

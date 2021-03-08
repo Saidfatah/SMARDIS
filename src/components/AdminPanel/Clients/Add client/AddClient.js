@@ -173,36 +173,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
             }
         </View>
     }
-    const Objectif =()=>{
-        return <View>
-            {
-                userType =="ADMIN"
-                ? <View>
-                <Label label="Montant objectif DH" mga={16}/>
-                <Error trigger={errors.objectifREQUIRED} error={ERRORS_MESSAGES[0].message} />
-                <NumericInput 
-                 iconSize={30}
-                 minValue={0}
-                 step={1}
-                 valueType="real"
-                 value={objectif} 
-                 initValue={objectif} 
-                 containerStyle={{  
-                     borderRadius:12,  
-                     borderColor:colors.BLACK,
-                 }}
-                 inputStyle={{ borderColor:colors.BLACK }}
-                 iconStyle={{color:colors.BLACK, }}
-                 leftButtonBackgroundColor="transparent"
-                 rightButtonBackgroundColor="transparent"
-                 onChange={value=>handelChange('objectif')(value)} 
-                 />
-           
-           </View>
-                :null
-           }
-        </View>
-    }
+  
     const Cities =()=>{
         return <View>
             <Label label="Ville" mga={16} />
@@ -238,7 +209,32 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
     
             <Sectors />
            
-            <Objectif />
+            {
+                userType =="ADMIN"
+                ? <View>
+                <Label label="Montant objectif DH" mga={16}/>
+                <Error trigger={errors.objectifREQUIRED} error={ERRORS_MESSAGES[0].message} />
+                <NumericInput 
+                 iconSize={30}
+                 minValue={0}
+                 step={1}
+                 valueType="real"
+                 value={objectif} 
+                 initValue={objectif} 
+                 containerStyle={{  
+                     borderRadius:12,  
+                     borderColor:colors.BLACK,
+                 }}
+                 inputStyle={{ borderColor:colors.BLACK }}
+                 iconStyle={{color:colors.BLACK, }}
+                 leftButtonBackgroundColor="transparent"
+                 rightButtonBackgroundColor="transparent"
+                 onChange={value=>handelChange('objectif')(value)} 
+                 />
+           
+           </View>
+                :null
+           }
 
             
             

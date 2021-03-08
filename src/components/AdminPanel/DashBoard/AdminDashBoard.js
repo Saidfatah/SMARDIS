@@ -1,4 +1,4 @@
-import React,{useEffect,useCallback} from 'react'
+import React,{useEffect,useCallback,useState} from 'react'
 import { ScrollView,InteractionManager} from 'react-native'
 import { connect } from 'react-redux'
 import { List } from 'react-native-paper';
@@ -32,7 +32,16 @@ const  AdminDashBoard=(props)=> {
         user,
         fetchUsers
     }=props
-
+    const [enabledList, setenabledList] = useState([
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+    ])
     useEffect(() => {
         InteractionManager.runAfterInteractions(() => {
                  if(user && user.type =="DISTRUBUTOR") 
@@ -141,7 +150,17 @@ const  AdminDashBoard=(props)=> {
         }
     ]
 
-   
+   const expand=(index)=>()=>{
+     console.log({index})
+     let temp_expaneded_List = [...enabledList]
+     const prevEnabledIndex = temp_expaneded_List.indexOf(temp_expaneded_List.filter(v=>v==true)[0])
+     temp_expaneded_List=temp_expaneded_List.map(v=>false)
+     if(prevEnabledIndex != index){
+         temp_expaneded_List[index]=true
+     }
+     
+     setenabledList([...temp_expaneded_List])
+   }
 
   
     return <ScrollView style={{backgroundColor:'#fff'}}>
@@ -150,6 +169,8 @@ const  AdminDashBoard=(props)=> {
              ROUTES.filter(r=>r.subMenu).map((route,index)=><DashBoardItem 
                  navigation={navigation} 
                  key={index} 
+                 expanded={enabledList[index]}
+                 expand={expand(index)}
                  ROUTE={route} 
                  last={index === ROUTES.length-1}
                  {...{sectorsCount,salesCount ,scheduelsCount,clientsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,valide_orders_count}}

@@ -13,7 +13,8 @@ const make_cols = refstr => Array.from({length: XLSX.utils.decode_range(refstr).
 const EDP = ExternalDirectoryPath + "/";
 import XLSX from 'xlsx';
 const Header= ["1","RéférenceFacetur","Date","RéférenceProduit","RéférenceClient","Déségnation","q.u","p.u"]
-
+const input = res => res;
+const output = str => str;
 
 export const ListOfOrdersValidated = ({exportOrders,show,valide_orders,done_fetching_todays_validated_orders}) => {
     const [data, setdata] = useState([ Header ])
@@ -27,15 +28,16 @@ export const ListOfOrdersValidated = ({exportOrders,show,valide_orders,done_fetc
          let dataTemp = [Header]
          let columnCount=1
          let linesTemp=[]
-         valide_orders.forEach((order,index1)=>{
-             const { distrubutor ,client ,sector,scheduleId ,total ,products,created_at,billRef,status,note,sale_date ,sale_hour}=order
+         valide_orders.forEach((order)=>{
+             const { client ,products,billRef,sale_date}=order
              if(!products || products.length <1)return console.log('no orders')
            
-             products.forEach((product,index2)=>{
+             products.forEach((product)=>{
                   columnCount++
                   const {quantity,priceForClient,ref,name} =product
 
-                  const dateString=sale_date.toLocaleDateString('en-US')
+                //   const dateString=sale_date.toLocaleDateString('en-US')
+                  const dateString=new Date(2020,5,3).toLocaleDateString('en-US')
                   const dateParts=dateString.split('/').reduce((a,c)=>{
                          let length= c.length
                          const datePart= parseInt(c)
@@ -52,7 +54,7 @@ export const ListOfOrdersValidated = ({exportOrders,show,valide_orders,done_fetc
 
                       return [...a,ds] 
                   },[]) 
-                  const date=dateParts[1]+dateParts[0]+dateParts[2]
+                  const date=dateParts[1]+"/"+dateParts[0]+"/"+dateParts[2]
 
 
                   dataTemp.push([columnCount,billRef,date,ref,client.ref,name,quantity,priceForClient ])
@@ -77,13 +79,68 @@ export const ListOfOrdersValidated = ({exportOrders,show,valide_orders,done_fetc
 
     const exportFile =async ()=> {
 		try {
+        let dataToBeExported=[["Ty","N° pièce","Date","Référence article","Tiers","Quantité","Prix unitaire","Désignation"]]
+
+        valide_orders.forEach((order)=>{
+            const { client,products,billRef,sale_date}=order
+            if(!products || products.length <1)return console.log('no orders')
+          
+            //create date
+            const dateString=sale_date.toLocaleDateString('en-US')
+            const dateParts=dateString.split('/').reduce((a,c)=>{
+                   let length= c.length
+                   const datePart= parseInt(c)
+                   let ds
+                   if(datePart>9 && length <3){
+                       ds = datePart.toString()
+                   }else if(datePart<10 && length <3){
+                       ds ="0"+datePart.toString()
+                   }
+                 
+                   if(length>3){
+                       ds=c.substr(2,2)
+                   } 
+
+                return [...a,ds] 
+            },[]) 
+            const date=dateParts[1]+"/"+dateParts[0]+"/"+dateParts[2]
+
+            products.forEach((p)=>{
+                const priceConvertedToComma=p.priceForClient.toString().replace('.',',')
+                dataToBeExported.push([
+                     1,
+                     billRef,
+                     date ,
+                     p.ref,
+                     client.ref,
+                     p.quantity,
+                     priceConvertedToComma,
+                     p.name
+                 ])
+            })
+           
+        })
+
+        console.log(dataToBeExported[1])
+        const ws = XLSX.utils.aoa_to_sheet(dataToBeExported);
+		// build new workbook */
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
+		// write file  
+		const wbout = XLSX.write(wb, {type:'binary', bookType:"xlsx"});
+		
  
-        const    AppFolder      = 'Excels';
+
+        //#region 
+        //EXPORTED fillesfolder
+        const    AppFolder      = 'LesExporter';
         const    DirectoryPath  = EDP+AppFolder;
         const DirExists= await exists(DirectoryPath)
         if(!DirExists)  {
             await  mkdir(DirectoryPath);
         }
+
+
         //DATE FOLDER
         const newDate=new Date().toLocaleDateString('en','USA').replace("/",'_').replace("/",'_')
         const dateDirectory  =DirectoryPath+"/"+newDate;
@@ -97,18 +154,18 @@ export const ListOfOrdersValidated = ({exportOrders,show,valide_orders,done_fetc
         const time = currentDaTE.getHours()+"_"+currentDaTE.getMinutes()
         const timeDirectory  =dateDirectory+"/"+time;
         const DirExistsTime= await exists(timeDirectory)
-        console.log(timeDirectory)
         if(!DirExistsTime)  {
             await  mkdir(timeDirectory);
         }
+        //#endregion
 
  
-	    const filetoEDP = timeDirectory+"/"+newDate+"_"+time+".txt";
+        
+        //export excel
+        const file = timeDirectory+"/"+newDate+"__"+time+".xlsx";
+	    const excelResponse= await writeFile(file, output(wbout), 'ascii')
 
-        const text=Lines.reduce((a,c)=>a+"\n"+c,"\n")
-  
-	    const writeToExternalDirectoryResponse= await writeFile(filetoEDP,  text , 'utf8')
-        exportOrders()
+        // exportOrders()
         show({
             type:'success',
             title:'Excel exportation ',

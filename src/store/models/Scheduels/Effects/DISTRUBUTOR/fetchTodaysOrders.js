@@ -76,7 +76,13 @@ export default async(arg,state,dispatch)=>{
                  const todaysOrders = Object.keys(groupBySector).map(key=>({
                     sector:groupBySector[key][0].sector,
                     scheduleId:groupBySector[key][0].scheduleId,
-                    orders:[...groupBySector[key].sort((a,b)=>a-b).map(o=>({...o,scheduelId:o.scheduleId  })) ]
+                    orders:[...groupBySector[key]
+                    .sort((a,b)=>{
+                        if (a.turn < b.turn) { return -1; }
+                        if (a.turn > b.turn) { return 1; }
+                        return 0;
+                    })
+                    .map(o=>({...o,scheduelId:o.scheduleId  })) ]
                 }))
               
               

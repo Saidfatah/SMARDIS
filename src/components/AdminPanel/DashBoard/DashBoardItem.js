@@ -4,8 +4,23 @@ import {View,Text,TouchableOpacity} from 'react-native'
 import { List } from 'react-native-paper';
 import {  Badge, Icon } from 'react-native-elements'
 
-const DashBoardItem=({ROUTE,last,navigation,sectorsCount ,clientsCount,scheduelsCount ,salesCount,ordersCount,productsCount,categoriesCount,distrubutorsCount,valide_orders_count})=> {
-        const [expanded, setExpanded] = useState(false);
+const DashBoardItem=(props)=> {
+        const {
+            ROUTE,
+            expanded,
+            expand,
+            last,
+            navigation,
+            sectorsCount ,
+            clientsCount,
+            scheduelsCount ,
+            salesCount,
+            productsCount,
+            categoriesCount,
+            distrubutorsCount,
+            valide_orders_count
+        }=props
+
         const {title,subMenu}=ROUTE
         const navigateToRoute=r=>e=>navigation.navigate(r)
 
@@ -118,7 +133,7 @@ const DashBoardItem=({ROUTE,last,navigation,sectorsCount ,clientsCount,scheduels
                 width:"100%"
             },
             expanded:expanded,
-            onPress:e=>setExpanded(ROUTE.title.toUpperCase() == "AJOUTER CATALOGUE"?false:!expanded)
+            onPress:e=>expand()
         }
         if(ROUTE.title.toUpperCase() == "AJOUTER CATALOGUE"){
             ACCORDION_PROPS.onPress=()=>{

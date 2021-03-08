@@ -4,6 +4,7 @@ import fetchClients  from  './Effects/fetchClients'
 import addClient     from   './Effects/addClient'
 import updateClient  from  './Effects/updateClient'
 import removeClient  from  './Effects/removeClient'
+import updateClientsOrderInSector  from  './Effects/updateClientsOrderInSector'
 
 const model ={
     state:{
@@ -99,6 +100,7 @@ const model ={
         addClient        : (args,state)=>addClient(args,state,dispatch),
         updateClient     : (args,state)=>updateClient(args,state,dispatch),
         removeClient     : (args,state)=>removeClient(args,state,dispatch),
+        updateClientsOrderInSector     : (args,state)=>updateClientsOrderInSector(args,state,dispatch),
 
         resetIsDone(field,state){
             dispatch.auth.reseted(field)

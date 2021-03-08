@@ -18,5 +18,6 @@ export const clientModel=(name,sectorId,ref,phone,address,city,price,objectif,co
     confirmed,
     phone :phone  ||'NO_DEFINED' , 
     coardinations: coardinations || {x:0,y:0},
-    created_at:firestore.Timestamp.fromDate(new Date())
+    created_at:firestore.Timestamp.fromDate(new Date()),
+    order_in_sector:0,
 })

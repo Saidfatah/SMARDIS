@@ -1,5 +1,5 @@
 import React from 'react'
-import  {View,StyleSheet,TouchableOpacity} from 'react-native'
+import  {View,StyleSheet,TouchableWithoutFeedback} from 'react-native'
 import {colors} from './Colors'
 import Loading from './Loading'
 
@@ -9,32 +9,33 @@ const Button=({children,xStyle,clickHandler,color,disabled,loadingSize,noLoading
     if(color) COLOR= colors[color]
    
    
-    return  <TouchableOpacity 
+    return  <TouchableWithoutFeedback 
          disabled={disabled?true:false}
-         style={{
+         
+         onPress={e=>clickHandler()}
+         >
+             <View style={{
              ...styles.button,
              ...xStyle,
              backgroundColor:COLOR,
              padding:padding || 8
-         }} 
-         onPress={e=>clickHandler()}
-         >
-         {
-         !disabled || noLoading
-         ?children
-         :<Loading  spacing={loadingSize||30} /> 
-        }  
-    </TouchableOpacity>  
+              }} >
+                {
+                !disabled || noLoading
+                ?children
+                :<Loading  spacing={loadingSize||30} /> 
+                }  
+             </View>
+    </TouchableWithoutFeedback>  
 }
 
 export default Button
 
 var styles = StyleSheet.create({
     button:{
-        // borderBottomColor:'#000',
-        margin:8,
         borderRadius:12,
         backgroundColor:'#fff',
+        margin:8,
         padding:8
    }
  });
