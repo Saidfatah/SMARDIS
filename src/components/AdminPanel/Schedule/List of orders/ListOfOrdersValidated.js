@@ -16,12 +16,11 @@ const Header= ["1","RéférenceFacetur","Date","RéférenceProduit","Référence
 const input = res => res;
 const output = str => str;
 
-export const ListOfOrdersValidated = ({exportOrders,show,valide_orders,done_fetching_todays_validated_orders}) => {
+export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_validated_orders}) => {
     const [data, setdata] = useState([ Header ])
     const [ExportError, setExportError] = useState(null)
     const [widthArr, setwidthArr] = useState([90,120,90,90,90,90,90,90])
     const [cols, setcols] = useState(["_",...make_cols("A1:H8")])
-    const [Lines, setLines] = useState([])
 
     useEffect(() => {
          if(valide_orders.length <0) return 
@@ -68,7 +67,6 @@ export const ListOfOrdersValidated = ({exportOrders,show,valide_orders,done_fetc
         if(dataTemp.length>1){
             console.log(linesTemp[0])
               setdata([...dataTemp])
-              setLines([...linesTemp])
         }
     }, [valide_orders])
  
@@ -104,7 +102,7 @@ export const ListOfOrdersValidated = ({exportOrders,show,valide_orders,done_fetc
                 return [...a,ds] 
             },[]) 
             const date=dateParts[1]+"/"+dateParts[0]+"/"+dateParts[2]
-
+            
             products.forEach((p)=>{
                 const priceConvertedToComma=p.priceForClient.toString().replace('.',',')
                 dataToBeExported.push([
@@ -116,12 +114,12 @@ export const ListOfOrdersValidated = ({exportOrders,show,valide_orders,done_fetc
                      p.quantity,
                      priceConvertedToComma,
                      p.name
-                 ])
+                ])
             })
            
         })
 
-        console.log(dataToBeExported[1])
+       
         const ws = XLSX.utils.aoa_to_sheet(dataToBeExported);
 		// build new workbook */
 		const wb = XLSX.utils.book_new();
@@ -181,7 +179,7 @@ export const ListOfOrdersValidated = ({exportOrders,show,valide_orders,done_fetc
     const ExceVisualization=()=>{
         return<View>
         <Button color="BLUE" clickHandler={exportFile} >
-            <Text style={{color:'#fff',textAlign:'center'}} >Exporter Le text</Text>
+            <Text style={{color:'#fff',textAlign:'center'}} >Exporter L'excel</Text>
         </Button>
         <Error trigger={ExportError!= null} error={ ExportError && ExportError} />
         <ScrollView  showsHorizontalScrollIndicator={false}  horizontal={true}>

@@ -218,13 +218,16 @@ const Schedule = (props)=> {
       
         if(!selectedDistrubutor) 
         return dispatch({type:"SET_ERROR",value:{id:"DISTRUBUTOR",message:"ce champe est obligatoire"}})
+     
         if(adminId != undefined && selectedDistrubutor &&  selectedSector && orderListOfClients.length>0 ){
             dispatch({type:"SET_CAN_SUBMIT",value:false}) 
             dispatch({type:"SET_ERROR",value:null}) 
+
             if(orderedClients){
                 const clientsOrderd=orderListOfClients.map((client,index)=>({id:client.id,order:index}))
                 updateClientsOrderInSector({clientsOrderd})
             }
+
             if(update) return updateScheduel({ 
                 id:scheduelToBeUpdated,
                 distrubutor   :selectedDistrubutor,
@@ -304,7 +307,7 @@ const Schedule = (props)=> {
         xStyle={{
             borderColor:colors.BLACK,
             borderWidth:2,
-            borderRadius:12, 
+            borderRadius:6, 
         }}
         > 
             <View style={{
@@ -331,9 +334,14 @@ const Schedule = (props)=> {
 
         <SectorsDropDown {...{sectors,selectedSector, dispatch}} />
 
-        <DatePickerFactored/>
-        <Error mga={8} trigger={error && error.id =="TIME_PICKER"} error={error && error.message} />
 
+      
+        <View style={{flex:1}} >
+              <DatePickerFactored/>
+              <View style={{paddingHorizontal:8,flex:1}} >
+                     <Error mga={4} trigger={error && error.id =="TIME_PICKER"} error={error && error.message} />
+              </View>
+        </View>
       
         <View style={{padding:8,flex:1}} >
         <Label mgl={8} mga={8} mgb={0} label={"List des clients du secteur "+ selectedSector.name} />

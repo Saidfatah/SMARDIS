@@ -21,7 +21,7 @@ export const ListOfOrders = ({navigation,selectBill,orders,done_fetching_todays_
     const pendingOrders   = orders.filter(o=>o.status == "PENDING")
 
     const [currentStatus, setcurrentStatus] = useState("PENDING")
-    const [selectedVendeur, setselectedVendeur] = useState(orders[0].distrubutor.id)
+    const [selectedVendeur, setselectedVendeur] = useState(orders && orders.length>0 ?orders[0].distrubutor.id:null)
     
    
     const TITLE = orders.length >0 ? "les order active" :"ilnya pas de emploi du temps"
@@ -161,8 +161,14 @@ export const ListOfOrders = ({navigation,selectBill,orders,done_fetching_todays_
     return (
         <ScrollView  > 
             <View style={{backgroundColor:'#fff',minHeight:HEIGHT, flex:1 ,padding:8}}>
-                 <StatusFilter />
-                 <DistrubutorFilter />
+                 {
+                     orders.length>0
+                     ?<View>
+                          <StatusFilter />
+                          <DistrubutorFilter />
+                     </View>
+                     :null
+                 }
                  <List.Section title={TITLE}>
                     {selectedOrders.map((item,index)=> <OrderItem 
                     validated={false} 

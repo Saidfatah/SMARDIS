@@ -8,6 +8,7 @@ const DistrubutorsDopDown=({distrubutors,selectedDistrubutor, dispatch})=> {
     return <View style={{padding:8}}>
             <Label label="List des vendeurs" />
             <DropDown 
+            searchable={false}
             data={distrubutors.map(d=>({value : d, label :d.name}))} 
             setSelected={(value)=>dispatch({type:'SET_SELECTED_DISTRUBUTOR',value})} 
             keyExtractor={item=>item.value.id}
