@@ -16,7 +16,29 @@ const Header= ["1","RéférenceFacetur","Date","RéférenceProduit","Référence
 const input = res => res;
 const output = str => str;
 
-export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_validated_orders}) => {
+const getDateFormated=(date)=>{
+    var d = new Date(date);
+    let mm = d.getMonth() + 1;
+    let dd = d.getDate();
+    let yy = d.getFullYear().toString().substr(2,2);
+    
+    const month =  d.getMonth() + 1
+    if(month>9  ){
+      mm = month
+    }else if(month<10 ){
+      mm ="0"+ month
+    }
+
+    const day =  d.getDate()
+    if(day>9  ){
+      dd = day
+    }else if(month<10 ){
+      dd ="0"+ day
+    }
+    return dd+"/"+mm+"/"+yy
+}
+
+export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_validated_orders,exportOrders}) => {
     const [data, setdata] = useState([ Header ])
     const [ExportError, setExportError] = useState(null)
     const [widthArr, setwidthArr] = useState([90,120,90,90,90,90,90,90])
@@ -35,32 +57,17 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
                   columnCount++
                   const {quantity,priceForClient,ref,name} =product
 
-                //   const dateString=sale_date.toLocaleDateString('en-US')
-                  const dateString=new Date(2020,5,3).toLocaleDateString('en-US')
-                  const dateParts=dateString.split('/').reduce((a,c)=>{
-                         let length= c.length
-                         const datePart= parseInt(c)
-                         let ds
-                         if(datePart>9 && length <3){
-                             ds = datePart.toString()
-                         }else if(datePart<10 && length <3){
-                             ds ="0"+datePart.toString()
-                         }
-                       
-                         if(length>3){
-                             ds=c.substr(2,2)
-                         } 
-
-                      return [...a,ds] 
-                  },[]) 
-                  const date=dateParts[1]+"/"+dateParts[0]+"/"+dateParts[2]
-
-
+                //   const dateParts=getParts(sale_date.toLocaleDateString('en-GB'))
+                  //  const date=dateParts[1]+"/"+dateParts[0]+"/"+dateParts[2]
+                //   const date=new Date(sale_date).toLocaleDateString('en-GB')
+                 
+                
+                  const date = getDateFormated(sale_date)
+                //   const date=new Date(sale_date).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                
                   dataTemp.push([columnCount,billRef,date,ref,client.ref,name,quantity,priceForClient ])
-
-                  const line="1;"+billRef.trim()+";"+date+";"+ref.trim()+";"+client.ref.trim()+";\u200E"+name.trim()+"\u200E;"+quantity+";"+priceForClient+";"
-                  console.log({date})
-                  linesTemp.push(line)
+                 
+                  linesTemp.push({date})
              })
             
         })
@@ -83,26 +90,9 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
             const { client,products,billRef,sale_date}=order
             if(!products || products.length <1)return console.log('no orders')
           
-            //create date
-            const dateString=sale_date.toLocaleDateString('en-US')
-            const dateParts=dateString.split('/').reduce((a,c)=>{
-                   let length= c.length
-                   const datePart= parseInt(c)
-                   let ds
-                   if(datePart>9 && length <3){
-                       ds = datePart.toString()
-                   }else if(datePart<10 && length <3){
-                       ds ="0"+datePart.toString()
-                   }
-                 
-                   if(length>3){
-                       ds=c.substr(2,2)
-                   } 
-
-                return [...a,ds] 
-            },[]) 
-            const date=dateParts[1]+"/"+dateParts[0]+"/"+dateParts[2]
-            
+            const date = getDateFormated(sale_date)
+           
+           console.log({date})
             products.forEach((p)=>{
                 const priceConvertedToComma=p.priceForClient.toString().replace('.',',')
                 dataToBeExported.push([
@@ -163,7 +153,7 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
         const file = timeDirectory+"/"+newDate+"__"+time+".xlsx";
 	    const excelResponse= await writeFile(file, output(wbout), 'ascii')
 
-        // exportOrders()
+        exportOrders()
         show({
             type:'success',
             title:'Excel exportation ',

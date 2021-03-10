@@ -16,9 +16,9 @@ const HEIGHT = height- StatusBar.currentHeight
 
 export const ListOfOrders = ({navigation,selectBill,orders,done_fetching_todays_orders}) => {
 
-    const validatedOrders = orders.filter(o=>o.status == "VALIDATED")
-    const canceledOrders  = orders.filter(o=>o.status == "CANCELED")
-    const pendingOrders   = orders.filter(o=>o.status == "PENDING")
+    const validatedOrders = orders.filter(order=>order.status == "VALIDATED")
+    const canceledOrders  = orders.filter(order=>order.status == "CANCELED")
+    const pendingOrders   = orders.filter(order=>order.status == "PENDING")
 
     const [currentStatus, setcurrentStatus] = useState("PENDING")
     const [selectedVendeur, setselectedVendeur] = useState(orders && orders.length>0 ?orders[0].distrubutor.id:null)
@@ -115,7 +115,7 @@ export const ListOfOrders = ({navigation,selectBill,orders,done_fetching_todays_
 
         const selectVendeur=(id)=>(e)=>{
             if(selectedVendeur == id) return 
-            setselectedVendeur(o.id)
+            setselectedVendeur(id)
         }
 
         return <View>

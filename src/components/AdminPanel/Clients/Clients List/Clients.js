@@ -4,16 +4,14 @@ import { connect } from 'react-redux'
 import ClientItem from './ClientItem'
 import Loading from '../../../Common/Loading'
 
-const  Clients=({navigation,clients,done_fetching_clients,fetchMoreClients,fetchClients})=> {
+const  Clients=({navigation,clients,done_fetching_clients,fetchClients})=> {
  
-  const handleLoadMore=e=>{
-      // fetchMoreClients()
-  }
+  
 
-  if(clients.length < 1 && !done_fetching_clients ) 
-  return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
-      <Loading spacing={50} />   
-  </View>
+    if(clients.length < 1 && !done_fetching_clients ) 
+    return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
+        <Loading spacing={50} />   
+    </View>
 
     const renderItem =({ item ,index}) =><ClientItem  
     key={index}  
@@ -22,6 +20,7 @@ const  Clients=({navigation,clients,done_fetching_clients,fetchMoreClients,fetch
     isInTodaysOrders={false}
     onclick={()=>navigation.navigate('ADMINclientProfile',{client:item})}
     />
+
     return (
         <View style={{backgroundColor:'#fff',flex: 1}} >
          <FlatList 
@@ -29,8 +28,6 @@ const  Clients=({navigation,clients,done_fetching_clients,fetchMoreClients,fetch
          style  = {{...styles.list}}
          contentContainerStyle = {props =>(styles.flatList)}
          showsVerticalScrollIndicator={false}
-         onEndReached={handleLoadMore}
-         onEndReachedThreshold={0.5}
          ListFooterComponent={<View style={{ height: 0, marginBottom: 90 }}></View>}
          renderItem   = {renderItem}
          keyExtractor = {(item, index) => index.toString()}

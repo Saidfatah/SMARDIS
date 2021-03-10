@@ -131,7 +131,7 @@ export const SecorPage = (props) => {
                     
                 }} 
                 >
-                   <Text style={styles.ButtonText}>Modifier Le Secteur</Text>
+                   <Text style={styles.ButtonText}>Supprimer Le Secteur</Text>
                    <IonIcon name="trash" size={25} color="#fff" />
                </Button>
         </View>

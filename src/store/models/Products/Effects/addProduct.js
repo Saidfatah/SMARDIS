@@ -1,6 +1,7 @@
 import firestore from '@react-native-firebase/firestore'
 import {productModel} from '../Schemas/productModel'
 import Storage from '@react-native-firebase/storage'
+import asyncStorage from '@react-native-async-storage/async-storage' 
 
 const DISCOUNT_CATEGORY="1111POROMOTION1111"
 export default async  (args,state,dispatch)=>{
@@ -32,7 +33,8 @@ export default async  (args,state,dispatch)=>{
 
        //uploadImage then get the uri and use it in 
        let imageUri = image
-      
+       let newProduct=null
+       let created_doc_id=null
        if(imageUri != "NO_IMAGE")
        {
            const task =  Storage().ref('productImages/'+name).putFile(imageUri);
@@ -51,22 +53,42 @@ export default async  (args,state,dispatch)=>{
                }
             )
            await task
-           const newProduct = productModel(name,CATEGORY,imageUri,price1,ref,price2,price3,price4,subCategory,regions,discount)
+           newProduct = productModel(name,CATEGORY,imageUri,price1,ref,price2,price3,price4,subCategory,regions,discount)
 
            const addResponse= firestore()
                              .collection('products')
                              .add(newProduct)
-       }else{
-              const newProduct = productModel(name,CATEGORY,"NO_IMAGE",price1,ref,price2,price3,price4,subCategory,regions,discount)
+           created_doc_id=(await addResponse).id
+        }else{
+            newProduct = productModel(name,CATEGORY,"NO_IMAGE",price1,ref,price2,price3,price4,subCategory,regions,discount)
+            
+            const addResponse= firestore()
+                              .collection('products')
+                              .add(newProduct)
 
-              const addResponse= firestore()
-                          .collection('products')
-                          .add(newProduct)
+            created_doc_id=(await addResponse).id
        }
       
      
-     
-     
+       if(newProduct != null && created_doc_id!=null){
+           console.log({created_doc_id})
+
+           newProduct.id= created_doc_id
+           products.push(newProduct)
+
+           products= [...products.sort(function(a, b){
+              if(a.name < b.name) { return -1; }
+              if(a.name > b.name) { return 1; }
+              return 0;
+            })]
+
+         const cache={
+          day_of_creation: new Date().getDate(),
+          products
+         }
+         await  asyncStorage.setItem("PRODUCTS",JSON.stringify(cache))
+       }
+  
       
      
        dispatch.toast.show({
@@ -75,7 +97,7 @@ export default async  (args,state,dispatch)=>{
            message:`Produit ${name} est ajouter avec success`
        })
        navigation.navigate('ADMINproducts')
-       dispatch.products.addedProduct([])
+       dispatch.products.addedProduct(products)
     } catch (error) {
         console.log(error)
         if(error.message == "NAME_USED")

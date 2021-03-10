@@ -1,4 +1,5 @@
 import firestore from '@react-native-firebase/firestore'
+import asyncStorage from '@react-native-async-storage/async-storage'
 
 export default async (args,state,dispatch)=>{
     try {
@@ -27,6 +28,16 @@ export default async (args,state,dispatch)=>{
                                       .collection("clients")
                                       .doc(id)
                                       .update({...updatedFields});
+
+
+             //update in cache from cache
+             const day_of_creation =new Date().getDate()
+             const cache={
+              day_of_creation,
+              clients
+             }
+             await  asyncStorage.setItem("CLIENTS",JSON.stringify(cache))
+
                                       
           dispatch.toast.show({
               type:'success',

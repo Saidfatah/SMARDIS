@@ -65,7 +65,6 @@ const model ={
             ...state,
             clients  ,
             clientsCount: state.clientsCount +1,
-            clientsAdded: state.clientsAdded +1,
             done_adding_client:true,
             client_adding_error:null
         }),
@@ -77,7 +76,7 @@ const model ={
         removedClient : (state,clients)=>({
             ...state,
             clients :[...clients],
-            clientsCount: state.clientsCount -1,
+            clientsCount:state.clientsCount >= 1? state.clientsCount -1:0,
             done_removing_client:true
         }),
         removingClientFailed : (state,clients)=>({

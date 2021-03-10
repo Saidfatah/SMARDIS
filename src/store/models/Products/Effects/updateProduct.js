@@ -1,5 +1,6 @@
 import firestore from '@react-native-firebase/firestore'
 import Storage from '@react-native-firebase/storage'
+import asyncStorage from '@react-native-async-storage/async-storage'
 
 
 const DISCOUNT_CATEGORY="1111POROMOTION1111"
@@ -112,7 +113,26 @@ export default async  (args,state,dispatch)=>{
 
   
  
-   products[targetProductIndex] = {...targetProduct,targetProduct,name, category:CATEGORY,image,price1,price2,price3,price4}
+   products[targetProductIndex] = {
+       ...targetProduct,
+       targetProduct,
+       name,
+       category:CATEGORY,
+       image,
+       price1,
+       price2,
+       price3,
+       price4
+    }
+    
+     //update in cache from cache
+     const day_of_creation =new Date().getDate()
+     const cache={
+      day_of_creation,
+      products
+     }
+     await  asyncStorage.setItem("PRODUCTS",JSON.stringify(cache))
+
  
     dispatch.toast.show({
         type:'success',
