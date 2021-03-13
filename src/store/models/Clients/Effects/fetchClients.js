@@ -13,7 +13,7 @@ export default async (arg,state,dispatch)=>{
              const current_day= new Date().getDate()
              
      
-             if(current_day <= day_of_creation ){
+             if(current_day == day_of_creation ){
                 return dispatch.client.fetchedClients({
                     clients,
                     last_visible_client : clients[clients.length-1].ref

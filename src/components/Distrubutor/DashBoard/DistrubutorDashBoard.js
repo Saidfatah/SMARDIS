@@ -19,9 +19,9 @@ const DistrubutorDashBoard=(props)=> {
     }=props
 
     useEffect(() => {
+        fetchTodaysOrders({passCacheCheck:false})
         fetchCategories()
         fetchProducts()
-        fetchTodaysOrders()
         fetchSectors()
         fetchCartFromAsyncStorage()
         fetchDistrubutorTodaysCanceledOrders()

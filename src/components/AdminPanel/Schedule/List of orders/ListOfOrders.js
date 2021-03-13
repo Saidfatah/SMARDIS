@@ -22,6 +22,7 @@ export const ListOfOrders = ({navigation,selectBill,orders,done_fetching_todays_
 
     const [currentStatus, setcurrentStatus] = useState("PENDING")
     const [selectedVendeur, setselectedVendeur] = useState(orders && orders.length>0 ?orders[0].distrubutor.id:null)
+    const [selectedSector, setselectedSector] = useState(orders && orders.length>0 ?orders[0].sector.id:null)
     
    
     const TITLE = orders.length >0 ? "les order active" :"ilnya pas de emploi du temps"
@@ -147,17 +148,58 @@ export const ListOfOrders = ({navigation,selectBill,orders,done_fetching_todays_
         </View>
         </View>
     }
+    const SectorsFilter=()=>{
+        let sectors_Ids=[]
+        let sectorsList=[]
+        orders.forEach(o => {
+            if(sectors_Ids.indexOf(o.sector.id) <0){
+                 sectors_Ids.push(o.sector.id)
+                 sectorsList.push({
+                     name:o.sector.name,
+                     id:o.sector.id
+                    })
+            }
+        });
+
+        const selectSector=(id)=>(e)=>{
+            if(selectedSector == id) return 
+            setselectedSector(id)
+        }
+
+        return <View>
+             <Label mgl={8} mgb={0}  mga={8} label="Filtrer par secteur" />
+            <View style={styles.wrap} >
+                 {
+                 sectorsList.map((o,index)=><Button  xStyle={ { margin:0, padding:4}} key={index} clickHandler={selectSector(o.id)} >
+                  <View style={{  display:'flex',  flexDirection:"row" }}>
+                        <Text>{o.name}</Text>
+                        <Icon 
+                          name={selectedSector == o.id ?"checkmark-circle" :"checkmark-circle-outline"} 
+                          size={20} 
+                          color={colors.BLACK} 
+                        />
+                   </View>
+                  </Button>)
+                }
+            </View>
+        </View>
+    }
+
 
     let selectedOrders
+    const isEqual=(order)=>{
+        return (order.distrubutor.id   == selectedVendeur) && (order.sector.id   == selectedSector)
+    }
     if(currentStatus == "PENDING"){
-        selectedOrders =pendingOrders.filter(c=>c.distrubutor.id ==selectedVendeur)
+        selectedOrders =pendingOrders.filter(order=>isEqual(order))
+    }  
+    if(currentStatus == "CANCELED"){  
+        selectedOrders =canceledOrders.filter(order=>isEqual(order))
+    } 
+    if(currentStatus == "VALIDATED"){ 
+        selectedOrders =validatedOrders.filter(order=>isEqual(order)) 
     }
-    if(currentStatus == "CANCELED"){
-        selectedOrders =canceledOrders.filter(c=>c.distrubutor.id ==selectedVendeur)
-    }
-    if(currentStatus == "VALIDATED"){
-        selectedOrders =validatedOrders.filter(c=>c.distrubutor.id ==selectedVendeur) 
-    }
+    
     return (
         <ScrollView  > 
             <View style={{backgroundColor:'#fff',minHeight:HEIGHT, flex:1 ,padding:8}}>
@@ -166,6 +208,7 @@ export const ListOfOrders = ({navigation,selectBill,orders,done_fetching_todays_
                      ?<View>
                           <StatusFilter />
                           <DistrubutorFilter />
+                          <SectorsFilter />
                      </View>
                      :null
                  }
@@ -175,7 +218,7 @@ export const ListOfOrders = ({navigation,selectBill,orders,done_fetching_todays_
                     navigation={navigation} 
                     selectBill={selectBill}
                     order={item} 
-                    key={index}  
+                    key={item.id}  
                     />)}
                  </List.Section>
             </View>

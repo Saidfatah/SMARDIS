@@ -9,6 +9,7 @@ import DistrubutorClientDelivry     from '../Distrubutor/ClientProductsSelection
 import DistrubutorCart   from '../Cart/Cart'
 import DistrubutorValidatedCommands   from '../Distrubutor/validatedCommands/ValidatedCommands'
 import DistrubutorCanceledOrders  from '../Distrubutor/CanceledOrders/CanceledOrders'
+import Logo from '../Common/Logo'
 
 import {View,Text} from 'react-native'
 import {  Badge, Icon,Avatar } from 'react-native-elements'
@@ -28,7 +29,12 @@ const CustomHeaderRight = ({cartItems,navigation})=>{
    const COUNT=cartItems.length || 0
 
 
-   return <View style={{marginRight:12,display:'flex',flexDirection:'row'}} >
+   return <View style={{
+      marginRight:12,
+      display:'flex',
+      flexDirection:'row',
+      alignItems:'center'
+      }} >
           <TouchableOpacity onPress={()=>{navigation.navigate('DISTRIBUTORcart')}} >
              <View style={{marginRight:16}}>
                 <Icon type="ionicon" name="md-cart" size={30} />
@@ -50,11 +56,9 @@ const CustomHeaderRight = ({cartItems,navigation})=>{
                 />
              </View>
          </TouchableOpacity>
-          <Avatar
-            rounded
-            source={require('../../images/logo.png')}
-            size="small"
-          />
+         
+         <Logo height={30} width={30}  />
+      
        </View>
 }
 

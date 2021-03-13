@@ -2,18 +2,17 @@ import React,{useState,createRef,useMemo} from 'react'
 import {View,Text,StyleSheet } from 'react-native'
 import { List } from 'react-native-paper';
 import {colors} from '../../Common/Colors'
-import ClientItem from '../../AdminPanel/Clients/Clients List/ClientItem'
 import Badge from '../../Common/Badge'
 import {connect} from 'react-redux'
 import ClientItems from './ClientsItems'
 
 
 
-const SectorItem=({sector,clients,orderId,navigation,currentSector,currentSectorIndex,currentTurn})=> {
+const SectorItem=({sector,clients,orderId,navigation,currentSector,currentSectorIndex,currentTurn,scheduleId})=> {
         const [expanded, setexpanded] = useState(false)
         const {name,id}=sector
     
-        
+
         const ACCORDION_PROPS={
             title:<View style={{
                 flex:1,
@@ -52,7 +51,7 @@ const SectorItem=({sector,clients,orderId,navigation,currentSector,currentSector
       
         return <List.Accordion  {...ACCORDION_PROPS} >
               <View style={styles.accordionContentWrrapper}>  
-               <ClientItems {...{clients,navigation,sector,currentTurn,currentSectorIndex,currentSector,orderId}}/>  
+               <ClientItems {...{scheduleId,clients,navigation,sector,currentTurn,currentSectorIndex,currentSector,orderId}}/>  
               </View>
         </List.Accordion>
 }

@@ -22,7 +22,7 @@ export const Cart=({navigation,cartItems,guest,removeCartItem,done_validating_pr
              <Text> Le panier est vide</Text> 
     </ScrollView> 
     
-    const TOTAL= cartItems.reduce((a,c)=>a+(c.priceForClient * c.quantity),0)
+    const TOTAL= parseFloat(cartItems.reduce((a,c)=>a+(c.priceForClient * c.quantity),0)).toFixed(2) 
 
 
     const CartHeader=()=>{

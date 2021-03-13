@@ -23,15 +23,15 @@ const CONFIG_DOC ="0000CONFIG0000"
 export default async (arg,state,dispatch)=>{
     try {
         const admin_city= state.auth.user.city
-        console.log('fetchScheduelsReponse')
-        console.log({admin_city})
+
         const fetchScheduelsReponse =  firestore()
                                       .collection('scheduels')
                                       .where('region',"array-contains",admin_city)
+                                      .where('status',"==","PENDING")
                                       .where('date','>=',weekStart)
                                       .where('date','<=',nextWeek)
 
-        await  fetchScheduelsReponse.get()
+        
         const fetch_scheduels_ref =fetchScheduelsReponse.onSnapshot(res=>{
             if(res.docs.length){
                  const scheduels=res.docs.map(scheduel=>({

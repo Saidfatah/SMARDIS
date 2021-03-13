@@ -23,7 +23,11 @@ export const ListOfSchedules = ({navigation,scheduels,done_fetching_todays_sched
         <ScrollView  > 
             <View style={{backgroundColor:'#fff',minHeight:HEIGHT, flex:1 ,padding:8}}>
                  <List.Section title={TITLE}>
-                    {scheduels.map((item,i)=> <ScheduleItem navigation={navigation} scheduel={item} key={i}  />)}
+                    {scheduels.map((item,i)=> <ScheduleItem 
+                    navigation={navigation} 
+                    scheduel={item} 
+                    key={item.id}  
+                    />)}
                  </List.Section>
             </View>
         </ScrollView>

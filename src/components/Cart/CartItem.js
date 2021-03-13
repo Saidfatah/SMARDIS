@@ -12,7 +12,7 @@ const  CartItem = ({item,guestId,removeCartItem,updateQuantity})=> {
             <Text>{item.name}</Text>
             <Text>{item.priceForClient}</Text>
             <Quantity  
-                 quantity={item.quantity} 
+                 quantity={parseFloat(parseFloat(item.quantity).toFixed(2))} 
                  updateQuantity={updateQuantity} 
                  itemId={item.id}
                  guestId={guestId}

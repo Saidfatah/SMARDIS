@@ -9,10 +9,12 @@ import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 
 
 
-export const SwipeAbleCancelOrder = ({orderId,navigation,done_canceling_order,resetIsDone,isPanelActive,setIsPanelActive,cancelOrder}) => {
+export const SwipeAbleCancelOrder = ({scheduelId,orderId,navigation,done_canceling_order,resetIsDone,isPanelActive,setIsPanelActive,cancelOrder}) => {
     const [note, setnote] = useState("")
     const [canCancel, setcanCancel] = useState(true)
     const [noteREQUIRED, setnoteREQUIRED] = useState("")
+ 
+
  
     useEffect(() => {
       done_canceling_order == true && setcanCancel(true) && resetIsDone("done_canceling_order")
@@ -47,7 +49,7 @@ export const SwipeAbleCancelOrder = ({orderId,navigation,done_canceling_order,re
             <Button color="RED"  disabled={!canCancel} clickHandler={()=>{
                 if(note == "")return  setnoteREQUIRED(true)
                 setcanCancel(false)
-                cancelOrder({orderId,note,navigation})
+                cancelOrder({orderId,note,navigation,scheduelId})
             }} >
               <Text style={{textAlign:'center',color:'#fff'}}  >Confimer L'annulation </Text>
             </Button>

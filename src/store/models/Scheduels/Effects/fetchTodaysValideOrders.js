@@ -31,7 +31,6 @@ export default async  (type,state,dispatch)=>{
         
        if(type=="ADMIN"){
            const admin_city= state.auth.user.city
-           console.log({admin_city})
 
            fetchOrdersReponse = await firestore()
            .collection('orders')
@@ -40,7 +39,6 @@ export default async  (type,state,dispatch)=>{
            .where('region','array-contains',admin_city)
 
 
-          console.log('fetch validated orders admin')
        }else{
            const currentDistrubutorId = state.auth.distrubutorId
           
@@ -54,7 +52,6 @@ export default async  (type,state,dispatch)=>{
   
        const validated_commands_ref =fetchOrdersReponse.onSnapshot(res=>{
         if(res.docs.length){
-         console.log('got validated orders')
          const maped_data=res.docs.map(order=>({
              ...order.data(),
              id:order.id,

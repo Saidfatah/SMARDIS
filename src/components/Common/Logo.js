@@ -4,7 +4,7 @@ import Svg, {  Path,G ,Stop,LinearGradient} from 'react-native-svg';
 
 const Logo=({width,height})=> {
  const SvgCompoennt=(props)=>{
-     return <Svg style={{width:100,height:100}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 471.2 507" {...props}>
+     return <Svg style={{width:width||100,height:height||100}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 471.2 507" {...props}>
 
      <G id="prefix__Layer_1">
        <Path

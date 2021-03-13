@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore'
 
-export const orderModel=(scheduleId,client,sector,distrubutor,turn,start_date,region)=>({
+export const orderModel=(scheduleId,client,sector,distrubutor,turn,start_date,region,is_last_in_scheduel)=>({
     distrubutor  ,
     client ,
     sector,
@@ -14,6 +14,7 @@ export const orderModel=(scheduleId,client,sector,distrubutor,turn,start_date,re
     billRef:"Aucune",//updated from dirtubtor cart on validating command 
     status: "PENDING",//update from distrubutor cart 
     note : "Aucune", // if sale is canceled distrubutor needs to provide a note 
+    is_last_in_scheduel: is_last_in_scheduel || false,
     created_at: firestore.Timestamp.fromDate(start_date),
     start_date: firestore.Timestamp.fromDate(start_date),
     sale_date : firestore.Timestamp.fromDate(new Date()),//update from distrubutor cart 

@@ -182,13 +182,13 @@ const model ={
             done_fetching_todays_validated_orders:true,
         }),
         //used in [DISTRUBUTOR] screens
-        fetchedTodaysSectors : (state,{todaysOrders,todays_orders_ref})=>({
+        fetchedTodaysSectors : (state,{todaysSectors,todays_orders_ref,todays_orders_first_fetch})=>({
             ...state,
-            todaysSectors :[...todaysOrders],
-            todaysSectorsCount :todaysOrders.length,
-            currentTurn   :todaysOrders[0].orders[0].turn || 0,
-            currentSector : todaysOrders[0].sector.id,
-            todays_orders_first_fetch:true,
+            todaysSectors :[...todaysSectors],
+            todaysSectorsCount :todaysSectors.length,
+            currentTurn   :todaysSectors[0].orders[0].turn || 0,
+            currentSector : todaysSectors[0].sector.id,
+            todays_orders_first_fetch,
             currentSectorIndex:0,
             distrubutor_todays_orders_done_fetching:true,
             todays_orders_ref
@@ -217,6 +217,10 @@ const model ={
         selectedABill : (state,selectedBill)=>({
             ...state,
             selectedBill 
+        }),
+        removedOrderAfterValidating : (state,{todaysSectors})=>({
+            ...state,
+            todaysSectors 
         }),
      
         fetchedDistrubutorTodaysCanceledOrders : (state,{orders,canceled_commands_ref})=>({

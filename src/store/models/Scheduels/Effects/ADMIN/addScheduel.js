@@ -52,7 +52,8 @@ export default async (args,state,dispatch)=>{
          const addedOrdersCount=distination.clients.length
         
          const addCounter=state.scheduel.addCounter
-         console.log({addCounter})
+         const clientCount = distination.clients.length
+
          distination.clients.forEach((client,index)=>{
              const newDate=new Date(start_date)
              const prevMinutes= newDate.getMinutes()
@@ -65,7 +66,8 @@ export default async (args,state,dispatch)=>{
                  distrubutor,
                  index,
                  newDate,
-                 [CITY]
+                 [CITY],
+                 index == clientCount-1
                  )
              scheduelOrders.push(order)
          })

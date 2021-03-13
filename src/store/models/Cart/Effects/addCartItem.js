@@ -5,6 +5,7 @@ export default(args,state,dispatch)=>{
         const {product,sector,scheduelId,guest} = args
         const cartItems= [...state.cart.cartItems]
         const targetCartItem = cartItems.filter(item=>item.id == product.id)[0]
+        
         if(targetCartItem){
             const targetItemIndex =  cartItems.indexOf(targetCartItem)
             const targetProductQuantity = targetCartItem.quantity

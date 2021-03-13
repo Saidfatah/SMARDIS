@@ -32,7 +32,7 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
    
 
     const IS_VALIDATED = validated?true : (status =="VALIDATED" ?true:false)
-    const title_title=`${distrubutor.name} (${sector.name}/${client.name})`
+    const title_title=`${sector.name}  ${client.name}`
     const TITLE=<View style={styles.title}>
         <Text>{title_title}</Text>
         <Badge

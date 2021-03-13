@@ -1,4 +1,5 @@
 import firestore from '@react-native-firebase/firestore'
+import asyncStorage from '@react-native-async-storage/async-storage'
 import _ from 'lodash'
 const today = new Date()
 const tomorrowJs = new Date(today)
@@ -15,12 +16,30 @@ const CONFIG_DOC='1 - - CONFIG - -'
 
 export default async(arg,state,dispatch)=>{
     try {
+        const {passCacheCheck}=arg
+        if(!passCacheCheck){
+            const TODAYS_ORDERS = await asyncStorage.getItem('TODAYS_ORDERS')
+        
+            if(TODAYS_ORDERS != undefined && TODAYS_ORDERS!=null){
+                const {todaysSectors,day_of_creation}= JSON.parse(TODAYS_ORDERS) 
+                
+                 const current_day= new Date().getDate()
+                 
+                 if(current_day == day_of_creation ){
+                    return dispatch.scheduel.fetchedTodaysSectors({
+                        todaysSectors,
+                        todays_orders_ref:null,
+                        todays_orders_first_fetch:false
+                    })
+                 }
+            } 
+        }
+
         const todays_orders_first_fetch= state.scheduel.todays_orders_first_fetch
         if(todays_orders_first_fetch) return 
         const currentDistrubutorId = state.auth.distrubutorId
         
         
-        console.log({currentDistrubutorId})
         const fetchOrdersReponse = await firestore()
               .collection('orders')
               .where('created_at','>',yesterday)
@@ -46,6 +65,7 @@ export default async(arg,state,dispatch)=>{
             if(res.docs.length){
                 // const flteredDocs=  res.docs.filter(doc=> doc.id != CONFIG_DOC)
                  const flteredDocs=  res.docs  
+                 console.log('todays orders snapshot')
 
                 //chececk for clients objectifs 
                 //reset their objectif progress if its the beggning of the month 
@@ -68,12 +88,11 @@ export default async(arg,state,dispatch)=>{
                 })
        
                 const orderList= flteredDocs.map(doc=>({...doc.data(),orderId:doc.id}))
-                const ordersnamessectors= orderList.map(o=>({sector:o.sector.name,turn:o.turn}))
-                console.log(ordersnamessectors)
+                
                  
                 const groupBySector=_.groupBy(orderList,"sectorId")
             
-                 const todaysOrders = Object.keys(groupBySector).map(key=>({
+                const todaysSectors = Object.keys(groupBySector).map(key=>({
                     sector:groupBySector[key][0].sector,
                     scheduleId:groupBySector[key][0].scheduleId,
                     orders:[...groupBySector[key]
@@ -82,17 +101,28 @@ export default async(arg,state,dispatch)=>{
                         if (a.turn > b.turn) { return 1; }
                         return 0;
                     })
-                    .map(o=>({...o,scheduelId:o.scheduleId  })) ]
+                    .map(o=>({...o,
+                        scheduelId:o.scheduelId
+                    })) 
+                    ]
                 }))
               
+                //write to cache
+                 const day_of_creation =new Date().getDate()
+                 const cache={
+                  day_of_creation,
+                  todaysSectors
+                 }
+                 await  asyncStorage.setItem("TODAYS_ORDERS",JSON.stringify(cache))
+
               
             
-                 return dispatch.scheduel.fetchedTodaysSectors({todaysOrders,todays_orders_ref})
+                 return dispatch.scheduel.fetchedTodaysSectors({todaysSectors,todays_orders_ref,todays_orders_first_fetch:true})
             }
             dispatch.scheduel.fetchedTodaysSectorsFailed()
         })
     } catch (error) {
-        console.log("----fetchTodaysSectors catch1------")
+        console.log("----fetchTodaysSectors------")
         console.log(error)
         dispatch.scheduel.fetchedTodaysSectorsFailed()
     }

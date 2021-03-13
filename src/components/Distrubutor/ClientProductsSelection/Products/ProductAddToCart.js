@@ -26,15 +26,15 @@ const ProductAddToCart =({scheduelId,setIsPanelActive,selectedProduct,guest,addC
                   minValue={0}
                   step={1}
                   valueType="real"
-                  value={quantity} 
-                  onChange={value => setquantity(value)} 
+                  value={parseFloat(quantity)} 
+                  onChange={v => setquantity(parseFloat(v).toFixed(2))} 
                   />
              </View>
              <View style={styles.InputGroup}>
                  <Text style={styles.label}>Total en DH</Text>
                  <TextInput 
                     style={styles.input}
-                   value={(priceForClient*quantity).toString()}
+                   value={parseFloat(priceForClient*quantity).toFixed(2)}
                    editable={false}
                    keyboardType="numeric"
                    onChangeText={onChangeHandler} 

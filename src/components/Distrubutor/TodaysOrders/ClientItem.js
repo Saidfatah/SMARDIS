@@ -3,9 +3,10 @@ import {View,Text} from 'react-native'
 import Item from '../../Common/Item'
 import Button from '../../Common/Button'
 
-const ClientItem=({navigation,client,currentSectorIndex,currentTurn,currentSector,sector })=> {
-      const {name,turn,orderId,scheduelId}=client
-      const navigateToRoute=(e)=>navigation.navigate('DISTRIBUTORclientDelivery', { clientId:client.id ,client ,sector,orderId,scheduelId });
+const ClientItem=({navigation,client,currentTurn,currentSector,sector,scheduleId })=> {
+
+      const {name,turn,orderId}=client
+      const navigateToRoute=(e)=>navigation.navigate('DISTRIBUTORclientDelivery', { clientId:client.id ,client ,sector,orderId,scheduelId:scheduleId });
       return <Item xStyle={{ marginBottom:16}} >
         <View style={{ 
           display:'flex',

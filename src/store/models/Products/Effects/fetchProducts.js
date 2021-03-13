@@ -12,7 +12,7 @@ export default async(args,state,dispatch)=>{
              const current_day= new Date().getDate()
              
              console.log({current_day,day_of_creation})
-             if(current_day <= day_of_creation ){
+             if(current_day  == day_of_creation ){
                  return dispatch.products.fetchedProducts({
                      products,
                      last_visible_Product:products[products.length -1].ref

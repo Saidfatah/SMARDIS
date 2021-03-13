@@ -29,7 +29,7 @@ const ClientDelivry=(props)=> {
     const [selectedProduct, setselectedProduct] = useState(selectedCategoryProducts[0]);
 
 
-    const {client,sector,orderId,scheduelId  } = route.params;
+    const {client,sector,orderId,scheduelId} = route.params;
    
     const {name,objectif,id}=client
  
@@ -93,6 +93,7 @@ const ClientDelivry=(props)=> {
         <SwipeAbleCancelOrder {...{
                  navigation,
                  cancelOrder,
+                 scheduelId,
                  orderId,
                  done_canceling_order,
                  resetIsDone,

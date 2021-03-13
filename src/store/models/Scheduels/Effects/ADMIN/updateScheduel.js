@@ -26,14 +26,17 @@ export default async (args,state,dispatch)=>{
          
          //map distination.clients into [{d,turn}] array
          const idTurn = distination.clients.map((cl,index)=>({id:cl.id,turn:index}))                                  
-         if(associatedOrdersResponse.docs.length){
-           associatedOrdersResponse.docs.forEach((order)=>{
+         const length =associatedOrdersResponse.docs.length
+         if(length){
+           associatedOrdersResponse.docs.forEach((order,index)=>{
                const turn = idTurn.filter(cl=>cl.id==order.data().client.id)[0].turn
+               const is_last_in_scheduel = turn == (idTurn.length -1)
                order.ref.update({ 
                    turn,
                    created_at:firestore.Timestamp.fromDate(new Date(start_date)),
                    start_date:firestore.Timestamp.fromDate(new Date(start_date)),
-               })
+                   is_last_in_scheduel
+                })
            })
          }
 

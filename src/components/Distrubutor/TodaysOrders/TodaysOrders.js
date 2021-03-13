@@ -9,6 +9,7 @@ import { List } from 'react-native-paper';
 const  TodaysOrders=({todaysSectors,distrubutor_todays_orders_done_fetching,navigation})=> {
   let TITLE=todaysSectors.length ? " Les mission d'aujourdhui" : " Les aucaun de mission active"
  
+ 
   
   return (
     <BackgroundImage  >
