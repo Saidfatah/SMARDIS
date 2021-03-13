@@ -1,133 +1,50 @@
-import React,{useState} from 'react'
+import React  from 'react'
 import {View,Text,StyleSheet} from 'react-native'
-import { List } from 'react-native-paper';
-import {colors} from '../../Common/Colors'
-import Badge from '../../Common/Badge'
-import Label from '../../Common/Label'
+import Button from '../../Common/Button'
+import Item from '../../Common/Item'
+import {connect} from 'react-redux'
 
-
-export const SaleItem = ({sale}) => {
-    const [expanded, setExpanded] = useState(false);
-    const handlePress = () => setExpanded(!expanded);
-  
-    const {client,distrubutor,product,sector,billRef,total}= sale
-
+export const SaleItem = ({sale,selectBill,navigation}) => {
+    const {client,sector,id}= sale
+    console.log(id)
+    const title=`${client.name} (${sector.name})` 
     return (
-        <List.Accordion
-         title={`${client.name} (${sector.name})` }
-         titleStyle={styles.Title}
-         style={{
-             ...styles.AcordionHeader,
-             borderBottomLeftRadius: !expanded ?12:0,
-             borderBottomRightRadius:!expanded ?12:0 ,
-             marginBottom: expanded ?0:16 ,
-         }}
-         descriptionStyle={styles.AcordionWrrapper}
-         expanded={expanded}
-         onPress={handlePress}>
-           <View style={styles.accordionContentWrrapper}>
-                <View style={styles.HFlex} >
-                    <Label label="Facetru refrence :"  mga={16} />
-                    <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
-                              <Text>{billRef}</Text>
-                    </View>
-                </View>
-          
-                <View style={styles.HFlex} >
-                    <Label label="Vendeur:"  mga={16} />
-                    <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
-                              <Text>{distrubutor.name}</Text>
-                    </View>
-                </View>
-                <View style={styles.HFlex} >
-                    <Label label="Client:"  mga={16} />
-                    <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
-                              <Text>{client.name}</Text>
-                    </View>
-                </View>
-                <View style={styles.HFlex} >
-                    <Label label="Refernce du client:"  mga={16} />
-                    <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
-                              <Text>{client.ref}</Text>
-                    </View>
-                </View>
-                <View style={styles.HFlex} >
-                    <Label label="Produit:"  mga={16} />
-                    <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
-                              <Text>{product.name}</Text>
-                    </View>
-                </View>
-                <View style={styles.HFlex} >
-                    <Label label="Quantité du Produit:"  mga={16} />
-                    <View style={{...styles.ClientItem,marginBottom:0,marginLeft:8}}>
-                              <Text>{product.quantity}</Text>
-                    </View>
-                </View>
-          
-                <View style={styles.HFlex} >
-                    <Label label="Montante paye:"  mga={16} />
-                    <View style={{
-                        ...styles.ClientItem,
-                        marginBottom:0,
-                        marginLeft:8,
-                        backgroundColor:colors.GREEN
-                        }}>
-                              <Text style={{
-                                  color:'#333',
-                                  fontWeight:'bold'}} >
-                              {total} DH
-                            </Text>
-                    </View>
-                </View>
-          
-               
-       
-             
-           </View>
-     </List.Accordion>
+        <Item xStyle={styles.xstyle}  >
+        <View style={styles.item}>
+            <Text style={styles.text} >{title}</Text> 
+           
+            <Button
+             xStyle={{margin:0,borderRadius:12}} 
+             color={"BLUE"} 
+             clickHandler={e=>{
+                selectBill({id,distrubutor:false})
+                navigation.navigate('BillTable')
+            }} 
+             >
+                <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>Afficher</Text>
+            </Button>
+         </View>
+     </Item>
     )
 }
-export default  SaleItem 
+export default connect(
+    null,
+    dispatch =>({
+        selectBill : dispatch.scheduel.selectBill,
+    })
+)(SaleItem)
 
 const styles = StyleSheet.create({
-    accordionContentWrrapper: {
-        padding:8,
-        backgroundColor:'#fff',
-        elevation:5,
-        marginBottom:16,
-        borderBottomLeftRadius:12,
-        borderBottomRightRadius : 12
+    item:{  
+        display:'flex', 
+        flexDirection:'row-reverse' ,  
+        justifyContent:'space-between',
+        alignItems:'center', 
+        paddingLeft:16 ,
     },
-    AcordionHeader: {
-        padding:8,
-        backgroundColor:'#fff',
-        elevation:5,
-        borderRadius:12,
-       
+    xstyle:{  
+        marginBottom:16
     },
-    Title: {
-        color:colors.BLACK,
-        fontWeight:'bold'
-    },
-    ClientItem: {
-        display:'flex',
-        flexDirection:'row',
-        padding:8,
-        backgroundColor:'#fff',
-        elevation:5,
-        borderRadius:12,
-        marginRight:8,
-        marginBottom:8,
-    },
-    clientsItemsWrapper: {
-        display:'flex',
-        flexDirection:'row',
-        flexWrap:'wrap'
-    },
-    HFlex: {
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'center'
-    },
+    text:{flex:1,fontWeight:'bold',textAlign:'right'}
 })
 

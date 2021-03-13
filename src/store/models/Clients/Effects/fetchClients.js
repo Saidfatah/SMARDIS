@@ -16,7 +16,8 @@ export default async (arg,state,dispatch)=>{
              if(current_day == day_of_creation ){
                 return dispatch.client.fetchedClients({
                     clients,
-                    last_visible_client : clients[clients.length-1].ref
+                    last_visible_client : clients[clients.length-1].ref,
+                    clients_first_fetch:false
                 })
              }
         } 
@@ -55,7 +56,8 @@ export default async (arg,state,dispatch)=>{
 
                 return dispatch.client.fetchedClients({
                     clients,
-                    last_visible_client : clients[clients.length-1].ref
+                    last_visible_client : clients[clients.length-1].ref,
+                    clients_first_fetch:true
                 })
             }
             dispatch.client.fetcheClientsFailed()

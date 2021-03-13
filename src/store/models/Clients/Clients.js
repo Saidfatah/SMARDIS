@@ -27,10 +27,10 @@ const model ={
             ...state,
             clientsCount 
         }),
-        fetchedClients : (state,{clients,last_visible_client})=>({
+        fetchedClients : (state,{clients,last_visible_client,clients_first_fetch})=>({
             ...state,
             clients :[...clients],
-            clients_first_fetch:true,
+            clients_first_fetch,
             done_fetching_clients:true,
             clientsCount:clients.length,
             last_visible_client,
@@ -61,10 +61,10 @@ const model ={
             clients :clients,
             clientsLimit: newLimit
         }),
-        addedClient   : (state,clients)=>({
+        addedClient   : (state,{clients})=>({
             ...state,
             clients  ,
-            clientsCount: state.clientsCount +1,
+            clientsCount: clients.length,
             done_adding_client:true,
             client_adding_error:null
         }),
@@ -73,17 +73,17 @@ const model ={
             done_adding_client:true,
             client_adding_error
         }),
-        removedClient : (state,clients)=>({
+        removedClient : (state,{clients})=>({
             ...state,
             clients :[...clients],
-            clientsCount:state.clientsCount >= 1? state.clientsCount -1:0,
+            clientsCount:clients.length,
             done_removing_client:true
         }),
         removingClientFailed : (state,clients)=>({
             ...state,
             done_removing_client:false
         }),
-        updatedClient : (state,clients)=>({
+        updatedClient : (state,{clients})=>({
             ...state,
             clients :[...clients] 
         }),

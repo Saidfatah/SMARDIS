@@ -19,10 +19,7 @@ export default async (args,state,dispatch)=>{
               },
               confirmed:"VALIDATED"
              }
-          let   clients =[...state.client.clients]
-          const targetClient = clients.filter(client =>client.id == id)[0]
-          let   targetClientIndex =clients.indexOf(targetClient)
-          clients[targetClientIndex]= {...targetClient,...updatedFields} 
+          
 
           const updateResponse= await firestore()
                                       .collection("clients")
@@ -30,13 +27,23 @@ export default async (args,state,dispatch)=>{
                                       .update({...updatedFields});
 
 
-             //update in cache from cache
-             const day_of_creation =new Date().getDate()
-             const cache={
-              day_of_creation,
-              clients
-             }
-             await  asyncStorage.setItem("CLIENTS",JSON.stringify(cache))
+          //update in cache from cache
+          const clients_first_fetch = state.client.clients_first_fetch
+          if(!clients_first_fetch){
+              let   clients =[...state.client.clients]
+              const targetClient = clients.filter(client =>client.id == id)[0]
+              let   targetClientIndex =clients.indexOf(targetClient)
+              clients[targetClientIndex]= {...targetClient,...updatedFields} 
+
+              dispatch.client.updatedClient({clients})
+
+              const day_of_creation =new Date().getDate()
+              const cache={
+               day_of_creation,
+               clients
+              }
+              await  asyncStorage.setItem("CLIENTS",JSON.stringify(cache))
+          }
 
                                       
           dispatch.toast.show({
@@ -44,7 +51,6 @@ export default async (args,state,dispatch)=>{
               title:'Ajoute ',
               message:`le client ${name} est Modifier avec success `
           })
-          dispatch.client.updatedClient(clients)
           navigation.navigate('ADMINclients')
 
     } catch (error) {

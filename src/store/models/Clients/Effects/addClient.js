@@ -25,30 +25,29 @@ export default async (args,state,dispatch)=>{
 
        //firestore
        const addResponse= await firestore().collection('clients').add(newClient)
-      
-       
-       //asign id of newly created doc then add to redux side clients list 
-       let clients = [...state.client.clients]
-       newClient.id = addResponse.id
-      
+ 
 
        //write to cache
-       if(newClient != null){
-
-        clients.push(newClient)
-
-        clients = [...clients.sort(function(a, b){
-           if(a.name < b.name) { return -1; }
-           if(a.name > b.name) { return 1; }
-           return 0;
-         })]
-
-        const cache={
-         day_of_creation: new Date().getDate(),
-         clients
-        }
-        await  asyncStorage.setItem("CLIENTS",JSON.stringify(cache))
-      }
+       const clients_first_fetch = state.client.clients_first_fetch
+       if(!clients_first_fetch && newClient != null){
+            let clients = [...state.client.clients]
+            newClient.id = addResponse.id
+            clients.push(newClient)
+    
+            clients = [...clients.sort(function(a, b){
+               if(a.name < b.name) { return -1; }
+               if(a.name > b.name) { return 1; }
+               return 0;
+             })]
+             
+             dispatch.client.addedClient({clients})
+    
+            const cache={
+             day_of_creation: new Date().getDate(),
+             clients
+            }
+            await  asyncStorage.setItem("CLIENTS",JSON.stringify(cache))
+       }
 
 
 
@@ -57,7 +56,7 @@ export default async (args,state,dispatch)=>{
            title:'Ajoute ',
            message:`le client ${name} est ajouter avec success `
        })
-       dispatch.client.addedClient(clients)
+       
        navigation.goBack()
     } catch (error) {
         console.log(error)

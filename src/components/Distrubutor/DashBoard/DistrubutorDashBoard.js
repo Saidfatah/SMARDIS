@@ -15,10 +15,12 @@ const DistrubutorDashBoard=(props)=> {
     fetchTodaysValideOrders,
     fetchCategories,
     fetchProducts,
-    fetchCatalogue
+    fetchCatalogue,
+    fetchOrderConfig
     }=props
 
     useEffect(() => {
+        fetchOrderConfig()
         fetchTodaysOrders({passCacheCheck:false})
         fetchCategories()
         fetchProducts()
@@ -62,6 +64,7 @@ export default connect(
     dispatch =>({
         fetchCatalogue  : dispatch.auth.fetchCatalogue ,
         fetchTodaysOrders  : dispatch.scheduel.fetchTodaysOrders ,
+        fetchOrderConfig  : dispatch.scheduel.fetchOrderConfig ,
         fetchTodaysValideOrders : dispatch.scheduel.fetchTodaysValideOrders,
         fetchDistrubutorTodaysCanceledOrders : dispatch.scheduel.fetchDistrubutorTodaysCanceledOrders,
         fetchClients  : dispatch.client.fetchClients,

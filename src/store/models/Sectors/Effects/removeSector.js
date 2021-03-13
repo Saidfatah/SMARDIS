@@ -1,18 +1,37 @@
 import firestore from '@react-native-firebase/firestore'
+import asyncStorage from '@react-native-async-storage/async-storage'
 
 
 export default async (args,state,dispatch)=>{
     try {
         const {id,name,navigation}=args
-        //  const sector = sectorModel(name,city)
-        //  let sectors =[...state.sector.sectors]
+    
          
          //firestore
-         const addResponse= await firestore()
-                                  .collection('sectors')
-                                  .doc(id)
-                                  .delete()
-         
+        const removeResponse= await firestore()
+                                 .collection('sectors')
+                                 .doc(id)
+                                 .delete()
+
+          const sectors_first_fetch = state.sector.sectors_first_fetch
+          if(!sectors_first_fetch){
+              let sectors= [...state.sector.sectors]
+              
+              dispatch.sector.removedSector({sectors})
+
+              //delete from cache
+              sectors = sectors.filter(s => s.id != id) 
+              const day_of_creation =new Date().getDate()
+              const cache={
+               day_of_creation,
+               sectors
+              }
+              await  asyncStorage.setItem("SECTORS",JSON.stringify(cache))
+              
+              //set state
+          }
+
+
         //update related clients 
         // const clients = [...state.client.clients].filter(c=>c.sectorId == id)                        
         // if(clients.length >0){
@@ -26,16 +45,14 @@ export default async (args,state,dispatch)=>{
         //     });
         // }
         
-        //  //asign doc id then add to redux state
-        //  sector.id = addResponse.id
-        //  sectors.unshift(sector)
+       
 
          dispatch.toast.show({
              type    : 'success',
              title   : 'Suppression ',
              message : `le sector ${name} est supprimer avec success `
          })
-         dispatch.sector.removedSector()
+       
          navigation.goBack()
     } catch (error) {
        console.log("--------removeSector-----------") 

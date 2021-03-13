@@ -1,8 +1,7 @@
 import firestore from '@react-native-firebase/firestore'
 
-export const sectorModel=(name,city,province)=>({
+export const sectorModel=(name,city)=>({
     name,
     city,
-    province : province || 'NOT_DEFINED',
     created_at:firestore.Timestamp.fromDate(new Date())
 })

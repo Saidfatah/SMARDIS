@@ -60,7 +60,7 @@ export default async (args,state,dispatch)=>{
 
              if(currentMount == last_mounth){
                  await firestore().collection('clients').doc(id).update({objectif:{
-                     initial:initial ,
+                     initial:parseFloat(initial),
                      progress: parseFloat(parseFloat(progress + total).toFixed(2)),
                      last_mounth : new Date().getMonth()
                  }})

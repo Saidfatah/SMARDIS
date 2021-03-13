@@ -1,6 +1,9 @@
 import {categoryModel} from "../Schemas/categoryModel"
 import Storage from "@react-native-firebase/storage"
 import firestore from "@react-native-firebase/firestore"
+import asyncStorage from '@react-native-async-storage/async-storage'
+
+
 
 const uploadImage= async (imageUri,name)=>{
     try {
@@ -30,9 +33,10 @@ export default async (args,state,dispatch)=>{
        if(checkNameResponse.docs.length) throw new Error("NAME_USED")
 
        //upload image
-      let imageUri = image     
-       
-      if(imageUri != "NO_IMAGE")
+        let imageUri = image     
+        let newCategory = null 
+        let created_doc_id=null
+        if(imageUri != "NO_IMAGE")
        {
            const task =  Storage().ref('categoryImages/'+name).putFile(imageUri);
             task.on('state_changed', 
@@ -46,12 +50,12 @@ export default async (args,state,dispatch)=>{
                    .then(async url => {
                      console.log('uploaded image url', url);
                      imageUri=url || 'NO_IMAGE'
-                     const newCategory = categoryModel(name,imageUri,false,type,parent,isSpecial)
+                     newCategory = categoryModel(name,imageUri,false,type,parent,isSpecial)
                      const addResponse= firestore()
                                      .collection("categories")
                                      .add(newCategory)
                     const addedCategoryId= (await addResponse).id
-                    newCategory.id=addedCategoryId
+                    created_doc_id=addedCategoryId
             
                     //check if category has selcted products if so add the categories d to 
                     //the slected products category array field 
@@ -66,7 +70,6 @@ export default async (args,state,dispatch)=>{
                        });
                     }
             
-                    categories.unshift(newCategory)
                    }).catch(err=>console.log(err))
                }
             )
@@ -74,13 +77,13 @@ export default async (args,state,dispatch)=>{
          
         //add doc
         
-       }else{
-        const newCategory = categoryModel(name,"NO_IMAGE",false,type,parent,isSpecial)
+        }else{
+        newCategory = categoryModel(name,"NO_IMAGE",false,type,parent,isSpecial)
         const addResponse= firestore()
                           .collection("categories")
                           .add(newCategory)
          const addedCategoryId= (await addResponse).id
-         newCategory.id=addedCategoryId
+         created_doc_id=addedCategoryId
  
          //check if category has selcted products if so add the categories d to 
          //the slected products category array field 
@@ -95,17 +98,36 @@ export default async (args,state,dispatch)=>{
             });
          }
  
-        categories.unshift(newCategory)
+
        }
       
-    
+       const categories_first_fetch = state.categories.categories_first_fetch
+       if(newCategory != null && created_doc_id!=null && !categories_first_fetch ){
+        newCategory.id= created_doc_id
+        categories.push(newCategory)
+
+        categories= categories.sort(function(a, b){
+           if(a.name < b.name) { return -1; }
+           if(a.name > b.name) { return 1; }
+           return 0;
+         })
+
+         dispatch.categories.addedCategory({categories})
+         const cache={
+          day_of_creation: new Date().getDate(),
+          categories
+         }
+         await  asyncStorage.setItem("CATEGORIES",JSON.stringify(cache))
+
+       }
+
 
        dispatch.toast.show({
            type:"success",
            title:"Ajoute ",
            message:`Category ${name} est ajouter avec success`
        })
-       dispatch.categories.addedCategory(categories)
+       
        navigation.navigate("ADMINcategories")
    } catch (error) {
        console.log(error)

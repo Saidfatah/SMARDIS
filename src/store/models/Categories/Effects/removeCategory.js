@@ -1,16 +1,14 @@
 import Storage from "@react-native-firebase/storage"
 import firestore from "@react-native-firebase/firestore"
+import asyncStorage from '@react-native-async-storage/async-storage'
+
 
 const OTHER_CATEGORY_ID="snnGC98TUUzJYTIkDFDq"
 export default async (args,state,dispatch)=>{
     try {
        const {category,navigation} = args
        const {name,id,image} = category
-       //remove from redux side
-       let categories= [...state.categories.categories]
-       const targetCategory = categories.filter(c=>c.id == id)[0]
-       const targetCategoryIndex = categories.indexOf(targetCategory)
-       categories.splice(targetCategoryIndex,1)
+      
 
        //remove category  doc
        const categoryRef=await firestore()
@@ -41,12 +39,27 @@ export default async (args,state,dispatch)=>{
             }
         });
 
+
+        const categories_first_fetch = state.categories.categories_first_fetch
+        if(!categories_first_fetch){
+            let categories = [...state.categories.categories].filter(c => c.id !=id) 
+    
+            const day_of_creation =new Date().getDate()
+            const cache={
+             day_of_creation,
+             categories
+            }
+            await  asyncStorage.setItem("CATEGORIES",JSON.stringify(cache))
+            dispatch.categories.removedCategory({categories})
+        }
+
+
        dispatch.toast.show({
            type:"success",
            title:"Supprision ",
            message:`Category ${name} est supprimer avec success`
         })
-       dispatch.categories.removedCategory(categories)
+       
        
        navigation.goBack()
     } catch (error) {

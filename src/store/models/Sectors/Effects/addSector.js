@@ -1,12 +1,13 @@
 import {sectorModel} from '../Schemas/SectorModel'
 import firestore from '@react-native-firebase/firestore'
+import asyncStorage from '@react-native-async-storage/async-storage'
 
 
 export default async (args,state,dispatch)=>{
     try {
         const {name,city,navigation}=args
          const sector = sectorModel(name,city)
-         let sectors =[...state.sector.sectors]
+        
          
          //check if name is already used 
          const checkNameResponse= await firestore()
@@ -23,14 +24,39 @@ export default async (args,state,dispatch)=>{
          
          //asign doc id then add to redux state
          sector.id = addResponse.id
-         sectors.unshift(sector)
+        
+         //write to cache
+         const sectors_first_fetch = state.sector.sectors_first_fetch
+        
+         if(!sectors_first_fetch){
+           let sectors= [...state.sector.sectors]
+           console.log("sectors1:"+sectors.length)
+           if(newSector != null){
+            sectors.push(sector)
+             
+            
+            sectors = sectors.sort(function(a, b){
+              if(a.name < b.name) { return -1; }
+              if(a.name > b.name) { return 1; }
+              return 0;
+            })
+            dispatch.sector.addedSector({sectors})
+            const cache={
+             day_of_creation: new Date().getDate(),
+             sectors
+            }
+             await  asyncStorage.setItem("SECTORS",JSON.stringify(cache))
+          }
+
+         }
+
+        
 
          dispatch.toast.show({
              type    : 'success',
              title   : 'Ajoute ',
              message : `le sector ${name} est ajouter avec success `
          })
-         dispatch.sector.addedSector(sectors)
          navigation.goBack()
     } catch (error) {
        console.log(error) 

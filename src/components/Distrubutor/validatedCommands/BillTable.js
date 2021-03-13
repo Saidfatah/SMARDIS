@@ -12,6 +12,7 @@ const BillTable=({selectedBill})=> {
     useEffect(() => {
       let mounted= true 
        console.log('generate pdf now')
+       console.log(selectedBill != undefined)
        if(!selectedBill) return 
        const {products,sale_date,total} = selectedBill
       

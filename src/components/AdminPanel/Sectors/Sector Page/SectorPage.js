@@ -13,7 +13,7 @@ import ClientItem from '../../Clients/Clients List/ClientItem'
 export const SecorPage = (props) => {
     const  {
         navigation,
-        removedSector,
+        removeSector,
         route,
         fetchSectorClients,
         selected_sector_Clients,
@@ -124,7 +124,7 @@ export const SecorPage = (props) => {
                           style: "cancel"
                         },
                         { text: "OUI", onPress: () =>{
-                            removedSector({id,name,navigation})
+                            removeSector({id,name,navigation})
                         }
                        }
                       ]);
@@ -148,7 +148,7 @@ export default connect(
     }),
     dispatch=>({
         fetchSectorClients: dispatch.sector.fetchSectorClients,
-        removedSector: dispatch.sector.removedSector,
+        removeSector: dispatch.sector.removeSector,
     }),
 )(SecorPage)
 

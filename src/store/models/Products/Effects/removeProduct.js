@@ -25,17 +25,22 @@ export default async (args,state,dispatch)=>{
        .delete()
 
       
-        //delete from cache
-        let products = [...state.products.products].filter(p => p.id != product.id) 
+        //delete from 
+        const products_first_fetch = state.products.products_first_fetch
+        if(!products_first_fetch){
+            let products = [...state.products.products].filter(p => p.id != product.id) 
+    
+            const day_of_creation =new Date().getDate()
+            dispatch.products.removedProduct({products})
 
-        const day_of_creation =new Date().getDate()
-        const cache={
-         day_of_creation,
-         products
+            
+            const cache={
+             day_of_creation,
+             products
+            }
+
+            await  asyncStorage.setItem("PRODUCTS",JSON.stringify(cache))
         }
-        await  asyncStorage.setItem("PRODUCTS",JSON.stringify(cache))
-
-       
 
         
         dispatch.toast.show({
@@ -43,7 +48,6 @@ export default async (args,state,dispatch)=>{
             title:'Supprision ',
             message:`Produit ${product.name} est supprimer avec success`
         })
-        dispatch.products.removedProduct(products)
         navigation.goBack()
     } catch (error) {
         console.log(error)

@@ -20,12 +20,17 @@ const ProductsMultiSelect=({dispatch,items,selectedProducts})=> {
         borderColor:colors.BLACK,
         borderWidth:2,
         borderRadius:12,
-        padding:4
+        padding:4,
      }}
-  
+    
+     styleItemsContainer={{
+        height:200
+     }}
+      
      items={items}
      uniqueKey="id"
      ref={multiSelect}
+     
      onSelectedItemsChange={onSelectedItemsChange}
      selectedItems={selectedProducts}
      selectText="Selectioner les produits"

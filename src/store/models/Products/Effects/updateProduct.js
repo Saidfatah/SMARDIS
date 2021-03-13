@@ -7,11 +7,10 @@ const DISCOUNT_CATEGORY="1111POROMOTION1111"
 export default async  (args,state,dispatch)=>{
     try {
     const {id,navigation,name,regions,category,image,ref,price1,price2,price3,price4,discount,subCategory}=args
+    
     let products = [...state.products.products]
     const targetProduct= products.filter(p=>p.ref == ref)[0]
     const targetProductCategories=targetProduct.category
-    const targetProductIndex= products.indexOf(targetProduct)
-    
 
      
     //remove previous man category 
@@ -25,23 +24,23 @@ export default async  (args,state,dispatch)=>{
         CATEGORY[0]=category
     }
 
-    //if we have applied a discount the product gets added to discountes category
-    const hasDiscountCategory = CATEGORY.indexOf(DISCOUNT_CATEGORY)
-    if(discount > 0){
+     //if we have applied a discount the product gets added to discountes category
+     const hasDiscountCategory = CATEGORY.indexOf(DISCOUNT_CATEGORY)
+     if(discount > 0){
        //but check if it hasn't already been added , maybe admin changed discount from .5 to .3 
        if( hasDiscountCategory < 0){
            CATEGORY.push(DISCOUNT_CATEGORY)
        }
-    }else{
+     }else{
         //check f product had been in discount category , but admin changed discount to 1 
         if( hasDiscountCategory > -1){
             CATEGORY =[...CATEGORY].filter(c=>c!=DISCOUNT_CATEGORY)
         }
-    }
+     }
  
     
 
-  if(image !="NO_IMAGE" ){
+     if(image !="NO_IMAGE" ){
 
         if( image.toString().indexOf("productImages%") < 0){
           const task =  Storage().ref('productImages/'+name).putFile(image);
@@ -89,7 +88,7 @@ export default async  (args,state,dispatch)=>{
                 discount:discount||0
             });
         }
-  }else{
+     }else{
     const updateResponse= await firestore()
     .collection("products")
     .doc(id)
@@ -105,33 +104,35 @@ export default async  (args,state,dispatch)=>{
         discount:discount||0
     }); 
      
-  }
-  
-
-
-
-
-  
- 
-   products[targetProductIndex] = {
-       ...targetProduct,
-       targetProduct,
-       name,
-       category:CATEGORY,
-       image,
-       price1,
-       price2,
-       price3,
-       price4
-    }
-    
-     //update in cache from cache
-     const day_of_creation =new Date().getDate()
-     const cache={
-      day_of_creation,
-      products
      }
-     await  asyncStorage.setItem("PRODUCTS",JSON.stringify(cache))
+  
+
+     //update in cache from 
+     const products_first_fetch = state.products.products_first_fetch
+     if(!products_first_fetch){
+         const targetProductIndex= products.indexOf(targetProduct)
+        
+         products[targetProductIndex] = {
+            ...targetProduct,
+            targetProduct,
+            name,
+            category:CATEGORY,
+            image,
+            price1,
+            price2,
+            price3,
+            price4
+         }
+
+         dispatch.products.updatedProduct({products})
+         
+         const day_of_creation =new Date().getDate()
+         const cache={
+          day_of_creation,
+          products
+         }
+         await  asyncStorage.setItem("PRODUCTS",JSON.stringify(cache))
+     }
 
  
     dispatch.toast.show({
@@ -139,7 +140,6 @@ export default async  (args,state,dispatch)=>{
         title:'Ajoute ',
         message:`Produit ${name} est modifier avec success`
     })
-    dispatch.products.updatedProduct(products)
     navigation.navigate('ADMINproducts')
     } catch (error) {
         console.log(error)

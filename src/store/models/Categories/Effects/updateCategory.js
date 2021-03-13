@@ -1,15 +1,14 @@
 import firestore from "@react-native-firebase/firestore"
 import Storage from "@react-native-firebase/storage"
+import asyncStorage from '@react-native-async-storage/async-storage' 
+
 
 const DISCOUNT_CATEGORY="1111POROMOTION1111"
 export default async (args,state,dispatch)=>{
     try {
         const {id,name,image,navigation,selectedProducts} =args
-        let categories = [...state.categories.categories]
         let products = [...state.products.products]
-        const targetCategory= categories.filter(c=>c.id == id)[0]
-        const targetCategoryIndex= categories.indexOf(targetCategory)
-        categories[targetCategoryIndex] = {...targetCategory,name,image}
+        
     
         if(image !="NO_IMAGE" ){
 
@@ -47,15 +46,8 @@ export default async (args,state,dispatch)=>{
         }
         
 
-
-         console.log({selectedProducts})
-        
-         console.log('selectedProducts:'+selectedProducts.length)
-         const categoryProductsIds = products.filter(p=>p.category.indexOf(id)>-1).map(p=>p.id)
-         
-         if(categoryProductsIds.length >0){
-                     console.log("category has  products ")
-
+        const categoryProductsIds = products.filter(p=>p.category.indexOf(id)>-1).map(p=>p.id)
+        if(categoryProductsIds.length >0){
                     //selectedProducts =>[id,id,id,id] basically list of product ids 
                     //check if we have selected products from the update screen 
                     const newlySelected  = selectedProducts.filter(selectedProductId=> categoryProductsIds.indexOf(selectedProductId)<0 )
@@ -87,9 +79,7 @@ export default async (args,state,dispatch)=>{
                              .doc(productId)
                              .update(update)
                         });
-         }else if(categoryProductsIds.length <1){
-             console.log("category has no products ")
-             console.log({selectedProducts})
+        }else if(categoryProductsIds.length <1){
                     selectedProducts.forEach(async productId => {
                         const updateProductResponse= await firestore()
                              .collection("products")
@@ -98,8 +88,27 @@ export default async (args,state,dispatch)=>{
                                  category:firestore.FieldValue.arrayUnion(id)
                              })
                     });
-         }
+        }
     
+       
+         //update in cache from 
+         const categories_first_fetch = state.products.categories_first_fetch
+         if(!categories_first_fetch){
+             let categories = [...state.categories.categories]
+             const targetCategory= categories.filter(c=>c.id == id)[0]
+             const targetCategoryIndex= categories.indexOf(targetCategory)
+             categories[targetCategoryIndex] = {...targetCategory,name,image}
+
+          
+             const day_of_creation =new Date().getDate()
+             const cache={
+              day_of_creation,
+              categories
+             }
+             await  asyncStorage.setItem("CATEGORIES",JSON.stringify(cache))
+             dispatch.categories.updatedCategory({categories})
+         }
+
 
 
         dispatch.toast.show({
@@ -107,7 +116,7 @@ export default async (args,state,dispatch)=>{
            title:"Modification ",
            message:`Category ${name} est modifier avec success`
         })
-        dispatch.categories.updatedCategory(categories)
+        
         navigation.navigate("ADMINcategories")
         
     } catch (error) {

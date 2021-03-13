@@ -3,7 +3,7 @@ import addSector from './Effects/addSector'
 import fetchSectorClients from './Effects/fetchSectorClients'
 import fetchSectors from './Effects/fetchSectors'
 import updateSector from './Effects/updateSector'
-import removedSector from './Effects/removeSector'
+import removeSector from './Effects/removeSector'
 
 
 const model ={
@@ -22,9 +22,10 @@ const model ={
         // done_removing_sector:false,
     },
     reducers:{
-        fetchedSectors : (state,sectors)=>({
+        fetchedSectors : (state,{sectors,sectors_first_fetch})=>({
             ...state,
             sectors :sectors ,
+            sectors_first_fetch,
             done_fetching_sectors:true,
             sectorsCount:sectors.length
         }),
@@ -42,10 +43,10 @@ const model ={
             ...state,
             sectorsCount 
         }),
-        addedSector  : (state,sectors)=>({
+        addedSector  : (state,{sectors})=>({
             ...state,
             sectors :[...sectors],
-            sectorsCount: state.sectorsCount+1,
+            sectorsCount: sectors.length,
             done_adding_sector:true,
             sector_adding_error:null
         }),
@@ -54,7 +55,7 @@ const model ={
             done_adding_sector:true,
             sector_adding_error
         }),
-        updatedSector  : (state,sectors)=>({
+        updatedSector  : (state,{sectors})=>({
             ...state,
             sectors :[...sectors],
             done_adding_sector :true
@@ -67,23 +68,24 @@ const model ={
             ...state,
             [field]:false
         }),
-         removedSector  : (state,args)=>({
-             ...state,
-            //  sectors :[...state.sectors].filter(s=>!s.id==sector.id),
-            //  sectorsCount: state.sectorsCount-1,
-            //  done_removing_sector :true
-         }),
-        // removingSectorFailed  : (state,sector)=>({
-        //     ...state,
-        //     done_removing_sector :true
-        // }),
+        removedSector  : (state,{sectors})=>({
+            ...state,
+            sectors :[...sectors],
+            // sectorsCount:state.sectorsCount >= 1? state.sectorsCount -1:0,
+            sectorsCount:sectors.length,
+            done_removing_sector :true
+        }),
+        removingSectorFailed  : (state,sector)=>({
+            ...state,
+            done_removing_sector :true
+        }),
     },
     effects: (dispatch)=>({
         fetchSectors     : (args,state)=>fetchSectors(args,state,dispatch),
         fetchSectorClients  : (args,state)=>fetchSectorClients(args,state,dispatch),
         addSector        : (args,state)=>addSector(args,state,dispatch),
         updateSector     : (args,state)=>updateSector(args,state,dispatch),
-        removedSector     : (args,state)=>removedSector(args,state,dispatch),
+        removeSector     : (args,state)=>removeSector(args,state,dispatch),
 
         resetIsDone(field,state){
             dispatch.sector.reseted(field)

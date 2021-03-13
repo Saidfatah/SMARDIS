@@ -17,10 +17,10 @@ const model ={
         product_adding_error:null,
     },
     reducers:{
-        fetchedProducts : (state,{products,last_visible_Product})=>({
+        fetchedProducts : (state,{products,last_visible_Product,products_first_fetch})=>({
             ...state,
             products :[...products],
-            products_first_fetch:true,
+            products_first_fetch,
             done_fetching_products:true,
             last_visible_Product,
             productsCount:products.length
@@ -36,10 +36,10 @@ const model ={
             productsCount  
         }),
 
-        addedProduct : (state,products)=>({
+        addedProduct : (state,{products})=>({
             ...state,
              products :products,
-             productsCount :state.productsCount +1,
+             productsCount :products.length,
              done_adding_product:true,
              product_adding_error:null
         }),
@@ -54,15 +54,15 @@ const model ={
             products :[...products]
         }),
 
-        updatedProduct : (state,products)=>({
+        updatedProduct : (state,{products})=>({
             ...state,
             products :[...products]
         }),
 
-        removedProduct : (state,products)=>({
+        removedProduct : (state,{products})=>({
              ...state,
              products :[...products],
-             productsCount :state.productsCount >= 1 ? state.productsCount -1 : 0,
+             productsCount :products.length,
              done_removing_product:true
         }),
         removingProductFailed : (state,args)=>({

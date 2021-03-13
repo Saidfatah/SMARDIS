@@ -59,7 +59,7 @@ export default async  (args,state,dispatch)=>{
                              .collection('products')
                              .add(newProduct)
            created_doc_id=(await addResponse).id
-        }else{
+       }else{
             newProduct = productModel(name,CATEGORY,"NO_IMAGE",price1,ref,price2,price3,price4,subCategory,regions,discount)
             
             const addResponse= firestore()
@@ -69,19 +69,21 @@ export default async  (args,state,dispatch)=>{
             created_doc_id=(await addResponse).id
        }
       
-     
-       if(newProduct != null && created_doc_id!=null){
+       const products_first_fetch = state.products.products_first_fetch
+       console.log({products_first_fetch})
+       if(newProduct != null && created_doc_id!=null && !products_first_fetch){
            console.log({created_doc_id})
 
            newProduct.id= created_doc_id
            products.push(newProduct)
 
-           products= [...products.sort(function(a, b){
+           products= products.sort(function(a, b){
               if(a.name < b.name) { return -1; }
               if(a.name > b.name) { return 1; }
               return 0;
-            })]
-
+            })
+            
+            dispatch.products.addedProduct({products})
          const cache={
           day_of_creation: new Date().getDate(),
           products
@@ -97,7 +99,7 @@ export default async  (args,state,dispatch)=>{
            message:`Produit ${name} est ajouter avec success`
        })
        navigation.navigate('ADMINproducts')
-       dispatch.products.addedProduct(products)
+       
     } catch (error) {
         console.log(error)
         if(error.message == "NAME_USED")

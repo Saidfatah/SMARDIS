@@ -11,14 +11,19 @@ export default async (args,state,dispatch)=>{
                                     .delete()
 
          //delete from cache
-        let clients = [...state.client.clients].filter(c => c.id != client.id) 
+         const clients_first_fetch = state.client.clients_first_fetch
+         if(!clients_first_fetch){
+             let clients = [...state.client.clients].filter(c => c.id != client.id) 
+     
+             dispatch.client.removedClient({clients})
 
-        const day_of_creation =new Date().getDate()
-        const cache={
-         day_of_creation,
-         clients
-        }
-        await  asyncStorage.setItem("CLIENTS",JSON.stringify(cache))
+             const day_of_creation =new Date().getDate()
+             const cache={
+              day_of_creation,
+              clients
+             }
+             await  asyncStorage.setItem("CLIENTS",JSON.stringify(cache))
+         }
 
 
          dispatch.toast.show({
@@ -26,7 +31,6 @@ export default async (args,state,dispatch)=>{
              title:'Supprission success',
              message:`client ${client.name} est supprimer avec success`
          })
-         dispatch.client.removedClient(clients)
         } catch (error) {
             console.log(error)
             dispatch.client.removingClientFailed()

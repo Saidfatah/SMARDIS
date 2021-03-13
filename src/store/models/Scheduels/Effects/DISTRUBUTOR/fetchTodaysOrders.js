@@ -47,18 +47,6 @@ export default async(arg,state,dispatch)=>{
               .where('distrubutorId','==',currentDistrubutorId)
               .where('status','==','PENDING')
               .orderBy('created_at','asc')
-             
-
-        //get orders config doc    
-        const orderConfigResponse = await firestore().collection('orders').doc(CONFIG_DOC)
-        orderConfigResponse.onSnapshot(res=>{
-            const doc=res.data() 
-            if(doc){
-                dispatch.scheduel.fetchedOrderConfig({orderConfig:doc})
-            }
-        })
-         
-        
         
 
         const todays_orders_ref=fetchOrdersReponse.onSnapshot(async res=>{

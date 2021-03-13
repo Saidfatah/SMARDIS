@@ -37,10 +37,10 @@ const model ={
             ...state,
             last_selected_Category
         }),
-        fetchedCategories : (state,categories)=>({
+        fetchedCategories : (state,{categories,products_first_fetch})=>({
             ...state,
             categories :[...categories],
-            products_first_fetch :true,
+            products_first_fetch ,
             done_fetching_categories : true,
             categoriesCount: categories.filter(c=>c.parent == null).length
         }),
@@ -49,10 +49,10 @@ const model ={
             categories :[],
             done_fetching_categories : true,
         }),
-        addedCategory : (state,categories)=>({
+        addedCategory : (state,{categories})=>({
             ...state,
             categories :[...categories],
-            categoriesCount :state.categoriesCount +1,
+            categoriesCount :categories.filter(c=>c.parent == null).length,
             done_adding_category:true,
             category_add_error:null
         }),
@@ -61,14 +61,14 @@ const model ={
             done_adding_category:true,
             category_add_error
         }),
-        updatedCategory : (state,categories)=>({
+        updatedCategory : (state,{categories})=>({
             ...state,
             categories :[...categories]
         }),
-        removedCategory : (state,categories)=>({
+        removedCategory : (state,{categories})=>({
             ...state,
             categories :[... categories],
-            categoriesCount :state.categoriesCount>1?state.categoriesCount -1:0,
+            categoriesCount :categories.filter(c=>c.parent == null).length,
             done_removing_category:true
         }),
         removingCategoryFailed : (state,args)=>({

@@ -10,11 +10,12 @@ export default async(args,state,dispatch)=>{
         if(PRODUCTS != undefined && PRODUCTS!=null){
              const {products,day_of_creation}= JSON.parse(PRODUCTS) 
              const current_day= new Date().getDate()
+
              
-             console.log({current_day,day_of_creation})
              if(current_day  == day_of_creation ){
                  return dispatch.products.fetchedProducts({
                      products,
+                     products_first_fetch:false,
                      last_visible_Product:products[products.length -1].ref
                  })
              }
@@ -29,7 +30,6 @@ export default async(args,state,dispatch)=>{
         let productsResponse
         if(userType == "DISTRUBUTOR"){
             const distrubutorCity= state.auth.user.city.toLowerCase()
-            console.log({distrubutorCity})
             
             productsResponse= await firestore()
                                     .collection('products')
@@ -65,6 +65,7 @@ export default async(args,state,dispatch)=>{
 
                return  dispatch.products.fetchedProducts({
                     products,
+                    products_first_fetch:true,
                     last_visible_Product:products[products.length -1].ref
                 })
            } 

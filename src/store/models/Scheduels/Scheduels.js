@@ -14,6 +14,7 @@ import resetOrder from './Effects/DISTRUBUTOR/resetOrder'
 import setNextTurn from './Effects/DISTRUBUTOR/setNextTurn'
 import cancelOrder from './Effects/DISTRUBUTOR/cancelOrder'
 import selectBill from './Effects/selectBill'
+import fetchOrderConfig from './Effects/DISTRUBUTOR/fetchOrderConfig'
  
 
  
@@ -269,7 +270,8 @@ const model ={
         removeScheduel   : (args,state)=> removeScheduel(args,state,dispatch),
         setNextTurn      : (args,state)=> setNextTurn(args,state,dispatch),
         cancelOrder      : (args,state)=> cancelOrder(args,state,dispatch),
-        exportOrders      : (args,state)=> exportOrders(args,state,dispatch),
+        exportOrders     : (args,state)=> exportOrders(args,state,dispatch),
+        fetchOrderConfig : (args,state)=> fetchOrderConfig(args,state,dispatch),
  
         resetIsDone(field,state){  dispatch.scheduel.reseted(field) },
         resetError(field,state){dispatch.scheduel.resetedError(field)},

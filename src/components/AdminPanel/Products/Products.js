@@ -23,7 +23,6 @@ const  Products=memo(({products,navigation,done_fetching_products})=> {
     }
     const ListEmptyComponent=()=><Text style={{padding:8}} >aucune produit trouve</Text>
    
-    console.log("-------Products-------")
    
     return  <View style={{backgroundColor:'#fff',flex: 1}} > 
         <FlatList 

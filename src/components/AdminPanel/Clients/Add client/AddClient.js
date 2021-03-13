@@ -39,7 +39,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
     const [selectedPrice, setselectedPrice] = useState(PRICES[0])
     const [selectedSector, setselectedSector] = useState(sectors[0])
     const [clientData, setclientData] = useState({
-        phone:'',
+        phone:'06548785452',
         city:'Ouarzazate',
         ref:'',
         name:'',
@@ -98,10 +98,6 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
          }
          if(name == ''){
              errorsTemp.nameREQUIRED =true
-             errorsCount++
-         }
-         if(phone == ''){
-             errorsTemp.phoneREQUIRED =true
              errorsCount++
          }
          if(address == ''){
@@ -252,7 +248,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
     
             <Cities />
             
-            <Label label="Téléphone" mga={16} />
+            {/* <Label label="Téléphone" mga={16} />
             <Error trigger={errors.phoneREQUIRED} error={ERRORS_MESSAGES[0].message} />
             <TextInput style={styles.Input}   
                     placeholder={"Entrer le n° de téléphone"}   
@@ -260,7 +256,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
                     keyboardType="phone-pad"
                     onFocus={e=> resetErrors()}
                     onChangeText={text=>handelChange('phone')(text)} 
-            />
+            /> */}
     
             <Label label="Adresse" mga={16} />
             <Error trigger={errors.addressREQUIRED} error={ERRORS_MESSAGES[0].message} />
