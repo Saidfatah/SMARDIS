@@ -24,8 +24,7 @@ const  AdminDashBoard=(props)=> {
         valide_orders_count,
         fetchScheduels ,
         fetchDistrubutors,
-        fetchOrders ,
-        fetchTodaysValideOrders ,
+        fetchOrders ,s ,
         scheduelsCount ,
         fetchProducts ,
         fetchWaitingClients,
@@ -49,7 +48,6 @@ const  AdminDashBoard=(props)=> {
                 fetchOrders()
                
                 fetchProducts()
-                fetchTodaysValideOrders("ADMIN")
                 fetchUsers()
                 fetchCategories()
                 fetchSectors()
@@ -203,7 +201,6 @@ export default connect(
         fetchDistrubutors  : dispatch.distrubutor.fetchDistrubutors ,
         fetchOrders : dispatch.scheduel.fetchOrders,
         fetchScheduels : dispatch.scheduel.fetchScheduels,
-        fetchTodaysValideOrders : dispatch.scheduel.fetchTodaysValideOrders,
         fetchProducts   : dispatch.products.fetchProducts,
     })
 )(AdminDashBoard)

@@ -27,7 +27,7 @@ const DistrubutorDashBoard=(props)=> {
         fetchSectors()
         fetchCartFromAsyncStorage()
         fetchDistrubutorTodaysCanceledOrders()
-        fetchTodaysValideOrders("DISTRUBUTOR")
+        fetchTodaysValideOrders()
         fetchCatalogue()
     }, [])
     

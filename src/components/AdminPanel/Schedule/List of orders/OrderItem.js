@@ -16,7 +16,7 @@ export const OrderItem = ({order,navigation,selectBill,validated}) => {
 
     let STATUS ="pas encore"
     let BADGE_STATUS ="warning"
-    if(status =="VALIDATED") {
+    if(status =="VALIDATED" || status =="EXPORTED") {
         STATUS ="valider"
         BADGE_STATUS ="success"
     }

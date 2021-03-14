@@ -7,8 +7,7 @@ import updateScheduel from './Effects/ADMIN/updateScheduel'
 import removeScheduel from './Effects/ADMIN/removeScheduel'
 import exportOrders from './Effects/ADMIN/exportOrders'
 
-import fetchTodaysSales from './Effects/ADMIN/fetchTodaysSales'
-import fetchTodaysValideOrders from './Effects/fetchTodaysValideOrders'
+import fetchTodaysValideOrders from './Effects/DISTRUBUTOR/fetchTodaysValideOrders'
 import fetchDistrubutorTodaysCanceledOrders from './Effects/DISTRUBUTOR/fetchCanceledOrders'
 import resetOrder from './Effects/DISTRUBUTOR/resetOrder'
 import setNextTurn from './Effects/DISTRUBUTOR/setNextTurn'
@@ -259,7 +258,6 @@ const model ={
     effects: (dispatch)=>({
         fetchDistrubutorTodaysCanceledOrders : (args,state)=> fetchDistrubutorTodaysCanceledOrders(args,state,dispatch),
         fetchTodaysValideOrders : (args,state)=> fetchTodaysValideOrders(args,state,dispatch),
-        fetchTodaysSales : (args,state)=> fetchTodaysSales(args,state,dispatch),
         fetchTodaysOrders: (args,state)=> fetchTodaysOrders(args,state,dispatch),
         fetchOrders      : (args,state)=> fetchOrders(args,state,dispatch),
         resetOrder       : (args,state)=> resetOrder(args,state,dispatch),

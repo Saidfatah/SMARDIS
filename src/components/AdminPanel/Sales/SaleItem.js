@@ -6,7 +6,7 @@ import {connect} from 'react-redux'
 
 export const SaleItem = ({sale,selectBill,navigation}) => {
     const {client,sector,id}= sale
-    console.log(id)
+    
     const title=`${client.name} (${sector.name})` 
     return (
         <Item xStyle={styles.xstyle}  >

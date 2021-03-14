@@ -11,8 +11,6 @@ const BillTable=({selectedBill})=> {
     
     useEffect(() => {
       let mounted= true 
-       console.log('generate pdf now')
-       console.log(selectedBill != undefined)
        if(!selectedBill) return 
        const {products,sale_date,total} = selectedBill
       
@@ -106,7 +104,6 @@ const BillTable=({selectedBill})=> {
 
       PDF.fromHTML(HMTL,'https://localhost:3000')
       .then((data)=>{
-        console.log("got pdf")
         if(mounted) seturi(`data:application/pdf;base64,${data}`)
        })
       .catch(err  => {

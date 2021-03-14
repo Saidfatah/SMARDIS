@@ -23,7 +23,7 @@ export default async  (arg,state,dispatch)=>{
                                         .where('created_at','<',tomorrow)
                                         .where('created_at','>',yesterday)
                                         .where('region','array-contains',admin_city)
-      
+         
          fetchOrdersReponse.onSnapshot(res=>{
            if(res.docs.length){
                console.log('got orders')
@@ -34,14 +34,33 @@ export default async  (arg,state,dispatch)=>{
                    sale_hour:order.data().sale_hour.toDate(),
                }))
               const orders=maped_data.filter(order=>order.id != CONFIG_DOC)
+
+              //get sales 
+              let sales=orders.filter(order=>order.status == "VALIDATED" || order.status == "EXPORTED")
+              dispatch.scheduel.fetchedTodaysSales(sales)
+              
+              //get valide orders 
+              const validated=orders.filter(order=>order.status == "VALIDATED")
+              dispatch.scheduel.fetchedTodaysValideOrders({
+                  orders:validated,
+                  validated_commands_ref:null
+              })
+
+              //get all all orders
               return  dispatch.scheduel.fetchedOrders(orders)
            }
            dispatch.scheduel.ordersFetchingFailed()
+           dispatch.scheduel.fetchTodaysValideOrdersFAILED()
+           dispatch.scheduel.todaysSalesFetchFailed()
+
        })
         
     } catch (error) {
         console.log('\n-----fetchOrders-----')
         console.log(error)
         dispatch.scheduel.ordersFetchingFailed()
+        dispatch.scheduel.todaysSalesFetchFailed()
+        dispatch.scheduel.fetchTodaysValideOrdersFAILED()
+
     }
 }

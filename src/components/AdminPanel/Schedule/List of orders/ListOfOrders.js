@@ -16,7 +16,7 @@ const HEIGHT = height- StatusBar.currentHeight
 
 export const ListOfOrders = ({navigation,selectBill,orders,done_fetching_todays_orders}) => {
 
-    const validatedOrders = orders.filter(order=>order.status == "VALIDATED")
+    const validatedOrders = orders.filter(order=>order.status == "VALIDATED" || order.status == "EXPORTED")
     const canceledOrders  = orders.filter(order=>order.status == "CANCELED")
     const pendingOrders   = orders.filter(order=>order.status == "PENDING")
 
@@ -196,7 +196,7 @@ export const ListOfOrders = ({navigation,selectBill,orders,done_fetching_todays_
     if(currentStatus == "CANCELED"){  
         selectedOrders =canceledOrders.filter(order=>isEqual(order))
     } 
-    if(currentStatus == "VALIDATED"){ 
+    if(currentStatus == "VALIDATED" || currentStatus == "EXPORTED"  ){ 
         selectedOrders =validatedOrders.filter(order=>isEqual(order)) 
     }
     
