@@ -8,11 +8,12 @@ import {buttonTexts,labelsTexts} from '../../Common/GlobalStrings'
 import Error from '../../Common/Error'
 import Label from '../../Common/Label'
 import Logo from '../../Common/Logo'
-import CitiesDropDown from '../../Common/CitiesDropDown'
+import CitiesCheckBox from '../../Common/CitiesCheckBox'
 import Loading from '../../Common/Loading'
 import { connect } from 'react-redux'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import CheckBoxGorup from '../../Common/CheckBoxGorup'
+import InputField from "./InputField"
 
 const ERRORS_INITIAL_CONFIG = {
     ACCESS_CODE_REQUIRED:false,
@@ -97,9 +98,9 @@ const  Register=({navigation,registerError,register})=> {
          }
         dispatch({type:'SET_CAN_SUBMIT',value:true})
     }, [registerError ])
+  
 
-
-    const resetErrors=()=>dispatch({type:'SET_ERRORS',value:{...ERRORS_INITIAL_CONFIG}})
+    
     const handelChange=input=>v=>dispatch({type:'SET_USER_INFO',value:{...userInfo,[input]:v}}) 
     const validateFields =()=>{
         let errorsCount=0
@@ -156,7 +157,7 @@ const  Register=({navigation,registerError,register})=> {
         return true
     }
     const handleRegister=()=>{
-        console.log(validateFields())
+      
         if(!validateFields() || !canSubmit) return 
         
          const obj= {...userInfo,type}
@@ -165,8 +166,8 @@ const  Register=({navigation,registerError,register})=> {
 
     }
     
- 
-    const {name,city,phone,email,password,ACCESS_CODE}= userInfo
+    const {city,ACCESS_CODE,name,phone,email,password}= userInfo
+
     return (
     <BackgroundImage>
         <KeyboardAwareScrollView   contentContainerStyle={{ display:'flex',  flexGrow:1 }} >
@@ -175,60 +176,66 @@ const  Register=({navigation,registerError,register})=> {
               </View>
              <View style={styles.Form}>            
                  <View style={styles.inputs} >
-                      <View style={{width:'100%'}} >
-                           <Label label={labelsTexts.ACCESS_CODE}  color="#fff"  mga={4} />
-                           <Error trigger={errors.ACCESS_CODE_REQUIRED} error={REQUIRED_FIELD} />
-                           <Error trigger={errors.ACCESS_CODE_INVALIDE} error={registerError && registerError.message} />
-                           <TextInput style={{...styles.Input}}   
-                               placeholder={"Inserer le code d'access"}   
-                               defaultValue={ACCESS_CODE} 
-                               placeholderTextColor="#fff"
-                               onFocus={e=> resetErrors()}
-                               onChangeText={handelChange('ACCESS_CODE')} 
-                           />
-                      </View>
-                      <View style={{width:'100%'}} >
-                           <Label label={labelsTexts.NAME}  color="#fff"  mga={4} />
-                           <Error trigger={errors.name_USED}    error={registerError && registerError.message} />
-                           <Error trigger={errors.nameREQUIRED} error={REQUIRED_FIELD} />
-                           <TextInput style={{...styles.Input}}   
-                               placeholder={"Inserer votre nom complet"}   
-                               defaultValue={name} 
-                               placeholderTextColor="#fff"
-                               onFocus={e=> resetErrors()}
-                               onChangeText={handelChange('name')} 
-                           />
-                      </View>
+                      
+                      <InputField 
+                      extraErrors={[
+                          {error:errors.ACCESS_CODE_INVALIDE,message:(registerError && registerError.message)||"error"}
+                        ]}
+                      error={errors.ACCESS_CODE_REQUIRED}
+                      placeholder="Inserer le code d'access"
+                      label={labelsTexts.ACCESS_CODE}
+                      value={ACCESS_CODE}
+                      handelChange={handelChange("ACCESS_CODE")}
+                      dispatch={dispatch}
+                       />
+
+                      <InputField 
+                      extraErrors={[
+                          {error:errors.name_USED,message:(registerError && registerError.message)||"error"}
+                       ]}
+                      error={errors.nameREQUIRED}
+                      placeholder="Inserer votre nom complet"
+                      label={labelsTexts.NAME}
+                      value={name}
+                      handelChange={handelChange("name")}
+                      dispatch={dispatch}
+                      />
+
+
                       <View style={{width:'100%'}} >
                             <Label label={labelsTexts.CITY}  color="#fff"  mga={4} />
                             <Error trigger={errors.cityREQUIRED} error={REQUIRED_FIELD} />
-                            <CitiesDropDown {...{setcity:handelChange('city'),city}} />
+                            <CitiesCheckBox 
+                              setSelected={handelChange('city')} 
+                              selected={city}
+                              data={["Ouarzazate","Zagora","Marakesh"].map(c=>({value:c,checked:c==city}))}
+                            />  
                       </View>
-                      <View style={{width:'100%'}} >
-                          <Label label={labelsTexts.EMAIL}  color="#fff"  mga={4} />
-                          <Error trigger={errors.emailUSED}     error={registerError && registerError.message} />
-                          <Error trigger={errors.emailINVALID}  error={registerError && registerError.message} />
-                          <Error trigger={errors.emailREQUIRED} error={REQUIRED_FIELD} />
-                          <TextInput style={{...styles.Input}}   
-                              placeholder={"Inserer votre email address"}   
-                              defaultValue={email} 
-                              placeholderTextColor="#fff"
-                              onFocus={e=> resetErrors()}
-                              onChangeText={handelChange('email')} 
-                          />
-                     </View>
-                      <View style={{width:'100%'}} >
-                          <Label label={labelsTexts.PHONE}  color="#fff"  mga={4} />
-                          <Error trigger={errors.phoneREQUIRED}     error={REQUIRED_FIELD} />
-                          <TextInput style={{...styles.Input}}   
-                              placeholder={"Inserer votre numero du téléphone"}   
-                              defaultValue={phone} 
-                              placeholderTextColor="#fff"
-                              keyboardType="phone-pad"
-                              onFocus={e=> resetErrors()}
-                              onChangeText={handelChange('phone')} 
-                          />
-                     </View>
+
+                      <InputField 
+                      extraErrors={[
+                        {error:errors.emailINVALID,message:(registerError && registerError.message)||"error"},
+                        {error:errors.emailUSED,message:(registerError && registerError.message)||"error"},
+                        ]}
+                      error={errors.emailREQUIRED}
+                      placeholder="Inserer votre email"
+                      label={labelsTexts.EMAIL}
+                      value={email}
+                      handelChange={handelChange("email")}
+                      dispatch={dispatch}
+                      />
+
+                      <InputField 
+                      error={errors.phoneREQUIRED}
+                      keyboardType="phone-pad"
+                      placeholder="Inserer votre numero du téléphone"
+                      label={labelsTexts.PHONE}
+                      value={phone}
+                      handelChange={handelChange("phone")}
+                      dispatch={dispatch}
+                      />
+                      
+                   
                       <View style={{width:"100%"}} >
                           <CheckBoxGorup 
                              title="Type :" 
@@ -238,37 +245,31 @@ const  Register=({navigation,registerError,register})=> {
                            ]} 
                              setSelectedValue={(value)=> dispatch({type:'SET_TYPE',value}) }
                           />
-                       </View>
-                      <View style={{width:'100%'}} >
-                            <Label label={labelsTexts.PASSWORD}  color="#fff" mga={4} />
-                            <Error trigger={errors.passwordREQUIRED}  error={REQUIRED_FIELD} />
-                            <TextInput style={{...styles.Input}}   
-                                placeholder={"Entrer le mote de passe"}   
-                                defaultValue={password} 
-                                textContentType="password"
-                                secureTextEntry={true}
-                                placeholderTextColor="#fff"
-                                keyboardType="default"
-                                onFocus={e=> resetErrors()}
-                                onChangeText={handelChange('password')} 
-                            />
-                     </View>
-                      <View style={{width:'100%'}} >
-                             <Label label={labelsTexts.PASSWORD_CONFIRM}  color="#fff" mga={4} />
-                             <Error trigger={errors.passwordConfirmREQUIRED}  error={REQUIRED_FIELD} />
-                             <Error trigger={errors.passwordNotMatch}  error={"le mot de passe ne correspond pas! "} />
-                             <TextInput style={{...styles.Input}}   
-                                 placeholder={"Entrer le mote de passe"}   
-                                 defaultValue={passwordConfirm} 
-                                 textContentType="password"
-                                 secureTextEntry={true}
-                                 placeholderTextColor="#fff"
-                                 keyboardType="default"
-                                 onFocus={e=> resetErrors()}
-                                 onChangeText={value=>dispatch({type:'SET_PASSWORD_CONFIRM',value})} 
-                             />
-                     </View>
-                      
+                      </View>
+
+                      <InputField 
+                      error={errors.passwordREQUIRED}
+                      textContentType="password"
+                      placeholder="Entrer le mote de passe"
+                      label={labelsTexts.PASSWORD}
+                      value={password}
+                      handelChange={handelChange("password")}
+                      dispatch={dispatch}
+                      />
+
+                      <InputField 
+                      extraErrors={[
+                          {error:errors.passwordNotMatch,message:"le mot de passe ne correspond pas! "},
+                        ]}
+                      error={errors.passwordConfirmREQUIRED}
+                      textContentType="password"
+                      placeholder="Confimrer le mote de passe"
+                      label={labelsTexts.PASSWORD_CONFIRM}
+                      value={passwordConfirm}
+                      handelChange={value=>dispatch({type:'SET_PASSWORD_CONFIRM',value})}
+                      dispatch={dispatch}
+                     />
+                     
                      <Error trigger={errors.UNKNOWN} error={registerError && registerError.message} />
                       <Button 
                        xStyle={styles.BtnXstyle} 
@@ -363,7 +364,7 @@ var styles = StyleSheet.create({
         flex:2, 
         display:'flex', 
         alignItems:'center',
-        padding:16,
+        padding:0,
         width:'100%'
     },
 });

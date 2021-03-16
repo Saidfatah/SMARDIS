@@ -19,13 +19,12 @@ const ImagePicker=({setImage,title,image})=>{
     }
     const addImageToList=r=>{
         if (r.didCancel) {
-         return console.log('User cancelled image picker');
+         return  
         } else if (r.error) {
-          return console.log('ImagePicker Error: ', r.error);
+          return  
         } else if (r.customButton) {
-          return  console.log('User tapped custom button: ', r.customButton);
+          return   
         } 
-        console.log(r.uri)
         if(r.uri != null )uploadImage(r.uri)
     }
     const openGallery=e=>{

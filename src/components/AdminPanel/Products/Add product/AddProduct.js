@@ -157,7 +157,6 @@ export const AddProduct = (props) => {
                  resetIsDone("done_adding_product")
             }
             if(product_adding_error != null  && product_adding_error != undefined){
-                console.log({product_adding_error})
                 dispatch({type:"SET_ADD_ERROR",value:{...product_adding_error}})
                 resetError("product_adding_error") 
             }

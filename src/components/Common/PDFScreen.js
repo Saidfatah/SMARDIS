@@ -29,17 +29,14 @@ const PDFScreen=({uri})=> {
                 source={{uri:uri}}
                 onLoadComplete={(numberOfPages,filePath)=>{
                     setprogress(1)
-                    console.log(`number of pages: ${numberOfPages}`);
+                  
                 }}
                 onPageChanged={(page,numberOfPages)=>{
-                    console.log(`current page: ${page}`);
                 }}
                 onLoadProgress={(percentage)=>{
-                    console.log({percentage})
                     setprogress(percentage)
                 }}
                 onError={(error)=>{
-                    console.log(error);
                 }}
                 style={styles.pdf}
                 />

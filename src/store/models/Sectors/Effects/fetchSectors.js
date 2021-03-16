@@ -35,7 +35,6 @@ export default async (arg,state,dispatch)=>{
                })
                .filter(doc=>doc.id != CONFIG_DOC)
 
-                console.log('sectors on snapshot')
                 //write to cache
                 const day_of_creation =new Date().getDate()
                 const cache={

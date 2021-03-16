@@ -1,6 +1,5 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
-import AdminCatalogue    from '../AdminPanel/Catalogue/Catalogue'  
 import AdminAddCategory  from '../AdminPanel/Categories/Add category/AddCategory'
 import AdminCategories  from '../AdminPanel/Categories/Categories'
 import AdminCategoryPage  from '../AdminPanel/Categories/Category page/CategoryPage'
@@ -27,7 +26,6 @@ import AdminRegisterDistrubutor   from '../Auth/Admin/RegisterDistrubutor'
 import AdminAddNewAdmin     from '../Auth/Admin/AddNewAdmin'
 import AdminWaitingList    from '../AdminPanel/Manage Users/waiting list/WaitingList'
 import AdminManageAdmins  from '../AdminPanel/Manage Users/admins/ManageAdmins'
-import OrdersValidated  from '../AdminPanel/Orders/OrdersValidated'
 
  
 
@@ -46,11 +44,7 @@ const AdminStackNavigator =()=>{
                 }} 
                 component={AdminDashBoard} 
             />
-             <AdminStack.Screen 
-                name="ADMINvalidatedExcel" 
-                options={{title:"Orders Valider excel"}}
-                component={OrdersValidated} 
-            />
+      
              <AdminStack.Screen 
                 name="ADMINmanageAdmins" 
                 options={{title:"Gérer Les admins"}}
@@ -86,11 +80,6 @@ const AdminStackNavigator =()=>{
                     return {title:"Category page"}
                 }}
                 component={AdminCategoryPage} 
-            />
-             <AdminStack.Screen 
-                name="ADMINcatalogue" 
-                options={{title:"Ajouter un catalogue"}}
-                component={AdminCatalogue} 
             />
              <AdminStack.Screen 
                 name="ADMINaddNewAdmin" 

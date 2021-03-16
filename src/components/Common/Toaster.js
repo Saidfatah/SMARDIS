@@ -15,11 +15,11 @@ const  Toaster=({config,reset})=> {
                   visibilityTime: 4000,
                   autoHide: true,
                   topOffset: 50,
-                  onShow: () => {console.log('toasted')},
+                  onShow: () => {},
                   onHide: () => {reset()},
                 });
              } catch (error) {
-                 console.log(error)
+               
              }
         }
       }, [config != null])

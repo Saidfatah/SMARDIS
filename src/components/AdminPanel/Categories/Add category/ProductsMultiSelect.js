@@ -35,7 +35,6 @@ const ProductsMultiSelect=({dispatch,items,selectedProducts})=> {
      selectedItems={selectedProducts}
      selectText="Selectioner les produits"
      searchInputPlaceholderText="Chercher les produits..."
-     onChangeInput={ (text)=> console.log(text)}
      altFontFamily="ProximaNova-Light"
      tagRemoveIconColor={colors.RED}
      tagBorderColor={colors.BLACK}

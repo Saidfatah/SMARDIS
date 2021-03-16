@@ -51,10 +51,10 @@ const  AdminDashBoard=(props)=> {
                 fetchUsers()
                 fetchCategories()
                 fetchSectors()
-                fetchDistrubutors()
                 fetchClients()
                 fetchWaitingClients()
                 fetchScheduels()
+                fetchDistrubutors()
           
        });
     }, [])
@@ -149,7 +149,7 @@ const  AdminDashBoard=(props)=> {
     ]
 
    const expand=(index)=>()=>{
-     console.log({index})
+ 
      let temp_expaneded_List = [...enabledList]
      const prevEnabledIndex = temp_expaneded_List.indexOf(temp_expaneded_List.filter(v=>v==true)[0])
      temp_expaneded_List=temp_expaneded_List.map(v=>false)

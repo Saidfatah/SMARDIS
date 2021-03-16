@@ -2,7 +2,7 @@ import firestore from '@react-native-firebase/firestore'
 import deleteCartFromASyncStorage from './deleteCartFromASyncStorage'
 const CONFIG_DOC='1 - - CONFIG - -'
 import asyncStorage from '@react-native-async-storage/async-storage'
-
+import {Decimal} from 'decimal.js';
 
 export default async (args,state,dispatch)=>{
     try {
@@ -16,7 +16,7 @@ export default async (args,state,dispatch)=>{
         
               const orderId = guest.orderId 
               const client  = guest
-              const total   = parseFloat(cartItems.reduce((a,c)=>a+( c.priceForClient * c.quantity ),0)).toFixed(2) ;
+              const total   = new Decimal(cartItems.reduce((a,c)=>a+(c.priceForClient * c.quantity),0))
               
              //set next client turn 
              dispatch.scheduel.setNextTurn()
@@ -45,12 +45,12 @@ export default async (args,state,dispatch)=>{
                      return item 
                  })],
                  billRef,
-                 total,
+                 total:total.toNumber(),
                  status: "VALIDATED",
                  sale_date : firestore.Timestamp.fromDate(new Date()), 
                  sale_hour : firestore.Timestamp.fromDate(new Date()),
                })
-           
+            
 
 
              //update clients' objectif progress
@@ -58,10 +58,17 @@ export default async (args,state,dispatch)=>{
              const {last_mounth,progress,initial}= objectif
              const currentMount= new Date().getMonth()
 
+             const clientsProges=new Decimal(progress)
+             const progressCalculated= total.plus(clientsProges)
+             const initialDecimal=new Decimal(initial)
+             console.log({initialDecimal})
+             console.log({progressCalculated})
+             console.log({clientsProges})
+
              if(currentMount == last_mounth){
                  await firestore().collection('clients').doc(id).update({objectif:{
-                     initial:parseFloat(initial),
-                     progress: parseFloat(parseFloat(progress + total).toFixed(2)),
+                     initial:initialDecimal.toNumber(),
+                     progress:progressCalculated.toNumber() ,
                      last_mounth : new Date().getMonth()
                  }})
              }
@@ -97,7 +104,7 @@ export default async (args,state,dispatch)=>{
                                   const day_of_creation =new Date().getDate()
                                   const cache={
                                    day_of_creation,
-                                   todaysOrders:todaysOrdersToCache
+                                   todaysSectors:todaysOrdersToCache
                                   }
                                   await  asyncStorage.setItem("TODAYS_ORDERS",JSON.stringify(cache))
                                   dispatch.scheduel.removedOrderAfterValidating({todaysSectors:todaysOrdersToCache}) 
@@ -114,7 +121,7 @@ export default async (args,state,dispatch)=>{
                               const day_of_creation =new Date().getDate()
                               const cache={
                                day_of_creation,
-                               todaysOrders:todaysOrdersToCache
+                               todaysSectors:todaysOrdersToCache
                               }
                               await  asyncStorage.setItem("TODAYS_ORDERS",JSON.stringify(cache))
                               dispatch.scheduel.removedOrderAfterValidating({todaysSectors:todaysOrdersToCache}) 
@@ -140,11 +147,11 @@ export default async (args,state,dispatch)=>{
 
              //increment billref counter in fristore , we waited until here to make sure the billRef get incremented
              //only if teh orders validation was successfull
-             const increment = firestore.FieldValue.increment(1)
-             await firestore()
-                  .collection('orders')
-                  .doc(CONFIG_DOC)
-                  .update({counter:increment})
+            //   const increment = firestore.FieldValue.increment(1)
+            //   await firestore()
+                //    .collection('orders')
+                //    .doc(CONFIG_DOC)
+                //    .update({counter:increment})
                   
             
  

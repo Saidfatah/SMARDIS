@@ -45,6 +45,7 @@ export default async  (arg,state,dispatch)=>{
                   orders:validated,
                   validated_commands_ref:null
               })
+              console.log(validated.length)
 
               //get all all orders
               return  dispatch.scheduel.fetchedOrders(orders)

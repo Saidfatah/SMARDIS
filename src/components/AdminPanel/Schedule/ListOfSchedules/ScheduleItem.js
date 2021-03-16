@@ -15,7 +15,7 @@ export const ScheduleItem = ({navigation,scheduel,removeScheduel,done_removing_s
     const {admin,distrubutor,distination,status,start_date} = scheduel
     
   
-    console.log(new Date(start_date).toLocaleDateString())
+     
     useEffect(() => {
         done_removing_scheduel == true && setcanRemove(true) &&resetIsDone('done_removing_scheduel')
     }, [done_removing_scheduel])

@@ -27,13 +27,12 @@ const model ={
             ...state,
             clientsCount 
         }),
-        fetchedClients : (state,{clients,last_visible_client,clients_first_fetch})=>({
+        fetchedClients : (state,{clients,clients_first_fetch})=>({
             ...state,
             clients :[...clients],
             clients_first_fetch,
             done_fetching_clients:true,
             clientsCount:clients.length,
-            last_visible_client,
             waiting_clients :[...clients].filter(c=>c.confirmed != "VALIDATED"),
             waiting_clients_first_fetch:true,
             done_fetching_waiting_clients:true,

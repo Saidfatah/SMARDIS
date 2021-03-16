@@ -65,7 +65,7 @@ export default  async (args,state,dispatch)=>{
                          const day_of_creation =new Date().getDate()
                          const cache={
                           day_of_creation,
-                          todaysOrders:todaysOrdersToCache
+                          todaysSectors:todaysOrdersToCache
                          }
                          await  asyncStorage.setItem("TODAYS_ORDERS",JSON.stringify(cache))
                          dispatch.scheduel.removedOrderAfterValidating({todaysSectors:todaysOrdersToCache}) 

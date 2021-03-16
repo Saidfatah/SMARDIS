@@ -14,7 +14,7 @@ import {
 
 // Icon
 import Feather from 'react-native-vector-icons/Feather'
-import ModalDropdown from 'react-native-modal-dropdown';
+ 
 
 class DropDownPicker extends React.Component {
     constructor(props) {

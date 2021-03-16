@@ -39,7 +39,7 @@ const  Login=(props)=> {
 
     useEffect(() => {
           if(savePassword == undefined || savePassword == null) return 
-          console.log({savedEmail})
+        
           if(savePassword && savePassword.indexOf("true") > -1){
             setsavePasswordLogin(true)
             setPassword(savedPassword)
@@ -49,7 +49,7 @@ const  Login=(props)=> {
           }
     }, [savePassword,savedEmail,savedPassword])
     useEffect(() => {
-        console.log({authError})
+   
           if(authError != null){
             setauthErrorLocal(authError)
             setcanSubmit(true)

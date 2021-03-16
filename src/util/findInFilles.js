@@ -29,7 +29,7 @@ const functions=[
     "fetchMoreDistrubutors"
 ]
 
-findInFiles.find('products[products.length - 1]', '../components', '.js$')
+findInFiles.find('react-native-progress', '../components', '.js$')
     .then(function(results) {
         for (var result in results) {
             var res = results[result];

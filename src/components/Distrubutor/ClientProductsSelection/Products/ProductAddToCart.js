@@ -2,8 +2,8 @@ import React,{useState} from 'react'
 import {View,Text,TextInput,StyleSheet} from 'react-native'
 import Button from '../../../Common/Button'
 import {colors} from '../../../Common/Colors'
- import NumericInput from 'react-native-numeric-input'
-
+import NumericInput from 'react-native-numeric-input'
+import {Decimal} from 'decimal.js';
 
 const ProductAddToCart =({scheduelId,setIsPanelActive,selectedProduct,guest,addCartItem,sector,client})=> {
     const [quantity, setquantity] = useState(1)
@@ -16,6 +16,8 @@ const ProductAddToCart =({scheduelId,setIsPanelActive,selectedProduct,guest,addC
        priceForClient= discount
     }
 
+    const total = new Decimal(priceForClient*quantity).toNumber()
+ 
     return (
         <View styles={styles.form}>
              <View style={styles.InputGroup}>
@@ -34,7 +36,7 @@ const ProductAddToCart =({scheduelId,setIsPanelActive,selectedProduct,guest,addC
                  <Text style={styles.label}>Total en DH</Text>
                  <TextInput 
                     style={styles.input}
-                   value={parseFloat(priceForClient*quantity).toFixed(2)}
+                   value={total.toString()}
                    editable={false}
                    keyboardType="numeric"
                    onChangeText={onChangeHandler} 

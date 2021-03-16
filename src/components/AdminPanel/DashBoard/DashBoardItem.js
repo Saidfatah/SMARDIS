@@ -137,7 +137,6 @@ const DashBoardItem=(props)=> {
         }
         if(ROUTE.title.toUpperCase() == "AJOUTER CATALOGUE"){
             ACCORDION_PROPS.onPress=()=>{
-                console.log("ajouter catalogue")
            }
         }
 

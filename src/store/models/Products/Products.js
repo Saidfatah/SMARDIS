@@ -17,12 +17,11 @@ const model ={
         product_adding_error:null,
     },
     reducers:{
-        fetchedProducts : (state,{products,last_visible_Product,products_first_fetch})=>({
+        fetchedProducts : (state,{products,products_first_fetch})=>({
             ...state,
             products :[...products],
             products_first_fetch,
             done_fetching_products:true,
-            last_visible_Product,
             productsCount:products.length
         }),
         productsFetchingFailed : (state,args)=>({

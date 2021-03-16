@@ -5,7 +5,7 @@ import CartItem from './CartItem'
 import Button from '../Common/Button'
 import Badge from '../Common/Badge'
 import Item from '../Common/Item'
-
+import {Decimal} from 'decimal.js';
 
 
 export const Cart=({navigation,cartItems,guest,removeCartItem,done_validating_product,resetIsDone,updateQuantity,validateOrder})=> {
@@ -22,8 +22,10 @@ export const Cart=({navigation,cartItems,guest,removeCartItem,done_validating_pr
              <Text> Le panier est vide</Text> 
     </ScrollView> 
     
-    const TOTAL= parseFloat(cartItems.reduce((a,c)=>a+(c.priceForClient * c.quantity),0)).toFixed(2) 
-
+    let TOTAL= new Decimal(cartItems.reduce((a,c)=>a+(c.priceForClient * c.quantity),0))
+    if(TOTAL == undefined || TOTAL == NaN){
+        TOTAL= new Decimal(cartItems.reduce((a,c)=>a+(c.priceForClient * c.quantity),0))
+    }
 
     const CartHeader=()=>{
         return <Item xStyle={{marginBottom:16}} >

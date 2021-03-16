@@ -27,7 +27,7 @@ const Products=({isSelectedCategorySpecial,selectedCategoryProducts,setIsPanelAc
 
             SectionListData.forEach((group,index)=>{
                 const firstProduct=group.data[0]
-                 console.log({groupName:group.title})
+                 
 
                 productsListTemp.push(({
                     ...firstProduct,

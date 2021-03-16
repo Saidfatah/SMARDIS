@@ -16,7 +16,6 @@ export default async(args,state,dispatch)=>{
                  return dispatch.products.fetchedProducts({
                      products,
                      products_first_fetch:false,
-                     last_visible_Product:products[products.length -1].ref
                  })
              }
         } 
@@ -66,7 +65,6 @@ export default async(args,state,dispatch)=>{
                return  dispatch.products.fetchedProducts({
                     products,
                     products_first_fetch:true,
-                    last_visible_Product:products[products.length -1].ref
                 })
            } 
            dispatch.products.productsFetchingFailed()

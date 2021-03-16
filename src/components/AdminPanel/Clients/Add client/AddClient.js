@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {View,Text,TextInput,StyleSheet,TouchableOpacity} from 'react-native'
+import {View,Text,TextInput,StyleSheet} from 'react-native'
 import { connect } from 'react-redux'
 import Label from '../../../Common/Label'
 import Button from '../../../Common/Button'
@@ -57,7 +57,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
             if(route.params.update == undefined) return 
             const {client}=route.params
             const {phone,city,ref,name,address,objectif,price,sectorId,id }=client
-            console.log({sectorId,id:client.id})
+          
             navigation.setParams({CLIENT_NAME:client.name})
             setclientData({
              ...clientData,
@@ -71,7 +71,7 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
             })
             setupdate(true)
             setclientToBeUpdatedId(client.id)
-            console.log('set selected sector on start ')
+   
             const targetsector = sectors.filter(s=>s.id == sectorId)[0]
             setselectedSector(targetsector)
            setselectedPrice(PRICES.filter(p=>p == price)[0])
@@ -180,7 +180,6 @@ export const AddClient = ({route,navigation,userType,resetIsDone,client_adding_e
            data={["Ouarzazate","Zagora","Marakesh"].map(c=>({value:c,checked:c==city}))}
            />  
 
-            {/* <CitiesDropDown {...{setcity:handelChange('city'),city}} /> */}
         </View>
     }
     

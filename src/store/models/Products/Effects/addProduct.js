@@ -70,20 +70,17 @@ export default async  (args,state,dispatch)=>{
        }
       
        const products_first_fetch = state.products.products_first_fetch
-       console.log({products_first_fetch})
        if(newProduct != null && created_doc_id!=null && !products_first_fetch){
-           console.log({created_doc_id})
+             newProduct.id= created_doc_id
+             products.push(newProduct)
 
-           newProduct.id= created_doc_id
-           products.push(newProduct)
-
-           products= products.sort(function(a, b){
-              if(a.name < b.name) { return -1; }
-              if(a.name > b.name) { return 1; }
-              return 0;
-            })
+             products= products.sort(function(a, b){
+                if(a.name < b.name) { return -1; }
+                if(a.name > b.name) { return 1; }
+                return 0;
+             })
             
-            dispatch.products.addedProduct({products})
+             dispatch.products.addedProduct({products})
          const cache={
           day_of_creation: new Date().getDate(),
           products

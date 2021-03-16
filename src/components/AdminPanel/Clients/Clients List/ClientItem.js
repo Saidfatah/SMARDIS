@@ -7,7 +7,6 @@ const ClientItem=({navigation,client })=> {
   let ref= useRef(0)
  
   ref.current= ref.current +1 
-  console.log("renders :"+ref.current)
 
   const {name}=client
   return <Item xStyle={{ marginBottom:16}} >

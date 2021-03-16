@@ -34,7 +34,7 @@ export const ListOfOrders = ({navigation,selectBill,orders,done_fetching_todays_
     </View>
     
     const filterCommands=(status)=>{
-        console.log(currentStatus == status)
+     
         if(currentStatus == status) return 
 
 

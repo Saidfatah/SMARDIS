@@ -5,7 +5,7 @@ import Label from '../../Common/Label'
 import Button from '../../Common/Button'
 import Error from '../../Common/Error'
 import Loading from '../../Common/Loading'
-import CitiesDropDown from '../../Common/CitiesDropDown'
+import CitiesCheckBox from '../../Common/CitiesCheckBox'
 import {KeyboardAwareScrollView}  from 'react-native-keyboard-aware-scroll-view'
 import { colors } from '../../Common/Colors'
 
@@ -30,7 +30,7 @@ export const MyAccount = ({navigation,user,userPassword,resetIsDone,done_updatin
     useEffect(() => {
         if(user){
             const {type,city,name,phone}=user
-            console.log(city)
+        
             const userInofObj={type,city,name,phone,password:userPassword}
             if(type =="ADMIN"){
                 const {ACCESS_CODE}=user
@@ -41,7 +41,6 @@ export const MyAccount = ({navigation,user,userPassword,resetIsDone,done_updatin
     }, [])
 
     useEffect(() => {
-        console.log({done_updating_acount})
         done_updating_acount && setcanUpdate(true) && resetIsDone("done_updating_acount")
     }, [done_updating_acount])
     useEffect(() => {
@@ -132,10 +131,18 @@ export const MyAccount = ({navigation,user,userPassword,resetIsDone,done_updatin
                     onChangeText={text=> setname(text) } 
             />
 
-            <Label label="Ville"  mga={16} />
-            <Error trigger={errors.cityREQUIRED} error={ERRORS_MESSAGES[0].message} />
-            {city != undefined &&<CitiesDropDown {...{setcity:handelChange('city'),city}} />}
 
+            <View style={{width:'100%'}} >
+                  <Label label="Ville"  mga={16} />
+                  <Error trigger={errors.cityREQUIRED} error={ERRORS_MESSAGES[0].message} />
+                  <CitiesCheckBox 
+                    setSelected={handelChange('city')} 
+                    selected={city!= undefined ? city:"Ouarzazate"}
+                    data={["Ouarzazate","Zagora","Marakesh"].map(c=>({value:c,checked:c==city}))}
+                  />  
+            </View>
+            
+         
             <Label label="Mote de passe"  mga={16} />
             <Error trigger={errors.passwordREQUIRED} error={ERRORS_MESSAGES[0].message} />
             <TextInput style={styles.Input}   

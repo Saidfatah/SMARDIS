@@ -13,7 +13,7 @@ const CanceledItem=({navigation,canceledOrder,done_resetting_order,resetOrder,re
         done_resetting_order == true && setcanReset(true) && resetIsDone("done_resetting_order")
     }, [done_resetting_order])
     
-    console.log(ref.current)
+ 
 
     const resetOrderCall=(e)=>{
         setcanReset(false)

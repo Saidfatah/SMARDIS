@@ -20,7 +20,6 @@ const CheckBoxGroup=({list,selected,setSelectedValue,isMulti})=> {
             setSelectedValue(list[index].value)
         }else{
             const valuesIds=valuesTemp.map((v,i)=>i)
-            console.log({valuesIds})
             setSelectedValue([...list.filter((_,i)=>valuesIds.indexOf(i)>-1 ).map(item=>item.value)])
         }
 

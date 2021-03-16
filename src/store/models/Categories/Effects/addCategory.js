@@ -5,20 +5,6 @@ import asyncStorage from '@react-native-async-storage/async-storage'
 
 
 
-const uploadImage= async (imageUri,name)=>{
-    try {
-        console.log('upload image')
-        if(imageUri!="NO_IMAGE"){
-           await Storage().ref("categoryImages/"+name).putFile(imageUri);
-           return Storage().ref("productImages").child(name).getDownloadURL()
-           
-        }
-        return new Promise.resolve('NO_IMAGE')
-    } catch (error) {
-       console.log('upload image error') 
-       console.log(error) 
-    }
-}
 
 export default async (args,state,dispatch)=>{
     try {
@@ -54,9 +40,9 @@ export default async (args,state,dispatch)=>{
                      const addResponse= firestore()
                                      .collection("categories")
                                      .add(newCategory)
-                    const addedCategoryId= (await addResponse).id
-                    created_doc_id=addedCategoryId
-            
+                     const addedCategoryId= (await addResponse).id
+                     created_doc_id=addedCategoryId
+             
                     //check if category has selcted products if so add the categories d to 
                     //the slected products category array field 
                     if(selectedProducts.length>0){
@@ -111,13 +97,33 @@ export default async (args,state,dispatch)=>{
            if(a.name > b.name) { return 1; }
            return 0;
          })
-
+        
          dispatch.categories.addedCategory({categories})
          const cache={
           day_of_creation: new Date().getDate(),
           categories
          }
          await  asyncStorage.setItem("CATEGORIES",JSON.stringify(cache))
+
+         //update selected products if theur exist 
+         if(selectedProducts.length>0){
+             const products = [...state.products.products].map(product=>{
+               if(selectedProducts.indexOf(product.id)>=0){
+                   return {...product,category:[...product.category,created_doc_id]}
+               }
+               return product
+             })
+
+             dispatch.products.updatedProduct({products})
+
+             const day_of_creation =new Date().getDate()
+             const cache={
+                 day_of_creation,
+                 products
+             }
+            await  asyncStorage.setItem("PRODUCTS",JSON.stringify(cache))
+         }
+         
 
        }
 

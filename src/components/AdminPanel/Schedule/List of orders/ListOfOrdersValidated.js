@@ -35,7 +35,8 @@ const getDateFormated=(date)=>{
     }else if(month<10 ){
       dd ="0"+ day
     }
-    return dd+"/"+mm+"/"+yy
+    // return dd+"/"+mm+"/"+yy
+    return dd+mm+yy
 }
 
 export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_validated_orders,exportOrders}) => {
@@ -51,7 +52,7 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
          let linesTemp=[]
          valide_orders.forEach((order)=>{
              const { client ,products,billRef,sale_date}=order
-             if(!products || products.length <1)return console.log('no orders')
+             if(!products || products.length <1)return  
            
              products.forEach((product)=>{
                   columnCount++
@@ -72,7 +73,6 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
             
         })
         if(dataTemp.length>1){
-            console.log(linesTemp[0])
               setdata([...dataTemp])
         }
     }, [valide_orders])
@@ -88,11 +88,10 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
 
         valide_orders.forEach((order)=>{
             const { client,products,billRef,sale_date}=order
-            if(!products || products.length <1)return console.log('no orders')
+            if(!products || products.length <1)return  
           
             const date = getDateFormated(sale_date)
-           
-           console.log({date})
+          
             products.forEach((p)=>{
                 const priceConvertedToComma=p.priceForClient.toString().replace('.',',')
                 dataToBeExported.push([
@@ -160,8 +159,6 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
             message:`le fichier excel a etais exporter avec success`
         })
         } catch (error) {
-            console.log("--------write-------------")
-            console.log(error)
             setExportError(error.message)
         }
 	};

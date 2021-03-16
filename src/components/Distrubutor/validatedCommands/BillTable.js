@@ -107,7 +107,7 @@ const BillTable=({selectedBill})=> {
         if(mounted) seturi(`data:application/pdf;base64,${data}`)
        })
       .catch(err  => {
-        console.log('error->', err)
+      
       })
 
       return ()=>mounted=false

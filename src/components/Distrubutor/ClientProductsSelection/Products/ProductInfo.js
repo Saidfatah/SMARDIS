@@ -13,7 +13,6 @@ const ProductInfo=({product,opened,client,isSub})=> {
     }
     if(client){
         const clientPrice = client.price.replace('x','ce')
-        console.log({clientPrice})
         PRICE= parseFloat(product[clientPrice]).toFixed(2)
         if(discount > 0 ){
             parseFloat(discount).toFixed(2)

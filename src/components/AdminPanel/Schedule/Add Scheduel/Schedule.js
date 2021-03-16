@@ -146,7 +146,6 @@ const Schedule = (props)=> {
     useEffect(() => {
          if(sectors.length >0 && clients.length>0 && distrubutors.length>0)
          {
-             console.log(selectedSector.id)
              if(!update){
                  const sectorClients = [...clients]
                                       .filter(cl=> cl.sectorId == selectedSector.id)
@@ -155,7 +154,6 @@ const Schedule = (props)=> {
                                         if (a.order_in_sector > b.order_in_sector) { return 1; }
                                         return 0;
                                      })
-                 console.log("sector name:"+sectorClients[0].name)                   
                  dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value:sectorClients}) 
                  dispatch({type:"SET_ORDERD_LIST_OF_CLIENTS",value:sectorClients}) 
              }
@@ -185,8 +183,6 @@ const Schedule = (props)=> {
            dispatch({type:"SET_SCHEDUEL_TO_UPDATE",value:id}) 
            dispatch({type:"SET_START_DATE",value:new Date(scheduel.start_date)}) 
            dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value:distination.clients}) 
-           console.log("-------orderd list from db --------")
-           console.log(distination.clients.map(c=>c.id))
            dispatch({type:"SET_ORDERD_LIST_OF_CLIENTS",value:distination.clients}) 
            dispatch({type:"SET_SELECTED_DISTRUBUTOR",value:distrubutors.filter(d=>d.id == distrubutor.id)[0]}) 
            dispatch({type:"SET_SELECTED_SECTOR",value:sectors.filter(s=>s.id == distination.sector.id)[0]}) 
@@ -202,9 +198,7 @@ const Schedule = (props)=> {
         } 
    }, [])
    
-   useEffect(() => {
-      console.log({is_newly_picked_time})
-   }, [is_newly_picked_time])
+
 
     if(clients.length < 1 || sectors.length <1 || distrubutors.length <1 ) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >

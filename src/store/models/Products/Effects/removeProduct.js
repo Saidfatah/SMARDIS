@@ -30,10 +30,9 @@ export default async (args,state,dispatch)=>{
         if(!products_first_fetch){
             let products = [...state.products.products].filter(p => p.id != product.id) 
     
-            const day_of_creation =new Date().getDate()
             dispatch.products.removedProduct({products})
-
             
+            const day_of_creation =new Date().getDate()
             const cache={
              day_of_creation,
              products

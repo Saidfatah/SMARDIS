@@ -11,7 +11,6 @@ import MyAccount    from '../Auth/Account/MyAccount'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import DrawerContent from './DrawerNavigator/DrawerContent'
 import DistrubutorBillTable   from '../Distrubutor/validatedCommands/BillTable'
-import OrdersValidated   from '../AdminPanel/Orders/OrdersValidated'
 
 const Drawer = createDrawerNavigator();
 const Navigator =({authenticated,userType})=>{
@@ -24,7 +23,6 @@ const Navigator =({authenticated,userType})=>{
              <Drawer.Screen name="ADMINDashBoard"  component={AdminStackNavigator} />
              <Drawer.Screen name="DISTRUBUTORDashBoard" component={DistributorStackNavigator} />
              <Drawer.Screen name="LOGIN" component={Login} />
-             <Drawer.Screen name="EXCEL" component={OrdersValidated} />
              <Drawer.Screen name="REGISTER" component={Register} />
              <Drawer.Screen name="AUTHORIZER" component={Authorizer} />
              <Drawer.Screen name="UPDATE_ACCOUNT" component={MyAccount} />

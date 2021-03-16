@@ -63,7 +63,6 @@ const isEqual=(prevProps,nextProps)=>{
     return false
   } 
   if(prevItem["price4"] != nextItem["price4"]){
-    console.log(prevItem["price4"] +"next:"+ nextItem["price4"] )
     return false
   } 
   return true

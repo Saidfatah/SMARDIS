@@ -17,10 +17,11 @@ export default async (args,state,dispatch)=>{
           if(!sectors_first_fetch){
               let sectors= [...state.sector.sectors]
               
-              dispatch.sector.removedSector({sectors})
-
-              //delete from cache
               sectors = sectors.filter(s => s.id != id) 
+              
+              dispatch.sector.removedSector({sectors})
+              
+              //delete from cache
               const day_of_creation =new Date().getDate()
               const cache={
                day_of_creation,

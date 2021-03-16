@@ -14,7 +14,7 @@ const  Sectors=({navigation,sectors,done_fetching_sectors})=> {
         <Loading spacing={50} />   
     </View>
 
-    console.log(sectors[0])
+ 
 
     return (
         <View style={{backgroundColor:'#fff',flex: 1}} >

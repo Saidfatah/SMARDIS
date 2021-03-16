@@ -17,9 +17,10 @@ const CONFIG_DOC='1 - - CONFIG - -'
 export default async(arg,state,dispatch)=>{
     try {
         const {passCacheCheck}=arg
+        
         if(!passCacheCheck){
             const TODAYS_ORDERS = await asyncStorage.getItem('TODAYS_ORDERS')
-        
+            console.log(TODAYS_ORDERS)
             if(TODAYS_ORDERS != undefined && TODAYS_ORDERS!=null){
                 const {todaysSectors,day_of_creation}= JSON.parse(TODAYS_ORDERS) 
                 
