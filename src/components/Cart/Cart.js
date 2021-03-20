@@ -22,9 +22,9 @@ export const Cart=({navigation,cartItems,guest,removeCartItem,done_validating_pr
              <Text> Le panier est vide</Text> 
     </ScrollView> 
     
-    let TOTAL= new Decimal(cartItems.reduce((a,c)=>a+(c.priceForClient * c.quantity),0))
+    let TOTAL= new Decimal(cartItems.reduce((a,c)=>a+(c.priceForClient * c.quantity),0)).toFixed(2)
     if(TOTAL == undefined || TOTAL == NaN){
-        TOTAL= new Decimal(cartItems.reduce((a,c)=>a+(c.priceForClient * c.quantity),0))
+        TOTAL= new Decimal(cartItems.reduce((a,c)=>a+(c.priceForClient * c.quantity),0)).toFixed(2)
     }
 
     const CartHeader=()=>{

@@ -6,7 +6,7 @@ import Button from '../../../Common/Button'
 import Loading from '../../../Common/Loading'
 import {colors} from '../../../Common/Colors'
 import { Table, Row,Cell, TableWrapper } from 'react-native-table-component';
-
+import {Decimal} from 'decimal.js'
 //export excel from here 
 import { writeFile,mkdir,exists,ExternalDirectoryPath} from 'react-native-fs';
 const make_cols = refstr => Array.from({length: XLSX.utils.decode_range(refstr).e.c + 1}, (x,i) => XLSX.utils.encode_col(i));
@@ -35,8 +35,8 @@ const getDateFormated=(date)=>{
     }else if(month<10 ){
       dd ="0"+ day
     }
-    // return dd+"/"+mm+"/"+yy
-    return dd+mm+yy
+   return dd+"/"+mm+"/"+yy
+ 
 }
 
 export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_validated_orders,exportOrders}) => {
@@ -58,15 +58,11 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
                   columnCount++
                   const {quantity,priceForClient,ref,name} =product
 
-                //   const dateParts=getParts(sale_date.toLocaleDateString('en-GB'))
-                  //  const date=dateParts[1]+"/"+dateParts[0]+"/"+dateParts[2]
-                //   const date=new Date(sale_date).toLocaleDateString('en-GB')
-                 
-                
+                const QUANTITY=new Decimal(quantity)
                   const date = getDateFormated(sale_date)
                 //   const date=new Date(sale_date).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' })
                 
-                  dataTemp.push([columnCount,billRef,date,ref,client.ref,name,quantity,priceForClient ])
+                  dataTemp.push([columnCount,billRef,date,ref,client.ref,name,QUANTITY.toNumber(),priceForClient ])
                  
                   linesTemp.push({date})
              })
@@ -94,22 +90,22 @@ export const ListOfOrdersValidated = ({show,valide_orders,done_fetching_todays_v
           
             products.forEach((p)=>{
                 const priceConvertedToComma=p.priceForClient.toString().replace('.',',')
+                 const QUANTITY=new Decimal(p.quantity)
                 dataToBeExported.push([
                      1,
                      billRef,
                      date ,
                      p.ref,
                      client.ref,
-                     p.quantity,
+                     QUANTITY.toNumber(),
                      priceConvertedToComma,
                      p.name
                 ])
             })
            
         })
-
-       
-        const ws = XLSX.utils.aoa_to_sheet(dataToBeExported);
+      
+    const ws = XLSX.utils.aoa_to_sheet(dataToBeExported);
 		// build new workbook */
 		const wb = XLSX.utils.book_new();
 		XLSX.utils.book_append_sheet(wb, ws, "SheetJS");

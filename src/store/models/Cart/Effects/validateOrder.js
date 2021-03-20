@@ -147,11 +147,11 @@ export default async (args,state,dispatch)=>{
 
              //increment billref counter in fristore , we waited until here to make sure the billRef get incremented
              //only if teh orders validation was successfull
-            //   const increment = firestore.FieldValue.increment(1)
-            //   await firestore()
-                //    .collection('orders')
-                //    .doc(CONFIG_DOC)
-                //    .update({counter:increment})
+              const increment = firestore.FieldValue.increment(1)
+              await firestore()
+                   .collection('orders')
+                   .doc(CONFIG_DOC)
+                   .update({counter:increment})
                   
             
  

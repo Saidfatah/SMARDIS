@@ -2,19 +2,33 @@ import React,{useEffect,useState} from 'react'
 import { connect } from 'react-redux'
 import {colors} from '../../Common/Colors'
 import PDFScreen from '../../Common/PDFScreen'
- 
+import {Decimal} from 'decimal.js';
 import PDF   from 'rn-pdf-generator';
  
 
 const BillTable=({selectedBill})=> {
     const [uri, seturi] = useState("") 
+     
     
     useEffect(() => {
       let mounted= true 
        if(!selectedBill) return 
        const {products,sale_date,total} = selectedBill
+       console.log({total})
+       const TOTAL = new Decimal(total).toFixed(2)
+       const productsHtml =products.map(product=>`
+       <tr>
+             <td> ${product.ref} </td>
+             <td> ${product.name} </td>
+             <td> ${product.priceForClient} </td>
+             <td> ${product.quantity} </td>
+             <td class="money" > ${ new Decimal(product.quantity * product.priceForClient).toFixed(2) }</td>
+       </tr>
+     `)
+    
       
-      const HMTL= `<html>
+     
+       const HMTL= `<html>
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -79,22 +93,12 @@ const BillTable=({selectedBill})=> {
                         <th>Montant payes (DH)</th>
                    </thead>
                    <tbody>
-                   ${
-                     products.map(product=>`
-                       <tr>
-                             <td> ${product.ref} </td>
-                             <td> ${product.name} </td>
-                             <td> ${product.priceForClient} </td>
-                             <td> ${product.quantity} </td>
-                             <td class="money" > ${product.quantity * product.priceForClient}</td>
-                       </tr>
-                     `)
-                    }
+                   ${productsHtml}
 
                     <tr  >
                        <td colspan="3"  style="height: 20px;border:null;" ></td>
                        <td style="font-weight:bolder" >Total</td>
-                       <td  class="money"   >${total}</td>
+                       <td  class="money"   >${TOTAL}</td>
                    </tr>
                    </tbody>
                 </table>
@@ -104,10 +108,11 @@ const BillTable=({selectedBill})=> {
 
       PDF.fromHTML(HMTL,'https://localhost:3000')
       .then((data)=>{
+         console.log("got data ")
         if(mounted) seturi(`data:application/pdf;base64,${data}`)
        })
       .catch(err  => {
-      
+        console.log(err)
       })
 
       return ()=>mounted=false

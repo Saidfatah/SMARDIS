@@ -16,7 +16,9 @@ const ProductAddToCart =({scheduelId,setIsPanelActive,selectedProduct,guest,addC
        priceForClient= discount
     }
 
-    const total = new Decimal(priceForClient*quantity).toNumber()
+    const total = new Decimal(priceForClient*quantity).toFixed(2)
+    
+    console.log({total})
  
     return (
         <View styles={styles.form}>
