@@ -26,7 +26,7 @@ export default async  (arg,state,dispatch)=>{
          
          fetchOrdersReponse.onSnapshot(res=>{
            if(res.docs.length){
-               console.log('got orders')
+              
                const maped_data=res.docs.map(order=>({
                    ...order.data(),
                    id:order.id,
@@ -35,24 +35,23 @@ export default async  (arg,state,dispatch)=>{
                }))
               const orders=maped_data.filter(order=>order.id != CONFIG_DOC)
 
-              //get sales 
-              let sales=orders.filter(order=>order.status == "VALIDATED" || order.status == "EXPORTED")
-              dispatch.scheduel.fetchedTodaysSales(sales)
+            //   //get sales 
+            //   let sales=orders.filter(order=>order.status == "VALIDATED" || order.status == "EXPORTED")
+            //   dispatch.scheduel.fetchedTodaysSales(sales)
               
               //get valide orders 
-              const validated=orders.filter(order=>order.status == "VALIDATED")
-              dispatch.scheduel.fetchedTodaysValideOrders({
-                  orders:validated,
-                  validated_commands_ref:null
-              })
-              console.log(validated.length)
+            //   const validated=orders.filter(order=>order.status == "VALIDATED")
+            //   dispatch.scheduel.fetchedTodaysValideOrders({
+            //       orders:validated,
+            //       validated_commands_ref:null
+            //   })
+            
 
               //get all all orders
               return  dispatch.scheduel.fetchedOrders(orders)
            }
            dispatch.scheduel.ordersFetchingFailed()
-           dispatch.scheduel.fetchTodaysValideOrdersFAILED()
-           dispatch.scheduel.todaysSalesFetchFailed()
+          
 
        })
         
@@ -60,8 +59,5 @@ export default async  (arg,state,dispatch)=>{
         console.log('\n-----fetchOrders-----')
         console.log(error)
         dispatch.scheduel.ordersFetchingFailed()
-        dispatch.scheduel.todaysSalesFetchFailed()
-        dispatch.scheduel.fetchTodaysValideOrdersFAILED()
-
     }
 }

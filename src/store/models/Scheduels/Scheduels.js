@@ -4,6 +4,9 @@ import fetchOrders from './Effects/ADMIN/fetchOrders'
 import fetchScheduels from './Effects/ADMIN/fetchScheduels'
 import addScheduel from './Effects/ADMIN/addScheduel'
 import updateScheduel from './Effects/ADMIN/updateScheduel'
+import fetchSales from './Effects/ADMIN/fetchSales'
+import fetchAdminValidatedOrders  from './Effects/ADMIN/fetchAdminValidatedOrders'
+
 import removeScheduel from './Effects/ADMIN/removeScheduel'
 import exportOrders from './Effects/ADMIN/exportOrders'
 
@@ -41,6 +44,8 @@ const model ={
         valide_orders_count : 0 ,
         distrubutor_todays_canceled_orders_count : 0 ,
         todaysSectorsCount :0,
+
+        EXPORTATION_STATE:"FINISHED",
 
         //fetchng booleans
         distrubutor_todays_orders_done_fetching: false ,
@@ -164,8 +169,6 @@ const model ={
             done_fetching_todays_Sales : true,
             todays_sales_first_fetch : false,
         }),
-        
-        //used in both [ADMIN,DISTRUBUTOR]$   
         fetchedTodaysValideOrders : (state,{orders,validated_commands_ref})=>({
             ...state,
             valide_orders :orders,
@@ -181,7 +184,10 @@ const model ={
             todays_validated_orders_first_fetch:false,
             done_fetching_todays_validated_orders:true,
         }),
-        //used in [DISTRUBUTOR] screens
+        setedExportationState: (state,EXPORTATION_STATE)=>({
+            ...state,
+            EXPORTATION_STATE
+        }),
         fetchedTodaysSectors : (state,{todaysSectors,todays_orders_ref,todays_orders_first_fetch})=>({
             ...state,
             todaysSectors :[...todaysSectors],
@@ -259,6 +265,8 @@ const model ={
         fetchDistrubutorTodaysCanceledOrders : (args,state)=> fetchDistrubutorTodaysCanceledOrders(args,state,dispatch),
         fetchTodaysValideOrders : (args,state)=> fetchTodaysValideOrders(args,state,dispatch),
         fetchTodaysOrders: (args,state)=> fetchTodaysOrders(args,state,dispatch),
+        fetchSales: (args,state)=> fetchSales(args,state,dispatch),
+        fetchAdminValidatedOrders: (args,state)=> fetchAdminValidatedOrders(args,state,dispatch),
         fetchOrders      : (args,state)=> fetchOrders(args,state,dispatch),
         resetOrder       : (args,state)=> resetOrder(args,state,dispatch),
         selectBill       : (args,state)=> selectBill(args,state,dispatch),
