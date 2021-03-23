@@ -3,12 +3,26 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import {StyleSheet, View,Text} from 'react-native'
 import {colors} from './Colors'
 
+const Error=({trigger,error,mgb,mga,height})=>{
+    let style={
+        
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'space-between',
+        borderRadius:12,
+        padding:8,
+        backgroundColor:colors.RED
+    }
 
-const Error=({trigger,error,mgb,mga})=>{
+    if(height){
+        style.height=height
+    }else{
+        style.flex=1
+    }
 
     if(trigger )
         return <View style={[
-            styles.err,
+            style,
             {
                 marginBottom : mgb || 0 ,
                 marginTop    : mga || 0,
@@ -23,15 +37,4 @@ const Error=({trigger,error,mgb,mga})=>{
 
 export default Error
 
-var styles = StyleSheet.create({
-    err:{
-       flex:1,
-       flexDirection:'row',
-       alignItems:'center',
-       justifyContent:'space-between',
-       borderRadius:12,
-       padding:8,
-       backgroundColor:colors.RED
-    }
  
- });

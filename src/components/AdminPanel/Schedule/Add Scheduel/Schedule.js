@@ -321,33 +321,51 @@ const Schedule = (props)=> {
          { showDate && <DatePicker {...pickerProps} />}
         </View>
     }
-    return <View   style={{backgroundColor:'#fff',flex:1}}>
-        
-        <DistrubutorsDopDown {...{distrubutors,selectedDistrubutor, dispatch}} />
-        <Error mga={8} trigger={error && error.id =="DISTRUBUTOR"} error={error && error.message} />
-
-        <SectorsDropDown {...{sectors,selectedSector, dispatch}} />
-
-
-      
-        <View style={{flex:1}} >
-              <DatePickerFactored/>
-              <View style={{paddingHorizontal:8,flex:1}} >
-                     <Error mga={4} trigger={error && error.id =="TIME_PICKER"} error={error && error.message} />
-              </View>
-        </View>
-      
-        <View style={{padding:8,flex:1}} >
-        <Label mgl={8} mga={8} mgb={0} label={"List des clients du secteur "+ selectedSector.name} />
-            <ClientsOrdering   
-                dispatch={dispatch} 
-                Data={[...selectedSectorClients]}
-                setData={value=>dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value}) }
+    return <View   style={{backgroundColor:'#fff',height:"100%"  }}>
+        <View style={{ flex:1 ,display:"flex" }} >
+           
+           <DistrubutorsDopDown {...{distrubutors,selectedDistrubutor, dispatch}} />
+            <Error
+                height={30}
+                trigger={error && error.id =="DISTRUBUTOR"} 
+                error={error && error.message} 
             />
+          
+
+            <SectorsDropDown {...{sectors,selectedSector, dispatch}} />
+          
+            <View >
+                   <Label
+                   mga={8}
+                   mgb={0}
+                   mgl={8}
+                   label={"Date de debut"} 
+                   />
+                  <DatePickerFactored/>
+                  <Error mga={4} height={25} trigger={error && error.id =="TIME_PICKER"} error={error && error.message} />
+                 
+            </View>
+          
+            <View style={{padding:8,flex:1}} >
+                 <Label
+                 mga={8}
+                 mgb={0}
+                 label={"List des clients du secteur "+ selectedSector.name} 
+                 />
+                 <ClientsOrdering   
+                     dispatch={dispatch} 
+                     Data={[...selectedSectorClients]}
+                     setData={value=>dispatch({type:"SET_SELECTED_SECTOR_CLIENTS",value}) }
+                 />
+            </View>
         </View>
-   
         
-        <Error mga={8} trigger={error && error.id =="ALREACY_ASIGNED"} error={error && error.message} />
+      
+     
+        
+        
+          
+        <Error mga={8} height={50} trigger={error && error.id =="ALREACY_ASIGNED"} error={error && error.message} />
         <Button color={"BLUE"}  padding={0} disabled={!canSubmit} clickHandler={createNewSchdule}>
            {
                canSubmit 
@@ -355,6 +373,7 @@ const Schedule = (props)=> {
                :<Loading  spacing={30} />
            }
         </Button>
+       
     </View>
  
 

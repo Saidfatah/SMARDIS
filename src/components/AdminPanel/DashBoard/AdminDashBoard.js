@@ -28,6 +28,8 @@ const  AdminDashBoard=(props)=> {
         scheduelsCount ,
         fetchProducts ,
         fetchWaitingClients,
+        fetchSales,
+        fetchAdminValidatedOrders,
         user,
         fetchUsers
     }=props
@@ -46,7 +48,8 @@ const  AdminDashBoard=(props)=> {
                  if(user && user.type =="DISTRUBUTOR") 
                      navigation.navigate('DISTRIBUTORDashBoard')
                 fetchOrders()
-               
+                fetchSales()
+                fetchAdminValidatedOrders()
                 fetchProducts()
                 fetchUsers()
                 fetchCategories()
@@ -55,7 +58,6 @@ const  AdminDashBoard=(props)=> {
                 fetchWaitingClients()
                 fetchScheduels()
                 fetchDistrubutors()
-          
        });
     }, [])
     useEffect(() => {
@@ -200,6 +202,8 @@ export default connect(
         fetchCategories  : dispatch.categories.fetchCategories,
         fetchDistrubutors  : dispatch.distrubutor.fetchDistrubutors ,
         fetchOrders : dispatch.scheduel.fetchOrders,
+        fetchAdminValidatedOrders : dispatch.scheduel.fetchAdminValidatedOrders,
+        fetchSales : dispatch.scheduel.fetchSales,
         fetchScheduels : dispatch.scheduel.fetchScheduels,
         fetchProducts   : dispatch.products.fetchProducts,
     })

@@ -4,38 +4,49 @@ const CONFIG_DOC='1 - - CONFIG - -'
 import asyncStorage from '@react-native-async-storage/async-storage'
 import {Decimal} from 'decimal.js';
 
-export default async (args,state,dispatch)=>{
-    try {
-        const {navigation} = args
-         const cartItems= [...state.cart.cartItems]
-         const guest= state.cart.guest
-         const sector= state.cart.sector
-         const scheduelId=state.cart.scheduelId
-          
-         if(cartItems.length>0){
-        
-              const orderId = guest.orderId 
-              const client  = guest
-              const total   = new Decimal(cartItems.reduce((a,c)=>a+(c.priceForClient * c.quantity),0))
-              
-             //set next client turn 
-             dispatch.scheduel.setNextTurn()
-          
-          
-             //get billref counter from fristore
-             let billRefCounter 
-             const orderConfig =state.scheduel.orderConfig
-             if(orderConfig){
-               billRefCounter=  orderConfig.counter
-             }
-         
-             //generate billRef with BC000* inital
-             const billRefCounterArrayed = (++billRefCounter).toString().split('')
-             let   zeros     = new Array(6-billRefCounterArrayed.length).fill("0",0,6-billRefCounterArrayed.length)
-             const billRef   = [...zeros,...billRefCounterArrayed].reduce((a,c)=>a+c,"BC")
-   
-             //update order doc ["VALIDATED"]
-             const validateOrderReponse = await firestore()
+
+const incrementBillRef=async()=>{
+    //increment billref counter in fristore , we waited until here to make sure the billRef get incremented
+     //only if teh orders validation was successfull
+
+     const increment = firestore.FieldValue.increment(1)
+     await firestore()
+          .collection('orders')
+          .doc(CONFIG_DOC)
+          .update({counter:increment})
+                  
+}
+const updateDistrubutorCommits=async (state,billRef,number_of_products,client,sector)=>{
+    const currentDistrubutorId = state.auth.distrubutorId
+    const updateCommitsReponse = await firestore()
+                                      .collection('users')
+                                      .doc(currentDistrubutorId)
+                                      .update({
+                                          commits:firestore.FieldValue.arrayUnion({
+                                              date : firestore.Timestamp.fromDate(new Date()),
+                                              billRef,
+                                              number_of_products,
+                                              validated:"VALIDATED",
+                                              client,
+                                              sector
+                                          })
+                                      })
+}
+const generateBillRef=(state)=>{
+    //get billref counter from fristore
+     let billRefCounter 
+     const orderConfig =state.scheduel.orderConfig
+     if(orderConfig){
+       billRefCounter=  orderConfig.counter
+     }
+    
+     //generate billRef with BC000* inital
+     const billRefCounterArrayed = (++billRefCounter).toString().split('')
+     let   zeros     = new Array(6-billRefCounterArrayed.length).fill("0",0,6-billRefCounterArrayed.length)
+     return [...zeros,...billRefCounterArrayed].reduce((a,c)=>a+c,"BC")
+}
+const updateOrderDocStatusToValidated=async (orderId,cartItems,billRef,total)=>{
+    const validateOrderReponse = await firestore()
               .collection('orders')
               .doc(orderId)
               .update({
@@ -45,38 +56,46 @@ export default async (args,state,dispatch)=>{
                      return item 
                  })],
                  billRef,
-                 total:total.toNumber(),
+                 total,
                  status: "VALIDATED",
                  sale_date : firestore.Timestamp.fromDate(new Date()), 
                  sale_hour : firestore.Timestamp.fromDate(new Date()),
                })
-            
+}
+const updateClientObjectProgress=async (client,total)=>{
+    const {objectif,id}=client
+    const {last_mounth,progress,initial}= objectif
+    const currentMount= new Date().getMonth()
 
-
-             //update clients' objectif progress
-             const {objectif,id,name}=client
-             const {last_mounth,progress,initial}= objectif
-             const currentMount= new Date().getMonth()
-
-             const clientsProges=new Decimal(progress)
-             const progressCalculated= total.plus(clientsProges)
-             const initialDecimal=new Decimal(initial)
-             console.log({initialDecimal})
-             console.log({progressCalculated})
-             console.log({clientsProges})
-
-             if(currentMount == last_mounth){
-                 await firestore().collection('clients').doc(id).update({objectif:{
-                     initial:initialDecimal.toNumber(),
-                     progress:progressCalculated.toNumber() ,
-                     last_mounth : new Date().getMonth()
-                 }})
-             }
-             
-             //check if this order is the last in teh scheduel
-             let todaysSectors= [...state.scheduel.todaysSectors]
+    const clientsProges=new Decimal(progress)
+    const progressCalculated= total.plus(clientsProges)
+    const initialDecimal=new Decimal(initial)
+    
+    if(currentMount == last_mounth){
+        await firestore().collection('clients').doc(id).update({objectif:{
+            initial:initialDecimal.toNumber(),
+            progress:progressCalculated.toNumber() ,
+            last_mounth : new Date().getMonth()
+        }})
+    }
+}
+const feedBack=(dispatch,navigation)=>{
+     dispatch.toast.show({
+        type:'success',
+        title:'Validation ',
+        message:`La command  est valider avec success `
+     })
+     dispatch.cart.validatedGuestOrder()
+     deleteCartFromASyncStorage()
+     navigation.navigate('DISTRIBUTORDashBoard')
+}
+const updateScheduelStatus=async (state,dispatch,orderId)=>{
+    //check if this order is the last in teh scheduel
+    let todaysSectors= [...state.scheduel.todaysSectors]
              const todaysSectorsLength = todaysSectors.length
              if(todaysSectorsLength>0){
+                const scheduelId=state.cart.scheduelId
+
                  const targetSector=todaysSectors.filter(ts=>ts.scheduleId == scheduelId )[0]
                  const targetSectorIndex=todaysSectors.indexOf(targetSector)
                  const orders= targetSector.orders
@@ -90,7 +109,6 @@ export default async (args,state,dispatch)=>{
                           let ordersFiltered = [...todaysOrdersToCache[targetSectorIndex].orders].filter(o=>o.orderId != orderId)
                           
                           const targetScheduelOrdersCount=ordersFiltered.length
-                          console.log({targetScheduelOrdersCount,todaysSectorsLength})
                  
                           if(todaysSectorsLength == 1){
                               
@@ -144,43 +162,34 @@ export default async (args,state,dispatch)=>{
                       }
                   }
              }
+}
 
-             //increment billref counter in fristore , we waited until here to make sure the billRef get incremented
-             //only if teh orders validation was successfull
-              const increment = firestore.FieldValue.increment(1)
-              await firestore()
-                   .collection('orders')
-                   .doc(CONFIG_DOC)
-                   .update({counter:increment})
-                  
+export default async (args,state,dispatch)=>{
+    try {
+        const {navigation} = args
+         const cartItems= [...state.cart.cartItems]
+         const guest= state.cart.guest
+         const sector= state.cart.sector
+         if(cartItems.length>0){
+             const orderId = guest.orderId 
+             const client  = guest
+             const total   = new Decimal(cartItems.reduce((a,c)=>a+(c.priceForClient * c.quantity),0))
             
- 
-             //update distrubutor commits 
-             const currentDistrubutorId = state.auth.distrubutorId
-             const updateCommitsReponse = await firestore()
-             .collection('users')
-             .doc(currentDistrubutorId)
-             .update({
-                 commits:firestore.FieldValue.arrayUnion({
-                     date : firestore.Timestamp.fromDate(new Date()),
-                     billRef,
-                     number_of_products: cartItems.length,
-                     validated:"VALIDATED",
-                     client:client.name,
-                     sector:sector.name
-                 })
-             })
-                         
-            
+             dispatch.scheduel.setNextTurn()
 
-             dispatch.toast.show({
-                type:'success',
-                title:'Validation ',
-                message:`La command  est valider avec success `
-             })
-             dispatch.cart.validatedGuestOrder()
-             deleteCartFromASyncStorage()
-             navigation.navigate('DISTRIBUTORDashBoard')
+             const billRef   = generateBillRef(state)
+             
+             updateOrderDocStatusToValidated(orderId,cartItems,billRef,total.toNumber())
+
+             updateClientObjectProgress(client,total)
+
+             updateScheduelStatus(state,dispatch,orderId)
+
+             incrementBillRef()
+
+             updateDistrubutorCommits(state,billRef, cartItems.length,client.name,sector.name)
+          
+             feedBack(dispatch,navigation)
          }
      } catch (error) {
          console.log("validate order cart")
