@@ -7,13 +7,11 @@ export default async (args,state,dispatch)=>{
 
         if(validated_orders.length){
 
-            dispatch.scheduel.setedExportationState("STARTED")
-
             //RESET VALDIATED ORDERS TO [] AND UNSBSCRIBE FROM THE ONSNAPSHOT CALL
             dispatch.scheduel.fetchTodaysValideOrdersFAILED()
             const validated_commands_ref= state.scheduel.validated_commands_ref
+    
             if(validated_commands_ref != null){
-                console.log('export unsubscribe from validated_commands_ref')
                 validated_commands_ref()
             }
             await asyncStorage.removeItem('VALIDATED_TEMPORARY') 
@@ -30,7 +28,6 @@ export default async (args,state,dispatch)=>{
 
             
             //REFECTH VALDIATED ORDERS
-            dispatch.scheduel.setedExportationState("FINISHED")
             dispatch.scheduel.fetchAdminValidatedOrders()
         }
      

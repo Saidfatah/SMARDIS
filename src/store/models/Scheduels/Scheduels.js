@@ -45,8 +45,6 @@ const model ={
         distrubutor_todays_canceled_orders_count : 0 ,
         todaysSectorsCount :0,
 
-        EXPORTATION_STATE:"FINISHED",
-
         //fetchng booleans
         distrubutor_todays_orders_done_fetching: false ,
         todays_orders_first_fetch:false,
@@ -183,10 +181,6 @@ const model ={
             valide_orders_count :0,
             todays_validated_orders_first_fetch:false,
             done_fetching_todays_validated_orders:true,
-        }),
-        setedExportationState: (state,EXPORTATION_STATE)=>({
-            ...state,
-            EXPORTATION_STATE
         }),
         fetchedTodaysSectors : (state,{todaysSectors,todays_orders_ref,todays_orders_first_fetch})=>({
             ...state,

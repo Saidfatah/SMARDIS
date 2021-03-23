@@ -7,10 +7,12 @@ tomorrowJs.setHours(0,0,0,0);
 
 const CONFIG_DOC ="1 - - CONFIG - -"
 
+
 const setSalesReduxCache=async (dispatch,orders)=>{
+ 
     const SALES = await asyncStorage.getItem('SALES')
      
-    console.log(SALES != undefined && SALES!=null)
+   
     if(SALES != undefined && SALES!=null){
          const {sales}= JSON.parse(SALES) 
 
@@ -20,7 +22,7 @@ const setSalesReduxCache=async (dispatch,orders)=>{
      
          orders.forEach(newFetchedOrder => {
              if( SALES_IDS.indexOf(newFetchedOrder.id) <0 ){
-                 SALES_TMP.push(newFetchedOrder)
+                 SALES_TMP.unshift(newFetchedOrder)
             }
          });
         
@@ -42,43 +44,75 @@ const setSalesReduxCache=async (dispatch,orders)=>{
        dispatch.scheduel.fetchedTodaysSales(orders)
     }
 }
+const fetch_VALIDATED_TEMPORARY_CACHE=async (dispatch)=>{
+    //GET VALIDATED ORDERS FROM CACHE 
+    let fetched=false
+    const VALIDATED_TEMPORARY_RES=await asyncStorage.getItem('VALIDATED_TEMPORARY') 
+    if(VALIDATED_TEMPORARY_RES != undefined){
+       let VALIDATED_PARSED=  JSON.parse(VALIDATED_TEMPORARY_RES)
+       fetched=true
+       dispatch.scheduel.fetchedTodaysValideOrders({
+          orders:VALIDATED_PARSED ,
+          validated_commands_ref:null
+       })
+    } 
+    return fetched
+}
+const select_start_date_limit=async ()=>{
+     const LAST_FETCH_DATE = await asyncStorage.getItem('LAST_FETCH_DATE')
+        
+     if(LAST_FETCH_DATE != undefined && LAST_FETCH_DATE != null){
+         const LAST_FETCH_DATE_=new Date(LAST_FETCH_DATE)
+         const current_day= new Date().getDay()
+        
+         if(LAST_FETCH_DATE_.getDay() ==  current_day)
+             DATE_LIMIT = firestore.Timestamp.fromDate(new Date(LAST_FETCH_DATE));
+         else 
+             DATE_LIMIT = firestore.Timestamp.fromDate(tomorrowJs);
+     }else{
+         DATE_LIMIT = firestore.Timestamp.fromDate(tomorrowJs);
+     }
+     return DATE_LIMIT
+}
+const set_state_validated_orders=async (dispatch,orders,validated_commands_ref)=>{
+    //set SALES CACHE AND SET SALES IN REDUX STATE
+    console.log("validated length: "+orders.length)
+    setSalesReduxCache(dispatch,orders)
+
+    dispatch.scheduel.fetchedTodaysValideOrders({
+       orders ,
+       validated_commands_ref:validated_commands_ref
+    })
+    await asyncStorage.setItem("VALIDATED_TEMPORARY",JSON.stringify(orders))
+}
+
 
 
 export default async  (arg,state,dispatch)=>{
     try {
           
         //GET VALIDATED ORDERS FROM CACHE 
-        let FETCHED_FROM_CACHE=false
-        const VALIDATED_TEMPORARY_RES=await asyncStorage.getItem('VALIDATED_TEMPORARY') 
-        if(VALIDATED_TEMPORARY_RES != undefined){
-           let VALIDATED_PARSED=  JSON.parse(VALIDATED_TEMPORARY_RES)
-           FETCHED_FROM_CACHE=true
-           dispatch.scheduel.fetchedTodaysValideOrders({
-              orders:VALIDATED_PARSED ,
-              validated_commands_ref:null
-           })
-        } 
-
-        let DATE_LIMIT 
-        const LAST_FETCH_DATE = await asyncStorage.getItem('LAST_FETCH_DATE')
-        
-        if(LAST_FETCH_DATE != undefined && LAST_FETCH_DATE != null){
-            const LAST_FETCH_DATE_=new Date(LAST_FETCH_DATE)
-            const current_day= new Date().getDay()
-           
-            if(LAST_FETCH_DATE_.getDay() ==  current_day)
-                DATE_LIMIT = firestore.Timestamp.fromDate(new Date(LAST_FETCH_DATE));
-            else 
-                DATE_LIMIT = firestore.Timestamp.fromDate(tomorrowJs);
-        }else{
-            DATE_LIMIT = firestore.Timestamp.fromDate(tomorrowJs);
-        }
-
-
+        let FETCHED_FROM_CACHE=fetch_VALIDATED_TEMPORARY_CACHE(dispatch)
         
         const fetch_orders_first_fetch = state.scheduel.fetch_orders_first_fetch
         if(fetch_orders_first_fetch == true ) return 
        
+        
+        let DATE_LIMIT=null
+        const LAST_FETCH_DATE = await asyncStorage.getItem('LAST_FETCH_DATE')
+        
+        if(LAST_FETCH_DATE != undefined && LAST_FETCH_DATE != null){
+             const LAST_FETCH_DATE_=new Date(LAST_FETCH_DATE)
+             const current_day= new Date().getDay()
+            
+             if(LAST_FETCH_DATE_.getDay() ==  current_day)
+                 DATE_LIMIT = firestore.Timestamp.fromDate(new Date(LAST_FETCH_DATE));
+             else 
+                 DATE_LIMIT = firestore.Timestamp.fromDate(tomorrowJs);
+        }else{
+            DATE_LIMIT = firestore.Timestamp.fromDate(tomorrowJs);
+        }
+        
         
         const admin_city= state.auth.user.city
         const fetchOrdersReponse = await firestore()
@@ -87,23 +121,11 @@ export default async  (arg,state,dispatch)=>{
                                         .where('status',"in",["VALIDATED"])
                                         .where('region','array-contains',admin_city)
          
-  
          
-         fetchOrdersReponse.onSnapshot(async res=>{
-           const EXPORTATION_STATE = state.scheduel.EXPORTATION_STATE
-           console.log({EXPORTATION_STATE})
-           if(EXPORTATION_STATE === "STARTED") 
-           {
-            return console.log("cant fetch validated")
-           } 
-
-           
-           if(res.docs.length && EXPORTATION_STATE === "FINISHED" ){ 
-                console.log("fetching validated orders: ")
-                console.log(  res.docs.map(d=>d.id))
-
-
-
+         
+        const validated_commands_ref= fetchOrdersReponse.onSnapshot(async res=>{
+           if(res.docs.length  ){ 
+               console.log("validated : "+res.docs.length)
                const maped_data=res.docs.map(order=>({
                    ...order.data(),
                    id:order.id,
@@ -126,36 +148,18 @@ export default async  (arg,state,dispatch)=>{
                      if( VALIDATED_TEMPORARY_IDS.indexOf(newFetchedOrder.id) <0 )
                        VALIDATED_TEMPORARY.push(newFetchedOrder)
                  });
-        
 
 
-                 //set SALES CACHE AND SET SALES IN REDUX STATE
-                 setSalesReduxCache(dispatch,VALIDATED_TEMPORARY)
-
-
-                 dispatch.scheduel.fetchedTodaysValideOrders({
-                    orders:VALIDATED_TEMPORARY ,
-                    validated_commands_ref:null
-                 })
-                 await asyncStorage.setItem("VALIDATED_TEMPORARY",JSON.stringify(VALIDATED_TEMPORARY))
+                 return set_state_validated_orders(dispatch,VALIDATED_TEMPORARY,validated_commands_ref)
+                 
               }else{
-                  
-                  //set SALES CACHE AND SET SALES IN REDUX STATE
-                  setSalesReduxCache(dispatch,orders)
-              
-                  //SET VALDIATED OR TO CACHE AND REDUX STATE
-                  dispatch.scheduel.fetchedTodaysValideOrders({
-                       orders ,
-                       validated_commands_ref:null
-                  })
-                  await asyncStorage.setItem("VALIDATED_TEMPORARY",JSON.stringify(orders))
+                 return set_state_validated_orders(dispatch,orders,validated_commands_ref)
               }
 
-              return 
+               
            }
            if(!FETCHED_FROM_CACHE){
                dispatch.scheduel.fetchTodaysValideOrdersFAILED()
-            //    dispatch.scheduel.todaysSalesFetchFailed()
            }
 
        })

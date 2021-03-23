@@ -5,13 +5,20 @@ import Item from '../../Common/Item'
 import {connect} from 'react-redux'
 
 export const SaleItem = ({sale,selectBill,navigation}) => {
-    const {client,sector,id}= sale
+    const {client,sector,id,sale_date}= sale
     
+    
+    const DATE= new Date(sale_date).toLocaleDateString()
     const title=`${client.name} (${sector.name})` 
     return (
         <Item xStyle={styles.xstyle}  >
         <View style={styles.item}>
-            <Text style={styles.text} >{title}</Text> 
+            <View>
+               <Text style={styles.text} >{title}</Text> 
+               {DATE && <Text style={styles.text} >{DATE}</Text>  }
+               
+            </View>
+
            
             <Button
              xStyle={{margin:0,borderRadius:12}} 

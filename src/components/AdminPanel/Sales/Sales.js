@@ -17,7 +17,7 @@ const Sales=({todaysSales,done_fetching_todays_Sales,navigation})=> {
     return (
         <ScrollView  > 
             <View style={{backgroundColor:'#fff',minHeight:HEIGHT, flex:1 ,padding:8}}>
-                    {todaysSales.map((item,i)=> <SaleItem navigation={navigation} sale={item} key={item.id}  />)}
+                    {todaysSales.sort((a,b)=>new Date(b.sale_date) - new Date(a.sale_date)).map((item,i)=> <SaleItem navigation={navigation} sale={item} key={item.id}  />)}
             </View>
         </ScrollView>
     )
