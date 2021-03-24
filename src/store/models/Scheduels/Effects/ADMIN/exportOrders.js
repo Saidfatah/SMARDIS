@@ -1,5 +1,7 @@
 import firestore from '@react-native-firebase/firestore'
 import asyncStorage from '@react-native-async-storage/async-storage'
+import PushNotification from "react-native-push-notification";
+
 
 export default async (args,state,dispatch)=>{
     try {
@@ -15,6 +17,9 @@ export default async (args,state,dispatch)=>{
                 validated_commands_ref()
             }
             await asyncStorage.removeItem('VALIDATED_TEMPORARY') 
+
+
+            PushNotification.cancelAllLocalNotifications()
 
             //SET VALIDATED ORDERS TO EXPORTED
             validated_orders.forEach(async(order)=>{

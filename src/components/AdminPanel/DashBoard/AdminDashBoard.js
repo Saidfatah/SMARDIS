@@ -5,7 +5,7 @@ import { List } from 'react-native-paper';
 import DashBoardItem from './DashBoardItem'
 import { useFocusEffect } from "@react-navigation/native";
 import { BackHandler ,Alert} from 'react-native';
-
+ 
 
 
 const  AdminDashBoard=(props)=> {
@@ -47,17 +47,17 @@ const  AdminDashBoard=(props)=> {
         InteractionManager.runAfterInteractions(() => {
                  if(user && user.type =="DISTRUBUTOR") 
                      navigation.navigate('DISTRIBUTORDashBoard')
-                fetchOrders()
-                fetchSales()
-                fetchAdminValidatedOrders()
-                fetchProducts()
-                fetchUsers()
-                fetchCategories()
-                fetchSectors()
-                fetchClients()
-                fetchWaitingClients()
-                fetchScheduels()
-                fetchDistrubutors()
+                 fetchOrders()
+                 fetchSales()
+                 fetchAdminValidatedOrders()
+                 fetchProducts()
+                 fetchUsers()
+                 fetchCategories()
+                 fetchSectors()
+                 fetchClients()
+                 fetchWaitingClients()
+                 fetchScheduels()
+                 fetchDistrubutors()
        });
     }, [])
     useEffect(() => {
