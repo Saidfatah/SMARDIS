@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react'
 import {View,Text,ScrollView,StyleSheet,Linking,Alert} from 'react-native'
 import { connect } from 'react-redux'
-import Item from '../../../Common/Item'
+import Loading from '../../../Common/Loading'
 import Button from '../../../Common/Button'
 import {buttonTexts} from '../../../Common/GlobalStrings'
 import Badge from '../../../Common/Badge'
@@ -11,16 +11,23 @@ import IonIcon from 'react-native-vector-icons/Ionicons'
 
 
 
-export const ClientPage = ({navigation,route,sectors,resetIsDone,done_removing_client,removeClient}) => {
+export const ClientPage = ({navigation,selectedClient,sectors,resetIsDone,done_removing_client,removeClient}) => {
     const [canRemove, setcanRemove] = useState(true)
-    const {client} = route.params;
+
     
+    const client = selectedClient
     useEffect(() => {
         done_removing_client==true && setcanRemove(true) && resetIsDone('done_removing_client')
     }, [done_removing_client])
 
-    if(!client) return <Text>Client nexst pas</Text>
-    if(sectors.length<1) return <Text>loading</Text>
+
+
+    if(!client || sectors.length<1) 
+    return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
+        <Loading spacing={50} />   
+    </View>
+  
+
 
     const {phone,city,ref,name,address,objectif,price,sectorId}=client
     const {initial,progress}=objectif
@@ -136,6 +143,7 @@ export default connect(
     state=>({
        sectors:state.sector.sectors,
        done_removing_client:state.client.done_removing_client,
+       selectedClient:state.client.selectedClient,
     }), 
     dispatch =>({
       removeClient: dispatch.client.removeClient,

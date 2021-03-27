@@ -4,6 +4,7 @@ import CategoriesSlider from './CategoriesSlider'
 import {connect} from 'react-redux'
 import Products from './Products/Products'
 import Button from '../../Common/Button'
+import Loading from '../../Common/Loading'
 import {colors} from '../../Common/Colors'
 import BackgroundImage from '../../Common/BackgroundImage'
 import  SwipeAbleProductDetails from './Products/SwipeAbleProductDetails'
@@ -22,20 +23,22 @@ const ClientDelivry=(props)=> {
         resetIsDone,
         addCartItem,
         selectedCategorySubCategories,
-        selectedCategoryProducts
+        selectedCategoryProducts,
+        selectedClient
     }=props
     const [isPanelActive, setIsPanelActive] = useState(false);
     const [isCancelPanelActive, setIsCancelPanelActive] = useState(false);
     const [selectedProduct, setselectedProduct] = useState(selectedCategoryProducts[0]);
 
 
-    const {client,sector,orderId,scheduelId} = route.params;
-   
-    const {name,objectif,id}=client
+    const {sector,orderId,scheduelId} = route.params;
+
  
     useEffect(() => {
-        navigation.setParams({ clientName: name });
-    }, [id])
+        if(selectedClient){
+            navigation.setParams({ clientName: selectedClient.name });
+        }
+    }, [selectedClient])
     useFocusEffect(
         useCallback(() => {
           const onBackPress = () => {
@@ -50,6 +53,13 @@ const ClientDelivry=(props)=> {
         
     }, []));
 
+
+    if(!selectedClient  ) 
+    return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
+        <Loading spacing={50} />   
+    </View>
+
+    const {name,objectif,id}=selectedClient
 
     const Header=()=>{
         const COLOR= objectif.progress>=0 ? colors.GREEN : colors.RED
@@ -73,11 +83,13 @@ const ClientDelivry=(props)=> {
        </Button>
    </View>
     }
+
+
     return <BackgroundImage  >
        <Header />
         <View style={styles.productsPanel} >
              <CategoriesSlider  {...{navigation}} />
-             <Products {...{isSelectedCategorySpecial,setIsPanelActive,setselectedProduct,selectedCategoryProducts,selectedCategorySubCategories,client}} />
+             <Products {...{isSelectedCategorySpecial,setIsPanelActive,setselectedProduct,selectedCategoryProducts,selectedCategorySubCategories,client:selectedClient}} />
         </View>
         <SwipeAbleProductDetails {...{
                  scheduelId,
@@ -85,8 +97,8 @@ const ClientDelivry=(props)=> {
                  sector,
                  isPanelActive,
                  setIsPanelActive,
-                 guest:client,
-                 client,
+                 guest:selectedClient,
+                 client:selectedClient,
                  orderId,
             addCartItem}} 
             />
@@ -110,6 +122,7 @@ export default connect(
         selectedCategorySubCategories :  state.categories.selectedCategorySubCategories,
         done_canceling_order :  state.categories.done_canceling_order,
         isSelectedCategorySpecial :  state.categories.isSelectedCategorySpecial,
+        selectedClient :  state.client.selectedClient,
     }),
     dispatch=>({
         addCartItem : dispatch.cart.addCartItem,

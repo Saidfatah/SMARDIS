@@ -2,13 +2,19 @@ import React,{memo,useRef,useEffect} from 'react'
 import {View,Text} from 'react-native'
 import Item from '../../../Common/Item'
 import Button from '../../../Common/Button'
+import { connect } from 'react-redux'
 
-const ClientItem=({navigation,client })=> {
+const ClientItem=({navigation,name,id,selectClient })=> {
   let ref= useRef(0)
  
   ref.current= ref.current +1 
 
-  const {name}=client
+  const onClick=(e)=>{
+     navigation.navigate('ADMINclientProfile')
+     selectClient({id})
+  }
+
+ 
   return <Item xStyle={{ marginBottom:16}} >
     <View style={{ 
           display:'flex',
@@ -21,7 +27,7 @@ const ClientItem=({navigation,client })=> {
             <Button
              xStyle={{flex:1,margin:0,borderRadius:12}} 
              color={"BLUE"} 
-             clickHandler={ e=>navigation.navigate('ADMINclientProfile',{client})} 
+             clickHandler={onClick} 
              >
                 <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>Afficher
                </Text>
@@ -32,52 +38,23 @@ const ClientItem=({navigation,client })=> {
 
 
 const isEqual=(prevProps,nextProps)=>{
-  const prevItem =prevProps.client 
-  const nextItem =nextProps.client 
+  const prevItem =prevProps 
+  const nextItem =nextProps 
   
-  if(prevItem["objectif"].initial != nextItem["objectif"].initial){
-    return false
-  } 
-  if(prevItem["objectif"].last_mounth != nextItem["objectif"].last_mounth){
-    return false
-  } 
-  if(prevItem["objectif"].progress != nextItem["objectif"].progress){
-    return false
-  } 
-  if(prevItem["name"] != nextItem["name"]){
-    return false
-  } 
-  if(prevItem["price"] != nextItem["price"]){
-    return false
-  } 
-  if(prevItem["order_in_sector"] != nextItem["order_in_sector"]){
-    return false
-  } 
-  if(prevItem["coardinations"] != nextItem["coardinations"]){
-    return false
-  } 
-  if(prevItem["phone"] != nextItem["phone"]){
-    return false
-  } 
-  if(prevItem["confirmed"] != nextItem["confirmed"]){
-    return false
-  } 
-  if(prevItem["city"] != nextItem["city"]){
-    return false
-  } 
-  if(prevItem["credit"] != nextItem["credit"]){
-    return false
-  } 
-  if(prevItem["address"] != nextItem["address"]){
-    return false
-  } 
-  if(prevItem["sectorId"] != nextItem["sectorId"]){
-    return false
-  } 
 
+  if(prevItem['name'] != nextItem['name']){
+    return false
+  } 
+  if(prevItem['id'] != nextItem['id']){
+    return false
+  } 
  
   return true
 }
- 
 
-export default memo(ClientItem,isEqual)
+export default  connect(
+   null,
+   dispatch=>({selectClient:dispatch.client.selectClient})
+)(memo(ClientItem,isEqual))
+
+

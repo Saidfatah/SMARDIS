@@ -20,7 +20,7 @@ export default async(arg,state,dispatch)=>{
         
         if(!passCacheCheck){
             const TODAYS_ORDERS = await asyncStorage.getItem('TODAYS_ORDERS')
-            console.log(TODAYS_ORDERS)
+       
             if(TODAYS_ORDERS != undefined && TODAYS_ORDERS!=null){
                 const {todaysSectors,day_of_creation}= JSON.parse(TODAYS_ORDERS) 
                 
@@ -54,7 +54,6 @@ export default async(arg,state,dispatch)=>{
             if(res.docs.length){
                 // const flteredDocs=  res.docs.filter(doc=> doc.id != CONFIG_DOC)
                  const flteredDocs=  res.docs  
-                 console.log('todays orders snapshot')
 
                 //chececk for clients objectifs 
                 //reset their objectif progress if its the beggning of the month 
@@ -67,7 +66,6 @@ export default async(arg,state,dispatch)=>{
                     const {initial,last_mounth} = objectif
 
                     if(currentMount > last_mounth ){
-                        console.log("reset objectif progress")
                         await firestore().collection('clients').doc(id).update({objectif:{
                            initial:initial ,
                            progress: -initial,

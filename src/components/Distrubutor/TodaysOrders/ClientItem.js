@@ -2,12 +2,19 @@ import React from 'react'
 import {View,Text} from 'react-native'
 import Item from '../../Common/Item'
 import Button from '../../Common/Button'
+import { connect } from 'react-redux'
 
-const ClientItem=({navigation,client,currentTurn,currentSector,sector,scheduleId })=> {
+const ClientItem=({navigation,client,selectClient,currentTurn,currentSector,sector,scheduleId })=> {
 
-      const {name,turn,orderId}=client
-      const navigateToRoute=(e)=>navigation.navigate('DISTRIBUTORclientDelivery', { clientId:client.id ,client ,sector,orderId,scheduelId:scheduleId });
-      return <Item xStyle={{ marginBottom:16}} >
+     const {name,turn,orderId}=client
+     
+    const onClick=(e)=>{
+       navigation.navigate('DISTRIBUTORclientDelivery', { clientId:client.id ,sector,orderId,scheduelId:scheduleId });
+       selectClient({id:client.id })
+    }
+ 
+    
+    return <Item xStyle={{ marginBottom:16}} >
         <View style={{ 
           display:'flex',
           flexDirection:'row-reverse' ,
@@ -25,7 +32,7 @@ const ClientItem=({navigation,client,currentTurn,currentSector,sector,scheduleId
                      :false
              }
             
-             clickHandler={navigateToRoute} 
+             clickHandler={onClick} 
              >
                 <Text style={{color:"#fff",textAlign:'center',fontWeight:'bold'}}>  Afficher </Text>
             </Button>
@@ -33,4 +40,7 @@ const ClientItem=({navigation,client,currentTurn,currentSector,sector,scheduleId
       </Item>
 }
 
-export default ClientItem
+export default  connect(
+  null,
+  dispatch=>({selectClient:dispatch.client.selectClient})
+)(ClientItem)

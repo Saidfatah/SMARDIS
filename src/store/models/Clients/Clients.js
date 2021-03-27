@@ -3,11 +3,12 @@ import fetchClients  from  './Effects/fetchClients'
 import addClient     from   './Effects/addClient'
 import updateClient  from  './Effects/updateClient'
 import removeClient  from  './Effects/removeClient'
+import selectClient  from  './Effects/selectClient'
 import updateClientsOrderInSector  from  './Effects/updateClientsOrderInSector'
 
 const model ={
     state:{
-        clients       :[],
+        clients         :[],
         waiting_clients :[],
         clients_first_fetch:false,
         waiting_clients_first_fetch:false,
@@ -20,6 +21,9 @@ const model ={
         waiting_clients_count  : 0 ,//to display in admin's dashboard
         last_visible_client : null,
         client_adding_error : null,
+        last_visited_client : null,
+        selectedClient  :null,
+
     },
     reducers:{
         fetchedClientsCount : (state,clientsCount)=>({
@@ -36,6 +40,16 @@ const model ={
             waiting_clients_first_fetch:true,
             done_fetching_waiting_clients:true,
             waiting_clients_count:[...clients].filter(c=>c.confirmed != "VALIDATED").length
+        }),
+        fetchedClient : (state,{selectedClient})=>({
+            ...state,
+            selectedClient,
+            last_visited_client : selectedClient.id
+        }),
+        fetchedClientFailed : (state,{clients,clients_first_fetch})=>({
+            ...state,
+            selectedClient:null,
+            last_visited_client : null
         }),
         fetcheClientsFailed : (state,clients)=>({
             ...state,
@@ -93,6 +107,7 @@ const model ={
     effects: (dispatch)=>({
         fetchWaitingClients     : (args,state)=>fetchWaitingClients(args,state,dispatch),
         fetchClients     : (args,state)=>fetchClients(args,state,dispatch),
+        selectClient     : (args,state)=>selectClient(args,state,dispatch),
         addClient        : (args,state)=>addClient(args,state,dispatch),
         updateClient     : (args,state)=>updateClient(args,state,dispatch),
         removeClient     : (args,state)=>removeClient(args,state,dispatch),
