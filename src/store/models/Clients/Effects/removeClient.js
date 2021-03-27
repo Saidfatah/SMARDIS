@@ -17,10 +17,10 @@ export default async (args,state,dispatch)=>{
      
              dispatch.client.removedClient({clients})
 
-             const day_of_creation =new Date().getDate()
+      
              const cache={
-              day_of_creation,
-              clients
+                mounth_of_creation: new Date().getMonth(),
+               clients
              }
              await  asyncStorage.setItem("CLIENTS",JSON.stringify(cache))
          }

@@ -43,7 +43,6 @@ export default connect(
   }),
   dispatch =>({
      fetchClients : dispatch.client.fetchClients,
-     fetchMoreClients : dispatch.client.fetchMoreClients,
   })
 )(Clients)
 

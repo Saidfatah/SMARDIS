@@ -8,11 +8,11 @@ export default async(args,state,dispatch)=>{
         const PRODUCTS = await asyncStorage.getItem('PRODUCTS')
 
         if(PRODUCTS != undefined && PRODUCTS!=null){
-             const {products,day_of_creation}= JSON.parse(PRODUCTS) 
-             const current_day= new Date().getDate()
-
+             const {products,month_of_creation}= JSON.parse(PRODUCTS) 
+             const current_month= new Date().getMonth()
              
-             if(current_day  == day_of_creation ){
+             
+             if(current_month  === month_of_creation ){
                  return dispatch.products.fetchedProducts({
                      products,
                      products_first_fetch:false,
@@ -52,12 +52,12 @@ export default async(args,state,dispatch)=>{
                if(products.length <1) return  dispatch.products.productsFetchingFailed()
                
 
-               console.log("products fetched :"+products.length)
+     
 
                //write to cache
-               const day_of_creation =new Date().getDate()
+             
                const cache={
-                day_of_creation,
+                month_of_creation: new Date().getMonth(),
                 products
                }
                await  asyncStorage.setItem("PRODUCTS",JSON.stringify(cache))

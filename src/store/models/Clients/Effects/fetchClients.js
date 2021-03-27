@@ -9,11 +9,11 @@ export default async (arg,state,dispatch)=>{
         const CLIENTS = await asyncStorage.getItem('CLIENTS')
 
         if(CLIENTS != undefined && CLIENTS!=null){
-             const {clients,day_of_creation}= JSON.parse(CLIENTS) 
-             const current_day= new Date().getDate()
+             const {clients,mounth_of_creation}= JSON.parse(CLIENTS) 
+             const current_mounth= new Date().getMonth()
              
-     
-             if(current_day == day_of_creation ){
+   
+             if(current_mounth == mounth_of_creation ){
                 return dispatch.client.fetchedClients({
                     clients,
                     clients_first_fetch:false
@@ -43,9 +43,9 @@ export default async (arg,state,dispatch)=>{
 
 
                 //write to cache
-               const day_of_creation =new Date().getDate()
+              
                const cache={
-                day_of_creation,
+                mounth_of_creation: new Date().getMonth(),
                 clients
                }
                await  asyncStorage.setItem("CLIENTS",JSON.stringify(cache))

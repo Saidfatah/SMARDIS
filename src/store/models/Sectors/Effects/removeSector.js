@@ -22,10 +22,9 @@ export default async (args,state,dispatch)=>{
               dispatch.sector.removedSector({sectors})
               
               //delete from cache
-              const day_of_creation =new Date().getDate()
               const cache={
-               day_of_creation,
-               sectors
+                 month_of_creation: new Date().getMonth(),
+                 sectors
               }
               await  asyncStorage.setItem("SECTORS",JSON.stringify(cache))
               

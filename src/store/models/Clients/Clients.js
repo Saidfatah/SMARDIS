@@ -1,5 +1,4 @@
 import fetchWaitingClients from  './Effects/fetchWaitingClients'
-import fetchMoreClients  from  './Effects/fetchMoreClients'
 import fetchClients  from  './Effects/fetchClients'
 import addClient     from   './Effects/addClient'
 import updateClient  from  './Effects/updateClient'
@@ -93,7 +92,6 @@ const model ={
     },
     effects: (dispatch)=>({
         fetchWaitingClients     : (args,state)=>fetchWaitingClients(args,state,dispatch),
-        fetchMoreClients : (args,state)=>fetchMoreClients(args,state,dispatch),
         fetchClients     : (args,state)=>fetchClients(args,state,dispatch),
         addClient        : (args,state)=>addClient(args,state,dispatch),
         updateClient     : (args,state)=>updateClient(args,state,dispatch),

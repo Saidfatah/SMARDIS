@@ -8,10 +8,10 @@ export default async (somthing,state,dispatch)=>{
         const CATEGORIES = await asyncStorage.getItem('CATEGORIES')
 
         if(CATEGORIES != undefined && CATEGORIES!=null){
-             const {categories,day_of_creation}= JSON.parse(CATEGORIES) 
-             const current_day= new Date().getDate()
+             const {categories,month_of_creation}= JSON.parse(CATEGORIES) 
+             const current_month= new Date().getMonth()
              
-             if(current_day == day_of_creation ){
+             if(current_month == month_of_creation ){
                 return dispatch.categories.fetchedCategories({
                     categories,
                     products_first_fetch:false
@@ -38,9 +38,8 @@ export default async (somthing,state,dispatch)=>{
                 .filter(category=> category.id != CONFIG_DOC)
 
                  //write to cache
-                 const day_of_creation =new Date().getDate()
                  const cache={
-                  day_of_creation,
+                  month_of_creation: new Date().getMonth(),
                   categories
                  }
                  await  asyncStorage.setItem("CATEGORIES",JSON.stringify(cache))

@@ -8,7 +8,7 @@ export default async (args,state,dispatch)=>{
         const {name,sectorId,ref,phone,address,city,price,objectif,navigation} = args 
         const USER_TYPE = state.auth.userType;
         let newClient = null
-        let created_client_id = null
+  
 
         if(USER_TYPE == "ADMIN"){
             newClient = clientModel(name,sectorId,ref,phone,address,city,price,objectif,"VALIDATED")
@@ -43,7 +43,7 @@ export default async (args,state,dispatch)=>{
              dispatch.client.addedClient({clients})
     
             const cache={
-             day_of_creation: new Date().getDate(),
+             mounth_of_creation: new Date().getMonth(),
              clients
             }
             await  asyncStorage.setItem("CLIENTS",JSON.stringify(cache))

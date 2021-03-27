@@ -5,9 +5,11 @@ export default (arg,state,dispatch)=>{
         if(waiting_clients_first_fetch) return
         
         const clients = [...state.client.clients]
-        console.log(clients.map(c=>c.name))
+    
+        
         const waitingClinets=clients.filter(c=>c.confirmed != "VALIDATED" )
-          console.log({waitingClinets})
+ 
+        
         if(waitingClinets.length>0){
             return dispatch.client.fetchedWaitingClients(waitingClinets)
         }   

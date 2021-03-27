@@ -8,10 +8,10 @@ export default async (arg,state,dispatch)=>{
 
         const SECTORS = await asyncStorage.getItem('SECTORS')
         if(SECTORS != undefined && SECTORS!=null){
-             const {sectors,day_of_creation}= JSON.parse(SECTORS) 
-             const current_day= new Date().getDate()
+             const {sectors,month_of_creation}= JSON.parse(SECTORS) 
+             const current_month= new Date().getMonth()
              
-             if(current_day == day_of_creation ){
+             if(current_month == month_of_creation ){
                 return dispatch.sector.fetchedSectors({
                     sectors,
                     sectors_first_fetch:false
@@ -36,10 +36,9 @@ export default async (arg,state,dispatch)=>{
                .filter(doc=>doc.id != CONFIG_DOC)
 
                 //write to cache
-                const day_of_creation =new Date().getDate()
                 const cache={
-                 day_of_creation,
-                 sectors
+                     month_of_creation: new Date().getMonth(),
+                     sectors
                 }
                 await  asyncStorage.setItem("SECTORS",JSON.stringify(cache))
  

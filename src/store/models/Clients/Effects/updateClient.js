@@ -18,7 +18,7 @@ export default async (args,state,dispatch)=>{
                   last_mounth:new Date().getMonth()
               },
               confirmed:"VALIDATED"
-             }
+          }
           
 
           const updateResponse= await firestore()
@@ -37,10 +37,10 @@ export default async (args,state,dispatch)=>{
 
               dispatch.client.updatedClient({clients})
 
-              const day_of_creation =new Date().getDate()
+       
               const cache={
-               day_of_creation,
-               clients
+                  mounth_of_creation: new Date().getMonth(),
+                  clients
               }
               await  asyncStorage.setItem("CLIENTS",JSON.stringify(cache))
           }

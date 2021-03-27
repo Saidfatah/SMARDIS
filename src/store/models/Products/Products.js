@@ -1,5 +1,4 @@
 import fetchProducts from './Effects/fetchProducts'
-import fetchMoreProducts from './Effects/fetchMorePorducts'
 import addProduct from './Effects/addProduct'
 import updateProduct from './Effects/updateProduct'
 import removeProduct from './Effects/removeProduct'
@@ -80,7 +79,6 @@ const model ={
     },
     effects: (dispatch)=>({
         fetchProducts     : (args,state)=>fetchProducts(args,state,dispatch),
-        fetchMoreProducts : (args,state)=>fetchMoreProducts(args,state,dispatch),
         addProduct        : (args,state)=>addProduct(args,state,dispatch) ,
         updateProduct     : (args,state)=>updateProduct(args,state,dispatch) ,
         removeProduct     : (args,state)=>removeProduct(args,state,dispatch) , 

@@ -42,7 +42,7 @@ export default async (args,state,dispatch)=>{
             })
             dispatch.sector.addedSector({sectors})
             const cache={
-             day_of_creation: new Date().getDate(),
+              month_of_creation: new Date().getMonth(),
              sectors
             }
              await  asyncStorage.setItem("SECTORS",JSON.stringify(cache))

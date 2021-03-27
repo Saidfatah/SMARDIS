@@ -82,7 +82,7 @@ export default async  (args,state,dispatch)=>{
             
              dispatch.products.addedProduct({products})
          const cache={
-          day_of_creation: new Date().getDate(),
+          month_of_creation: new Date().getMonth(),
           products
          }
          await  asyncStorage.setItem("PRODUCTS",JSON.stringify(cache))
