@@ -16,8 +16,7 @@ const  Clients=({navigation,clients,done_fetching_clients,fetchClients})=> {
     const renderItem =({ item ,index}) =><ClientItem  
     key={index}  
     navigation={navigation} 
-    name={item.name}  
-    id={item.id}
+    client={item}  
     isInTodaysOrders={false}
     onclick={()=>navigation.navigate('ADMINclientProfile',{client:item})}
     />

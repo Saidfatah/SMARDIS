@@ -31,14 +31,12 @@ const ClientDelivry=(props)=> {
     const [selectedProduct, setselectedProduct] = useState(selectedCategoryProducts[0]);
 
 
-    const {sector,orderId,scheduelId} = route.params;
-
+    const {sector,scheduelId,client,orderId} = route.params;
+    const  fromCache = client.fromCache
  
     useEffect(() => {
-        if(selectedClient){
-            navigation.setParams({ clientName: selectedClient.name });
-        }
-    }, [selectedClient])
+            navigation.setParams({ clientName: client.name });
+    }, [client])
     useFocusEffect(
         useCallback(() => {
           const onBackPress = () => {
@@ -54,12 +52,12 @@ const ClientDelivry=(props)=> {
     }, []));
 
 
-    if(!selectedClient  ) 
+    if(fromCache && !selectedClient  ) 
     return <View style={{backgroundColor:'#fff',flex: 1,display:'flex',alignItems:'center'}} >
         <Loading spacing={50} />   
     </View>
 
-    const {name,objectif,id}=selectedClient
+    const {name,objectif}=fromCache?selectedClient:client 
 
     const Header=()=>{
         const COLOR= objectif.progress>=0 ? colors.GREEN : colors.RED
@@ -97,8 +95,8 @@ const ClientDelivry=(props)=> {
                  sector,
                  isPanelActive,
                  setIsPanelActive,
-                 guest:selectedClient,
-                 client:selectedClient,
+                 guest:!fromCache?client:selectedClient,
+                 client:!fromCache?client:selectedClient,
                  orderId,
             addCartItem}} 
             />

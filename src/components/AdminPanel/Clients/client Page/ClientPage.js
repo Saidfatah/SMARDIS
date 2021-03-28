@@ -14,8 +14,9 @@ import IonIcon from 'react-native-vector-icons/Ionicons'
 export const ClientPage = ({navigation,selectedClient,sectors,resetIsDone,done_removing_client,removeClient}) => {
     const [canRemove, setcanRemove] = useState(true)
 
-    
-    const client = selectedClient
+    const  client =selectedClient
+ 
+
     useEffect(() => {
         done_removing_client==true && setcanRemove(true) && resetIsDone('done_removing_client')
     }, [done_removing_client])

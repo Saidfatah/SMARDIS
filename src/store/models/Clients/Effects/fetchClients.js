@@ -46,14 +46,14 @@ export default async (arg,state,dispatch)=>{
               
                const cache={
                 mounth_of_creation: new Date().getMonth(),
-                clients
+                clients:clients.map(c=>({...c,fromCache:true}))
                }
                await  asyncStorage.setItem("CLIENTS",JSON.stringify(cache))
 
             
 
                 return dispatch.client.fetchedClients({
-                    clients,
+                    clients:clients.map(c=>({...c,fromCache:false})),
                     clients_first_fetch:true
                 })
             }

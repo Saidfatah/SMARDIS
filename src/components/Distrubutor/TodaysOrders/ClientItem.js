@@ -6,11 +6,14 @@ import { connect } from 'react-redux'
 
 const ClientItem=({navigation,client,selectClient,currentTurn,currentSector,sector,scheduleId })=> {
 
-     const {name,turn,orderId}=client
+    const {name,turn,orderId,fromCache}=client
      
+    console.log({fromCache})
     const onClick=(e)=>{
-       navigation.navigate('DISTRIBUTORclientDelivery', { clientId:client.id ,sector,orderId,scheduelId:scheduleId });
-       selectClient({id:client.id })
+      if(fromCache){
+         selectClient({id:client.id })
+      }
+       navigation.navigate('DISTRIBUTORclientDelivery', {client,sector,orderId,scheduelId:scheduleId });
     }
  
     

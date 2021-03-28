@@ -4,14 +4,16 @@ import Item from '../../../Common/Item'
 import Button from '../../../Common/Button'
 import { connect } from 'react-redux'
 
-const ClientItem=({navigation,name,id,selectClient })=> {
+const ClientItem=({navigation,client,selectClient })=> {
   let ref= useRef(0)
+  const {name,id}=client
+ 
  
   ref.current= ref.current +1 
 
   const onClick=(e)=>{
-     navigation.navigate('ADMINclientProfile')
      selectClient({id})
+     navigation.navigate('ADMINclientProfile')
   }
 
  
@@ -42,10 +44,10 @@ const isEqual=(prevProps,nextProps)=>{
   const nextItem =nextProps 
   
 
-  if(prevItem['name'] != nextItem['name']){
+  if(prevItem.client['name'] != nextItem.client['name']){
     return false
   } 
-  if(prevItem['id'] != nextItem['id']){
+  if(prevItem.client['id'] != nextItem.client['id']){
     return false
   } 
  

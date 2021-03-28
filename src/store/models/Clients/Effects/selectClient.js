@@ -6,6 +6,7 @@ export default async (arg,state,dispatch)=>{
     try {
         const {id}=arg
       
+        console.log('-------- select client --------')
 
         const clients_first_fetch = state.client.clients_first_fetch
         
