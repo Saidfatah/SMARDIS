@@ -1,5 +1,5 @@
 
-import React,{useEffect,useReducer} from 'react'
+import React,{useEffect,useReducer,useRef,createRef} from 'react'
 import {View,Text,TextInput,StyleSheet,TouchableOpacity} from 'react-native'
 import BackgroundImage from '../../Common/BackgroundImage'
 import {colors} from '../../Common/Colors'
@@ -74,7 +74,8 @@ const reducer=(state,action)=>{
 
 const  Register=({navigation,registerError,register})=> {
     const [state, dispatch] = useReducer(reducer, initialState())
-     
+    const ref= useRef()
+
     const {
         errors ,
         canSubmit ,
@@ -107,70 +108,110 @@ const  Register=({navigation,registerError,register})=> {
         const {name,email,city,phone,password,ACCESS_CODE}=userInfo
         let errorsTemp = {...errors}
 
+        let errorIndex=0
+        let setedErroIndex=false
+       
 
         if(ACCESS_CODE == ''){
             errorsTemp.ACCESS_CODE_REQUIRED =true
             errorsCount++
+            errorIndex=0
         }
         if(name == ''){
             errorsTemp.nameREQUIRED =true
             errorsCount++
+            if(!setedErroIndex){
+                errorIndex=1
+                setedErroIndex=true
+            }
+        }
+        if(city == ''){
+            errorsTemp.cityREQUIRED =true
+            errorsCount++
+            if(!setedErroIndex){
+                errorIndex=2
+                setedErroIndex=true
+            }
+        }
+        if(email == ''){
+            errorsTemp.emailREQUIRED =true
+            errorsCount++
+            if(!setedErroIndex){
+                errorIndex=3
+                setedErroIndex=true
+            }
+        }
+        if(phone == ''){
+            errorsTemp.phoneREQUIRED =true
+            errorsCount++
+            if(!setedErroIndex){
+                errorIndex=4
+                setedErroIndex=true
+            }
+        }
+        if(type == ''){
+            errorsTemp.typeREQUIRED =true
+            errorsCount++
+            if(!setedErroIndex){
+                errorIndex=5
+                setedErroIndex=true
+            }
         }
         if(password == ''){
             errorsTemp.passwordREQUIRED =true
             errorsCount++
+            if(!setedErroIndex){
+                errorIndex=6
+                setedErroIndex=true
+            }
         }
         if(passwordConfirm ==""){
             errorsTemp.passwordConfirmREQUIRED =true
             errorsCount++
+            if(!setedErroIndex){
+                errorIndex=7
+                setedErroIndex=true
+            }
         }else{
             if(password !=  passwordConfirm)
             {
                 errorsTemp.passwordNotMatch =true
                 errorsCount++
+                if(!setedErroIndex){
+                    errorIndex=7
+                    setedErroIndex=true
+                }
             }
         }
        
-        if(email == ''){
-            errorsTemp.emailREQUIRED =true
-            errorsCount++
-        }
-        if(city == ''){
-            errorsTemp.cityREQUIRED =true
-            errorsCount++
-        }
-        if(phone == ''){
-            errorsTemp.phoneREQUIRED =true
-            errorsCount++
-        }
-        if(type == ''){
-            errorsTemp.typeREQUIRED =true
-            errorsCount++
-        }
-
-
+     
+        
 
         if(errorsCount >0) {
            dispatch({type:'SET_ERRORS',value:{...errorsTemp}})
-           return false
+           return {valdiate:false,errorIndex}
         }
-        return true
+        return {valdiate:true,errorIndex}
     }
     const handleRegister=()=>{
-      
-        if(!validateFields() || !canSubmit) return 
+       const valdation =validateFields()
+        if(!valdation.valdiate || !canSubmit){
+            //erro height : 41
+            //field height :89
+            console.log(89*valdation.errorIndex)
+             return ref.current.scrollToPosition(0,89*valdation.errorIndex,true)
+        }
         
-         const obj= {...userInfo,type}
-         register(obj)
-         dispatch({type:'SET_CAN_SUBMIT',value:false})
-
+        const obj= {...userInfo,type}
+        register(obj)
+        dispatch({type:'SET_CAN_SUBMIT',value:false})
     }
     
     const {city,ACCESS_CODE,name,phone,email,password}= userInfo
 
     return (
     <BackgroundImage>
-        <KeyboardAwareScrollView   contentContainerStyle={{ display:'flex',  flexGrow:1 }} >
+        <KeyboardAwareScrollView ref={ref}   pinchGestureEnabled contentContainerStyle={{ display:'flex',  flexGrow:1 }} >
               <View style={styles.Logo}>
                    <Logo width={120} height={120}  />
               </View>

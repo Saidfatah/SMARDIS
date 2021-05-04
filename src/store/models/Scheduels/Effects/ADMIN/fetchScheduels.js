@@ -11,10 +11,10 @@ function startOfWeek(date)
   }
 //get first day of week and last day of the current  week 
 var firstday =startOfWeek(new Date())
+firstday.setHours(1,0,0,0)
 var lastday = new Date()
 lastday.setDate(firstday.getDate()+7); 
 
-console.log({lastday})
 var weekStart = firestore.Timestamp.fromDate(firstday);
 var nextWeek = firestore.Timestamp.fromDate(lastday);
 

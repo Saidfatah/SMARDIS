@@ -1,4 +1,4 @@
-import React,{memo,useRef,useEffect} from 'react'
+import React,{memo,useRef} from 'react'
 import {View,Text} from 'react-native'
 import Item from '../../../Common/Item'
 import Button from '../../../Common/Button'

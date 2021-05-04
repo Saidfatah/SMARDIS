@@ -27,7 +27,10 @@ export default  InputField=({dispatch,value,handelChange,placeholder,label,error
     
     const resetErrors=()=>dispatch({type:'SET_ERRORS',value:{...ERRORS_INITIAL_CONFIG}})
 
-    return <View style={{width:'100%'}} >
+    return <View style={{width:'100%'}} onLayout={(event) => {
+        var {x, y, width, height} = event.nativeEvent.layout;
+        console.log({height,y})
+      }} >
     <Label label={label}  color="#fff"  mga={4} />
 
     {

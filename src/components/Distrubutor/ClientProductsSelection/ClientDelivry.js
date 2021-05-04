@@ -58,9 +58,14 @@ const ClientDelivry=(props)=> {
     </View>
 
     const {name,objectif}=fromCache?selectedClient:client 
+    const {last_mounth,progress,initial}= objectif
+    const currentMount=new Date().getMonth()
 
+    const PROGRESS=currentMount === last_mounth ? progress:-initial
+    
+    console.log(!fromCache?client:{...selectedClient,orderId})
     const Header=()=>{
-        const COLOR= objectif.progress>=0 ? colors.GREEN : colors.RED
+        const COLOR= PROGRESS>=0 ? colors.GREEN : colors.RED
         return <View style={styles.tagParent} >
         <View style={styles.tag} >
             <Text style={styles.clientName}>{name}</Text>
@@ -70,7 +75,7 @@ const ClientDelivry=(props)=> {
                      ...styles.clientName,
                      color:COLOR
                      }}>
-                         {objectif.progress >=0 ?"+"+objectif.progress :objectif.progress }DH
+                         {PROGRESS >=0 ?"+"+PROGRESS :PROGRESS }DH
                 </Text>
             </View>
         </View>
@@ -95,9 +100,8 @@ const ClientDelivry=(props)=> {
                  sector,
                  isPanelActive,
                  setIsPanelActive,
-                 guest:!fromCache?client:selectedClient,
-                 client:!fromCache?client:selectedClient,
-                 orderId,
+                 guest:!fromCache?client:{...selectedClient,orderId},
+                 client:!fromCache?client:{...selectedClient,orderId}, 
             addCartItem}} 
             />
         <SwipeAbleCancelOrder {...{

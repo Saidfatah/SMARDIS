@@ -21,7 +21,12 @@ const Error=({trigger,error,mgb,mga,height})=>{
     }
 
     if(trigger )
-        return <View style={[
+        return <View 
+        onLayout={(event) => {
+            var {x, y, width, height} = event.nativeEvent.layout;
+            console.log({height,y})
+          }} 
+        style={[
             style,
             {
                 marginBottom : mgb || 0 ,

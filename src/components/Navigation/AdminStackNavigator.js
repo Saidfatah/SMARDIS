@@ -15,7 +15,7 @@ import AdminOrdersValidated  from '../AdminPanel/Schedule/List of orders/ListOfO
 import AdminProducts  from '../AdminPanel/Products/Products'
 import AdminAddProduct  from '../AdminPanel/Products/Add product/AddProduct'
 import AdminProductPage  from '../AdminPanel/Products/Product Page/ProductPage'
-import AdminSales     from '../AdminPanel/Sales/Sales'
+// import AdminSales     from '../AdminPanel/Sales/Sales'
 import AdminSchedule   from '../AdminPanel/Schedule/Add Scheduel/Schedule'
 import AdminListOfSchedules   from '../AdminPanel/Schedule/ListOfSchedules/ListOfSchedules'
 import AdminListOfOrders   from '../AdminPanel/Schedule/List of orders/ListOfOrders'
@@ -172,11 +172,11 @@ const AdminStackNavigator =()=>{
                 options={{title:"Ajouter un distrubutor"}}
                 component={AdminRegisterDistrubutor} 
             />
-             <AdminStack.Screen 
+             {/* <AdminStack.Screen 
                 name="ADMINsales" 
                 options={{title:"Les ventes"}}
                 component={AdminSales} 
-            />
+            /> */}
              <AdminStack.Screen 
                 name="ADMINschedule" 
                 component={AdminSchedule} 

@@ -88,6 +88,6 @@ export default async (userObj,state,dispatch)=>{
             console.log("\nemail") 
              return dispatch.auth.registerFail({id:"EMAIL_INVALID",message:'email est pas valide'})
         }
-        return dispatch.auth.registerFail({id:"UNKNOWN",message:'somthing wen wrong'})
+        return dispatch.auth.registerFail({id:"UNKNOWN",message:'somthing went wrong'})
     }
 }

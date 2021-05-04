@@ -46,6 +46,7 @@ const generateBillRef=(state)=>{
      return [...zeros,...billRefCounterArrayed].reduce((a,c)=>a+c,"BC")
 }
 const updateOrderDocStatusToValidated=async (orderId,cartItems,billRef,total)=>{
+    console.log({orderId})
     const validateOrderReponse = await firestore()
               .collection('orders')
               .doc(orderId)
@@ -64,20 +65,38 @@ const updateOrderDocStatusToValidated=async (orderId,cartItems,billRef,total)=>{
 }
 const updateClientObjectProgress=async (client,total)=>{
     const {objectif,id}=client
+    console.log(client)
+
     const {last_mounth,progress,initial}= objectif
-    const currentMount= new Date().getMonth()
+    const currentMount=new Date().getMonth()
 
     const clientsProges=new Decimal(progress)
     const progressCalculated= total.plus(clientsProges)
     const initialDecimal=new Decimal(initial)
-    
-    if(currentMount == last_mounth){
-        await firestore().collection('clients').doc(id).update({objectif:{
-            initial:initialDecimal.toNumber(),
-            progress:progressCalculated.toNumber() ,
-            last_mounth : new Date().getMonth()
-        }})
+
+
+    if(currentMount !== last_mounth ){
+        console.log('currentMount !== last_mounth')
+        await firestore().collection('clients').doc(id).update({
+            objectif:{
+                 initial:initialDecimal.toNumber(),
+                 progress: -initialDecimal.toNumber(),
+                 last_mounth : new Date().getMonth()
+            }
+        })
     }
+    else if(currentMount == last_mounth){
+        console.log('currentMount === last_mounth')
+        await firestore().collection('clients').doc(id).update({
+            objectif:{
+                 initial:initialDecimal.toNumber(),
+                 progress:progressCalculated.toNumber() ,
+                 last_mounth : new Date().getMonth()
+            }
+        })
+    }
+    
+    
 }
 const feedBack=(dispatch,navigation)=>{
      dispatch.toast.show({
@@ -175,6 +194,7 @@ export default async (args,state,dispatch)=>{
              const client  = guest
              const total   = new Decimal(cartItems.reduce((a,c)=>a+(c.priceForClient * c.quantity),0))
             
+           
              dispatch.scheduel.setNextTurn()
 
              const billRef   = generateBillRef(state)

@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore'
 import asyncStorage from "@react-native-async-storage/async-storage" 
-import PushNotification from "react-native-push-notification";
+// import PushNotification from "react-native-push-notification";
 
 const today = new Date()
 const tomorrowJs = new Date(today)
@@ -77,7 +77,7 @@ const select_start_date_limit=async ()=>{
 }
 const set_state_validated_orders=async (dispatch,orders,validated_commands_ref)=>{
     //set SALES CACHE AND SET SALES IN REDUX STATE
-    setSalesReduxCache(dispatch,orders)
+    // setSalesReduxCache(dispatch,orders)
 
     dispatch.scheduel.fetchedTodaysValideOrders({
        orders ,
@@ -127,17 +127,18 @@ export default async  (arg,state,dispatch)=>{
         const validated_commands_ref= fetchOrdersReponse.onSnapshot(async res=>{
            if(res.docs.length  ){ 
                
-               PushNotification.cancelAllLocalNotifications()
-               PushNotification.localNotification({
-                title: "nombre des commands : "+res.docs.length,  
-                message: "Les commands valider",
-                playSound: true, // (optional) default: true
-                soundName: 'default', 
-                vibrate: true,
-                vibration: 300,
-                // id: 'VALDIATED_COMMANDS',
-                number: '10',  
-            });
+            //push updcoming orders notification 
+            // PushNotification.cancelAllLocalNotifications()
+            // PushNotification.localNotification({
+            //  title: "nombre des commands : "+res.docs.length,  
+            //  message: "Les commands valider",
+            //  playSound: true, // (optional) default: true
+            //  soundName: 'default', 
+            //  vibrate: true,
+            //  vibration: 300,
+            //  // id: 'VALDIATED_COMMANDS',
+            //  number: '10',  
+            // });
                const maped_data=res.docs.map(order=>({
                    ...order.data(),
                    id:order.id,

@@ -29,7 +29,7 @@ const functions=[
     "fetchMoreDistrubutors"
 ]
 
-findInFiles.find('react-native-progress', '../components', '.js$')
+findInFiles.find('react-native-push-notification', '../store', '.js$')
     .then(function(results) {
         for (var result in results) {
             var res = results[result];

@@ -21,18 +21,7 @@ const App= () => {
         onPress: () =>  BackHandler.exitApp(),
         style: "cancel"
        }
-      // {
-      //   text: "Refresher",
-      //   onPress:() => setTimeout(() => {
-      //        if((isConnected===false && isConnected !==null) || isInternetReachable === false)
-      //        {
-      //            console.log("called")
-      //            console.log({isConnected})
-      //             alert_()
-      //        }
-      //   }, 2000),
-      //   style: "cancel"
-      // },
+
     ]);
   }
 

@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
         justifyContent:"space-evenly",
-        marginBottom:8
+        marginBottom:20
     },
     btns:{
         display:'flex',

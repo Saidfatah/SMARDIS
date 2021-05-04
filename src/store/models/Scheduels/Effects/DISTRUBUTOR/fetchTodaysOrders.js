@@ -12,8 +12,6 @@ ysterdayMidnight.setHours(0,0,0,0);
 var yesterday = firestore.Timestamp.fromDate(ysterdayMidnight);
 
  
-const CONFIG_DOC='1 - - CONFIG - -'
-
 export default async(arg,state,dispatch)=>{
     try {
         const {passCacheCheck}=arg
@@ -26,13 +24,14 @@ export default async(arg,state,dispatch)=>{
                 
                  const current_day= new Date().getDate()
                  
-                 if(current_day == day_of_creation ){
+                 if(current_day === day_of_creation ){
                     return dispatch.scheduel.fetchedTodaysSectors({
                         todaysSectors,
                         todays_orders_ref:null,
                         todays_orders_first_fetch:false
                     })
                  }
+                 await asyncStorage.removeItem('TODAYS_ORDERS')
             } 
         }
 
@@ -55,24 +54,9 @@ export default async(arg,state,dispatch)=>{
                 // const flteredDocs=  res.docs.filter(doc=> doc.id != CONFIG_DOC)
                  const flteredDocs=  res.docs  
 
-                //chececk for clients objectifs 
-                //reset their objectif progress if its the beggning of the month 
+    
                 if(flteredDocs.length <1) return dispatch.scheduel.fetchedTodaysSectorsFailed()
-                const currentMount=new Date().getMonth()
-                const refrencedClients=flteredDocs.map(doc=>({...doc.data().client}))
-
-                refrencedClients.forEach(async client=>{
-                    const {objectif,id} = client
-                    const {initial,last_mounth} = objectif
-
-                    if(currentMount > last_mounth ){
-                        await firestore().collection('clients').doc(id).update({objectif:{
-                           initial:initial ,
-                           progress: -initial,
-                           last_mounth : new Date().getMonth()
-                        }})
-                    }
-                })
+               
        
                 const orderList= flteredDocs.map(doc=>({...doc.data(),orderId:doc.id}))
                 

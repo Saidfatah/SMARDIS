@@ -48,7 +48,7 @@ const  AdminDashBoard=(props)=> {
                  if(user && user.type =="DISTRUBUTOR") 
                      navigation.navigate('DISTRIBUTORDashBoard')
                  fetchOrders()
-                 fetchSales()
+                //  fetchSales()
                  fetchAdminValidatedOrders()
                  fetchProducts()
                  fetchUsers()
@@ -103,12 +103,12 @@ const  AdminDashBoard=(props)=> {
                  {title:"Add product",route :"ADMINaddProduct"}
              ]
         },
-        {
-             title:"Ventes",
-             subMenu:[
-                {title:"List de ventes", route :"ADMINsales"},
-            ]
-        },
+        // {
+        //      title:"Ventes",
+        //      subMenu:[
+        //         {title:"List de ventes", route :"ADMINsales"},
+        //     ]
+        // },
         {
              route :"ADMINschedule",
              title:"Emploi du temps",

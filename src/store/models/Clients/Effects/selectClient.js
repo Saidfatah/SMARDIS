@@ -23,7 +23,7 @@ export default async (arg,state,dispatch)=>{
 
         const clientResponse= await firestore().collection('clients').doc(id).get()
 
-        const client=clientResponse.data()
+        const client={...clientResponse.data(),id:clientResponse.id}
         if(client){
             return dispatch.client.fetchedClient({selectedClient:client})
         }

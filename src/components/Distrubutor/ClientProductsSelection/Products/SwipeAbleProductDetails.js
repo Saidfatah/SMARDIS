@@ -6,9 +6,11 @@ import DropDown from '../../../Common/DropDown'
 import { View } from 'react-native';
 
 
-const SwipeAbleProductDetails=({scheduelId,selectedProduct,sector,isPanelActive,setIsPanelActive,addCartItem,guest,client})=> {
+const SwipeAbleProductDetails=({orderId,scheduelId,selectedProduct,sector,isPanelActive,setIsPanelActive,addCartItem,guest,client})=> {
     const [selectedProductPanel, setSelectedProductPanel] = useState(null)
      
+     
+    
     useEffect(() => {
       if(selectedProduct  ){
          if(selectedProduct.subs && selectedProduct.subs.length > 0){
